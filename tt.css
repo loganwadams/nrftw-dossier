@@ -1,0 +1,432 @@
+/* item tooltip: the norestforthewicked.gg card content, restyled for the dossier */
+.tt{position:fixed;z-index:9999;width:372px;max-width:calc(100vw - 24px);pointer-events:none;opacity:0;transition:opacity .18s;font-family:var(--body);font-size:13.5px;line-height:1.35;color:#d9ccb0;
+ background:radial-gradient(120% 90% at 20% 0%,#2b2a2c 0%,#141315 60%,#0b0a0b 100%);border:1px solid rgba(201,169,110,.45);box-shadow:0 18px 50px rgba(0,0,0,.75),inset 0 0 0 1px rgba(0,0,0,.6)}
+.tt.on{opacity:1}
+.tt-head{display:grid;grid-template-columns:64px 1fr 48px;gap:12px;align-items:start;padding:14px 14px 10px}
+.tt-ic{width:64px;height:64px;background:rgba(0,0,0,.45) url(img/items-sheet.webp) no-repeat;background-size:2048px auto;border:1px solid rgba(201,169,110,.35)}
+.tt-name{font-family:var(--display);font-size:19px;line-height:1.1;color:#f0e6cf;margin:2px 0 3px}
+.tt-type{font-size:12.5px;color:#9b917f;letter-spacing:.02em}
+.tt.r-magical .tt-name{color:#8fb7ff}.tt.r-plagued .tt-name{color:#c6a0ff}.tt.r-unique .tt-name{color:#f2c35c}
+.tt-lv{width:36px;height:36px;margin:4px 4px 0 auto;display:grid;place-items:center;font-family:var(--data);font-size:15px;color:#f0e6cf;background:linear-gradient(135deg,#3a3a3c,#151516);transform:rotate(45deg);border:1px solid rgba(201,169,110,.35)}
+.tt-lv span{transform:rotate(-45deg)}
+.tt .content{padding:0 0 6px}
+.tt .flex{display:flex}.tt .flex-row{flex-direction:row}.tt .flex-col{flex-direction:column}.tt .flex-1{flex:1 1 0%}.tt .flex-wrap{flex-wrap:wrap}
+.tt .items-center{align-items:center}.tt .items-start{align-items:flex-start}.tt .text-right{text-align:right}
+.tt .grid{display:grid}.tt .grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.tt .justify-items-start{justify-items:start}
+.tt .gap-y-1{row-gap:4px}.tt .gap-y-0\.5{row-gap:2px}.tt .gap-0\.5{gap:2px}.tt .gap-1{gap:4px}
+.tt .px-5{padding-left:14px;padding-right:14px}.tt .px-3{padding-left:10px;padding-right:10px}.tt .px-2{padding-left:8px;padding-right:8px}
+.tt .pb-2{padding-bottom:6px}.tt .pb-1{padding-bottom:4px}.tt .pb-0\.5{padding-bottom:2px}.tt .pt-3{padding-top:9px}.tt .pt-2{padding-top:6px}.tt .pt-1{padding-top:3px}
+.tt .py-1{padding-top:4px;padding-bottom:4px}.tt .py-2{padding-top:6px;padding-bottom:6px}
+.tt .pl-1{padding-left:4px}.tt .pl-2{padding-left:7px}.tt .pl-3{padding-left:10px}.tt .pl-5{padding-left:14px}.tt .pr-1{padding-right:4px}.tt .pr-2{padding-right:7px}.tt .pr-3{padding-right:10px}
+.tt .mb-1{margin-bottom:4px}.tt .mt-1{margin-top:4px}.tt .mt-0\.5{margin-top:2px}.tt .-mt-1{margin-top:-4px}
+.tt .basis-28{flex-basis:100px}.tt .min-w-28{min-width:100px}.tt .basis-40{flex-basis:140px}.tt .min-w-40{min-width:140px}.tt .min-w-8{min-width:28px}.tt .min-h-6{min-height:20px}.tt .min-h-7{min-height:24px}.tt .w-full{width:100%}
+.tt .text-lg,.tt .text-lg\/5{font-size:14.5px}.tt .text-base\/5{font-size:13px}.tt .text-sm\/5{font-size:12px}
+.tt .mod-value{color:#9ec1ff;font-family:var(--data);font-size:.95em;letter-spacing:.02em}
+.tt .item-subtitle,.tt .info-header,.tt .item-subheader{color:#a69c88}
+.tt .item-subheader{font-family:var(--display);font-size:13px;letter-spacing:.04em}
+.tt .divider{height:1px;margin:5px 0;background:linear-gradient(90deg,rgba(201,169,110,0),rgba(201,169,110,.45) 20%,rgba(201,169,110,.45) 80%,rgba(201,169,110,0))}
+.tt .divider.full-width{margin:6px 0}
+.tt .item-description{font-style:italic;color:#c9bca0}
+.tt .damage-school{font-weight:600}.tt .damage-school.physical{color:#f0e6cf}.tt .damage-school.fire{color:#ff9b5a}.tt .damage-school.ice{color:#8fd8ff}.tt .damage-school.plague{color:#b48cff}.tt .damage-school.lightning{color:#ffe37a}.tt .damage-school.bleed{color:#ff6b6b}
+.tt .o-icons{background-image:url(img/o-icons.webp);background-repeat:no-repeat;display:block;transform-origin:0 0}
+.tt .top-icon-wrapper,.tt .bottom-icon-wrapper,.tt .attribute-wrapper,.tt .coin-icon-wrapper,.tt .generic-icon-wrapper{width:22px;height:22px;flex:0 0 22px;position:relative;overflow:hidden}
+.tt .top-icon-wrapper .o-icons,.tt .bottom-icon-wrapper .o-icons,.tt .attribute-wrapper .o-icons,.tt .coin-icon-wrapper .o-icons{transform:scale(.344)}
+.tt .top-icon-line{display:flex;align-items:center;gap:6px}
+.tt .item-source{background-image:url(img/source-icons.webp);background-repeat:no-repeat;display:block;transform:scale(.344);transform-origin:0 0}
+.tt .generic-icon-wrapper{margin:1px}
+.tt .item-rune-grid{row-gap:3px}
+.tt .item-rune,.tt .item-gem{display:flex;align-items:center;gap:6px}
+.tt .rune-icon-none,.tt .gem-icon-none{width:14px;height:14px;border-radius:50%;border:1px solid #6d6557;flex:0 0 14px}
+.tt .rune-text-empty,.tt .gem-text-empty{color:#7d7466}
+.tt .item-link{display:flex;align-items:center;gap:6px;color:#f0e6cf;text-decoration:none}
+.tt a,.tt a:hover{text-decoration:none}
+.tt .item-link-icon-wrapper{width:18px;height:18px;flex:0 0 18px;overflow:hidden;position:relative}
+.tt .r-icons{background-image:url(img/r-icons.webp);background-repeat:no-repeat;display:block;width:128px;height:128px;transform:scale(.1406);transform-origin:0 0}
+.tt .enchant-panel,.tt .gem-enchant-panel{padding:4px 14px}
+.tt .enchant{display:flex;gap:6px;align-items:flex-start;margin:2px 0}.tt .enchant-icon,.tt .modifier-icon{width:14px;height:14px;flex:0 0 14px;border-radius:50%;background:#3a342a}
+.tt .enchant-unique .enchant-text{color:#f2c35c}.tt .enchant-plagued .enchant-text{color:#c6a0ff}.tt .enchant-negative .enchant-text{color:#ff8a8a}
+.tt .extra-text{color:#9b917f;font-size:12px}
+.tt .special-effect{margin:1px 0}
+.tt .damage-data-school{font-weight:600}
+.tt-foot{padding:6px 14px 10px;font-family:var(--data);font-size:10px;letter-spacing:.08em;color:#7d7466;border-top:1px solid rgba(201,169,110,.2)}
+@media (hover:none){.tt{pointer-events:auto}}
+/* gem panels: slot icon beside the slot name and its effect */
+.tt .gem-enchant-panel{padding:4px 14px 2px}
+.tt .gem-enchant{display:grid;grid-template-columns:34px 1fr;column-gap:10px;align-items:start;margin:3px 0}
+.tt .gem-slot-icon-wrapper{grid-row:1/3;width:34px;height:34px;overflow:hidden;position:relative}
+.tt .gem-slot-icon.o-icons{zoom:.56}
+.tt .gem-slot-name{grid-column:2;font-family:var(--display);font-size:13px;letter-spacing:.04em;color:#a69c88;padding:0}
+.tt .gem-enchant > .enchant-text,.tt .gem-enchant > :not(.gem-slot-icon-wrapper):not(.gem-slot-name){grid-column:2}
+.tt .gem-enchant .divider{display:none}
+/* inline stat icons inside enchant text */
+.tt .modifier-icon,.tt .enchant-icon{display:inline-block;width:16px;height:16px;vertical-align:-3px;border-radius:0;background:none;overflow:hidden;position:relative;flex:none}
+.tt .modifier-icon .o-icons,.tt .enchant-icon.o-icons{zoom:.25;display:inline-block}
+.tt .enchant{display:flex;gap:6px;align-items:flex-start}
+.tt .enchant-text b{color:#f0e6cf;font-weight:600}
+.o-icons-fi-StatFatality { background-position: 0px 0px; width: 64px; height: 64px; }
+.o-icons-iconEnchantUnique { background-position: -557px -520px; width: 40px; height: 40px; }
+.o-icons-iconGemEnchantPants { background-position: -130px -520px; width: 60px; height: 60px; }
+.o-icons-moneyGold { background-position: -65px 0px; width: 64px; height: 64px; }
+.o-icons-iconGemEnchantHelmet { background-position: -191px -520px; width: 60px; height: 60px; }
+.o-icons-iconEnchantNegative { background-position: 0px -585px; width: 40px; height: 40px; }
+.o-icons-fi-StatDamageTaken { background-position: -130px 0px; width: 64px; height: 64px; }
+.o-icons-fi-Intelligence { background-position: -195px 0px; width: 64px; height: 64px; }
+.o-icons-fi-EquipLoad { background-position: -260px 0px; width: 64px; height: 64px; }
+.o-icons-fi-StatFocusCost { background-position: -325px 0px; width: 64px; height: 64px; }
+.o-icons-fi-StatLightningArmor { background-position: -390px 0px; width: 64px; height: 64px; }
+.o-icons-moneySilver { background-position: -455px 0px; width: 64px; height: 64px; }
+.o-icons-iconGemEnchantOffhand { background-position: -252px -520px; width: 60px; height: 60px; }
+.o-icons-fi-StatHealthRegen { background-position: -520px 0px; width: 64px; height: 64px; }
+.o-icons-fi-StatBleed { background-position: 0px -65px; width: 64px; height: 64px; }
+.o-icons-iconGemEnchantWeapon { background-position: -313px -520px; width: 60px; height: 60px; }
+.o-icons-fi-StatFireDamage { background-position: -65px -65px; width: 64px; height: 64px; }
+.o-icons-iconGemEnchantGloves { background-position: -374px -520px; width: 60px; height: 60px; }
+.o-icons-fi-StatLifesteal { background-position: -130px -65px; width: 64px; height: 64px; }
+.o-icons-fi-ChatBubble { background-position: -195px -65px; width: 64px; height: 64px; }
+.o-icons-fi-Illuminate { background-position: -260px -65px; width: 64px; height: 64px; }
+.o-icons-fi-StatStaggerDamage { background-position: -325px -65px; width: 64px; height: 64px; }
+.o-icons-fi-StatHealing { background-position: -390px -65px; width: 64px; height: 64px; }
+.o-icons-fi-Stamina { background-position: -455px -65px; width: 64px; height: 64px; }
+.o-icons-fi-Weight { background-position: -520px -65px; width: 64px; height: 64px; }
+.o-icons-fi-ArrowUp { background-position: 0px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatBarrier { background-position: -65px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatFocusDrain { background-position: -130px -130px; width: 64px; height: 64px; }
+.o-icons-fi-ArrowLeft { background-position: -195px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatFireArmor { background-position: -260px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatPlagueArmor { background-position: -325px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatPoiseDefense { background-position: -390px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatWeight { background-position: -455px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatStaggerResistance { background-position: -520px -130px; width: 64px; height: 64px; }
+.o-icons-fi-StatElementalDamage { background-position: 0px -195px; width: 64px; height: 64px; }
+.o-icons-fi-StatDamage { background-position: -65px -195px; width: 64px; height: 64px; }
+.o-icons-fi-StatHealthRally { background-position: -130px -195px; width: 64px; height: 64px; }
+.o-icons-fi-Strength { background-position: -195px -195px; width: 64px; height: 64px; }
+.o-icons-fi-Diamond { background-position: -260px -195px; width: 64px; height: 64px; }
+.o-icons-fi-MaxPoise { background-position: -325px -195px; width: 64px; height: 64px; }
+.o-icons-fi-PoiseDamage { background-position: -390px -195px; width: 64px; height: 64px; }
+.o-icons-fi-StatFocusGain { background-position: -455px -195px; width: 64px; height: 64px; }
+.o-icons-fi-StatPhysicalDamageTaken { background-position: -520px -195px; width: 64px; height: 64px; }
+.o-icons-iconGemEnchantShield { background-position: -435px -520px; width: 60px; height: 60px; }
+.o-icons-fi-StatElementalDamageTaken { background-position: 0px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatPhysicalDamage { background-position: -65px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatEquipLoad { background-position: -130px -260px; width: 64px; height: 64px; }
+.o-icons-iconGemEnchantArmor { background-position: -496px -520px; width: 60px; height: 60px; }
+.o-icons-fi-StatDurability { background-position: -195px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatExperience { background-position: -260px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatArmor { background-position: -325px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatCritical { background-position: -390px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatFocusRegen { background-position: -455px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatMovementSpeed { background-position: -520px -260px; width: 64px; height: 64px; }
+.o-icons-fi-StatArmorPenetration { background-position: 0px -325px; width: 64px; height: 64px; }
+.o-icons-fi-ArrowDown { background-position: -65px -325px; width: 64px; height: 64px; }
+.o-icons-fi-StatColdArmor { background-position: -130px -325px; width: 64px; height: 64px; }
+.o-icons-fi-Bounty { background-position: -195px -325px; width: 64px; height: 64px; }
+.o-icons-fi-StatMaxFocus { background-position: -260px -325px; width: 64px; height: 64px; }
+.o-icons-fi-StatEnchantmentPower { background-position: -325px -325px; width: 64px; height: 64px; }
+.o-icons-fi-NoStamina { background-position: -390px -325px; width: 64px; height: 64px; }
+.o-icons-fi-StatFocus { background-position: -455px -325px; width: 64px; height: 64px; }
+.o-icons-fi-StatPlagueDamage { background-position: -520px -325px; width: 64px; height: 64px; }
+.o-icons-moneyBronze { background-position: 0px -390px; width: 64px; height: 64px; }
+.o-icons-fi-StatHealth { background-position: -65px -390px; width: 64px; height: 64px; }
+.o-icons-fi-StatStamina { background-position: -130px -390px; width: 64px; height: 64px; }
+.o-icons-fi-Focus { background-position: -195px -390px; width: 64px; height: 64px; }
+.o-icons-iconToolDamage { background-position: -260px -390px; width: 64px; height: 64px; }
+.o-icons-fi-StatColdDamage { background-position: -325px -390px; width: 64px; height: 64px; }
+.o-icons-fi-StatMaxStamina { background-position: -390px -390px; width: 64px; height: 64px; }
+.o-icons-iconItemShieldArmor { background-position: -455px -390px; width: 64px; height: 64px; }
+.o-icons-fi-Skull { background-position: -520px -390px; width: 64px; height: 64px; }
+.o-icons-fi-StatThorns { background-position: 0px -455px; width: 64px; height: 64px; }
+.o-icons-fi-Health { background-position: -65px -455px; width: 64px; height: 64px; }
+.o-icons-fi-StatLightningDamage { background-position: -130px -455px; width: 64px; height: 64px; }
+.o-icons-fi-Traces { background-position: -195px -455px; width: 64px; height: 64px; }
+.o-icons-fi-StatStaminaRegen { background-position: -260px -455px; width: 64px; height: 64px; }
+.o-icons-fi-Faith { background-position: -325px -455px; width: 64px; height: 64px; }
+.o-icons-fi-StatStaminaCost { background-position: -390px -455px; width: 64px; height: 64px; }
+.o-icons-fi-StatAttackSpeed { background-position: -455px -455px; width: 64px; height: 64px; }
+.o-icons-fi-StatMaxHealth { background-position: -520px -455px; width: 64px; height: 64px; }
+.o-icons-fi-Dexterity { background-position: 0px -520px; width: 64px; height: 64px; }
+.o-icons-fi-ArrowRight { background-position: -65px -520px; width: 64px; height: 64px; }
+.item-source-12 { background-position: 0px 0px; width: 64px; height: 64px; }
+.item-source-13 { background-position: -65px 0px; width: 64px; height: 64px; }
+.item-source-11 { background-position: -130px 0px; width: 64px; height: 64px; }
+.item-source-10 { background-position: -195px 0px; width: 64px; height: 64px; }
+.item-source-21 { background-position: 0px -65px; width: 64px; height: 64px; }
+.item-source-20 { background-position: -65px -65px; width: 64px; height: 64px; }
+.item-source-33 { background-position: -130px -65px; width: 64px; height: 64px; }
+.item-source-32 { background-position: -195px -65px; width: 64px; height: 64px; }
+.item-source-30 { background-position: 0px -130px; width: 64px; height: 64px; }
+.item-source-31 { background-position: -65px -130px; width: 64px; height: 64px; }
+.item-source-4 { background-position: -130px -130px; width: 64px; height: 64px; }
+.item-source-42 { background-position: -195px -130px; width: 64px; height: 64px; }
+.item-source-43 { background-position: 0px -195px; width: 64px; height: 64px; }
+.item-source-5 { background-position: -65px -195px; width: 64px; height: 64px; }
+.item-source-41 { background-position: -130px -195px; width: 64px; height: 64px; }
+.item-source-40 { background-position: -195px -195px; width: 64px; height: 64px; }
+.item-source-2 { background-position: 0px -260px; width: 64px; height: 64px; }
+.item-source-50 { background-position: -65px -260px; width: 64px; height: 64px; }
+.item-source-3 { background-position: -130px -260px; width: 64px; height: 64px; }
+.item-source-1 { background-position: -195px -260px; width: 64px; height: 64px; }
+.item-source-0 { background-position: 0px -325px; width: 64px; height: 64px; }
+.r-icons-638 { background-position: 0px 0px; height: 128px; width: 128px; }
+.r-icons-837 { background-position: -129px 0px; height: 128px; width: 128px; }
+.r-icons-823 { background-position: -258px 0px; height: 128px; width: 128px; }
+.r-icons-758 { background-position: -387px 0px; height: 128px; width: 128px; }
+.r-icons-764 { background-position: -516px 0px; height: 128px; width: 128px; }
+.r-icons-770 { background-position: -645px 0px; height: 128px; width: 128px; }
+.r-icons-771 { background-position: -774px 0px; height: 128px; width: 128px; }
+.r-icons-765 { background-position: -903px 0px; height: 128px; width: 128px; }
+.r-icons-759 { background-position: -1032px 0px; height: 128px; width: 128px; }
+.r-icons-822 { background-position: -1161px 0px; height: 128px; width: 128px; }
+.r-icons-836 { background-position: -1290px 0px; height: 128px; width: 128px; }
+.r-icons-639 { background-position: -1419px 0px; height: 128px; width: 128px; }
+.r-icons-820 { background-position: -1548px 0px; height: 128px; width: 128px; }
+.r-icons-834 { background-position: -1677px 0px; height: 128px; width: 128px; }
+.r-icons-808 { background-position: -1806px 0px; height: 128px; width: 128px; }
+.r-icons-773 { background-position: -1935px 0px; height: 128px; width: 128px; }
+.r-icons-767 { background-position: 0px -129px; height: 128px; width: 128px; }
+.r-icons-798 { background-position: -129px -129px; height: 128px; width: 128px; }
+.r-icons-799 { background-position: -258px -129px; height: 128px; width: 128px; }
+.r-icons-766 { background-position: -387px -129px; height: 128px; width: 128px; }
+.r-icons-772 { background-position: -516px -129px; height: 128px; width: 128px; }
+.r-icons-809 { background-position: -645px -129px; height: 128px; width: 128px; }
+.r-icons-835 { background-position: -774px -129px; height: 128px; width: 128px; }
+.r-icons-821 { background-position: -903px -129px; height: 128px; width: 128px; }
+.r-icons-819 { background-position: -1032px -129px; height: 128px; width: 128px; }
+.r-icons-825 { background-position: -1161px -129px; height: 128px; width: 128px; }
+.r-icons-831 { background-position: -1290px -129px; height: 128px; width: 128px; }
+.r-icons-776 { background-position: -1419px -129px; height: 128px; width: 128px; }
+.r-icons-762 { background-position: -1548px -129px; height: 128px; width: 128px; }
+.r-icons-789 { background-position: -1677px -129px; height: 128px; width: 128px; }
+.r-icons-788 { background-position: -1806px -129px; height: 128px; width: 128px; }
+.r-icons-763 { background-position: -1935px -129px; height: 128px; width: 128px; }
+.r-icons-777 { background-position: 0px -258px; height: 128px; width: 128px; }
+.r-icons-830 { background-position: -129px -258px; height: 128px; width: 128px; }
+.r-icons-824 { background-position: -258px -258px; height: 128px; width: 128px; }
+.r-icons-818 { background-position: -387px -258px; height: 128px; width: 128px; }
+.r-icons-832 { background-position: -516px -258px; height: 128px; width: 128px; }
+.r-icons-826 { background-position: -645px -258px; height: 128px; width: 128px; }
+.r-icons-761 { background-position: -774px -258px; height: 128px; width: 128px; }
+.r-icons-775 { background-position: -903px -258px; height: 128px; width: 128px; }
+.r-icons-749 { background-position: -1032px -258px; height: 128px; width: 128px; }
+.r-icons-748 { background-position: -1161px -258px; height: 128px; width: 128px; }
+.r-icons-774 { background-position: -1290px -258px; height: 128px; width: 128px; }
+.r-icons-760 { background-position: -1419px -258px; height: 128px; width: 128px; }
+.r-icons-827 { background-position: -1548px -258px; height: 128px; width: 128px; }
+.r-icons-833 { background-position: -1677px -258px; height: 128px; width: 128px; }
+.r-icons-883 { background-position: -1806px -258px; height: 128px; width: 128px; }
+.r-icons-673 { background-position: -1935px -258px; height: 128px; width: 128px; }
+.r-icons-667 { background-position: 0px -387px; height: 128px; width: 128px; }
+.r-icons-854 { background-position: -129px -387px; height: 128px; width: 128px; }
+.r-icons-840 { background-position: -258px -387px; height: 128px; width: 128px; }
+.r-icons-698 { background-position: -387px -387px; height: 128px; width: 128px; }
+.r-icons-868 { background-position: -516px -387px; height: 128px; width: 128px; }
+.r-icons-707 { background-position: -645px -387px; height: 128px; width: 128px; }
+.r-icons-713 { background-position: -774px -387px; height: 128px; width: 128px; }
+.r-icons-712 { background-position: -903px -387px; height: 128px; width: 128px; }
+.r-icons-706 { background-position: -1032px -387px; height: 128px; width: 128px; }
+.r-icons-869 { background-position: -1161px -387px; height: 128px; width: 128px; }
+.r-icons-699 { background-position: -1290px -387px; height: 128px; width: 128px; }
+.r-icons-841 { background-position: -1419px -387px; height: 128px; width: 128px; }
+.r-icons-855 { background-position: -1548px -387px; height: 128px; width: 128px; }
+.r-icons-666 { background-position: -1677px -387px; height: 128px; width: 128px; }
+.r-icons-672 { background-position: -1806px -387px; height: 128px; width: 128px; }
+.r-icons-882 { background-position: -1935px -387px; height: 128px; width: 128px; }
+.r-icons-896 { background-position: 0px -516px; height: 128px; width: 128px; }
+.r-icons-658 { background-position: -129px -516px; height: 128px; width: 128px; }
+.r-icons-880 { background-position: -258px -516px; height: 128px; width: 128px; }
+.r-icons-894 { background-position: -387px -516px; height: 128px; width: 128px; }
+.r-icons-664 { background-position: -516px -516px; height: 128px; width: 128px; }
+.r-icons-670 { background-position: -645px -516px; height: 128px; width: 128px; }
+.r-icons-843 { background-position: -774px -516px; height: 128px; width: 128px; }
+.r-icons-857 { background-position: -903px -516px; height: 128px; width: 128px; }
+.r-icons-738 { background-position: -1032px -516px; height: 128px; width: 128px; }
+.r-icons-710 { background-position: -1161px -516px; height: 128px; width: 128px; }
+.r-icons-704 { background-position: -1290px -516px; height: 128px; width: 128px; }
+.r-icons-705 { background-position: -1419px -516px; height: 128px; width: 128px; }
+.r-icons-711 { background-position: -1548px -516px; height: 128px; width: 128px; }
+.r-icons-739 { background-position: -1677px -516px; height: 128px; width: 128px; }
+.r-icons-856 { background-position: -1806px -516px; height: 128px; width: 128px; }
+.r-icons-842 { background-position: -1935px -516px; height: 128px; width: 128px; }
+.r-icons-671 { background-position: 0px -645px; height: 128px; width: 128px; }
+.r-icons-665 { background-position: -129px -645px; height: 128px; width: 128px; }
+.r-icons-895 { background-position: -258px -645px; height: 128px; width: 128px; }
+.r-icons-881 { background-position: -387px -645px; height: 128px; width: 128px; }
+.r-icons-659 { background-position: -516px -645px; height: 128px; width: 128px; }
+.r-icons-661 { background-position: -645px -645px; height: 128px; width: 128px; }
+.r-icons-675 { background-position: -774px -645px; height: 128px; width: 128px; }
+.r-icons-885 { background-position: -903px -645px; height: 128px; width: 128px; }
+.r-icons-649 { background-position: -1032px -645px; height: 128px; width: 128px; }
+.r-icons-891 { background-position: -1161px -645px; height: 128px; width: 128px; }
+.r-icons-846 { background-position: -1290px -645px; height: 128px; width: 128px; }
+.r-icons-852 { background-position: -1419px -645px; height: 128px; width: 128px; }
+.r-icons-715 { background-position: -1548px -645px; height: 128px; width: 128px; }
+.r-icons-701 { background-position: -1677px -645px; height: 128px; width: 128px; }
+.r-icons-729 { background-position: -1806px -645px; height: 128px; width: 128px; }
+.r-icons-728 { background-position: -1935px -645px; height: 128px; width: 128px; }
+.r-icons-700 { background-position: 0px -774px; height: 128px; width: 128px; }
+.r-icons-714 { background-position: -129px -774px; height: 128px; width: 128px; }
+.r-icons-853 { background-position: -258px -774px; height: 128px; width: 128px; }
+.r-icons-847 { background-position: -387px -774px; height: 128px; width: 128px; }
+.r-icons-890 { background-position: -516px -774px; height: 128px; width: 128px; }
+.r-icons-648 { background-position: -645px -774px; height: 128px; width: 128px; }
+.r-icons-884 { background-position: -774px -774px; height: 128px; width: 128px; }
+.r-icons-674 { background-position: -903px -774px; height: 128px; width: 128px; }
+.r-icons-660 { background-position: -1032px -774px; height: 128px; width: 128px; }
+.r-icons-676 { background-position: -1161px -774px; height: 128px; width: 128px; }
+.r-icons-662 { background-position: -1290px -774px; height: 128px; width: 128px; }
+.r-icons-892 { background-position: -1419px -774px; height: 128px; width: 128px; }
+.r-icons-886 { background-position: -1548px -774px; height: 128px; width: 128px; }
+.r-icons-879 { background-position: -1677px -774px; height: 128px; width: 128px; }
+.r-icons-851 { background-position: -1806px -774px; height: 128px; width: 128px; }
+.r-icons-689 { background-position: -1935px -774px; height: 128px; width: 128px; }
+.r-icons-845 { background-position: 0px -903px; height: 128px; width: 128px; }
+.r-icons-702 { background-position: -129px -903px; height: 128px; width: 128px; }
+.r-icons-716 { background-position: -258px -903px; height: 128px; width: 128px; }
+.r-icons-717 { background-position: -387px -903px; height: 128px; width: 128px; }
+.r-icons-703 { background-position: -516px -903px; height: 128px; width: 128px; }
+.r-icons-844 { background-position: -645px -903px; height: 128px; width: 128px; }
+.r-icons-688 { background-position: -774px -903px; height: 128px; width: 128px; }
+.r-icons-850 { background-position: -903px -903px; height: 128px; width: 128px; }
+.r-icons-878 { background-position: -1032px -903px; height: 128px; width: 128px; }
+.r-icons-887 { background-position: -1161px -903px; height: 128px; width: 128px; }
+.r-icons-893 { background-position: -1290px -903px; height: 128px; width: 128px; }
+.r-icons-663 { background-position: -1419px -903px; height: 128px; width: 128px; }
+.r-icons-677 { background-position: -1548px -903px; height: 128px; width: 128px; }
+.r-icons-652 { background-position: -1677px -903px; height: 128px; width: 128px; }
+.r-icons-646 { background-position: -1806px -903px; height: 128px; width: 128px; }
+.r-icons-875 { background-position: -1935px -903px; height: 128px; width: 128px; }
+.r-icons-861 { background-position: 0px -1032px; height: 128px; width: 128px; }
+.r-icons-849 { background-position: -129px -1032px; height: 128px; width: 128px; }
+.r-icons-691 { background-position: -258px -1032px; height: 128px; width: 128px; }
+.r-icons-685 { background-position: -387px -1032px; height: 128px; width: 128px; }
+.r-icons-726 { background-position: -516px -1032px; height: 128px; width: 128px; }
+.r-icons-732 { background-position: -645px -1032px; height: 128px; width: 128px; }
+.r-icons-733 { background-position: -774px -1032px; height: 128px; width: 128px; }
+.r-icons-727 { background-position: -903px -1032px; height: 128px; width: 128px; }
+.r-icons-684 { background-position: -1032px -1032px; height: 128px; width: 128px; }
+.r-icons-690 { background-position: -1161px -1032px; height: 128px; width: 128px; }
+.r-icons-848 { background-position: -1290px -1032px; height: 128px; width: 128px; }
+.r-icons-860 { background-position: -1419px -1032px; height: 128px; width: 128px; }
+.r-icons-874 { background-position: -1548px -1032px; height: 128px; width: 128px; }
+.r-icons-647 { background-position: -1677px -1032px; height: 128px; width: 128px; }
+.r-icons-653 { background-position: -1806px -1032px; height: 128px; width: 128px; }
+.r-icons-679 { background-position: -1935px -1032px; height: 128px; width: 128px; }
+.r-icons-645 { background-position: 0px -1161px; height: 128px; width: 128px; }
+.r-icons-651 { background-position: -129px -1161px; height: 128px; width: 128px; }
+.r-icons-889 { background-position: -258px -1161px; height: 128px; width: 128px; }
+.r-icons-862 { background-position: -387px -1161px; height: 128px; width: 128px; }
+.r-icons-876 { background-position: -516px -1161px; height: 128px; width: 128px; }
+.r-icons-686 { background-position: -645px -1161px; height: 128px; width: 128px; }
+.r-icons-692 { background-position: -774px -1161px; height: 128px; width: 128px; }
+.r-icons-719 { background-position: -903px -1161px; height: 128px; width: 128px; }
+.r-icons-731 { background-position: -1032px -1161px; height: 128px; width: 128px; }
+.r-icons-725 { background-position: -1161px -1161px; height: 128px; width: 128px; }
+.r-icons-724 { background-position: -1290px -1161px; height: 128px; width: 128px; }
+.r-icons-730 { background-position: -1419px -1161px; height: 128px; width: 128px; }
+.r-icons-718 { background-position: -1548px -1161px; height: 128px; width: 128px; }
+.r-icons-693 { background-position: -1677px -1161px; height: 128px; width: 128px; }
+.r-icons-687 { background-position: -1806px -1161px; height: 128px; width: 128px; }
+.r-icons-877 { background-position: -1935px -1161px; height: 128px; width: 128px; }
+.r-icons-863 { background-position: 0px -1290px; height: 128px; width: 128px; }
+.r-icons-888 { background-position: -129px -1290px; height: 128px; width: 128px; }
+.r-icons-650 { background-position: -258px -1290px; height: 128px; width: 128px; }
+.r-icons-644 { background-position: -387px -1290px; height: 128px; width: 128px; }
+.r-icons-678 { background-position: -516px -1290px; height: 128px; width: 128px; }
+.r-icons-640 { background-position: -645px -1290px; height: 128px; width: 128px; }
+.r-icons-654 { background-position: -774px -1290px; height: 128px; width: 128px; }
+.r-icons-668 { background-position: -903px -1290px; height: 128px; width: 128px; }
+.r-icons-683 { background-position: -1032px -1290px; height: 128px; width: 128px; }
+.r-icons-697 { background-position: -1161px -1290px; height: 128px; width: 128px; }
+.r-icons-867 { background-position: -1290px -1290px; height: 128px; width: 128px; }
+.r-icons-873 { background-position: -1419px -1290px; height: 128px; width: 128px; }
+.r-icons-734 { background-position: -1548px -1290px; height: 128px; width: 128px; }
+.r-icons-720 { background-position: -1677px -1290px; height: 128px; width: 128px; }
+.r-icons-708 { background-position: -1806px -1290px; height: 128px; width: 128px; }
+.r-icons-709 { background-position: -1935px -1290px; height: 128px; width: 128px; }
+.r-icons-721 { background-position: 0px -1419px; height: 128px; width: 128px; }
+.r-icons-735 { background-position: -129px -1419px; height: 128px; width: 128px; }
+.r-icons-872 { background-position: -258px -1419px; height: 128px; width: 128px; }
+.r-icons-866 { background-position: -387px -1419px; height: 128px; width: 128px; }
+.r-icons-696 { background-position: -516px -1419px; height: 128px; width: 128px; }
+.r-icons-682 { background-position: -645px -1419px; height: 128px; width: 128px; }
+.r-icons-669 { background-position: -774px -1419px; height: 128px; width: 128px; }
+.r-icons-655 { background-position: -903px -1419px; height: 128px; width: 128px; }
+.r-icons-641 { background-position: -1032px -1419px; height: 128px; width: 128px; }
+.r-icons-657 { background-position: -1161px -1419px; height: 128px; width: 128px; }
+.r-icons-643 { background-position: -1290px -1419px; height: 128px; width: 128px; }
+.r-icons-694 { background-position: -1419px -1419px; height: 128px; width: 128px; }
+.r-icons-858 { background-position: -1548px -1419px; height: 128px; width: 128px; }
+.r-icons-680 { background-position: -1677px -1419px; height: 128px; width: 128px; }
+.r-icons-870 { background-position: -1806px -1419px; height: 128px; width: 128px; }
+.r-icons-864 { background-position: -1935px -1419px; height: 128px; width: 128px; }
+.r-icons-723 { background-position: 0px -1548px; height: 128px; width: 128px; }
+.r-icons-737 { background-position: -129px -1548px; height: 128px; width: 128px; }
+.r-icons-736 { background-position: -258px -1548px; height: 128px; width: 128px; }
+.r-icons-722 { background-position: -387px -1548px; height: 128px; width: 128px; }
+.r-icons-865 { background-position: -516px -1548px; height: 128px; width: 128px; }
+.r-icons-871 { background-position: -645px -1548px; height: 128px; width: 128px; }
+.r-icons-681 { background-position: -774px -1548px; height: 128px; width: 128px; }
+.r-icons-859 { background-position: -903px -1548px; height: 128px; width: 128px; }
+.r-icons-695 { background-position: -1032px -1548px; height: 128px; width: 128px; }
+.r-icons-642 { background-position: -1161px -1548px; height: 128px; width: 128px; }
+.r-icons-656 { background-position: -1290px -1548px; height: 128px; width: 128px; }
+.r-icons-816 { background-position: -1419px -1548px; height: 128px; width: 128px; }
+.r-icons-802 { background-position: -1548px -1548px; height: 128px; width: 128px; }
+.r-icons-779 { background-position: -1677px -1548px; height: 128px; width: 128px; }
+.r-icons-745 { background-position: -1806px -1548px; height: 128px; width: 128px; }
+.r-icons-751 { background-position: -1935px -1548px; height: 128px; width: 128px; }
+.r-icons-786 { background-position: 0px -1677px; height: 128px; width: 128px; }
+.r-icons-792 { background-position: -129px -1677px; height: 128px; width: 128px; }
+.r-icons-793 { background-position: -258px -1677px; height: 128px; width: 128px; }
+.r-icons-787 { background-position: -387px -1677px; height: 128px; width: 128px; }
+.r-icons-750 { background-position: -516px -1677px; height: 128px; width: 128px; }
+.r-icons-744 { background-position: -645px -1677px; height: 128px; width: 128px; }
+.r-icons-778 { background-position: -774px -1677px; height: 128px; width: 128px; }
+.r-icons-803 { background-position: -903px -1677px; height: 128px; width: 128px; }
+.r-icons-817 { background-position: -1032px -1677px; height: 128px; width: 128px; }
+.r-icons-801 { background-position: -1161px -1677px; height: 128px; width: 128px; }
+.r-icons-815 { background-position: -1290px -1677px; height: 128px; width: 128px; }
+.r-icons-829 { background-position: -1419px -1677px; height: 128px; width: 128px; }
+.r-icons-752 { background-position: -1548px -1677px; height: 128px; width: 128px; }
+.r-icons-746 { background-position: -1677px -1677px; height: 128px; width: 128px; }
+.r-icons-791 { background-position: -1806px -1677px; height: 128px; width: 128px; }
+.r-icons-785 { background-position: -1935px -1677px; height: 128px; width: 128px; }
+.r-icons-784 { background-position: 0px -1806px; height: 128px; width: 128px; }
+.r-icons-790 { background-position: -129px -1806px; height: 128px; width: 128px; }
+.r-icons-747 { background-position: -258px -1806px; height: 128px; width: 128px; }
+.r-icons-753 { background-position: -387px -1806px; height: 128px; width: 128px; }
+.r-icons-828 { background-position: -516px -1806px; height: 128px; width: 128px; }
+.r-icons-814 { background-position: -645px -1806px; height: 128px; width: 128px; }
+.r-icons-800 { background-position: -774px -1806px; height: 128px; width: 128px; }
+.r-icons-637 { background-position: -903px -1806px; height: 128px; width: 128px; }
+.r-icons-838 { background-position: -1032px -1806px; height: 128px; width: 128px; }
+.r-icons-804 { background-position: -1161px -1806px; height: 128px; width: 128px; }
+.r-icons-810 { background-position: -1290px -1806px; height: 128px; width: 128px; }
+.r-icons-757 { background-position: -1419px -1806px; height: 128px; width: 128px; }
+.r-icons-743 { background-position: -1548px -1806px; height: 128px; width: 128px; }
+.r-icons-794 { background-position: -1677px -1806px; height: 128px; width: 128px; }
+.r-icons-780 { background-position: -1806px -1806px; height: 128px; width: 128px; }
+.r-icons-781 { background-position: -1935px -1806px; height: 128px; width: 128px; }
+.r-icons-795 { background-position: 0px -1935px; height: 128px; width: 128px; }
+.r-icons-742 { background-position: -129px -1935px; height: 128px; width: 128px; }
+.r-icons-756 { background-position: -258px -1935px; height: 128px; width: 128px; }
+.r-icons-811 { background-position: -387px -1935px; height: 128px; width: 128px; }
+.r-icons-805 { background-position: -516px -1935px; height: 128px; width: 128px; }
+.r-icons-839 { background-position: -645px -1935px; height: 128px; width: 128px; }
+.r-icons-636 { background-position: -774px -1935px; height: 128px; width: 128px; }
+.r-icons-634 { background-position: -903px -1935px; height: 128px; width: 128px; }
+.r-icons-813 { background-position: -1032px -1935px; height: 128px; width: 128px; }
+.r-icons-807 { background-position: -1161px -1935px; height: 128px; width: 128px; }
+.r-icons-740 { background-position: -1290px -1935px; height: 128px; width: 128px; }
+.r-icons-754 { background-position: -1419px -1935px; height: 128px; width: 128px; }
+.r-icons-768 { background-position: -1548px -1935px; height: 128px; width: 128px; }
+.r-icons-783 { background-position: -1677px -1935px; height: 128px; width: 128px; }
+.r-icons-797 { background-position: -1806px -1935px; height: 128px; width: 128px; }
+.r-icons-796 { background-position: -1935px -1935px; height: 128px; width: 128px; }
+.r-icons-782 { background-position: 0px -2064px; height: 128px; width: 128px; }
+.r-icons-769 { background-position: -129px -2064px; height: 128px; width: 128px; }
+.r-icons-755 { background-position: -258px -2064px; height: 128px; width: 128px; }
+.r-icons-741 { background-position: -387px -2064px; height: 128px; width: 128px; }
+.r-icons-806 { background-position: -516px -2064px; height: 128px; width: 128px; }
+.r-icons-812 { background-position: -645px -2064px; height: 128px; width: 128px; }
+.r-icons-635 { background-position: -774px -2064px; height: 128px; width: 128px; }
