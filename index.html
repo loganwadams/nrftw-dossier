@@ -125,6 +125,8 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-title{font-family:var(--display);font-size:14.5px;line-height:1.2;color:var(--muted);max-width:150px}
 .lt-pop{position:absolute;z-index:40;pointer-events:none;width:min(380px,calc(100vw - 32px));padding:18px 20px 16px;background:radial-gradient(120% 90% at 20% 0%,#2b2a2c 0%,#141315 60%,#0b0a0b 100%);border:1px solid rgba(201,169,110,.5);box-shadow:0 18px 50px rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .16s,transform .16s;transform:translateY(6px)}
 .lt-pop.on{opacity:1;transform:none}
+.lt-pop-close{display:none;position:absolute;top:-11px;right:-11px;width:26px;height:26px;z-index:3;appearance:none;border-radius:50%;background:#1c1713;border:1px solid rgba(201,169,110,.55);color:#cfc3ac;font-size:17px;line-height:1;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 4px 10px rgba(0,0,0,.5)}
+@media (hover:none){.lt-pop-close{display:flex}}
 .lt-pop .lt-pop-when{font-family:var(--data);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-dim);margin:0 0 6px}
 .lt-pop h4{margin:0 0 8px;font-family:var(--display);font-size:19px;color:#efe3c8;letter-spacing:.02em}
 .lt-pop p{margin:0;font-size:14.5px;line-height:1.58;color:#d9ccb0}
@@ -3167,17 +3169,20 @@ footer li{color:#6f665b}
   function render(k,x,y){ load().then(function(db){ var c=db[k]; if(!c||cur!==k) return; var t=el();
       t.className='tt r-'+(c.r||'standard');
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      t.innerHTML='<div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'<div class="tt-foot">game data &middot; norestforthewicked.gg</div>';
+      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'<div class="tt-foot">game data &middot; norestforthewicked.gg</div>';
       t.classList.add('on'); place(x,y); }); }
+  function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   function over(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var k=a.getAttribute('data-k'); if(k===cur) return; cur=k; clearTimeout(timer);
     load(); timer=setTimeout(function(){ render(k,e.clientX,e.clientY) },450); }
   function move(e){ if(tip&&tip.classList.contains('on')) place(e.clientX,e.clientY); }
   function out(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var to=e.relatedTarget; if(to&&a.contains(to)) return; cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
-  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; e.preventDefault(); var k=a.getAttribute('data-k'); clearTimeout(timer); cur=k; render(k,e.clientX,e.clientY); });
+  document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.tt-close')){ e.preventDefault(); closeTip(); return; }
+    var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; e.preventDefault(); var k=a.getAttribute('data-k'); clearTimeout(timer); cur=k; render(k,e.clientX,e.clientY); });
   document.addEventListener('keydown',function(e){ if(e.key==='Enter'){ var a=document.activeElement; if(a&&a.matches&&a.matches('[data-k]')){ var r=a.getBoundingClientRect(); cur=a.getAttribute('data-k'); render(cur,r.left+r.width/2,r.top+r.height/2);} } });
   document.addEventListener('mouseover',over); document.addEventListener('mousemove',move); document.addEventListener('mouseout',out);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&tip) tip.classList.remove('on'); });
-  var tap=null; document.addEventListener('touchstart',function(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(!a){ if(tip) tip.classList.remove('on'); tap=null; return; }
+  var tap=null; document.addEventListener('touchstart',function(e){ if(e.target.closest&&e.target.closest('.tt-close')) return;
+    var a=e.target.closest&&e.target.closest('[data-k]'); if(!a){ if(tip) tip.classList.remove('on'); tap=null; return; }
     var k=a.getAttribute('data-k'); if(tap!==k){ e.preventDefault(); tap=k; cur=k; var t=e.touches[0]; render(k,t.clientX,t.clientY); } },{passive:false});
 })();
 </script>
@@ -3497,7 +3502,7 @@ footer li{color:#6f665b}
   document.body.classList.add('lt-on');
   var openNode=null, timer=null;
   function show(n){ var d=data[+n.dataset.i]; if(openNode) openNode.classList.remove('open'); openNode=n; n.classList.add('open');
-    pop.innerHTML='<p class="lt-pop-when">'+d.when+'</p><h4>'+d.title+'</h4><p>'+d.html+'</p>';
+    pop.innerHTML='<button type="button" class="lt-pop-close" aria-label="Close">&times;</button><p class="lt-pop-when">'+d.when+'</p><h4>'+d.title+'</h4><p>'+d.html+'</p>';
     var wr=wrap.getBoundingClientRect(), ic=n.querySelector('.lt-ic').getBoundingClientRect(), nr=n.getBoundingClientRect();
     var narrow=innerWidth<=860, up=n.classList.contains('up');
     pop.classList.remove('above','below'); pop.classList.add('on');
@@ -3518,7 +3523,7 @@ footer li{color:#6f665b}
   track.addEventListener('pointerout',function(e){ if(e.pointerType&&e.pointerType!=='mouse') return; var ic=e.target.closest('.lt-ic'); if(!ic) return; var to=e.relatedTarget; if(to&&ic.contains(to)) return; clearTimeout(timer); timer=setTimeout(hide,90); });
   track.addEventListener('click',function(e){ var ic=e.target.closest('.lt-ic'); if(!ic) return; var n=ic.closest('.lt-node'); clearTimeout(timer); if(n===openNode) hide(); else show(n); });
   track.addEventListener('keydown',function(e){ var n=e.target.closest('.lt-node'); if(!n) return; if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(n===openNode) hide(); else show(n); } if(e.key==='Escape') hide(); });
-  document.addEventListener('click',function(e){ if(!wrap.contains(e.target)) hide(); });
+  document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.lt-pop-close')){ hide(); return; } if(!wrap.contains(e.target)) hide(); });
   window.addEventListener('resize',function(){ if(openNode) show(openNode); });
 })();
 </script>

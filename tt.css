@@ -2,6 +2,8 @@
 .tt{position:fixed;z-index:9999;width:372px;max-width:calc(100vw - 24px);pointer-events:none;opacity:0;transition:opacity .18s;font-family:var(--body);font-size:13.5px;line-height:1.35;color:#d9ccb0;
  background:radial-gradient(120% 90% at 20% 0%,#2b2a2c 0%,#141315 60%,#0b0a0b 100%);border:1px solid rgba(201,169,110,.45);box-shadow:0 18px 50px rgba(0,0,0,.75),inset 0 0 0 1px rgba(0,0,0,.6)}
 .tt.on{opacity:1}
+.tt-close{display:none;position:absolute;top:-11px;right:-11px;width:26px;height:26px;z-index:3;appearance:none;border-radius:50%;background:#1c1713;border:1px solid rgba(201,169,110,.55);color:#cfc3ac;font-size:17px;line-height:1;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 4px 10px rgba(0,0,0,.5)}
+@media (hover:none){.tt-close{display:flex}}
 .tt-head{display:grid;grid-template-columns:64px 1fr 48px;gap:12px;align-items:start;padding:14px 14px 10px}
 .tt-ic{width:64px;height:64px;background:rgba(0,0,0,.45) url(img/items-sheet.webp) no-repeat;background-size:2048px auto;border:1px solid rgba(201,169,110,.35)}
 .tt-name{font-family:var(--display);font-size:19px;line-height:1.1;color:#f0e6cf;margin:2px 0 3px}
