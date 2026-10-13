@@ -3309,7 +3309,10 @@ footer li{color:#6f665b}
   form.innerHTML='<input type="search" placeholder="Search the dossier" aria-label="Search the dossier"><svg class="sr-ico" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><div class="sr-list" role="listbox"></div>';
   head.appendChild(form); input=form.querySelector('input'); list=form.querySelector('.sr-list');
   var logo=head.querySelector('img.logo');
-  function align(){ if(!logo||innerWidth<=760){ form.style.top=''; return; } var t=logo.offsetTop+logo.offsetHeight/2-input.offsetHeight/2; if(t>0) form.style.top=Math.round(t)+'px'; }
+  var kicker=head.querySelector('.kicker');
+  function align(){ if(!logo||innerWidth<=760){ form.style.top=''; return; }
+    var blockTop=logo.offsetTop, blockBottom=kicker?(kicker.offsetTop+kicker.offsetHeight):(logo.offsetTop+logo.offsetHeight);
+    var t=(blockTop+blockBottom)/2-input.offsetHeight/2; if(t>0) form.style.top=Math.round(t)+'px'; }
   if(logo){ if(logo.complete) align(); else logo.addEventListener('load',align); } window.addEventListener('resize',align); window.addEventListener('load',align);
   // mobile: the search box lives inside the burger panel instead of floating under the header
   var mobileSearch=window.matchMedia('(max-width:760px)');
