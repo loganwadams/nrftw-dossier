@@ -283,18 +283,6 @@ footer{position:relative}
   background-position:center bottom;
   pointer-events:none;
 }
-/* a soft scrim sitting between the scene and the text (z-index:0, above .footer-bg's -1,
-   below the real text at 1) - only over the Sources/legal block, where the scene's brightest
-   embers land, so the copy stays readable without flattening the image everywhere else */
-footer::before{
-  content:"";
-  position:absolute;
-  top:-340px; bottom:0; left:0; right:0;
-  z-index:0;
-  pointer-events:none;
-  background:linear-gradient(to bottom, transparent 0%, transparent 35%, rgba(8,6,5,.7) 58%, rgba(8,6,5,.88) 100%);
-}
-@media (max-width:760px){footer::before{top:-200px}}
 footer>*{position:relative;z-index:1}
 @media (max-width:760px){.footer-bg{top:-200px}}
 
@@ -1128,9 +1116,6 @@ footer{
   padding-block:120px 60px;
   color:#746a5e;
   font-size:14px;
-  /* the scene behind this text varies in brightness page to page, so a soft dark shadow
-     keeps the Sources list and legal line readable wherever it lands over a lighter patch */
-  text-shadow:0 1px 4px rgba(0,0,0,.9), 0 0 14px rgba(0,0,0,.75);
 }
 @media (max-width:760px){footer{padding-block:70px 50px}}
 footer h3{color:#8b8174}
