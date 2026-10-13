@@ -2962,7 +2962,6 @@ footer li{color:#6f665b}
   function meta(v){ return (v.date?fmt(v.date):'')+(v.date&&v.note?' &middot; ':'')+(v.note||''); }
   var canEmbed = !/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
   var sub=document.getElementById('vid-sub');
-  if(sub&&!canEmbed) sub.innerHTML='Official videos from Moon Studios &mdash; tap one to open it on YouTube.';
 
   var SORTERS={
     'date-desc': function(a,b){ return (b.date||'').localeCompare(a.date||''); },
