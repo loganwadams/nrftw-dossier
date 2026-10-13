@@ -2764,9 +2764,11 @@ footer li{color:#6f665b}
       <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
     </div>
 
-    <div class="m-cat-head" id="vidsec-artstation"><h3><img class="brand-badge" src="img/brand/artstation-logo-gold.png" alt="ArtStation"></h3><span id="art-count">0 clips</span></div>
+    <div class="m-cat-head" id="vidsec-artstation"><h3><img class="brand-badge" src="img/brand/artstation-logo-gold.png" alt="ArtStation"></h3><span id="art-count">0 pieces</span></div>
     <div class="m-cat" id="vidsec-artstation-body">
-      <p class="vid-empty" id="art-empty">No ArtStation clips have been added yet. Once links are in, they appear here the same way as the YouTube videos.</p>
+      <p class="standfirst" id="art-sub">Concept and promo art by Damian Gerrits, Associate Art Lead at Moon Studios &mdash; tap a piece to see it full-size on ArtStation.</p>
+      <div class="vid-grid" id="art-grid"></div>
+      <p class="vid-empty" id="art-empty" hidden>No ArtStation pieces have been added yet. Once links are in, they appear here the same way as the YouTube videos.</p>
     </div>
   </section>
 <script>
@@ -2993,6 +2995,37 @@ footer li{color:#6f665b}
 
   render('date-desc');
   if(sortSel){ sortSel.value='date-desc'; sortSel.addEventListener('change', function(){ render(sortSel.value); }); }
+})();
+
+(function(){
+  // ArtStation pieces by Damian Gerrits (Associate Art Lead, Moon Studios) &mdash; images only, no video posts.
+  // Each links out to the real artwork page on ArtStation; thumb is ArtStation's own official cover image for that post.
+  var ARTWORKS = [
+    { title:'No Rest for the Wicked — 1.0 Announcement Trailer', url:'https://www.artstation.com/artwork/4NWBm2', thumb:'https://cdna.artstation.com/p/assets/covers/images/099/173/236/large/damian-gerrits-damian-gerrits-nrftw-1-0-announcement-trailer-thumbnail.webp?1779181081' },
+    { title:'No Rest for the Wicked — Phalen Church Cinematic', url:'https://www.artstation.com/artwork/lG1qeY', thumb:'https://cdnb.artstation.com/p/assets/covers/images/094/707/767/large/damian-gerrits-damian-gerrits-nrftw-phalenchurch-as-thumbnail.webp?1766163853' },
+    { title:'No Rest for the Wicked — The Mountain Gate', url:'https://www.artstation.com/artwork/DLenYe', thumb:'https://cdnb.artstation.com/p/assets/covers/images/095/787/685/large/damian-gerrits-damian-gerrits-nrftw-selineatgate-as-thumbnail.webp?1769525097' },
+    { title:'No Rest for the Wicked — The Breach Teaser', url:'https://www.artstation.com/artwork/a0OdeJ', thumb:'https://cdnb.artstation.com/p/assets/covers/images/084/146/181/large/damian-gerrits-damian-gerrits-nrftw-thebreach-teaser-thumbnail-2048x2048.jpg?1737645635' },
+    { title:'No Rest for the Wicked — The War Room', url:'https://www.artstation.com/artwork/eR8yPY', thumb:'https://cdnb.artstation.com/p/assets/covers/images/096/121/459/large/damian-gerrits-damian-gerrits-nrftw-thewarroom-as-thumbnail.webp?1770397509' },
+    { title:'No Rest for the Wicked — Together Trailer', url:'https://www.artstation.com/artwork/4N0akk', thumb:'https://cdna.artstation.com/p/assets/covers/images/095/371/662/large/damian-gerrits-damian-gerrits-nrftw-coop-as-thumbnail.webp?1768391376' },
+    { title:'No Rest for the Wicked — The Breach Trailer', url:'https://www.artstation.com/artwork/qJKR6n', thumb:'https://cdnb.artstation.com/p/assets/covers/images/087/532/289/large/damian-gerrits-damian-gerrits-as-thebreach-trailer-thumbnail.jpg?1746029700' },
+    { title:'No Rest for the Wicked — The Crucible Update', url:'https://www.artstation.com/artwork/8BWo96', thumb:'https://cdna.artstation.com/p/assets/covers/images/078/494/658/large/damian-gerrits-damian-gerrits-nrftw-thecrucibleupdate-thumbnail-2048x2048.jpg?1722272416' },
+    { title:'No Rest for the Wicked — Welcome to Sacrament', url:'https://www.artstation.com/artwork/nJmJL9', thumb:'https://cdnb.artstation.com/p/assets/covers/images/095/861/569/large/damian-gerrits-damian-gerrits-nrftw-welcometosacrament-as-thumbnail.webp?1769706075' },
+    { title:'No Rest for the Wicked — Inquisition Arrival', url:'https://www.artstation.com/artwork/XJewYy', thumb:'https://cdna.artstation.com/p/assets/covers/images/078/544/496/large/damian-gerrits-damian-gerrits-nrftw-inquisitionarrival-01-thumbnail-2048x2048.jpg?1722405140' },
+    { title:'No Rest for the Wicked — IGN First: Warrick the Torn', url:'https://www.artstation.com/artwork/JvKDkv', thumb:'https://cdnb.artstation.com/p/assets/covers/images/072/648/631/large/damian-gerrits-damian-gerrits-ign-thumbnail-warrickthetorn-2048x2048.jpg?1707872798' },
+    { title:'Tales of the Adventurers Inn — UE5 Lighting Doodle', url:'https://www.artstation.com/artwork/5BgZdO', thumb:'https://cdnb.artstation.com/p/assets/covers/images/063/336/679/large/damian-gerrits-damian-gerrits-talesoftheadventurersinn-thumbnail-2048x2048.jpg?1685308697' }
+  ];
+  var grid=document.getElementById('art-grid'), empty=document.getElementById('art-empty');
+  var countEl=document.getElementById('art-count');
+  if(countEl) countEl.textContent=ARTWORKS.length+(ARTWORKS.length===1?' piece':' pieces');
+  if(!ARTWORKS.length){ if(empty) empty.hidden=false; return; }
+  if(empty) empty.hidden=true;
+  grid.innerHTML='';
+  ARTWORKS.forEach(function(p){
+    var a=document.createElement('a'); a.className='vid'; a.href=p.url; a.target='_blank'; a.rel='noopener';
+    a.innerHTML='<span class="vid-thumb" style="background-image:url(\''+p.thumb+'\')"></span>'
+      +'<span class="vid-body"><span class="vid-title">'+p.title+'</span><span class="vid-note">Damian Gerrits on ArtStation</span></span>';
+    grid.appendChild(a);
+  });
 })();
 </script>
 <!-- /VIDEOS -->
