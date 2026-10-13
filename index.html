@@ -269,7 +269,12 @@ body::after{
 footer{position:relative}
 .footer-bg{
   position:absolute;
-  top:-340px; bottom:0;
+  /* fixed height, anchored to the footer's bottom edge, rather than spanning the footer's
+     own (variable) height - the Sources list can collapse/expand, and sizing this to the
+     shrinking footer forced "cover" to crop further into the image's gradient each time,
+     leaving a hard edge where the fade used to be. A constant box means a constant crop. */
+  height:810px;
+  bottom:0;
   left:50%;
   width:100vw;
   margin-left:-50vw;
@@ -284,7 +289,7 @@ footer{position:relative}
   pointer-events:none;
 }
 footer>*{position:relative;z-index:1}
-@media (max-width:760px){.footer-bg{top:-200px}}
+@media (max-width:760px){.footer-bg{height:860px}}
 
 /* --- masthead ----------------------------------------------------------- */
 .masthead{
