@@ -51,7 +51,10 @@
 .tt .special-effect{margin:1px 0}
 .tt .damage-data-school{font-weight:600}
 .tt-foot{padding:6px 14px 10px;font-family:var(--data);font-size:10px;letter-spacing:.08em;color:#7d7466;border-top:1px solid rgba(201,169,110,.2)}
-@media (hover:none){.tt{pointer-events:auto}}
+/* only the OPEN card should be tappable on touch - otherwise the closed card (still full-size,
+   just invisible via opacity) sits on top of the grid at z-index 9999 and silently eats the next
+   tap on whatever card happens to be underneath it */
+@media (hover:none){.tt.on{pointer-events:auto}}
 /* gem panels: slot icon beside the slot name and its effect */
 .tt .gem-enchant-panel{padding:4px 14px 2px}
 .tt .gem-enchant{display:grid;grid-template-columns:34px 1fr;column-gap:10px;align-items:start;margin:3px 0}
