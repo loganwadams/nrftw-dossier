@@ -2662,6 +2662,7 @@ footer li{color:#6f665b}
   <div class="sep-gold" data-page="vid"></div>
   <section id="videos">
     <div class="sect-head"><span class="sect-num">09</span><h2>Moon Studios Media</h2></div>
+    <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own. Every link here will direct you to YouTube.</p>
     <div class="vid-grid" id="vid-grid"></div>
     <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
   </section>
@@ -2854,6 +2855,8 @@ footer li{color:#6f665b}
   function fmt(d){ var p=d.split('-'); return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0]; }
   function meta(v){ return (v.date?fmt(v.date):'')+(v.date&&v.note?' &middot; ':'')+(v.note||''); }
   var canEmbed = !/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
+  var sub=document.getElementById('vid-sub');
+  if(sub&&canEmbed) sub.innerHTML='All videos are Moon Studios&rsquo; own and play here through YouTube. Every link will direct you to YouTube.';
   VIDEOS.forEach(function(v){
     if(canEmbed){
       var d=document.createElement('div'); d.className='vid vid-embed';
