@@ -284,8 +284,13 @@ footer{position:relative}
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(to bottom,
-    var(--ink) 0%, rgba(10,8,7,.7) 10%, rgba(10,8,7,.3) 30%, rgba(10,8,7,.3) 55%, rgba(10,8,7,.65) 82%, var(--ink) 100%);
+  /* two layers: a radial vignette so the LEFT/RIGHT edges and corners dissolve too (a pure
+     top/bottom gradient leaves a hard vertical seam at the full-bleed edges on wide screens),
+     stacked with a heavier top/bottom linear fade for the lead-in/lead-out distance */
+  background:
+    radial-gradient(ellipse 85% 100% at 50% 50%, transparent 0%, transparent 30%, var(--ink) 88%),
+    linear-gradient(to bottom,
+      var(--ink) 0%, rgba(10,8,7,.85) 12%, rgba(10,8,7,.35) 32%, rgba(10,8,7,.35) 52%, rgba(10,8,7,.88) 80%, var(--ink) 100%);
 }
 footer>*{position:relative;z-index:1}
 @media (max-width:760px){.footer-bg{top:-180px}}
