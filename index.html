@@ -58,9 +58,11 @@ body.paged .contents{display:none}
 .pgbar button.pg-videos[aria-current="page"]{color:#ff4e45}
 </style><!-- /VIDEOS:css -->
 <!-- TOTOP:css --><style>
-.totop{display:flex;justify-content:center;align-items:center;width:44px;height:44px;margin:28px auto 6px;color:var(--gold-dim);transition:color .15s,transform .15s}
-.totop svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.totop{position:fixed;right:18px;bottom:18px;z-index:40;display:flex;justify-content:center;align-items:center;width:44px;height:44px;color:var(--gold-dim);background:none;border:none;box-shadow:none;opacity:0;visibility:hidden;transform:translateY(8px);transition:color .15s,opacity .25s,visibility .25s,transform .25s}
+.totop.show{opacity:1;visibility:visible;transform:translateY(0)}
+.totop svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px rgba(0,0,0,.7))}
 .totop:hover,.totop:focus-visible{color:var(--gold);transform:translateY(-3px)}
+@media (max-width:600px){.totop{right:14px;bottom:14px;width:40px;height:40px}.totop svg{width:23px;height:23px}}
 </style><!-- /TOTOP:css -->
 <!-- SRCKEY:css --><style>
 .src-key{margin-top:14px;margin-bottom:28px;padding:12px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:flex;flex-wrap:wrap;align-items:center;gap:9px 20px}
@@ -2913,13 +2915,24 @@ footer li{color:#6f665b}
       <li><a href="https://norestforthewicked.wiki.fextralife.com/">Fextralife wiki</a> &mdash; combat, stats, armor and merchant pages</li>
       <li><a href="https://allthings.how/no-rest-for-the-wicked-class-system-24-classes-and-6-factions/">allthings.how</a> &mdash; class and faction overview</li>
     </ul>
-<!-- TOTOP -->
-    <a class="totop" href="#top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5"/><path d="M5 12l7-7 7 7"/></svg></a>
-<!-- /TOTOP -->
     <p class="legal">No Rest for the Wicked&trade; and all related names, logos, characters, artwork, item icons, screenshots and video are the property of Moon Studios GmbH and are used here for identification and commentary only, without permission. This is an unofficial, fan-made reference and is not affiliated with, sponsored by or endorsed by Moon Studios. Game data is compiled from the community sources above and may lag behind the live game. No charge is made for this site, and any material will be removed on request of its owner.</p>
   </footer>
 
 </div>
+
+<!-- TOTOP -->
+<a class="totop" href="#top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5"/><path d="M5 12l7-7 7 7"/></svg></a>
+<script>
+(function(){
+  var totop=document.querySelector('a.totop');
+  if(totop){
+    var onScroll=function(){ if(window.scrollY>400) totop.classList.add('show'); else totop.classList.remove('show'); };
+    window.addEventListener('scroll',onScroll,{passive:true});
+    onScroll();
+  }
+})();
+</script>
+<!-- /TOTOP -->
 
 <script>
 (function(){
