@@ -3301,6 +3301,12 @@ footer li{color:#6f665b}
       return;
     }
     try{ if(history.pushState) history.pushState(null,'','#'+c.target); else location.hash='#'+c.target; }catch(e){ try{ location.hash='#'+c.target; }catch(e2){} }
+    // the first chapter of a group IS the top of that page - nothing else in the group is above
+    // it once the other groups are hidden - so land on the actual page top, same as Home, rather
+    // than scrollIntoView's target-plus-96px-offset, which can leave a visible gap above it. A
+    // chapter further down its group (Classes, Rules That Govern, Enchantments) still scrolls to
+    // its own section, since there's real content above it to skip past.
+    if(GROUP_FIRST_CHAP[c.group]===c.id){ window.scrollTo({top:0,left:0,behavior:'smooth'}); return; }
     var el=document.getElementById(c.target); if(el) el.scrollIntoView({block:'start'}); else bar.scrollIntoView({block:'start'}); }
   // dropdown item lists, one per chapter that has one: icon + name, each linking straight to that item.
   // an item can also carry children: [{id,name}] (currently just Armor Sets' material types), shown as
