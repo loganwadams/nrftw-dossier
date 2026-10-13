@@ -38,7 +38,7 @@ body.paged .contents{display:none}
 .pgbar.show-search .pgbar-search{display:inline-flex}
 @media (max-width:760px){.search{position:static;margin:18px 0 0}}
 </style><!-- /SR:css -->
-<style><!-- VIDEOS:css -->
+<!-- VIDEOS:css --><style>
 .vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:8px}
 .vid{display:block;text-decoration:none;color:inherit;border:1px solid var(--edge);background:linear-gradient(180deg,var(--panel-2),var(--panel));transition:border-color .15s}
 .vid:hover,.vid:focus-visible{border-color:var(--gold-dim)}
@@ -46,7 +46,7 @@ body.paged .contents{display:none}
 .vid-play{width:54px;height:54px;border-radius:50%;background:rgba(10,8,7,.72);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s}
 .vid-play svg{width:24px;height:24px;fill:var(--gold);margin-left:3px}
 .vid:hover .vid-play{background:rgba(201,169,110,.18);border-color:var(--gold)}
-.vid-frame{aspect-ratio:16/9;max-width:100%;background:#0d0a08;border-bottom:1px solid var(--edge)}
+.vid-frame{aspect-ratio:16/9;max-width:100%;background:#0d0a08;color-scheme:dark;border-bottom:1px solid var(--edge)}
 .vid-frame iframe{display:block;width:100%;height:100%;border:0}
 .vid-body{display:block;padding:12px 14px 14px}
 .vid-title{display:block;font-family:var(--display);font-size:16px;color:#efe3c8;letter-spacing:.02em}
@@ -2663,12 +2663,138 @@ footer li{color:#6f665b}
   <section id="videos">
     <div class="sect-head"><span class="sect-num">09</span><h2>Moon Studio&rsquo;s Media</h2></div>
     <div class="vid-grid" id="vid-grid"></div>
-    <p class="vid-empty" id="vid-empty">No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
+    <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
   </section>
 <script>
 (function(){
   // one entry per video: { id: YouTube video id, title, note }
-  var VIDEOS = [];
+  var VIDEOS = [
+  {
+  "id": "pXaMfKj-_dg",
+  "title": "No Rest for the Wicked | 1.0 Delay Announcement",
+  "note": "2:57"
+  },
+  {
+  "id": "6wsPIUKH0MQ",
+  "title": "No Rest for the Wicked | Founder's Pack Rewards | Overview",
+  "note": "0:58"
+  },
+  {
+  "id": "WBYeRF2XgpE",
+  "title": "No Rest for the Wicked | Announcement trailer | 1.0",
+  "note": "1:40"
+  },
+  {
+  "id": "G5YEH9rP2OU",
+  "title": "No Rest for the Wicked Together | 2nd Anniversary | Early Access",
+  "note": "1:12"
+  },
+  {
+  "id": "29Q-hCjJq8Q",
+  "title": "No Rest for the Wicked Together | Patch 1 | Highlight Trailer",
+  "note": "1:22"
+  },
+  {
+  "id": "dxU3Mrx4OOQ",
+  "title": "No Rest for the Wicked - Community Q&A Stream with Thomas, Patrick & Corey | Co-op",
+  "note": "2:09:05"
+  },
+  {
+  "id": "iI_GTW8fHMw",
+  "title": "No Rest for the Wicked Together | Co-op | Live Now!",
+  "note": "0:20"
+  },
+  {
+  "id": "pPlbIcpTO4E",
+  "title": "No Rest for the Wicked Together | Co-op | Q&A Stream with Thomas Mahler & Kevin Jordan! | Recap",
+  "note": "1:57:01"
+  },
+  {
+  "id": "RmTU-DbFOd4",
+  "title": "No Rest for the Wicked Together | Co-op | Official Trailer",
+  "note": "1:56"
+  },
+  {
+  "id": "C8UIjD60DdA",
+  "title": "No Rest for the Wicked | Happy Holidays",
+  "note": "0:29"
+  },
+  {
+  "id": "ayIqY6Sszcw",
+  "title": "No Rest for the Wicked Together | Co-op update | Wicked Inside Showcase 4",
+  "note": "21:40"
+  },
+  {
+  "id": "YNObtjsnS8E",
+  "title": "No Rest for the Wicked - Community Q&A Stream with Thomas Mahler | Co-op",
+  "note": "2:16:24"
+  },
+  {
+  "id": "9JGK-ohf2HI",
+  "title": "No Rest for the Wicked - Community Q&A Stream with Thomas Mahler",
+  "note": "2:27:04"
+  },
+  {
+  "id": "0PLtPBHVGmc",
+  "title": "No Rest for the Wicked - Official Game Overview of The Breach Refined | Wicked Inside Showcase 3",
+  "note": "9:31"
+  },
+  {
+  "id": "mpoMEYnvA5Q",
+  "title": "No Rest for the Wicked - The Breach | Official Trailer",
+  "note": "2:53"
+  },
+  {
+  "id": "CzAtYaSYZms",
+  "title": "No Rest for the Wicked - Official Game Overview of The Breach | Wicked Inside Showcase 2",
+  "note": "25:16"
+  },
+  {
+  "id": "AjXq6zs7MYk",
+  "title": "No Rest for the Wicked - The Breach Teaser",
+  "note": "1:57"
+  },
+  {
+  "id": "Z7gSM3eMEEs",
+  "title": "No Rest for the Wicked: The Crucible - Overview",
+  "note": "3:10"
+  },
+  {
+  "id": "C2TZj3K9X2I",
+  "title": "No Rest for the Wicked - Prepare for The Crucible",
+  "note": "0:23"
+  },
+  {
+  "id": "XXQyWvVg_5c",
+  "title": "No Rest For The Wicked Patch Notes - Early Access Patch 2",
+  "note": "1:30"
+  },
+  {
+  "id": "MO6GwAuJu9c",
+  "title": "No Rest for the Wicked Early Access Impressions",
+  "note": "0:32"
+  },
+  {
+  "id": "DiwmiqzW6gs",
+  "title": "No Rest for the Wicked - Official Steam Early Access Launch Trailer",
+  "note": "1:46"
+  },
+  {
+  "id": "nX9yzNGN_kQ",
+  "title": "No Rest for the Wicked - Wicked Inside Gameplay Reactions",
+  "note": "4:17"
+  },
+  {
+  "id": "urZz5vTJ67k",
+  "title": "Wicked Inside Teaser",
+  "note": "0:19"
+  },
+  {
+  "id": "l3Ozk5iBuH4",
+  "title": "No Rest for the Wicked - Official Reveal Trailer",
+  "note": "2:07"
+  }
+  ];
   var grid=document.getElementById('vid-grid'), empty=document.getElementById('vid-empty');
   if(!VIDEOS.length){ return; }
   empty.hidden=true;
@@ -2695,6 +2821,7 @@ footer li{color:#6f665b}
   <footer>
     <h3>Sources</h3>
     <ul class="srcs">
+      <li>Moon Studios &mdash; <a href="https://www.youtube.com/@moongamestudios">official YouTube channel</a>; every video on the Media page, trailers to Q&amp;A streams, is theirs and plays from YouTube</li>
       <li>Moon Studios &mdash; <a href="https://norestforthewicked.com/news/class-armors-sneak-peek">Class Armors Sneak Peek</a>, 2 October 2026; the five armor renders and class copy</li>
       <li>Moon Studios &mdash; <a href="https://forum.norestforthewicked.com/t/no-rest-for-the-wicked-class-system-sneak-peek/27094">Class System Sneak Peek</a> forum post and the <a href="https://forum.norestforthewicked.com/t/no-rest-for-the-wicked-class-armors-sneak-peek/27131">Class Armors Sneak Peek</a> forum post; the class selection screen published with them carries the full faction roster, class icons and faction banners</li>
       <li>Moon Studios &mdash; <a href="https://norestforthewicked.com/news/no-rest-for-the-wicked-1-0-delay-announcement">1.0 Delay Announcement</a>; the March 2027 launch date and the December beta</li>
