@@ -262,6 +262,24 @@ body::after{
   padding-block:0 0;
 }
 
+/* a wide scene from the game, already faded at its top/bottom/side edges in the image itself,
+   laid full-bleed above the footer so it dissolves into the page's own dark background rather
+   than sitting in a box */
+.footer-scene{
+  width:100vw;
+  margin-left:calc(50% - 50vw);
+  margin-right:calc(50% - 50vw);
+  margin-top:-40px;
+  margin-bottom:-90px;
+  line-height:0;
+  pointer-events:none;
+  user-select:none;
+}
+.footer-scene img{width:100%;height:auto;display:block}
+@media (max-width:760px){
+  .footer-scene{margin-top:-20px;margin-bottom:-60px}
+}
+
 /* --- masthead ----------------------------------------------------------- */
 .masthead{
   padding-block:26px 10px;
@@ -3035,6 +3053,7 @@ footer li{color:#6f665b}
 </script>
 <!-- /VIDEOS -->
 
+  <div class="footer-scene" aria-hidden="true"><img src="img/footer-scene.webp" alt="" loading="lazy"></div>
 
   <footer>
     <h3>Sources</h3>
