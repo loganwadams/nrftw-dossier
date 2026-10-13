@@ -28,7 +28,10 @@ body.paged .contents{display:none}
   .pgbar.menu-open .pgbar-panel{display:flex;flex-direction:column;gap:2px;position:absolute;left:0;right:0;top:100%;margin-top:1px;padding:8px;background:#100d0b;border:1px solid var(--edge);box-shadow:0 18px 44px rgba(0,0,0,.8);max-height:min(82vh,620px);overflow:auto;z-index:55}
   .pgbar.menu-open .pgbar-item{width:100%;flex-direction:column;align-items:stretch}
   .pgbar.menu-open .pgbar-item button{width:100%;text-align:left;padding:12px 10px}
-  .pgbar.menu-open .toc-has-drop .toc-drop{position:static;opacity:1;visibility:visible;transform:none;transition:none;box-shadow:none;border:none;background:rgba(0,0,0,.28);margin:0 0 2px;max-height:none;width:auto}
+  .pgbar.menu-open .toc-has-drop .toc-drop{display:none;position:static;opacity:1;visibility:visible;transform:none;transition:none;box-shadow:none;border:none;background:rgba(0,0,0,.28);margin:0 0 2px;max-height:none;width:auto}
+  .pgbar.menu-open .pgbar-item.open .toc-drop{display:block}
+  .pgbar.menu-open .pgbar-item.open .toc-caret{transform:rotate(225deg) translateY(-2px);border-color:var(--gold)}
+  .pgbar.menu-open .pgbar-item.open>button{color:var(--gold)}
   .pgbar-panel .search{position:relative;top:auto;right:auto;width:auto;margin:4px 4px 14px}
   .pgbar-search{display:none!important}
 }
@@ -3223,7 +3226,18 @@ footer li{color:#6f665b}
     var wrap=document.createElement('span'); wrap.className='pgbar-item'+(dropEl?' toc-has-drop':'');
     var b=document.createElement('button'); b.type='button'; b.dataset.chap=c.id; if(dropEl) b.className='has-drop'; if(c.cls) b.classList.add(c.cls); if(c.aria) b.setAttribute('aria-label',c.aria);
     b.innerHTML=c.label+(dropEl?'<span class="toc-caret"></span>':'');
-    b.addEventListener('click',function(){ activate(c); });
+    b.addEventListener('click',function(e){
+      // mobile menu: a chapter with a sub-list opens it on the first tap, and only
+      // navigates (closing the menu) on a second tap once it's already open
+      if(dropEl && bar.classList.contains('menu-open') && !wrap.classList.contains('open')){
+        e.preventDefault();
+        panel.querySelectorAll('.pgbar-item.open').forEach(function(w){ if(w!==wrap) w.classList.remove('open'); });
+        wrap.classList.add('open');
+        return;
+      }
+      if(bar.classList.contains('menu-open')) closeMenu();
+      activate(c);
+    });
     wrap.appendChild(b);
     if(dropEl) wrap.appendChild(dropEl);
     bar.appendChild(wrap); });
@@ -3233,10 +3247,9 @@ footer li{color:#6f665b}
   var burger=document.createElement('button'); burger.type='button'; burger.className='pgbar-burger'; burger.setAttribute('aria-label','Menu'); burger.setAttribute('aria-expanded','false'); burger.setAttribute('aria-haspopup','true');
   burger.innerHTML='<svg class="bg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg><span>Menu</span>';
   bar.appendChild(burger); bar.appendChild(panel);
-  function closeMenu(){ bar.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false'); }
+  function closeMenu(){ bar.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false'); panel.querySelectorAll('.pgbar-item.open').forEach(function(w){ w.classList.remove('open'); }); }
   function toggleMenu(){ var open=bar.classList.toggle('menu-open'); burger.setAttribute('aria-expanded',open?'true':'false'); }
   burger.addEventListener('click',function(e){ e.stopPropagation(); toggleMenu(); });
-  panel.addEventListener('click',function(e){ if(e.target.closest('button[data-chap]')) closeMenu(); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMenu(); });
   document.addEventListener('click',function(e){ if(bar.classList.contains('menu-open') && !bar.contains(e.target)) closeMenu(); });
   window.addEventListener('hashchange',closeMenu);
