@@ -263,12 +263,14 @@ body::after{
 }
 
 /* a wide scene from the game sits BEHIND the footer's own text (Sources + the legal line), full-
-   bleed, faded by a gradient overlay rather than baked into the image - so the fade always matches
-   the footer's real height, however long the Sources list or viewport makes it. */
-footer{position:relative;overflow:hidden}
+   bleed. It bleeds up well above the footer's own top edge, into whatever section sits above it,
+   so the fade-in has real distance to work with instead of being squeezed into the footer's own
+   padding - then dissolves fully by the true bottom of the page. footer no longer clips (no
+   overflow:hidden, no border-top line) so that upward bleed, and the fade itself, can actually show. */
+footer{position:relative}
 .footer-bg{
   position:absolute;
-  top:0; bottom:0;
+  top:-340px; bottom:0;
   left:50%;
   width:100vw;
   margin-left:-50vw;
@@ -283,9 +285,10 @@ footer{position:relative;overflow:hidden}
   position:absolute;
   inset:0;
   background:linear-gradient(to bottom,
-    var(--ink) 0%, rgba(10,8,7,.55) 14%, rgba(10,8,7,.4) 45%, rgba(10,8,7,.68) 80%, var(--ink) 100%);
+    var(--ink) 0%, rgba(10,8,7,.7) 10%, rgba(10,8,7,.3) 30%, rgba(10,8,7,.3) 55%, rgba(10,8,7,.65) 82%, var(--ink) 100%);
 }
 footer>*{position:relative;z-index:1}
+@media (max-width:760px){.footer-bg{top:-180px}}
 
 /* --- masthead ----------------------------------------------------------- */
 .masthead{
@@ -1114,11 +1117,11 @@ body{max-width:100%}
 .warnbox p:last-child{margin-bottom:0}
 
 footer{
-  border-top:1px solid var(--edge);
-  padding-block:34px 60px;
+  padding-block:120px 60px;
   color:#746a5e;
   font-size:14px;
 }
+@media (max-width:760px){footer{padding-block:70px 50px}}
 footer h3{color:#8b8174}
 footer ul{margin:0;padding-left:18px;display:grid;gap:7px}
 footer li{color:#6f665b}
