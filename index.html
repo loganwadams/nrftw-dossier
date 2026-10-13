@@ -262,23 +262,30 @@ body::after{
   padding-block:0 0;
 }
 
-/* a wide scene from the game, already faded at its top/bottom/side edges in the image itself,
-   laid full-bleed above the footer so it dissolves into the page's own dark background rather
-   than sitting in a box */
-.footer-scene{
+/* a wide scene from the game sits BEHIND the footer's own text (Sources + the legal line), full-
+   bleed, faded by a gradient overlay rather than baked into the image - so the fade always matches
+   the footer's real height, however long the Sources list or viewport makes it. */
+footer{position:relative;overflow:hidden}
+.footer-bg{
+  position:absolute;
+  top:0; bottom:0;
+  left:50%;
   width:100vw;
-  margin-left:calc(50% - 50vw);
-  margin-right:calc(50% - 50vw);
-  margin-top:-40px;
-  margin-bottom:-90px;
-  line-height:0;
+  margin-left:-50vw;
+  z-index:0;
+  background-image:url(img/footer-scene-bg.webp);
+  background-size:cover;
+  background-position:center 30%;
   pointer-events:none;
-  user-select:none;
 }
-.footer-scene img{width:100%;height:auto;display:block}
-@media (max-width:760px){
-  .footer-scene{margin-top:-20px;margin-bottom:-60px}
+.footer-bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,
+    var(--ink) 0%, rgba(10,8,7,.55) 14%, rgba(10,8,7,.4) 45%, rgba(10,8,7,.68) 80%, var(--ink) 100%);
 }
+footer>*{position:relative;z-index:1}
 
 /* --- masthead ----------------------------------------------------------- */
 .masthead{
@@ -3053,9 +3060,8 @@ footer li{color:#6f665b}
 </script>
 <!-- /VIDEOS -->
 
-  <div class="footer-scene" aria-hidden="true"><img src="img/footer-scene.webp" alt="" loading="lazy"></div>
-
   <footer>
+    <div class="footer-bg" aria-hidden="true"></div>
     <h3>Sources</h3>
     <ul class="srcs">
       <li>Moon Studios &mdash; <a href="https://norestforthewicked.com/news/class-armors-sneak-peek">Class Armors Sneak Peek</a>, <a href="https://forum.norestforthewicked.com/t/no-rest-for-the-wicked-class-system-sneak-peek/27094">Class System Sneak Peek</a>, <a href="https://norestforthewicked.com/news/no-rest-for-the-wicked-1-0-delay-announcement">1.0 Delay Announcement</a>, and the <a href="https://www.youtube.com/@moongamestudios">official YouTube channel</a> (all videos on the Media page)</li>
