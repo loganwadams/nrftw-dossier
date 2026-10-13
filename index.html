@@ -57,6 +57,11 @@ body.paged .contents{display:none}
 .pgbar button.pg-videos:hover{color:#ff4e45}
 .pgbar button.pg-videos[aria-current="page"]{color:#ff4e45}
 </style><!-- /VIDEOS:css -->
+<!-- TOTOP:css --><style>
+.totop{display:flex;justify-content:center;align-items:center;width:44px;height:44px;margin:28px auto 6px;color:var(--gold-dim);transition:color .15s,transform .15s}
+.totop svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.totop:hover,.totop:focus-visible{color:var(--gold);transform:translateY(-3px)}
+</style><!-- /TOTOP:css -->
 <!-- SRCKEY:css --><style>
 .src-key{margin-top:14px;margin-bottom:28px;padding:12px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:flex;flex-wrap:wrap;align-items:center;gap:9px 20px}
 .src-key-label{flex:0 0 100%;font-family:var(--data);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
@@ -2908,6 +2913,9 @@ footer li{color:#6f665b}
       <li><a href="https://norestforthewicked.wiki.fextralife.com/">Fextralife wiki</a> &mdash; combat, stats, armor and merchant pages</li>
       <li><a href="https://allthings.how/no-rest-for-the-wicked-class-system-24-classes-and-6-factions/">allthings.how</a> &mdash; class and faction overview</li>
     </ul>
+<!-- TOTOP -->
+    <a class="totop" href="#top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5"/><path d="M5 12l7-7 7 7"/></svg></a>
+<!-- /TOTOP -->
     <p class="legal">No Rest for the Wicked&trade; and all related names, logos, characters, artwork, item icons, screenshots and video are the property of Moon Studios GmbH and are used here for identification and commentary only, without permission. This is an unofficial, fan-made reference and is not affiliated with, sponsored by or endorsed by Moon Studios. Game data is compiled from the community sources above and may lag behind the live game. No charge is made for this site, and any material will be removed on request of its owner.</p>
   </footer>
 
@@ -3075,6 +3083,7 @@ footer li{color:#6f665b}
 <!-- PG -->
 <script>
 (function(){
+  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a.totop'); if(!a) return; e.preventDefault(); window.scrollTo({top:0,left:0,behavior:'smooth'}); });
   // GROUPS: which sections stay visible together (the paging/show-hide families).
   // CHAPS: one bar entry per actual chapter, mirroring the Chapters list on the Overview page.
   var GROUPS=[
