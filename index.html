@@ -2758,7 +2758,7 @@ footer li{color:#6f665b}
 
     <div class="m-cat-head" id="vidsec-youtube"><h3><img class="brand-badge" src="img/brand/youtube-logo-gold.png" alt="YouTube"></h3><span id="vid-count"></span></div>
     <div class="m-cat" id="vidsec-youtube-body">
-      <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own.</p>
+      <p class="standfirst" id="vid-sub">Official videos from Moon Studios, playable right here.</p>
       <div class="vid-toolbar" id="vid-toolbar" hidden><label for="vid-sort">Sort by</label><select id="vid-sort"><option value="date-desc" selected>Date &middot; Newest first</option><option value="date-asc">Date &middot; Oldest first</option><option value="title-asc">Title &middot; A&ndash;Z</option><option value="title-desc">Title &middot; Z&ndash;A</option></select></div>
       <div class="vid-grid" id="vid-grid"></div>
       <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
@@ -2962,7 +2962,7 @@ footer li{color:#6f665b}
   function meta(v){ return (v.date?fmt(v.date):'')+(v.date&&v.note?' &middot; ':'')+(v.note||''); }
   var canEmbed = !/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
   var sub=document.getElementById('vid-sub');
-  if(sub&&canEmbed) sub.innerHTML='All videos are Moon Studios&rsquo; own and play here through YouTube.';
+  if(sub&&!canEmbed) sub.innerHTML='Official videos from Moon Studios &mdash; tap one to open it on YouTube.';
 
   var SORTERS={
     'date-desc': function(a,b){ return (b.date||'').localeCompare(a.date||''); },
