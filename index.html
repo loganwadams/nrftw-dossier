@@ -1008,6 +1008,7 @@ section,article.klass{scroll-margin-top:24px}
 .m-cat{border:1px solid var(--edge);padding:14px 18px 12px;background:rgba(0,0,0,.18)}
 .m-cat p{margin:0;font-size:12.8px;line-height:1.55;color:#b8a888;column-count:3;column-gap:28px}
 .m-cat p.m-cat-note{column-count:1;font-style:italic;color:#8b8174}
+.m-cat p.standfirst{column-count:1;font-size:15.5px;color:var(--muted);margin:0 0 20px}
 .m-cat h5{margin:4px 0 8px;font-family:var(--display);font-size:13px;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}
 .m-cat h5 span{font-family:var(--data);font-size:10.5px;letter-spacing:.08em;color:#8b8174;text-transform:none;margin-left:6px}
 .m-cat h5 span.m-cont{color:#8b8174;font-style:italic;text-transform:none;letter-spacing:.04em;margin-left:0}
@@ -2754,10 +2755,10 @@ footer li{color:#6f665b}
   <div class="sep-gold" data-page="vid"></div>
   <section id="videos">
     <div class="sect-head"><span class="sect-num">09</span><h2>Moon Studios Media</h2></div>
-    <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own.</p>
 
     <div class="m-cat-head" id="vidsec-youtube"><h3><img class="brand-badge" src="img/brand/youtube-logo-gold.png" alt="YouTube"></h3><span id="vid-count"></span></div>
     <div class="m-cat" id="vidsec-youtube-body">
+      <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own.</p>
       <div class="vid-toolbar" id="vid-toolbar" hidden><label for="vid-sort">Sort by</label><select id="vid-sort"><option value="date-desc" selected>Date &middot; Newest first</option><option value="date-asc">Date &middot; Oldest first</option><option value="title-asc">Title &middot; A&ndash;Z</option><option value="title-desc">Title &middot; Z&ndash;A</option></select></div>
       <div class="vid-grid" id="vid-grid"></div>
       <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
