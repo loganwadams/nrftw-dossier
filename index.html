@@ -65,7 +65,12 @@ body.paged .contents{display:none}
 @media (max-width:760px){.search{position:relative;top:auto;right:auto;margin:18px 0 0}}
 </style><!-- /SR:css -->
 <!-- VIDEOS:css --><style>
-.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:8px}
+.vid-toolbar{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
+.vid-toolbar label{font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.vid-toolbar select{appearance:none;background:var(--panel);border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 32px 8px 12px;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a96e' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 10px center;background-size:14px}
+.vid-toolbar select:hover,.vid-toolbar select:focus-visible{border-color:var(--gold-dim)}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:12px}
+@media (min-width:761px){.vid-grid{grid-template-columns:repeat(2,1fr);gap:28px}}
 .vid{display:block;text-decoration:none;color:inherit;border:1px solid var(--edge);background:linear-gradient(180deg,var(--panel-2),var(--panel));transition:border-color .15s}
 .vid:hover,.vid:focus-visible{border-color:var(--gold-dim)}
 .vid-thumb{display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;max-width:100%;background:#0d0a08 center/cover no-repeat;border-bottom:1px solid var(--edge);position:relative}
@@ -74,9 +79,9 @@ body.paged .contents{display:none}
 .vid:hover .vid-play{background:rgba(201,169,110,.18);border-color:var(--gold)}
 .vid-frame{aspect-ratio:16/9;max-width:100%;background:#0d0a08;color-scheme:dark;border-bottom:1px solid var(--edge)}
 .vid-frame iframe{display:block;width:100%;height:100%;border:0}
-.vid-body{display:block;padding:12px 14px 14px}
-.vid-title{display:block;font-family:var(--display);font-size:16px;color:#efe3c8;letter-spacing:.02em}
-.vid-note{display:block;margin-top:4px;font-size:13.5px;color:var(--muted)}
+.vid-body{display:block;padding:16px 18px 18px}
+.vid-title{display:block;font-family:var(--display);font-size:21px;line-height:1.3;color:#efe3c8;letter-spacing:.02em}
+.vid-note{display:block;margin-top:6px;font-size:16px;color:var(--muted)}
 .vid-empty{max-width:60ch;color:var(--muted);font-size:15px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);padding:14px 16px;background:linear-gradient(180deg,var(--panel-2),var(--panel))}
 .pgbar button.pg-videos{display:inline-flex;align-items:center;padding-inline:12px}
 .pgbar button.pg-videos svg{width:18px;height:18px;display:block;fill:currentColor}
@@ -2751,6 +2756,7 @@ footer li{color:#6f665b}
   <section id="videos">
     <div class="sect-head"><span class="sect-num">09</span><h2>Moon Studios Media</h2></div>
     <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own. Every link here will direct you to YouTube.</p>
+    <div class="vid-toolbar" id="vid-toolbar" hidden><label for="vid-sort">Sort by</label><select id="vid-sort"><option value="date-desc" selected>Date &middot; Newest first</option><option value="date-asc">Date &middot; Oldest first</option><option value="title-asc">Title &middot; A&ndash;Z</option><option value="title-desc">Title &middot; Z&ndash;A</option></select></div>
     <div class="vid-grid" id="vid-grid"></div>
     <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
   </section>
@@ -2934,9 +2940,10 @@ footer li{color:#6f665b}
   "thumb": "img/vid/l3Ozk5iBuH4.webp"
   }
   ];
-  var grid=document.getElementById('vid-grid'), empty=document.getElementById('vid-empty');
+  var grid=document.getElementById('vid-grid'), empty=document.getElementById('vid-empty'), toolbar=document.getElementById('vid-toolbar'), sortSel=document.getElementById('vid-sort');
   if(!VIDEOS.length){ return; }
   empty.hidden=true;
+  if(toolbar) toolbar.hidden=false;
   // on the hosted site YouTube's own player is embedded; inside the Claude artifact viewer other
   // sites' frames are blocked, so there each video is a card that opens on YouTube instead
   var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -2945,18 +2952,33 @@ footer li{color:#6f665b}
   var canEmbed = !/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
   var sub=document.getElementById('vid-sub');
   if(sub&&canEmbed) sub.innerHTML='All videos are Moon Studios&rsquo; own and play here through YouTube. Every link will direct you to YouTube.';
-  VIDEOS.forEach(function(v){
-    if(canEmbed){
-      var d=document.createElement('div'); d.className='vid vid-embed';
-      d.innerHTML='<div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'" title="'+v.title+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>'
-        +'<div class="vid-body"><span class="vid-title">'+v.title+'</span><span class="vid-note">'+meta(v)+'</span></div>';
-      grid.appendChild(d); return;
-    }
-    var a=document.createElement('a'); a.className='vid'; a.href='https://www.youtube.com/watch?v='+v.id; a.target='_blank'; a.rel='noopener';
-    a.innerHTML='<span class="vid-thumb"'+(v.thumb?' style="background-image:url('+v.thumb+')"':'')+'><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>'
-      +'<span class="vid-body"><span class="vid-title">'+v.title+'</span><span class="vid-note">'+meta(v)+'</span></span>';
-    grid.appendChild(a);
-  });
+
+  var SORTERS={
+    'date-desc': function(a,b){ return (b.date||'').localeCompare(a.date||''); },
+    'date-asc':  function(a,b){ return (a.date||'').localeCompare(b.date||''); },
+    'title-asc': function(a,b){ return a.title.localeCompare(b.title); },
+    'title-desc':function(a,b){ return b.title.localeCompare(a.title); }
+  };
+
+  function render(sortKey){
+    var list=VIDEOS.slice().sort(SORTERS[sortKey]||SORTERS['date-desc']);
+    grid.innerHTML='';
+    list.forEach(function(v){
+      if(canEmbed){
+        var d=document.createElement('div'); d.className='vid vid-embed';
+        d.innerHTML='<div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'" title="'+v.title+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>'
+          +'<div class="vid-body"><span class="vid-title">'+v.title+'</span><span class="vid-note">'+meta(v)+'</span></div>';
+        grid.appendChild(d); return;
+      }
+      var a=document.createElement('a'); a.className='vid'; a.href='https://www.youtube.com/watch?v='+v.id; a.target='_blank'; a.rel='noopener';
+      a.innerHTML='<span class="vid-thumb"'+(v.thumb?' style="background-image:url('+v.thumb+')"':'')+'><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>'
+        +'<span class="vid-body"><span class="vid-title">'+v.title+'</span><span class="vid-note">'+meta(v)+'</span></span>';
+      grid.appendChild(a);
+    });
+  }
+
+  render('date-desc');
+  if(sortSel){ sortSel.value='date-desc'; sortSel.addEventListener('change', function(){ render(sortSel.value); }); }
 })();
 </script>
 <!-- /VIDEOS -->
