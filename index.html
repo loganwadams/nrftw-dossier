@@ -998,6 +998,7 @@ section,article.klass{scroll-margin-top:24px}
 .m-cat-head{display:flex;align-items:baseline;gap:14px;margin-top:30px;padding-bottom:10px;border-bottom:1px solid var(--edge)}
 .m-cat-head:first-child{margin-top:0}
 .m-cat-head h3{margin:0;font-size:26px;letter-spacing:.04em}
+.brand-badge{display:block;height:22px;width:auto;background:#fff;padding:5px 10px;border-radius:5px}
 .m-cat-head span{font-family:var(--data);font-size:11.5px;letter-spacing:.1em;color:#8b8174;text-transform:uppercase}
 .m-cat-collapse{margin-left:auto;flex:none;align-self:center;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--gold-dim);font-family:var(--body);font-size:26px;line-height:1;cursor:pointer;transition:color .15s}
 .m-cat-collapse:hover{color:var(--gold)}
@@ -2755,14 +2756,14 @@ footer li{color:#6f665b}
     <div class="sect-head"><span class="sect-num">09</span><h2>Moon Studios Media</h2></div>
     <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own.</p>
 
-    <div class="m-cat-head" id="vidsec-youtube"><h3>YouTube</h3><span id="vid-count"></span></div>
+    <div class="m-cat-head" id="vidsec-youtube"><h3><img class="brand-badge" src="img/brand/youtube-logo.png" alt="YouTube"></h3><span id="vid-count"></span></div>
     <div class="m-cat" id="vidsec-youtube-body">
       <div class="vid-toolbar" id="vid-toolbar" hidden><label for="vid-sort">Sort by</label><select id="vid-sort"><option value="date-desc" selected>Date &middot; Newest first</option><option value="date-asc">Date &middot; Oldest first</option><option value="title-asc">Title &middot; A&ndash;Z</option><option value="title-desc">Title &middot; Z&ndash;A</option></select></div>
       <div class="vid-grid" id="vid-grid"></div>
       <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
     </div>
 
-    <div class="m-cat-head" id="vidsec-artstation"><h3>ArtStation</h3><span id="art-count">0 clips</span></div>
+    <div class="m-cat-head" id="vidsec-artstation"><h3><img class="brand-badge" src="img/brand/artstation-logo.png" alt="ArtStation"></h3><span id="art-count">0 clips</span></div>
     <div class="m-cat" id="vidsec-artstation-body">
       <p class="vid-empty" id="art-empty">No ArtStation clips have been added yet. Once links are in, they appear here the same way as the YouTube videos.</p>
     </div>
@@ -3148,7 +3149,7 @@ footer li{color:#6f665b}
       while(sib&&!sib.classList.contains('m-cat-head')){ sib.classList.toggle('m-cat-hidden',collapsed); sib=sib.nextElementSibling; }
     }
     btn.addEventListener('click',function(){ setState(!h.classList.contains('collapsed')); });
-    setState(h.closest('#catalog')&&h.id!=='pool-armor-sets');   // catalog starts collapsed (except Armor Sets); Media's YouTube/ArtStation start open
+    setState(h.id!=='pool-armor-sets');   // every section starts collapsed, except Armor Sets whose material sub-groups should show right away
     heads.push({head:h, setState:setState});
   });
   document.querySelectorAll('.m-cat[id^="pool-armor-sets-"]').forEach(function(cat){
