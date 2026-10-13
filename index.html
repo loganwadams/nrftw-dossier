@@ -2753,10 +2753,19 @@ footer li{color:#6f665b}
   <div class="sep-gold" data-page="vid"></div>
   <section id="videos">
     <div class="sect-head"><span class="sect-num">09</span><h2>Moon Studios Media</h2></div>
-    <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own. Every link here will direct you to YouTube.</p>
-    <div class="vid-toolbar" id="vid-toolbar" hidden><label for="vid-sort">Sort by</label><select id="vid-sort"><option value="date-desc" selected>Date &middot; Newest first</option><option value="date-asc">Date &middot; Oldest first</option><option value="title-asc">Title &middot; A&ndash;Z</option><option value="title-desc">Title &middot; Z&ndash;A</option></select></div>
-    <div class="vid-grid" id="vid-grid"></div>
-    <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
+    <p class="standfirst" id="vid-sub">All videos are Moon Studios&rsquo; own.</p>
+
+    <div class="m-cat-head" id="vidsec-youtube"><h3>YouTube</h3><span id="vid-count"></span></div>
+    <div class="m-cat" id="vidsec-youtube-body">
+      <div class="vid-toolbar" id="vid-toolbar" hidden><label for="vid-sort">Sort by</label><select id="vid-sort"><option value="date-desc" selected>Date &middot; Newest first</option><option value="date-asc">Date &middot; Oldest first</option><option value="title-asc">Title &middot; A&ndash;Z</option><option value="title-desc">Title &middot; Z&ndash;A</option></select></div>
+      <div class="vid-grid" id="vid-grid"></div>
+      <p class="vid-empty" id="vid-empty" hidden>No videos have been added yet. Once the first links are in, they appear here as cards with the video&rsquo;s title, a line about what it covers, and a play button.</p>
+    </div>
+
+    <div class="m-cat-head" id="vidsec-artstation"><h3>ArtStation</h3><span id="art-count">0 clips</span></div>
+    <div class="m-cat" id="vidsec-artstation-body">
+      <p class="vid-empty" id="art-empty">No ArtStation clips have been added yet. Once links are in, they appear here the same way as the YouTube videos.</p>
+    </div>
   </section>
 <script>
 (function(){
@@ -2939,6 +2948,8 @@ footer li{color:#6f665b}
   }
   ];
   var grid=document.getElementById('vid-grid'), empty=document.getElementById('vid-empty'), toolbar=document.getElementById('vid-toolbar'), sortSel=document.getElementById('vid-sort');
+  var countEl=document.getElementById('vid-count');
+  if(countEl) countEl.textContent=VIDEOS.length+(VIDEOS.length===1?' video':' videos');
   if(!VIDEOS.length){ return; }
   empty.hidden=true;
   if(toolbar) toolbar.hidden=false;
@@ -3125,7 +3136,7 @@ footer li{color:#6f665b}
   // Mesh/Plate), start collapsed (showing "+") so the page opens light and the person
   // expands only what they want to browse.
   var heads=[], subs=[];
-  document.querySelectorAll('#catalog .m-cat-head').forEach(function(h){
+  document.querySelectorAll('#catalog .m-cat-head, #videos .m-cat-head').forEach(function(h){
     var btn=document.createElement('button'); btn.type='button'; btn.className='m-cat-collapse';
     h.appendChild(btn);
     function setState(collapsed){
@@ -3137,7 +3148,7 @@ footer li{color:#6f665b}
       while(sib&&!sib.classList.contains('m-cat-head')){ sib.classList.toggle('m-cat-hidden',collapsed); sib=sib.nextElementSibling; }
     }
     btn.addEventListener('click',function(){ setState(!h.classList.contains('collapsed')); });
-    setState(h.id!=='pool-armor-sets');   // Armor Sets starts open so its material sub-groups show right away
+    setState(h.closest('#catalog')&&h.id!=='pool-armor-sets');   // catalog starts collapsed (except Armor Sets); Media's YouTube/ArtStation start open
     heads.push({head:h, setState:setState});
   });
   document.querySelectorAll('.m-cat[id^="pool-armor-sets-"]').forEach(function(cat){
