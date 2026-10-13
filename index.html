@@ -263,37 +263,23 @@ body::after{
 }
 
 /* a wide scene from the game sits BEHIND the footer's own text (Sources + the legal line), full-
-   bleed. It bleeds up well above the footer's own top edge, into whatever section sits above it,
-   so the fade-in has real distance to work with instead of being squeezed into the footer's own
-   padding - then dissolves fully by the true bottom of the page. footer no longer clips (no
-   overflow:hidden, no border-top line) so that upward bleed, and the fade itself, can actually show. */
+   bleed. The image itself already carries its own alpha fade (transparent at its top edge,
+   dissolving down into the opaque scene), so it blends straight into the page's own --ink
+   background with no separate CSS gradient layer needed - no hard seam, no double-darkening. */
 footer{position:relative}
 .footer-bg{
   position:absolute;
-  top:-340px; bottom:0;
-  left:50%;
-  width:100vw;
-  margin-left:-50vw;
+  top:-340px; bottom:0; left:0;
+  width:100%;
   z-index:0;
   background-image:url(img/footer-scene-bg.webp);
+  background-repeat:no-repeat;
   background-size:cover;
-  background-position:center 30%;
+  background-position:center bottom;
   pointer-events:none;
 }
-.footer-bg::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  /* two layers: a radial vignette so the LEFT/RIGHT edges and corners dissolve too (a pure
-     top/bottom gradient leaves a hard vertical seam at the full-bleed edges on wide screens),
-     stacked with a heavier top/bottom linear fade for the lead-in/lead-out distance */
-  background:
-    radial-gradient(ellipse 85% 100% at 50% 50%, transparent 0%, transparent 30%, var(--ink) 88%),
-    linear-gradient(to bottom,
-      var(--ink) 0%, rgba(10,8,7,.85) 12%, rgba(10,8,7,.35) 32%, rgba(10,8,7,.35) 52%, rgba(10,8,7,.88) 80%, var(--ink) 100%);
-}
 footer>*{position:relative;z-index:1}
-@media (max-width:760px){.footer-bg{top:-180px}}
+@media (max-width:760px){.footer-bg{top:-200px}}
 
 /* --- masthead ----------------------------------------------------------- */
 .masthead{
