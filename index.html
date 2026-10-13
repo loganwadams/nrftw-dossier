@@ -273,7 +273,10 @@ footer{position:relative}
   left:50%;
   width:100vw;
   margin-left:-50vw;
-  z-index:0;
+  /* negative so it sits below every real page element (nav, cards, text, popovers all
+     paint at z-index:auto/0+) no matter where in the DOM they fall, while staying above
+     the page's own base background layers (vellum/grain/embers, z-index -4..-2) */
+  z-index:-1;
   background-image:url(img/footer-scene-bg.webp);
   background-repeat:no-repeat;
   background-size:cover;
