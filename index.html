@@ -85,10 +85,6 @@ body.paged .contents{display:none}
 .vid-title{display:block;font-family:var(--display);font-size:21px;line-height:1.3;color:#efe3c8;letter-spacing:.02em}
 .vid-note{display:block;margin-top:6px;font-size:16px;color:var(--muted)}
 .vid-empty{max-width:60ch;color:var(--muted);font-size:15px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);padding:14px 16px;background:linear-gradient(180deg,var(--panel-2),var(--panel))}
-.pgbar button.pg-videos{display:inline-flex;align-items:center;padding-inline:12px}
-.pgbar button.pg-videos svg{width:18px;height:18px;display:block;fill:currentColor}
-.pgbar button.pg-videos:hover{color:#ff4e45}
-.pgbar button.pg-videos[aria-current="page"]{color:#ff4e45}
 </style><!-- /VIDEOS:css -->
 <!-- TOTOP:css --><style>
 .totop{position:fixed;right:18px;bottom:18px;z-index:40;display:flex;justify-content:center;align-items:center;width:44px;height:44px;color:var(--gold-dim);background:none;border:none;box-shadow:none;opacity:0;visibility:hidden;transform:translateY(8px);transition:color .15s,opacity .25s,visibility .25s,transform .25s}
@@ -3201,7 +3197,7 @@ footer li{color:#6f665b}
     {id:'enchantments', num:'06', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments']},
     {id:'vendors',      num:'07', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors'], drop:true},
     {id:'catalog',    num:'08', label:'Catalog',    group:'cat',   target:'catalog', tag:['catalog'], drop:true},
-    {id:'videos',       num:'09', label:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Moon Studios Media'}
+    {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Moon Studios Media'}
   ];
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
