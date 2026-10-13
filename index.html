@@ -115,6 +115,7 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-dot{position:absolute;left:50%;top:50%;width:14px;height:14px;transform:translate(-50%,-50%) rotate(45deg);background:var(--ink);border:2px solid var(--gold);box-shadow:0 0 0 4px var(--ink);transition:background .15s,transform .15s}
 .lt-node:hover .lt-dot,.lt-node:focus-visible .lt-dot,.lt-node.open .lt-dot{background:var(--gold);transform:translate(-50%,-50%) rotate(45deg) scale(1.25)}
 .lt-body{position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:170px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
+.lt-text{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
 .lt-node.up .lt-body{bottom:calc(50% + 56px)}
 .lt-node.down .lt-body{top:calc(50% + 56px);flex-direction:column-reverse}
 .lt-ic{width:66px;height:66px;display:grid;place-items:center;background:url(img/lore-icon.png) center / contain no-repeat;filter:drop-shadow(0 6px 14px rgba(0,0,0,.7)) brightness(.92);transition:filter .25s,transform .25s}
@@ -132,14 +133,15 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-pop.below::before{top:-7px;border-bottom:none;border-right:none}
 .lt-hint{margin:6px 0 0;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6f6758;text-align:center}
 @media (max-width:860px){
-  .lt-track{grid-template-columns:1fr;min-height:0;gap:0;padding-left:30px}
+  .lt-track{grid-template-columns:1fr;min-height:0;gap:0;padding-left:30px;max-width:100%}
   .lt-track::before{left:30px;right:auto;top:0;bottom:0;width:2px;height:auto;background:linear-gradient(180deg,rgba(201,169,110,0),var(--gold-dim) 5%,var(--gold-dim) 95%,rgba(201,169,110,0));transform:translateX(-1px)}
-  .lt-node{flex-direction:row;justify-content:flex-start;gap:16px;padding:14px 0 14px 28px}
+  .lt-node{flex-direction:row;justify-content:flex-start;align-items:center;gap:16px;padding:14px 20px 14px 28px;min-width:0;max-width:100%}
   .lt-node .lt-stem{display:none}
   .lt-dot{left:0;top:50%}
-  .lt-body{position:static;transform:none;flex-direction:row!important;max-width:none;text-align:left;gap:14px}
+  .lt-body{position:static;transform:none;flex-direction:row!important;max-width:none;text-align:left;gap:14px;min-width:0;flex:1}
   .lt-ic{width:56px;height:56px;flex:none}.lt-ic svg{width:28px;height:28px}
-  .lt-title{max-width:none}
+  .lt-text{align-items:flex-start;gap:4px;flex:1;min-width:0}
+  .lt-title{max-width:none;overflow-wrap:break-word;word-break:break-word}
 }
 </style><!-- /LT:css -->
 </head><body>
@@ -385,6 +387,13 @@ h1 em{
   pointer-events:none;
 }
 .tag:hover::after{opacity:1;visibility:visible;transform:translateY(0)}
+@media (max-width:760px){
+  /* the 220px hover tooltip is positioned left:0 off an inline tag that can land anywhere in
+     the running text; even invisible (opacity:0) it still lays out and can push the page wider
+     than the viewport, which is what let the whole site be dragged sideways on mobile. There's
+     no real hover on touch anyway, so just drop the tooltip's box there. */
+  .tag::after{content:none;display:none}
+}
 
 .keybar{
   display:none;
@@ -3480,7 +3489,7 @@ footer li{color:#6f665b}
   var data=beats.map(function(b,i){ return {when:(b.querySelector('.lore-when')||{}).textContent||'', title:(b.querySelector('h3')||{}).textContent||'', html:(b.querySelector('p')||{}).innerHTML||''}; });
   data.forEach(function(d,i){
     var n=document.createElement('div'); n.className='lt-node '+(i%2?'down':'up'); n.tabIndex=0; n.setAttribute('role','button'); n.setAttribute('aria-label',d.title);
-    n.innerHTML='<span class="lt-stem"></span><span class="lt-dot"></span><div class="lt-body"><div class="lt-ic">'+ICONS[i%ICONS.length]+'</div><span class="lt-when">'+d.when+'</span><span class="lt-title">'+d.title+'</span></div>';
+    n.innerHTML='<span class="lt-stem"></span><span class="lt-dot"></span><div class="lt-body"><div class="lt-ic">'+ICONS[i%ICONS.length]+'</div><div class="lt-text"><span class="lt-when">'+d.when+'</span><span class="lt-title">'+d.title+'</span></div></div>';
     n.dataset.i=i; track.appendChild(n);
   });
   var hint=document.createElement('p'); hint.className='lt-hint'; hint.textContent='Hover or click an emblem for the story'; wrap.appendChild(hint);
@@ -3501,8 +3510,12 @@ footer li{color:#6f665b}
     else { pop.style.top=(ic.bottom-wr.top+12)+'px'; pop.classList.add('below'); } }
   function hide(){ pop.classList.remove('on'); if(openNode) openNode.classList.remove('open'); openNode=null; }
   // only the emblem above/below each point is live: hovering the line, pills or titles does nothing
-  track.addEventListener('mouseover',function(e){ var ic=e.target.closest('.lt-ic'); if(!ic) return; var n=ic.closest('.lt-node'); if(n===openNode) return; clearTimeout(timer); show(n); });
-  track.addEventListener('mouseout',function(e){ var ic=e.target.closest('.lt-ic'); if(!ic) return; var to=e.relatedTarget; if(to&&ic.contains(to)) return; clearTimeout(timer); timer=setTimeout(hide,90); });
+  // hover-to-open is for a real mouse only: on touch, iOS/Android synthesize a mouseover on the
+  // first tap, which would open-then-immediately-close it when the click that follows toggles it
+  // shut, forcing a second tap. Filtering to pointerType 'mouse' here lets a touch tap fall straight
+  // through to the click handler below and open on the first tap.
+  track.addEventListener('pointerover',function(e){ if(e.pointerType&&e.pointerType!=='mouse') return; var ic=e.target.closest('.lt-ic'); if(!ic) return; var n=ic.closest('.lt-node'); if(n===openNode) return; clearTimeout(timer); show(n); });
+  track.addEventListener('pointerout',function(e){ if(e.pointerType&&e.pointerType!=='mouse') return; var ic=e.target.closest('.lt-ic'); if(!ic) return; var to=e.relatedTarget; if(to&&ic.contains(to)) return; clearTimeout(timer); timer=setTimeout(hide,90); });
   track.addEventListener('click',function(e){ var ic=e.target.closest('.lt-ic'); if(!ic) return; var n=ic.closest('.lt-node'); clearTimeout(timer); if(n===openNode) hide(); else show(n); });
   track.addEventListener('keydown',function(e){ var n=e.target.closest('.lt-node'); if(!n) return; if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(n===openNode) hide(); else show(n); } if(e.key==='Escape') hide(); });
   document.addEventListener('click',function(e){ if(!wrap.contains(e.target)) hide(); });
