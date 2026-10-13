@@ -3170,9 +3170,26 @@ footer li{color:#6f665b}
   document.addEventListener('keydown',function(e){ if(e.key==='Enter'){ var a=document.activeElement; if(a&&a.matches&&a.matches('[data-k]')){ var r=a.getBoundingClientRect(); cur=a.getAttribute('data-k'); render(cur,r.left+r.width/2,r.top+r.height/2);} } });
   document.addEventListener('pointerover',over); document.addEventListener('pointermove',move); document.addEventListener('pointerout',out);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&tip) tip.classList.remove('on'); });
-  var tap=null; document.addEventListener('touchstart',function(e){ if(e.target.closest&&e.target.closest('.tt-close')) return;
-    var a=e.target.closest&&e.target.closest('[data-k]'); if(!a){ if(tip) tip.classList.remove('on'); tap=null; return; }
-    var k=a.getAttribute('data-k'); if(tap!==k){ e.preventDefault(); tap=k; cur=k; var t=e.touches[0]; render(k,t.clientX,t.clientY); } },{passive:false});
+  // open on a genuine tap, not on touchstart itself - deciding at touchstart (and calling
+  // preventDefault there, as this used to) means a finger that lands on a card and then drags to
+  // scroll the catalog never gets to scroll: the card has already popped open and the page-level
+  // swipe gets eaten. Waiting for touchend, and only acting when the finger hasn't wandered more
+  // than a few px, lets an ordinary scroll that starts on a card pass straight through untouched.
+  var tap=null, tStartX=0, tStartY=0, tMoved=false, tTarget=null;
+  document.addEventListener('touchstart',function(e){
+    var t=e.touches[0]; tStartX=t.clientX; tStartY=t.clientY; tMoved=false;
+    tTarget=e.target.closest&&e.target.closest('[data-k]');
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    var t=e.touches[0];
+    if(Math.abs(t.clientX-tStartX)>10||Math.abs(t.clientY-tStartY)>10) tMoved=true;
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(tMoved) return;
+    if(e.target.closest&&e.target.closest('.tt-close')) return;
+    if(!tTarget){ if(tip) tip.classList.remove('on'); tap=null; return; }
+    var k=tTarget.getAttribute('data-k');
+    if(tap!==k){ e.preventDefault(); tap=k; cur=k; var ct=e.changedTouches[0]; render(k,ct.clientX,ct.clientY); } },{passive:false});
 })();
 </script>
 <!-- /TT -->
