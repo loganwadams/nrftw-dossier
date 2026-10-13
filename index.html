@@ -1121,6 +1121,34 @@ footer{
 footer h3{color:#8b8174}
 footer ul{margin:0;padding-left:18px;display:grid;gap:7px}
 footer li{color:#6f665b}
+.src-toggle{
+  all:unset;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  width:100%;
+  margin-bottom:12px;
+}
+.src-toggle h3{margin:0}
+.src-caret{
+  flex:none;
+  width:8px;height:8px;
+  border-right:1.5px solid var(--gold-dim);
+  border-bottom:1.5px solid var(--gold-dim);
+  transform:rotate(45deg);
+  margin-top:-4px;
+  transition:transform .2s ease;
+}
+.src-toggle:hover .src-caret{border-color:var(--gold)}
+.src-toggle[aria-expanded="false"] .src-caret{transform:rotate(-45deg);margin-top:2px}
+.srcs{
+  overflow:hidden;
+  max-height:600px;
+  opacity:1;
+  transition:max-height .28s ease, opacity .2s ease, margin .2s ease;
+}
+.srcs.collapsed{max-height:0;opacity:0;margin:0}
 .sig{
   font-family:var(--display);
   font-size:16px;
@@ -3061,8 +3089,11 @@ footer li{color:#6f665b}
 
   <footer>
     <div class="footer-bg" aria-hidden="true"></div>
-    <h3>Sources</h3>
-    <ul class="srcs">
+    <button type="button" class="src-toggle" id="srcToggle" aria-expanded="true" aria-controls="srcList">
+      <h3>Sources</h3>
+      <span class="src-caret" aria-hidden="true"></span>
+    </button>
+    <ul class="srcs" id="srcList">
       <li>Moon Studios &mdash; <a href="https://norestforthewicked.com/news/class-armors-sneak-peek">Class Armors Sneak Peek</a>, <a href="https://forum.norestforthewicked.com/t/no-rest-for-the-wicked-class-system-sneak-peek/27094">Class System Sneak Peek</a>, <a href="https://norestforthewicked.com/news/no-rest-for-the-wicked-1-0-delay-announcement">1.0 Delay Announcement</a>, and the <a href="https://www.youtube.com/@moongamestudios">official YouTube channel</a> (all videos on the Media page)</li>
       <li><a href="https://removed.invalid/">removed.invalid</a> &mdash; item database, vendors and item icons, read from the live build</li>
       <li><a href="https://nrftw.wiki.gg/">nrftw.wiki.gg</a> &mdash; gems, enchantments, facets and equipment modification</li>
@@ -3073,6 +3104,21 @@ footer li{color:#6f665b}
   </footer>
 
 </div>
+
+<!-- SRC-TOGGLE -->
+<script>
+(function(){
+  var btn=document.getElementById('srcToggle');
+  var list=document.getElementById('srcList');
+  if(!btn||!list) return;
+  btn.addEventListener('click',function(){
+    var open=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',open?'false':'true');
+    list.classList.toggle('collapsed',open);
+  });
+})();
+</script>
+<!-- /SRC-TOGGLE -->
 
 <!-- TOTOP -->
 <a class="totop" href="#top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 14l7-7 7 7"/></svg></a>
