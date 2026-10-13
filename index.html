@@ -843,6 +843,7 @@ section,article.klass{scroll-margin-top:24px}
 .hero-art{position:absolute;inset:0;z-index:-2;filter:saturate(.92);background:#0a0807}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity 1.8s ease-in-out}
 .hero-slide.on{opacity:1}
+.hero-slide video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;display:block}
 @media (prefers-reduced-motion:reduce){.hero-slide{transition:none}}
 .hero-art::after{content:"";position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(10,8,7,.96) 0%,rgba(10,8,7,.86) 34%,rgba(10,8,7,.35) 62%,rgba(10,8,7,.15) 100%),
@@ -1125,24 +1126,12 @@ footer li{color:#6f665b}
 <!-- HERO -->
   <section id="hero" class="hero" aria-label="Isola Sacra">
     <div class="hero-art">
-      <span class="hero-slide on" style="background-image:url(img/hero-01.webp);background-position:center 30%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-02.webp);background-position:center 20%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-03.webp);background-position:center 35%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-04.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-05.webp);background-position:center 45%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-06.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-07.webp);background-position:center 25%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-08.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-09.webp);background-position:center 55%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-10.webp);background-position:center 35%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-11.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-12.webp);background-position:center 30%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-13.webp);background-position:center 40%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-14.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-15.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-16.webp);background-position:center 50%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-17.webp);background-position:center 55%"></span>
-      <span class="hero-slide" style="background-image:url(img/hero-18.webp);background-position:center 50%"></span>
+      <span class="hero-slide on"><video muted playsinline preload="auto" poster="img/hero-01.webp"><source src="video/clip1-shot180.mp4" type="video/mp4"></video></span>
+      <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip2-shot040.mp4" type="video/mp4"></video></span>
+      <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip3-shot210.mp4" type="video/mp4"></video></span>
+      <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip4-shot060.mp4" type="video/mp4"></video></span>
+      <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip5-shot220.mp4" type="video/mp4"></video></span>
+      <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip6-shot020.mp4" type="video/mp4"></video></span>
     </div>
     <div class="hero-text">
       <p class="hero-kicker">841 TE &middot; Isola Sacra</p>
@@ -1151,10 +1140,47 @@ footer li{color:#6f665b}
     </div>
   </section>
   <script>
-  (function(){ var slides=document.querySelectorAll('#hero .hero-slide'); if(slides.length<2) return; var i=0;
-    function next(){ slides[i].classList.remove('on'); i=(i+1)%slides.length; slides[i].classList.add('on'); }
-    var t=setInterval(next,8000);
-    document.addEventListener('visibilitychange',function(){ if(document.hidden){ clearInterval(t); t=null; } else if(!t){ t=setInterval(next,8000); } });
+  (function(){
+    var slides=document.querySelectorAll('#hero .hero-slide'); if(slides.length<2) return;
+    var vids=Array.prototype.map.call(slides,function(s){ return s.querySelector('video'); });
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var i=0, paused=false;
+
+    function loadNext(n){ var v=vids[n]; if(v && v.preload!=='auto' && v.readyState<1){ v.preload='auto'; v.load(); } }
+
+    function playCurrent(){
+      var v=vids[i];
+      if(!v){ return; }
+      try{ v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){}
+    }
+
+    function goTo(n){
+      slides[i].classList.remove('on');
+      var old=vids[i]; if(old){ old.pause(); }
+      i=n%slides.length;
+      slides[i].classList.add('on');
+      playCurrent();
+      loadNext((i+1)%slides.length);
+    }
+
+    function next(){ goTo((i+1)%slides.length); }
+
+    vids.forEach(function(v,idx){
+      v.addEventListener('ended', function(){ if(idx===i && !paused) next(); });
+    });
+
+    if(reduce){
+      // Respect reduced-motion: show the first frame, no autoplay/rotation.
+      loadNext(0);
+    }else{
+      loadNext(1);
+      playCurrent();
+      document.addEventListener('visibilitychange',function(){
+        paused = document.hidden;
+        var v=vids[i]; if(!v) return;
+        if(paused){ v.pause(); } else { playCurrent(); }
+      });
+    }
   })();
   </script>
 <!-- /HERO -->
