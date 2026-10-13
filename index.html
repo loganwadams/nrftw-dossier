@@ -3172,14 +3172,19 @@ footer li{color:#6f665b}
       t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'<div class="tt-foot">game data &middot; removed.invalid</div>';
       t.classList.add('on'); place(x,y); }); }
   function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
-  function over(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var k=a.getAttribute('data-k'); if(k===cur) return; cur=k; clearTimeout(timer);
+  // hover-follow is for a real mouse only: touch devices synthesize a mouseover+mousemove right
+  // after a tap, and the mousemove would re-run place() using the touch point as the new cursor
+  // position, yanking the whole card (including the close button) out from under the finger before
+  // the matching synthetic click lands - so the tap misses and the card is left stuck open, covering
+  // whatever's underneath it. Pointer events let touch skip this path entirely.
+  function over(e){ if(e.pointerType&&e.pointerType!=='mouse') return; var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var k=a.getAttribute('data-k'); if(k===cur) return; cur=k; clearTimeout(timer);
     load(); timer=setTimeout(function(){ render(k,e.clientX,e.clientY) },450); }
-  function move(e){ if(tip&&tip.classList.contains('on')) place(e.clientX,e.clientY); }
-  function out(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var to=e.relatedTarget; if(to&&a.contains(to)) return; cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
+  function move(e){ if(e.pointerType&&e.pointerType!=='mouse') return; if(tip&&tip.classList.contains('on')) place(e.clientX,e.clientY); }
+  function out(e){ if(e.pointerType&&e.pointerType!=='mouse') return; var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var to=e.relatedTarget; if(to&&a.contains(to)) return; cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.tt-close')){ e.preventDefault(); closeTip(); return; }
     var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; e.preventDefault(); var k=a.getAttribute('data-k'); clearTimeout(timer); cur=k; render(k,e.clientX,e.clientY); });
   document.addEventListener('keydown',function(e){ if(e.key==='Enter'){ var a=document.activeElement; if(a&&a.matches&&a.matches('[data-k]')){ var r=a.getBoundingClientRect(); cur=a.getAttribute('data-k'); render(cur,r.left+r.width/2,r.top+r.height/2);} } });
-  document.addEventListener('mouseover',over); document.addEventListener('mousemove',move); document.addEventListener('mouseout',out);
+  document.addEventListener('pointerover',over); document.addEventListener('pointermove',move); document.addEventListener('pointerout',out);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&tip) tip.classList.remove('on'); });
   var tap=null; document.addEventListener('touchstart',function(e){ if(e.target.closest&&e.target.closest('.tt-close')) return;
     var a=e.target.closest&&e.target.closest('[data-k]'); if(!a){ if(tip) tip.classList.remove('on'); tap=null; return; }
