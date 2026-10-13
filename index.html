@@ -3092,7 +3092,9 @@ footer li{color:#6f665b}
             var h5=sib.querySelector('h5'); var name=h5?(h5.firstChild?h5.firstChild.textContent.trim():h5.textContent.trim()):sib.id;
             children.push({id:sib.id, name:name}); }
           sib=sib.nextElementSibling; }
-        items.push({id:h.id, ic:ic||firstIc, name:title.textContent, children:children}); });
+        var item={id:h.id, ic:ic||firstIc, name:title.textContent, children:children};
+        if(h.id==='pool-crafting-recipes'){ item.ic=null; item.img='img/icon/recipe.png'; }   // recipes are a table, not cards: use the recipe-scroll icon
+        items.push(item); });
       return dropFrom(items); }
   };
   CHAPS.forEach(function(c){ if(c.hidden) return;   // tagged for show()/chapOf() but not shown as its own tab
