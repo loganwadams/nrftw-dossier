@@ -639,19 +639,12 @@ a:hover{color:#dcb561}
   background-repeat:no-repeat;
   padding-right:.08em;            /* room for the italic-ish overhang */
 }
-/* Stormbringer: charged steel, lit from a storm overhead */
+/* Stormbringer: charged steel, lit from a storm overhead - a steady glow, matching the character's armor */
 .t-storm{
   background-image:linear-gradient(176deg,#f2f8ff 0%,#cfe4f7 28%,#8fb9dd 58%,#5d87b4 100%);
   filter:drop-shadow(0 0 1px rgba(214,236,255,.85))
          drop-shadow(0 0 16px rgba(120,178,255,.45))
          drop-shadow(0 3px 10px rgba(0,0,0,.75));
-  animation:arc 7s ease-in-out infinite;
-}
-@keyframes arc{
-  0%,88%,100%{filter:drop-shadow(0 0 1px rgba(214,236,255,.85)) drop-shadow(0 0 16px rgba(120,178,255,.45)) drop-shadow(0 3px 10px rgba(0,0,0,.75))}
-  91%{filter:drop-shadow(0 0 2px #eaf4ff) drop-shadow(0 0 30px rgba(150,200,255,.85)) drop-shadow(0 3px 10px rgba(0,0,0,.75))}
-  93%{filter:drop-shadow(0 0 1px rgba(214,236,255,.6)) drop-shadow(0 0 10px rgba(120,178,255,.3)) drop-shadow(0 3px 10px rgba(0,0,0,.75))}
-  95%{filter:drop-shadow(0 0 2px #f4faff) drop-shadow(0 0 26px rgba(150,200,255,.7)) drop-shadow(0 3px 10px rgba(0,0,0,.75))}
 }
 /* Barbarian: chiselled out of the same pitted stone as the plate */
 .t-barb{
@@ -661,15 +654,10 @@ a:hover{color:#dcb561}
          drop-shadow(0 6px 12px rgba(0,0,0,.6));
   letter-spacing:.012em;
 }
-/* Plaguebearer: verdigris bloom, breathing like the aura */
+/* Plaguebearer: verdigris bloom, a steady glow matching the character's armor */
 .t-plague{
   background-image:linear-gradient(175deg,#dcebcd 0%,#9cc49f 36%,#6a9d79 68%,#3f6b52 100%);
   filter:drop-shadow(0 0 14px rgba(110,170,120,.42)) drop-shadow(0 3px 9px rgba(0,0,0,.72));
-  animation:miasma 9s ease-in-out infinite;
-}
-@keyframes miasma{
-  0%,100%{filter:drop-shadow(0 0 12px rgba(110,170,120,.34)) drop-shadow(0 3px 9px rgba(0,0,0,.72))}
-  50%{filter:drop-shadow(0 0 24px rgba(130,190,135,.6)) drop-shadow(0 3px 9px rgba(0,0,0,.72))}
 }
 /* Frost Mage: rime on the glyphs, hard white edge where the light catches */
 .t-frost{
@@ -686,10 +674,6 @@ a:hover{color:#dcb561}
          drop-shadow(7px 9px 12px rgba(0,0,0,.6))
          drop-shadow(-1px -1px 10px rgba(150,40,30,.3));
 }
-@media (prefers-reduced-motion:reduce){
-  .t-storm,.t-plague{animation:none}
-}
-
 .sigil{
   width:40px;height:40px;flex:none;
   color:var(--accent);
