@@ -3213,9 +3213,13 @@ footer li{color:#6f665b}
   function pageOf(el){ while(el&&el!==document.body){ if(el.getAttribute&&el.getAttribute('data-page')) return el.getAttribute('data-page'); el=el.parentNode; } return null; }
   function chapOf(el){ while(el&&el!==document.body){ if(el.getAttribute&&el.getAttribute('data-chap')) return el.getAttribute('data-chap'); el=el.parentNode; } return null; }
   var current=null, currentChap=null;
+  var BASE_TITLE='Wicked Dossier';
+  var CHAP_TITLE={}; CHAPS.forEach(function(c){ CHAP_TITLE[c.id]=c.aria||c.label; });
   function show(group,chap){ current=group; currentChap=chap;
     document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); });
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===chap) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+    var label=CHAP_TITLE[chap];
+    document.title=(label&&chap!=='home'&&chap!=='brief')?(label+' - '+BASE_TITLE):BASE_TITLE;
     try{ localStorage.setItem('nrftw-page',group); }catch(e){} }
   // a tab click is always deterministic: switch to its chapter and scroll to its top,
   // regardless of whether the URL hash actually changes or fires an event for it
