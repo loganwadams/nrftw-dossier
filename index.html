@@ -79,6 +79,8 @@ body.paged .contents{display:none}
 .vid:hover .vid-play{background:rgba(201,169,110,.18);border-color:var(--gold)}
 .vid-frame{aspect-ratio:16/9;max-width:100%;background:#0d0a08;color-scheme:dark;border-bottom:1px solid var(--edge)}
 .vid-frame iframe{display:block;width:100%;height:100%;border:0}
+.vid-thumb-btn{appearance:none;display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:0;margin:0;background:#0d0a08 center/cover no-repeat;border:0;cursor:pointer}
+.vid-embed:hover .vid-play,.vid-thumb-btn:focus-visible .vid-play{background:rgba(201,169,110,.18);border-color:var(--gold)}
 .vid-body{display:block;padding:16px 18px 18px}
 .vid-title{display:block;font-family:var(--display);font-size:21px;line-height:1.3;color:#efe3c8;letter-spacing:.02em}
 .vid-note{display:block;margin-top:6px;font-size:16px;color:var(--muted)}
@@ -2966,8 +2968,12 @@ footer li{color:#6f665b}
     list.forEach(function(v){
       if(canEmbed){
         var d=document.createElement('div'); d.className='vid vid-embed';
-        d.innerHTML='<div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'" title="'+v.title+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>'
+        d.innerHTML='<div class="vid-frame"><button type="button" class="vid-thumb-btn"'+(v.thumb?' style="background-image:url('+v.thumb+')"':'')+' aria-label="Play '+v.title.replace(/"/g,'&quot;')+'"><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>'
           +'<div class="vid-body"><span class="vid-title">'+v.title+'</span><span class="vid-note">'+meta(v)+'</span></div>';
+        var frame=d.querySelector('.vid-frame'), btn=d.querySelector('.vid-thumb-btn');
+        btn.addEventListener('click', function(){
+          frame.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1" title="'+v.title+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+        });
         grid.appendChild(d); return;
       }
       var a=document.createElement('a'); a.className='vid'; a.href='https://www.youtube.com/watch?v='+v.id; a.target='_blank'; a.rel='noopener';
