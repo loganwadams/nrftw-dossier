@@ -1160,8 +1160,11 @@ footer li{color:#6f665b}
     }
 
     function goTo(n){
-      slides[i].classList.remove('on');
-      var old=vids[i]; if(old){ old.pause(); }
+      var oldSlide=slides[i], old=vids[i];
+      oldSlide.classList.remove('on');
+      // Let the outgoing clip keep playing through the crossfade instead of freezing
+      // the instant the fade starts; only stop it once it's fully faded out.
+      if(old){ setTimeout(function(){ old.pause(); },FADE_LEAD*1000); }
       i=n%slides.length;
       advancing=false;
       slides[i].classList.add('on');
