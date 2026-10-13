@@ -188,7 +188,6 @@ body{
   font-weight:300;
   -webkit-font-smoothing:antialiased;
   position:relative;
-  overflow-x:hidden;
 }
 
 /* --- vellum ground: a sheet of darkened parchment, lit from the centre ------- */
@@ -1042,7 +1041,8 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 .cost-tail{color:#8b8174;font-weight:400}
 @media (max-width:760px){.m-body{grid-template-columns:minmax(0,1fr)}.m-mats{white-space:normal}}
 /* phones: nothing may be wider than the screen */
-html,body{overflow-x:hidden;max-width:100%}
+html{overflow-x:hidden;max-width:100%}
+body{max-width:100%}
 .m-wares.m-wide{grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr))}
 @media (max-width:600px){
   table{min-width:0}
