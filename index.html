@@ -1147,7 +1147,9 @@ footer li{color:#6f665b}
     var slides=document.querySelectorAll('#hero .hero-slide'); if(slides.length<2) return;
     var vids=Array.prototype.map.call(slides,function(s){ return s.querySelector('video'); });
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var i=0, paused=false;
+    var i=0, paused=false, advancing=false;
+    var FADE_LEAD=1.8; // seconds; matches the .hero-slide opacity transition, so the next
+                        // clip is already fading in by the time this one would freeze on its last frame
 
     function loadNext(n){ var v=vids[n]; if(v && v.preload!=='auto' && v.readyState<1){ v.preload='auto'; v.load(); } }
 
@@ -1161,6 +1163,7 @@ footer li{color:#6f665b}
       slides[i].classList.remove('on');
       var old=vids[i]; if(old){ old.pause(); }
       i=n%slides.length;
+      advancing=false;
       slides[i].classList.add('on');
       playCurrent();
       loadNext((i+1)%slides.length);
@@ -1169,7 +1172,12 @@ footer li{color:#6f665b}
     function next(){ goTo((i+1)%slides.length); }
 
     vids.forEach(function(v,idx){
-      v.addEventListener('ended', function(){ if(idx===i && !paused) next(); });
+      v.addEventListener('ended', function(){ if(idx===i && !paused && !advancing) next(); });
+      v.addEventListener('timeupdate', function(){
+        if(idx!==i || paused || advancing) return;
+        var d=v.duration;
+        if(d && isFinite(d) && d-v.currentTime<=FADE_LEAD){ advancing=true; next(); }
+      });
     });
 
     if(reduce){
