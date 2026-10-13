@@ -1010,6 +1010,15 @@ html,body{overflow-x:hidden;max-width:100%}
   .m-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .m-type,.m-stock,.m-services th,thead th{white-space:normal}
   .m-sb,.m-text,.m-tb,.m-wares,.m-body>*{min-width:0;max-width:100%}
+  .m-body:has(.m-text2),.m-body-wide,.m-body{grid-template-columns:minmax(0,1fr)}
+  /* services table (Eleanor): one block per service instead of three slivers */
+  .m-services{display:table;width:100%}
+  .m-services thead{display:none}
+  .m-services tr{display:block;padding:10px 0 12px;border-bottom:1px solid var(--edge)}
+  .m-services tr:last-child{border-bottom:0}
+  .m-services th,.m-services td{display:inline;border:0;padding:0;width:auto}
+  .m-services th{margin-right:12px}
+  .m-services td:last-child{display:block;margin-top:6px;line-height:1.5}
   .pgbar-item{position:static}
   .pgbar .toc-drop{left:0;right:0;min-width:0;max-height:min(55vh,420px)}
   .pgbar .toc-drop a{white-space:normal}
