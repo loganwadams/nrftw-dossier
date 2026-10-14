@@ -545,6 +545,19 @@ section{padding-block:48px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
 .cb-panel{background:var(--panel);border:1px solid var(--edge);padding:20px 22px 24px;position:relative}
 .cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
+.cb-optional{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7c7265;font-weight:400;border:1px solid var(--edge);border-radius:2px;padding:2px 6px;margin-left:8px;vertical-align:middle}
+
+/* class picker */
+.cb-class-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.cb-class-btn{width:50px;height:50px;flex:none;border:1px solid var(--edge);background:rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:border-color .15s,background .15s}
+.cb-class-btn img{width:100%;height:100%;object-fit:contain;opacity:.75;transition:opacity .15s}
+.cb-class-btn:hover{border-color:var(--gold-dim)}
+.cb-class-btn:hover img{opacity:1}
+.cb-class-btn.on{border-color:var(--gold);background:rgba(200,160,74,.12)}
+.cb-class-btn.on img{opacity:1}
+.cb-class-selected{margin:0;font-size:13.5px;color:var(--muted)}
+.cb-class-selected strong{color:var(--gold);font-weight:400;font-family:var(--display)}
+.cb-class-selected em{color:var(--bone);font-style:normal}
 
 /* character / attributes */
 .cb-level-row{display:flex;align-items:center;gap:14px;margin-bottom:6px}
@@ -2995,6 +3008,11 @@ footer li{color:#6f665b}
     <div class="cb-wrap">
       <div class="cb-col">
         <div class="cb-panel">
+          <h3>Class <span class="cb-optional">Optional</span></h3>
+          <div class="cb-class-grid" id="cbClassGrid"></div>
+          <p class="cb-class-selected" id="cbClassSelected">No class selected &mdash; building generic.</p>
+        </div>
+        <div class="cb-panel">
           <h3>Character</h3>
           <div class="cb-level-row"><label>Level</label><input type="range" id="cbLevel" min="1" max="30" value="15"><span id="cbLevelVal">15</span></div>
           <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">70</strong>&nbsp;/&nbsp;<span id="cbPtsTotal">70</span></div>
@@ -3029,6 +3047,46 @@ footer li{color:#6f665b}
   </section>
   <script>
   (function(){
+    // Classes documented so far (the Classes section grows as more are confirmed); pulled from
+    // the same sigils and faction names used there, not separate art.
+    var CLASSES=[
+      {id:'cleric',name:'Cleric',faction:'House of the Born God'},
+      {id:'monk',name:'Monk',faction:'House of the Born God'},
+      {id:'archer',name:'Archer',faction:"The Hunter's Guild"},
+      {id:'marauder',name:'Marauder',faction:"The Hunter's Guild"},
+      {id:'guardian',name:'Guardian',faction:'The Sacrament Guard'},
+      {id:'sentinel',name:'Sentinel',faction:'The Sacrament Guard'},
+      {id:'cutthroat',name:'Cutthroat',faction:'Scuttlers'},
+      {id:'warlord',name:'Warlord',faction:'Scuttlers'},
+      {id:'harbinger',name:'Harbinger',faction:'The Severed Hand'},
+      {id:'plaguebearer',name:'Plaguebearer',faction:'Unspoken'},
+      {id:'pyromancer',name:'Pyromancer',faction:'Unspoken'},
+      {id:'stormbringer',name:'Stormbringer',faction:'Unspoken'}
+    ];
+    var selectedClass=null;
+    function buildClassGrid(){
+      var grid=document.getElementById('cbClassGrid');
+      CLASSES.forEach(function(c){
+        var btn=document.createElement('button');
+        btn.type='button'; btn.className='cb-class-btn'; btn.dataset.class=c.id;
+        btn.title=c.name+' — '+c.faction;
+        btn.innerHTML='<img src="img/icon/'+c.id+'.png" alt="'+c.name+'">';
+        grid.appendChild(btn);
+      });
+      grid.addEventListener('click',function(e){
+        var btn=e.target.closest('.cb-class-btn'); if(!btn) return;
+        var id=btn.dataset.class;
+        var already=selectedClass===id;
+        grid.querySelectorAll('.cb-class-btn.on').forEach(function(b){ b.classList.remove('on'); });
+        selectedClass=already?null:id;
+        if(selectedClass) btn.classList.add('on');
+        var p=document.getElementById('cbClassSelected');
+        if(!selectedClass){ p.innerHTML='No class selected &mdash; building generic.'; return; }
+        var c=CLASSES.filter(function(x){ return x.id===selectedClass; })[0];
+        p.innerHTML='Building for <strong>'+c.name+'</strong> <em>&middot; '+c.faction+'</em>';
+      });
+    }
+
     var ATTRS=[
       {id:'health',name:'Health',color:'var(--blood)'},
       {id:'stamina',name:'Stamina',color:'var(--verdigris)'},
@@ -3289,6 +3347,7 @@ footer li{color:#6f665b}
     document.getElementById('cbRows').addEventListener('click',onSlotsClick);
     document.getElementById('cbRuneCells').addEventListener('click',onSlotsClick);
 
+    buildClassGrid();
     buildRows2();
     buildRunes();
     buildAttrs();
