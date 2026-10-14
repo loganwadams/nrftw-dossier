@@ -624,6 +624,7 @@ section{padding-block:48px}
 .cb-attr-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(51,39,29,.6)}
 .cb-attr-row:last-child{border-bottom:none}
 .cb-attr-dot{width:8px;height:8px;border-radius:50%;flex:none;box-shadow:0 0 6px currentColor}
+.cb-attr-icon{width:24px;height:24px;flex:none;object-fit:contain;opacity:.92}
 .cb-attr-name{flex:1;font-size:15px;color:var(--bone)}
 .cb-stepper{display:flex;align-items:center;gap:8px;flex:none}
 .cb-stepper button{width:22px;height:22px;border:1px solid var(--edge-hot);background:rgba(0,0,0,.3);color:var(--gold-dim);font-family:var(--body);font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .15s,border-color .15s}
@@ -3296,13 +3297,13 @@ footer li{color:#6f665b}
     }
 
     var ATTRS=[
-      {id:'health',name:'Health',color:'var(--blood)'},
-      {id:'stamina',name:'Stamina',color:'var(--verdigris)'},
-      {id:'strength',name:'Strength',color:'var(--rust)'},
-      {id:'dexterity',name:'Dexterity',color:'var(--gold)'},
-      {id:'intelligence',name:'Intelligence',color:'var(--c-storm)'},
-      {id:'faith',name:'Faith',color:'var(--c-wraith)'},
-      {id:'focus',name:'Focus',color:'var(--c-plague)'}
+      {id:'health',name:'Health',color:'var(--blood)',icon:'img/cb/icon-attr-health.webp'},
+      {id:'stamina',name:'Stamina',color:'var(--verdigris)',icon:'img/cb/icon-attr-stamina.webp'},
+      {id:'strength',name:'Strength',color:'var(--rust)',icon:'img/cb/icon-attr-strength.webp'},
+      {id:'dexterity',name:'Dexterity',color:'var(--gold)',icon:'img/cb/icon-attr-dexterity.webp'},
+      {id:'intelligence',name:'Intelligence',color:'var(--c-storm)',icon:'img/cb/icon-attr-intelligence.webp'},
+      {id:'faith',name:'Faith',color:'var(--c-wraith)',icon:'img/cb/icon-attr-faith.webp'},
+      {id:'focus',name:'Focus',color:'var(--c-plague)',icon:'img/cb/icon-attr-focus.webp'}
     ];
     var ROWS=[
       {label:'Main Hand',icon:'weapon',cells:[{kind:'item',cat:'weapon'},{kind:'item',cat:'weapon'},{kind:'item',cat:'weapon'}]},
@@ -3423,7 +3424,7 @@ footer li{color:#6f665b}
       var wrap=document.getElementById('cbAttrs');
       ATTRS.forEach(function(a){
         var row=document.createElement('div'); row.className='cb-attr-row';
-        row.innerHTML='<span class="cb-attr-dot" style="background:'+a.color+';color:'+a.color+'"></span>'+
+        row.innerHTML='<img class="cb-attr-icon" src="'+a.icon+'" alt="" loading="lazy">'+
           '<span class="cb-attr-name">'+a.name+'</span>'+
           '<span class="cb-stepper"><button type="button" data-d="-1" aria-label="Decrease '+a.name+'">&minus;</button>'+
           '<span id="cbv-'+a.id+'">10</span>'+
