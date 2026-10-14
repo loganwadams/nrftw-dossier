@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="192x192" href="img/favicon/android-chrome-192x192.png"><link rel="apple-touch-icon" href="img/favicon/apple-touch-icon.png"><link rel="stylesheet" href="tt.css"><!-- TT:css -->
 <!-- PG:css --><style>
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
-.pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 8px;padding:8px 0}
+.pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;padding:8px 0}
 /* the bar's dark glass background/border run edge-to-edge on desktop, breaking out of .wrap's
    max-width, while the nav itself (and its buttons) stay where they were - only the backdrop
    is full-bleed, same left:50%/100vw/-50vw technique used for the footer scene. Mobile keeps
@@ -300,7 +300,7 @@ footer>*{position:relative;z-index:1}
 
 /* --- masthead ----------------------------------------------------------- */
 .masthead{
-  padding-block:26px 10px;
+  padding-block:26px 2px;
   position:relative;
 }
 /* same idea as the footer scene: a wide shot of the game's world sits behind the masthead,
@@ -321,8 +321,6 @@ footer>*{position:relative;z-index:1}
   background-position:center top;
   pointer-events:none;
 }
-.masthead>*{position:relative;z-index:1}
-.masthead>.header-bg{position:absolute;z-index:-1}
 @media (max-width:760px){.header-bg{height:320px}}
 
 /* --- separators: a family of thin gradient rules used between sections -- */
