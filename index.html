@@ -350,11 +350,11 @@ footer>*{position:relative;z-index:1}
   z-index:-1;
   background-image:url(img/header-scene-bg.webp);
   background-repeat:no-repeat;
-  background-size:cover;
+  background-size:100% auto;
   background-position:center top;
   pointer-events:none;
 }
-@media (max-width:760px){.header-bg{height:640px}}
+@media (max-width:760px){.header-bg{height:640px;background-size:350% auto}}
 
 /* --- separators: a family of thin gradient rules used between sections -- */
 .sep{height:1px;margin:0;border:0;background:linear-gradient(90deg,transparent,var(--edge-hot) 12%,transparent 60%)}
