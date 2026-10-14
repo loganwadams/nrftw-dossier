@@ -548,13 +548,24 @@ section{padding-block:48px}
 .cb-optional{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7c7265;font-weight:400;border:1px solid var(--edge);border-radius:2px;padding:2px 6px;margin-left:8px;vertical-align:middle}
 
 /* class picker */
-.cb-class-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
-.cb-class-btn{width:50px;height:50px;flex:none;border:1px solid var(--edge);background:rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:border-color .15s,background .15s}
-.cb-class-btn img{width:100%;height:100%;object-fit:contain;opacity:.75;transition:opacity .15s}
-.cb-class-btn:hover{border-color:var(--gold-dim)}
-.cb-class-btn:hover img{opacity:1}
-.cb-class-btn.on{border-color:var(--gold);background:rgba(200,160,74,.12)}
-.cb-class-btn.on img{opacity:1}
+.cb-class-drop{position:relative;margin-bottom:14px}
+.cb-class-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 14px;background:rgba(0,0,0,.28);border:1px solid var(--edge);color:var(--bone);font-family:var(--body);font-size:14.5px;cursor:pointer;transition:border-color .15s;text-align:left}
+.cb-class-trigger:hover,.cb-class-drop.open .cb-class-trigger{border-color:var(--gold-dim)}
+.cb-class-trigger-label{display:flex;align-items:center;gap:10px;min-width:0}
+.cb-class-trigger-label img{width:24px;height:24px;object-fit:contain;flex:none}
+.cb-class-trigger-label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb-class-trigger .toc-caret{transform:rotate(45deg) translateY(-2px)}
+.cb-class-drop.open .cb-class-trigger .toc-caret{transform:rotate(225deg) translateY(-2px);border-color:var(--gold)}
+.cb-class-list{list-style:none;margin:0;padding:6px;position:absolute;left:0;top:calc(100% + 6px);width:100%;max-height:340px;overflow:auto;z-index:30;background:#100d0b;border:1px solid var(--edge);box-shadow:0 18px 44px rgba(0,0,0,.75);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s,visibility 0s .15s}
+.cb-class-drop.open .cb-class-list{opacity:1;visibility:visible;transform:none;transition:opacity .15s,transform .15s}
+.cb-class-opt{display:flex;align-items:center;gap:10px;width:100%;padding:7px 10px;font-size:14.5px;color:#cdbb97;background:none;border:none;text-align:left;cursor:pointer;font-family:var(--body)}
+.cb-class-opt img{width:26px;height:26px;object-fit:contain;opacity:.45;filter:grayscale(.4) brightness(.9);transition:opacity .15s,filter .15s,transform .15s;flex:none}
+.cb-class-opt:hover,.cb-class-opt:focus-visible{color:var(--gold);background:rgba(201,169,110,.07)}
+.cb-class-opt:hover img,.cb-class-opt:focus-visible img{opacity:1;filter:none;transform:scale(1.12)}
+.cb-class-opt.on{color:var(--gold);background:rgba(200,160,74,.12)}
+.cb-class-opt.on img{opacity:1;filter:none}
+.cb-class-fac{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7c7265;padding:8px 10px 4px}
+.cb-class-fac:first-child{padding-top:2px}
 .cb-class-selected{margin:0;font-size:13.5px;color:var(--muted)}
 .cb-class-selected strong{color:var(--gold);font-weight:400;font-family:var(--display)}
 .cb-class-selected em{color:var(--bone);font-style:normal}
@@ -3009,7 +3020,13 @@ footer li{color:#6f665b}
       <div class="cb-col">
         <div class="cb-panel">
           <h3>Class <span class="cb-optional">Optional</span></h3>
-          <div class="cb-class-grid" id="cbClassGrid"></div>
+          <div class="cb-class-drop" id="cbClassDrop">
+            <button type="button" class="cb-class-trigger" id="cbClassTrigger" aria-haspopup="listbox" aria-expanded="false">
+              <span class="cb-class-trigger-label"><span>Select a class&hellip;</span></span>
+              <span class="toc-caret"></span>
+            </button>
+            <ul class="cb-class-list" id="cbClassList" role="listbox"></ul>
+          </div>
           <p class="cb-class-selected" id="cbClassSelected">No class selected &mdash; building generic.</p>
         </div>
         <div class="cb-panel">
@@ -3047,43 +3064,86 @@ footer li{color:#6f665b}
   </section>
   <script>
   (function(){
-    // Classes documented so far (the Classes section grows as more are confirmed); pulled from
-    // the same sigils and faction names used there, not separate art.
+    // All 24 documented classes, grouped by faction — same roster and art as the Classes section.
     var CLASSES=[
       {id:'cleric',name:'Cleric',faction:'House of the Born God'},
+      {id:'crusader',name:'Crusader',faction:'House of the Born God'},
       {id:'monk',name:'Monk',faction:'House of the Born God'},
+      {id:'paladin',name:'Paladin',faction:'House of the Born God'},
       {id:'archer',name:'Archer',faction:"The Hunter's Guild"},
+      {id:'barbarian',name:'Barbarian',faction:"The Hunter's Guild"},
+      {id:'berserker',name:'Berserker',faction:"The Hunter's Guild"},
       {id:'marauder',name:'Marauder',faction:"The Hunter's Guild"},
+      {id:'dragoon',name:'Dragoon',faction:'The Sacrament Guard'},
       {id:'guardian',name:'Guardian',faction:'The Sacrament Guard'},
+      {id:'knight',name:'Knight',faction:'The Sacrament Guard'},
       {id:'sentinel',name:'Sentinel',faction:'The Sacrament Guard'},
+      {id:'brute',name:'Brute',faction:'Scuttlers'},
       {id:'cutthroat',name:'Cutthroat',faction:'Scuttlers'},
+      {id:'fencer',name:'Fencer',faction:'Scuttlers'},
       {id:'warlord',name:'Warlord',faction:'Scuttlers'},
+      {id:'assassin',name:'Assassin',faction:'The Severed Hand'},
       {id:'harbinger',name:'Harbinger',faction:'The Severed Hand'},
+      {id:'rogue',name:'Rogue',faction:'The Severed Hand'},
+      {id:'wraith',name:'Wraith',faction:'The Severed Hand'},
+      {id:'frost-mage',name:'Frost Mage',faction:'Unspoken'},
       {id:'plaguebearer',name:'Plaguebearer',faction:'Unspoken'},
       {id:'pyromancer',name:'Pyromancer',faction:'Unspoken'},
       {id:'stormbringer',name:'Stormbringer',faction:'Unspoken'}
     ];
     var selectedClass=null;
+    function closeClassDrop(){
+      document.getElementById('cbClassDrop').classList.remove('open');
+      document.getElementById('cbClassTrigger').setAttribute('aria-expanded','false');
+    }
     function buildClassGrid(){
-      var grid=document.getElementById('cbClassGrid');
+      var list=document.getElementById('cbClassList');
+      var lastFac=null;
       CLASSES.forEach(function(c){
+        if(c.faction!==lastFac){
+          var h=document.createElement('li');
+          h.className='cb-class-fac'; h.textContent=c.faction; h.setAttribute('role','presentation');
+          list.appendChild(h);
+          lastFac=c.faction;
+        }
+        var li=document.createElement('li'); li.setAttribute('role','none');
         var btn=document.createElement('button');
-        btn.type='button'; btn.className='cb-class-btn'; btn.dataset.class=c.id;
-        btn.title=c.name+' — '+c.faction;
-        btn.innerHTML='<img src="img/icon/'+c.id+'.png" alt="'+c.name+'">';
-        grid.appendChild(btn);
+        btn.type='button'; btn.className='cb-class-opt'; btn.dataset.class=c.id; btn.setAttribute('role','option');
+        btn.innerHTML='<img src="img/icon/'+c.id+'.png" alt="">'+c.name;
+        li.appendChild(btn);
+        list.appendChild(li);
       });
-      grid.addEventListener('click',function(e){
-        var btn=e.target.closest('.cb-class-btn'); if(!btn) return;
+      var dropWrap=document.getElementById('cbClassDrop');
+      var trigger=document.getElementById('cbClassTrigger');
+      trigger.addEventListener('click',function(e){
+        e.stopPropagation();
+        var open=dropWrap.classList.toggle('open');
+        trigger.setAttribute('aria-expanded',open?'true':'false');
+      });
+      document.addEventListener('click',function(e){
+        if(!dropWrap.contains(e.target)) closeClassDrop();
+      });
+      document.addEventListener('keydown',function(e){
+        if(e.key==='Escape') closeClassDrop();
+      });
+      list.addEventListener('click',function(e){
+        var btn=e.target.closest('.cb-class-opt'); if(!btn) return;
         var id=btn.dataset.class;
         var already=selectedClass===id;
-        grid.querySelectorAll('.cb-class-btn.on').forEach(function(b){ b.classList.remove('on'); });
+        list.querySelectorAll('.cb-class-opt.on').forEach(function(b){ b.classList.remove('on'); });
         selectedClass=already?null:id;
         if(selectedClass) btn.classList.add('on');
         var p=document.getElementById('cbClassSelected');
-        if(!selectedClass){ p.innerHTML='No class selected &mdash; building generic.'; return; }
-        var c=CLASSES.filter(function(x){ return x.id===selectedClass; })[0];
-        p.innerHTML='Building for <strong>'+c.name+'</strong> <em>&middot; '+c.faction+'</em>';
+        var label=trigger.querySelector('.cb-class-trigger-label');
+        if(!selectedClass){
+          p.innerHTML='No class selected &mdash; building generic.';
+          label.innerHTML='<span>Select a class&hellip;</span>';
+        } else {
+          var c=CLASSES.filter(function(x){ return x.id===selectedClass; })[0];
+          p.innerHTML='Building for <strong>'+c.name+'</strong> <em>&middot; '+c.faction+'</em>';
+          label.innerHTML='<img src="img/icon/'+c.id+'.png" alt=""><span>'+c.name+'</span>';
+        }
+        closeClassDrop();
       });
     }
 
