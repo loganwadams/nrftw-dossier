@@ -3236,6 +3236,9 @@ footer li{color:#6f665b}
         r.appendChild(ic);
         var cellsWrap=document.createElement('div'); cellsWrap.className='cb-cells'+(row.label==='Armor'?' cb-cells-2up':'');
         var itemSlotId=null;
+        var catCounts={};
+        row.cells.forEach(function(cell){ if(cell.kind!=='inf'){ catCounts[cell.cat]=(catCounts[cell.cat]||0)+1; } });
+        var catSeen={};
         row.cells.forEach(function(cell,ci){
           var id='r'+ri+'c'+ci;
           var slot=document.createElement('div');
@@ -3245,7 +3248,9 @@ footer li{color:#6f665b}
           slot.innerHTML='<span class="cb-slot-plus">+</span>';
           cellsWrap.appendChild(slot);
           var cat=isInf?'inf':cell.cat;
-          slotEls[id]={el:slot,cat:cat,kind:cell.kind,label:isInf?('Infusion — '+row.label):row.label};
+          var ord=null;
+          if(!isInf && catCounts[cat]>1){ catSeen[cat]=(catSeen[cat]||0)+1; ord=catSeen[cat]; }
+          slotEls[id]={el:slot,cat:cat,kind:cell.kind,label:isInf?('Infusion — '+row.label):row.label,ord:ord};
           if(!isInf) itemSlotId=id;
         });
         r.appendChild(cellsWrap);
@@ -3347,7 +3352,7 @@ footer li{color:#6f665b}
       var meta=slotEls[id]; if(!meta) return;
       pickerOpenFor=id;
       var picker=document.getElementById('cbPicker');
-      document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item');
+      document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item')+(meta.ord?' ('+meta.ord+')':'');
       document.getElementById('cbPickerSearch').value='';
       picker.hidden=false;
       renderPicker(meta.cat,'');
