@@ -588,9 +588,6 @@ section{padding-block:48px}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
 .cb-slot-clear:hover{color:var(--rust);border-color:var(--rust)}
-.cb-slot.locked{cursor:default;opacity:.55}
-.cb-slot.locked:hover{border-color:var(--edge)}
-.cb-slot.locked svg{width:15px;height:15px;stroke:#5a5146;fill:none;stroke-width:1.5}
 .cb-row-label{display:none}
 
 /* loadout manifest */
@@ -3069,7 +3066,6 @@ footer li{color:#6f665b}
       armor:'img/cb/icon-armor.webp',
       ring:'img/cb/icon-ring.webp'
     };
-    var LOCK='<svg viewBox="0 0 24 24"><path d="M6 11V8a6 6 0 0 1 12 0v3"/><rect x="4" y="11" width="16" height="10" rx="1.5"/></svg>';
 
     var cards=null, cardsLoading=null, allItems=null;
     function loadCards(){
@@ -3129,17 +3125,13 @@ footer li{color:#6f665b}
           var id='r'+ri+'c'+ci;
           var slot=document.createElement('div');
           var isInf=cell.kind==='inf';
-          slot.className='cb-slot'+(isInf?' cb-slot-sm locked':'');
+          slot.className='cb-slot'+(isInf?' cb-slot-sm':'');
           slot.dataset.slot=id;
-          slot.innerHTML=isInf?('<svg viewBox="0 0 24 24">'+LOCK.replace(/<\/?svg[^>]*>/g,'')+'</svg>'):'<span class="cb-slot-plus">+</span>';
+          slot.innerHTML='<span class="cb-slot-plus">+</span>';
           cellsWrap.appendChild(slot);
           var cat=isInf?'inf':cell.cat;
           slotEls[id]={el:slot,cat:cat,kind:cell.kind,label:isInf?('Infusion — '+row.label):row.label};
           if(!isInf) itemSlotId=id;
-        });
-        // remember which item slot governs this row's infusion locks
-        row.cells.forEach(function(cell,ci){
-          if(cell.kind==='inf') slotEls['r'+ri+'c'+ci].governedBy=itemSlotId;
         });
         r.appendChild(cellsWrap);
         wrap.appendChild(r);
@@ -3221,9 +3213,8 @@ footer li{color:#6f665b}
     function setSlotEmpty(id){
       var meta=slotEls[id]; if(!meta) return;
       delete equipped[id];
-      var isInf=meta.kind==='inf';
       meta.el.classList.remove('filled');
-      meta.el.innerHTML=isInf?('<svg viewBox="0 0 24 24">'+LOCK.replace(/<\/?svg[^>]*>/g,'')+'</svg>'):'<span class="cb-slot-plus">+</span>';
+      meta.el.innerHTML='<span class="cb-slot-plus">+</span>';
     }
     function equipSlot(id,key){
       var meta=slotEls[id]; if(!meta) return;
@@ -3233,19 +3224,12 @@ footer li{color:#6f665b}
       meta.el.innerHTML='<span class="cb-slot-main m-ic" data-k="'+key+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
         (item.lv?'<span class="cb-slot-lv">'+item.lv+'</span>':'')+
         '<button type="button" class="cb-slot-clear" aria-label="Remove">&times;</button>';
-      // unlock this row's infusion slots now that the item slot is filled
-      Object.keys(slotEls).forEach(function(oid){
-        if(slotEls[oid].governedBy===id){
-          slotEls[oid].el.classList.remove('locked');
-        }
-      });
       renderManifest();
     }
 
     var pickerOpenFor=null;
     function openPicker(id){
       var meta=slotEls[id]; if(!meta) return;
-      if(meta.kind==='inf' && meta.el.classList.contains('locked')) return;
       pickerOpenFor=id;
       var picker=document.getElementById('cbPicker');
       document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item');
@@ -3302,9 +3286,7 @@ footer li{color:#6f665b}
       var clear=e.target.closest('.cb-slot-clear');
       var slotEl=e.target.closest('.cb-slot'); if(!slotEl) return;
       var id=slotEl.dataset.slot; var meta=slotEls[id]; if(!meta) return;
-      if(clear){ e.preventDefault(); e.stopPropagation(); setSlotEmpty(id); renderManifest();
-        Object.keys(slotEls).forEach(function(oid){ if(slotEls[oid].governedBy===id){ setSlotEmpty(oid); slotEls[oid].el.classList.add('locked'); } });
-        return; }
+      if(clear){ e.preventDefault(); e.stopPropagation(); setSlotEmpty(id); renderManifest(); return; }
       if(!equipped[id]){ e.preventDefault(); openPicker(id); }
     }
     document.getElementById('cbRows').addEventListener('click',onSlotsClick);
