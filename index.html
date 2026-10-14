@@ -30,6 +30,14 @@
 .pgbar-item{position:relative;display:flex}
 .pgbar button.has-drop{display:inline-flex;align-items:center;gap:5px}
 .pgbar button.has-drop .toc-caret{margin-left:0}
+/* Cerim Builder: set apart from the rest of the chapter tabs with some breathing room and a
+   faint yellow glow, since it's a different kind of page (an interactive tool, not a reference
+   chapter) rather than one more entry in the reading order. */
+.pgbar button.pg-cerim{margin-left:18px;color:#e8c96a;text-shadow:0 0 10px rgba(232,201,106,.45)}
+.pgbar button.pg-cerim:hover{color:#f6dd8e;text-shadow:0 0 14px rgba(246,221,142,.65)}
+.pgbar button.pg-cerim[aria-current="page"]{color:var(--gold);text-shadow:0 0 14px rgba(232,201,106,.65)}
+@media (max-width:760px){.pgbar button.pg-cerim{margin-left:0}
+  .pgbar.menu-open .pgbar-item .pgbar-row button.pg-cerim{margin-left:0}}
 body.paged [data-page]:not(.pg-on){display:none!important}
 body.paged .contents{display:none}
 [data-page]{scroll-margin-top:96px}
@@ -2882,6 +2890,11 @@ footer li{color:#6f665b}
       <p class="vid-empty" id="art-empty" hidden>No ArtStation pieces have been added yet. Once links are in, they appear here the same way as the YouTube videos.</p>
     </div>
   </section>
+  <section id="cerim-builder">
+    <div class="sect-head"><h2>Cerim Builder</h2></div>
+    <p class="standfirst">An interactive planner for building out a character for the Cerim Crucible &mdash; weapon, stance, infusions and enchantments, assembled on screen as you choose them.</p>
+    <p class="vid-empty">Coming soon. The planner isn&rsquo;t live yet &mdash; nothing to build with here just yet.</p>
+  </section>
 <script>
 (function(){
   // one entry per video: { id: YouTube video id, title, note }
@@ -3383,7 +3396,8 @@ footer li{color:#6f665b}
     {id:'gear',  ids:['infusions','enchantments']},
     {id:'vend',  ids:['vendors']},
     {id:'cat',   ids:['catalog']},
-    {id:'vid',   ids:['videos']}
+    {id:'vid',   ids:['videos']},
+    {id:'cerim', ids:['cerim-builder']}
   ];
   var CHAPS=[
     {id:'home',         num:'',   label:'Home',          group:'home',  target:'intro',  tag:['hero','intro','lore']},
@@ -3395,7 +3409,8 @@ footer li{color:#6f665b}
     {id:'enchantments', num:'06', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments']},
     {id:'vendors',      num:'07', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors'], drop:true},
     {id:'catalog',    num:'08', label:'Catalog',    group:'cat',   target:'catalog', tag:['catalog'], drop:true},
-    {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'}
+    {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
+    {id:'cerim-builder', num:'10', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'}
   ];
   // Vendors, Catalog and Media are each a standalone page (one chapter, nothing else sharing
   // the group) so they get a real clean path instead of a #hash. Factions/Classes share one
