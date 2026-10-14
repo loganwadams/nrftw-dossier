@@ -3116,12 +3116,25 @@ footer li{color:#6f665b}
     // Prototype: class/gear synergy, sourced from each class's own "Loadout" guidance
     // in the Classes section above (e.g. Wraith: "Armor: Light... stay under the Normal
     // encumbrance threshold"). Armor weight tier comes straight off the item's own type
-    // string (Cloth/Leather/Mesh/Plate), the same field the Catalog groups by.
+    // string (Cloth/Leather/Mesh/Plate), the same field the Catalog groups by. Weapon/
+    // offhand weight tier comes off the same kind of prefix (One-Handed/Dual Wielding/
+    // Two-Handed, or Light/Medium/Great Shield).
     var ARMOR_WEIGHT_TIER={Cloth:1,Leather:2,Mesh:3,Plate:4};
     function armorWeightTier(item){ return ARMOR_WEIGHT_TIER[(item.t||'').split(' ')[0]]||2; }
+    function weaponWeightTier(item){
+      var t=(item.t||'');
+      if(/^Two-Handed/.test(t) || /^Great Shield/.test(t)) return 3;
+      if(/^Dual Wielding/.test(t) || /^Medium Shield/.test(t)) return 2;
+      if(/^One-Handed/.test(t) || /^Light Shield/.test(t)) return 1;
+      return 2;
+    }
     var CLASS_SYNERGY={
-      wraith:{weightCeiling:2,mobilityPenalty:20,defenseDampen:.4,
-        mismatch:"Plate on Wraith fights the kit it's built around — its defense is dodging the hit, not absorbing it. Heavy armor costs more Mobility than the Defense is worth."}
+      wraith:{
+        weightCeiling:2,mobilityPenalty:20,defenseDampen:.4,
+        mismatch:"Plate on Wraith fights the kit it's built around — its defense is dodging the hit, not absorbing it. Heavy armor costs more Mobility than the Defense is worth.",
+        weaponWeightCeiling:2,weaponMobilityPenalty:15,weaponDamageDampen:.85,
+        weaponMismatch:"A two-handed weapon (or great shield) fights the same kit — Wraith's stamina economy and multi-hit strings assume something fast in hand, not a slow heavy swing."
+      }
     };
 
     function closeClassDrop(){
@@ -3374,12 +3387,15 @@ footer li{color:#6f665b}
       {id:'mobility',label:'Mobility',cats:[]},
       {id:'utility',label:'Utility',cats:['ring','rune']}
     ];
-    function itemsOfCat(catList){
+    function slotEntriesOfCat(catList){
       if(!cards) return [];
       return Object.keys(equipped)
         .filter(function(id){ return slotEls[id] && catList.indexOf(slotEls[id].cat)>-1; })
-        .map(function(id){ return cards[equipped[id]]; })
-        .filter(Boolean);
+        .map(function(id){ return {id:id,item:cards[equipped[id]]}; })
+        .filter(function(e){ return !!e.item; });
+    }
+    function itemsOfCat(catList){
+      return slotEntriesOfCat(catList).map(function(e){ return e.item; });
     }
     function avgLevel(items){
       if(!items.length) return 0;
@@ -3388,15 +3404,12 @@ footer li{color:#6f665b}
       return s/items.length;
     }
     function armorSlotEntries(){
-      if(!cards) return [];
-      return Object.keys(equipped)
-        .filter(function(id){ return slotEls[id] && ['helm','chest','legs','gloves'].indexOf(slotEls[id].cat)>-1; })
-        .map(function(id){ return {id:id,item:cards[equipped[id]]}; })
-        .filter(function(e){ return !!e.item; });
+      return slotEntriesOfCat(['helm','chest','legs','gloves']);
     }
     function computeProfile(){
       var a=attrVals;
-      var weaponItems=itemsOfCat(['weapon','offhand']);
+      var weaponEntries=slotEntriesOfCat(['weapon','offhand']);
+      var weaponItems=weaponEntries.map(function(e){ return e.item; });
       var armorEntries=armorSlotEntries();
       var armorItems=armorEntries.map(function(e){ return e.item; });
       var ringItems=itemsOfCat(['ring']);
@@ -3410,22 +3423,31 @@ footer li{color:#6f665b}
       var mob=90 - totalGear*7;
       var util=(a.focus-10)*2 + runeItems.length*12 + ringItems.length*8;
 
-      var mismatch=null;
-      var warnIds=[];
+      var mismatches=[];
+      var warnGroups=[];
       var synergy=CLASS_SYNERGY[selectedClass];
       if(synergy){
         var heavyPieces=armorEntries.filter(function(e){ return armorWeightTier(e.item)>synergy.weightCeiling; });
         if(heavyPieces.length){
           mob-=heavyPieces.length*synergy.mobilityPenalty;
           def*=synergy.defenseDampen;
-          mismatch=synergy.mismatch;
-          warnIds=heavyPieces.map(function(e){ return e.id; });
+          mismatches.push(synergy.mismatch);
+          warnGroups.push({ids:heavyPieces.map(function(e){ return e.id; }),message:synergy.mismatch});
+        }
+        if(synergy.weaponWeightCeiling){
+          var heavyWeapons=weaponEntries.filter(function(e){ return weaponWeightTier(e.item)>synergy.weaponWeightCeiling; });
+          if(heavyWeapons.length){
+            mob-=heavyWeapons.length*synergy.weaponMobilityPenalty;
+            dmg*=synergy.weaponDamageDampen;
+            mismatches.push(synergy.weaponMismatch);
+            warnGroups.push({ids:heavyWeapons.map(function(e){ return e.id; }),message:synergy.weaponMismatch});
+          }
         }
       }
 
       return {
-        mismatch:mismatch,
-        warnIds:warnIds,
+        mismatch:mismatches.length?mismatches.join(' '):null,
+        warnGroups:warnGroups,
         rows:[
           {id:'damage',label:'Damage Output',color:'var(--rust)',value:Math.max(0,Math.min(100,Math.round(dmg)))},
           {id:'defense',label:'Defense',color:'var(--c-storm)',value:Math.max(0,Math.min(100,Math.round(def)))},
@@ -3473,9 +3495,7 @@ footer li{color:#6f665b}
         return '<div class="attr" style="--accent:'+tint+'"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
       }).join('');
       clearSlotWarnings();
-      if(result.warnIds && result.warnIds.length){
-        applySlotWarnings(result.warnIds,result.mismatch);
-      }
+      (result.warnGroups||[]).forEach(function(g){ applySlotWarnings(g.ids,g.message); });
       var warnChip=document.getElementById('cbProfileWarnChip');
       if(warnChip) warnChip.hidden=!result.mismatch;
       var note=document.getElementById('cbProfileNote');
