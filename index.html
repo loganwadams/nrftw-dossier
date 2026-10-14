@@ -543,6 +543,7 @@ section{padding-block:48px}
 #cbProfileBars.attrs{gap:11px}
 #cbProfileBars .attr{grid-template-columns:minmax(118px,140px) 1fr auto}
 #cbProfileBars .attr>span:first-child{font-family:var(--body);font-size:15px;letter-spacing:normal;text-transform:none}
+#cbProfileNote.cb-note-warn{border-left-color:var(--rust);color:#d9a98c}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
 .cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
@@ -3107,6 +3108,18 @@ footer li{color:#6f665b}
       {id:'stormbringer',name:'Stormbringer',faction:'Unspoken'}
     ];
     var selectedClass=null;
+
+    // Prototype: class/gear synergy, sourced from each class's own "Loadout" guidance
+    // in the Classes section above (e.g. Wraith: "Armor: Light... stay under the Normal
+    // encumbrance threshold"). Armor weight tier comes straight off the item's own type
+    // string (Cloth/Leather/Mesh/Plate), the same field the Catalog groups by.
+    var ARMOR_WEIGHT_TIER={Cloth:1,Leather:2,Mesh:3,Plate:4};
+    function armorWeightTier(item){ return ARMOR_WEIGHT_TIER[(item.t||'').split(' ')[0]]||2; }
+    var CLASS_SYNERGY={
+      wraith:{weightCeiling:2,mobilityPenalty:20,defenseDampen:.4,
+        mismatch:"Plate on Wraith fights the kit it's built around — its defense is dodging the hit, not absorbing it. Heavy armor costs more Mobility than the Defense is worth."}
+    };
+
     function closeClassDrop(){
       document.getElementById('cbClassDrop').classList.remove('open');
       document.getElementById('cbClassTrigger').setAttribute('aria-expanded','false');
@@ -3385,13 +3398,27 @@ footer li{color:#6f665b}
       var mob=90 - totalGear*7;
       var util=(a.focus-10)*2 + runeItems.length*12 + ringItems.length*8;
 
-      return [
-        {id:'damage',label:'Damage Output',color:'var(--rust)',value:Math.max(0,Math.min(100,Math.round(dmg)))},
-        {id:'defense',label:'Defense',color:'var(--c-storm)',value:Math.max(0,Math.min(100,Math.round(def)))},
-        {id:'survivability',label:'Survivability',color:'var(--blood)',value:Math.max(0,Math.min(100,Math.round(surv)))},
-        {id:'mobility',label:'Mobility',color:'var(--verdigris)',value:Math.max(5,Math.min(100,Math.round(mob)))},
-        {id:'utility',label:'Utility',color:'var(--c-plague)',value:Math.max(0,Math.min(100,Math.round(util)))}
-      ];
+      var mismatch=null;
+      var synergy=CLASS_SYNERGY[selectedClass];
+      if(synergy){
+        var heavyPieces=armorItems.filter(function(it){ return armorWeightTier(it)>synergy.weightCeiling; });
+        if(heavyPieces.length){
+          mob-=heavyPieces.length*synergy.mobilityPenalty;
+          def*=synergy.defenseDampen;
+          mismatch=synergy.mismatch;
+        }
+      }
+
+      return {
+        mismatch:mismatch,
+        rows:[
+          {id:'damage',label:'Damage Output',color:'var(--rust)',value:Math.max(0,Math.min(100,Math.round(dmg)))},
+          {id:'defense',label:'Defense',color:'var(--c-storm)',value:Math.max(0,Math.min(100,Math.round(def)))},
+          {id:'survivability',label:'Survivability',color:'var(--blood)',value:Math.max(0,Math.min(100,Math.round(surv)))},
+          {id:'mobility',label:'Mobility',color:'var(--verdigris)',value:Math.max(0,Math.min(100,Math.round(mob)))},
+          {id:'utility',label:'Utility',color:'var(--c-plague)',value:Math.max(0,Math.min(100,Math.round(util)))}
+        ]
+      };
     }
     function profileTier(v){
       if(v>=80) return 'High';
@@ -3403,15 +3430,19 @@ footer li{color:#6f665b}
     function renderProfile(){
       var wrap=document.getElementById('cbProfileBars');
       if(!wrap) return;
-      var rows=computeProfile();
+      var result=computeProfile();
+      var rows=result.rows;
       wrap.innerHTML=rows.map(function(r){
         var tint=r.value>0?r.color:'var(--edge-hot)';
         return '<div class="attr" style="--accent:'+tint+'"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
       }).join('');
       var note=document.getElementById('cbProfileNote');
+      note.classList.toggle('cb-note-warn',!!result.mismatch);
       var nothingInvested=!Object.keys(equipped).length && ptsSpent()===0;
       var top=rows.slice().sort(function(x,y){ return y.value-x.value; })[0];
-      if(nothingInvested){
+      if(result.mismatch){
+        note.textContent=result.mismatch;
+      } else if(nothingInvested){
         note.textContent='Equip gear and spend attribute points above to see where this build leans.';
       } else if(top.value<10){
         note.textContent="Nothing stands out yet — equip more gear or raise attributes to shape this build's identity.";
