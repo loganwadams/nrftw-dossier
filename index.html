@@ -212,6 +212,13 @@ body{
   font-weight:300;
   -webkit-font-smoothing:antialiased;
   position:relative;
+  /* sticky footer: when a page's content is short (e.g. the Media page with its accordions
+     collapsed) and doesn't fill the viewport, this keeps the footer pinned to the true bottom
+     of the window instead of floating above a bare strip of the page background - see .wrap
+     and footer's margin-top:auto below. */
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
 /* --- vellum ground: a sheet of darkened parchment, lit from the centre ------- */
@@ -267,13 +274,18 @@ body::after{
   margin:0 auto;
   padding-inline:20px;
   padding-block:0 0;
+  width:100%;
+  box-sizing:border-box;
+  flex:1 0 auto;
+  display:flex;
+  flex-direction:column;
 }
 
 /* a wide scene from the game sits BEHIND the footer's own text (Sources + the legal line), full-
    bleed. The image itself already carries its own alpha fade (transparent at its top edge,
    dissolving down into the opaque scene), so it blends straight into the page's own --ink
    background with no separate CSS gradient layer needed - no hard seam, no double-darkening. */
-footer{position:relative}
+footer{position:relative;margin-top:auto}
 .footer-bg{
   position:absolute;
   /* fixed height, anchored to the footer's bottom edge, rather than spanning the footer's
