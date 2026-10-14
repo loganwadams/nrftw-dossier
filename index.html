@@ -33,9 +33,10 @@
 /* Cerim Builder: set apart from the rest of the chapter tabs with some breathing room and a
    faint yellow glow, since it's a different kind of page (an interactive tool, not a reference
    chapter) rather than one more entry in the reading order. */
-.pgbar button.pg-cerim{margin-left:18px;color:#e8c96a;text-shadow:0 0 10px rgba(232,201,106,.45)}
-.pgbar button.pg-cerim:hover{color:#f6dd8e;text-shadow:0 0 14px rgba(246,221,142,.65)}
-.pgbar button.pg-cerim[aria-current="page"]{color:var(--gold);text-shadow:0 0 14px rgba(232,201,106,.65)}
+.pgbar button.pg-cerim{margin-left:18px;color:#e8c96a;text-shadow:0 0 10px rgba(232,201,106,.55);border-radius:4px;box-shadow:0 0 12px 2px rgba(232,201,106,.35);animation:cerim-glow 2.6s ease-in-out infinite}
+.pgbar button.pg-cerim:hover{color:#f6dd8e;text-shadow:0 0 14px rgba(246,221,142,.75);box-shadow:0 0 16px 3px rgba(246,221,142,.55)}
+.pgbar button.pg-cerim[aria-current="page"]{color:var(--gold);text-shadow:0 0 14px rgba(232,201,106,.75);box-shadow:0 0 16px 3px rgba(232,201,106,.55)}
+@keyframes cerim-glow{0%,100%{box-shadow:0 0 10px 1px rgba(232,201,106,.28)}50%{box-shadow:0 0 16px 4px rgba(232,201,106,.5)}}
 @media (max-width:760px){.pgbar button.pg-cerim{margin-left:0}
   .pgbar.menu-open .pgbar-item .pgbar-row button.pg-cerim{margin-left:0}}
 body.paged [data-page]:not(.pg-on){display:none!important}
