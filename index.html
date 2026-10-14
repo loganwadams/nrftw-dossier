@@ -522,6 +522,21 @@ section{padding-block:48px}
   padding-bottom:2px;
   border-bottom:2px solid var(--edge-hot);
 }
+/* Placeholder marker for Cerim Builder's header, in the page's own light blue accent (matching
+   its nav tab). Pull this span (and its one caller) once the planner is actually live. */
+.coming-soon-badge{
+  font-family:var(--data);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#8ecbe8;
+  border:1px solid rgba(142,203,232,.45);
+  border-radius:3px;
+  padding:4px 10px;
+  text-shadow:0 0 8px rgba(142,203,232,.55);
+  box-shadow:0 0 10px rgba(142,203,232,.2) inset;
+}
 h2{
   font-family:var(--display);
   font-weight:400;
@@ -2890,9 +2905,11 @@ footer li{color:#6f665b}
     </div>
   </section>
   <section id="cerim-builder">
-    <div class="sect-head"><h2>Cerim Builder</h2></div>
+    <!-- Remove this badge once the planner is live - it's a placeholder marker, not a permanent
+         part of the page header. -->
+    <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Coming Soon</span></div>
     <p class="standfirst">An interactive planner for building out a character &mdash; weapon, stance, infusions and enchantments, assembled on screen as you choose them.</p>
-    <p class="vid-empty">Coming soon. The planner isn&rsquo;t live yet &mdash; nothing to build with here just yet.</p>
+    <p class="vid-empty">The planner isn&rsquo;t live yet &mdash; nothing to build with here just yet.</p>
   </section>
 <script>
 (function(){
