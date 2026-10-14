@@ -2893,7 +2893,7 @@ footer li{color:#6f665b}
   </section>
   <section id="cerim-builder">
     <div class="sect-head"><h2>Cerim Builder</h2></div>
-    <p class="standfirst">An interactive planner for building out a character for the Cerim Crucible &mdash; weapon, stance, infusions and enchantments, assembled on screen as you choose them.</p>
+    <p class="standfirst">An interactive planner for building out a character &mdash; weapon, stance, infusions and enchantments, assembled on screen as you choose them.</p>
     <p class="vid-empty">Coming soon. The planner isn&rsquo;t live yet &mdash; nothing to build with here just yet.</p>
   </section>
 <script>
@@ -3405,9 +3405,10 @@ footer li{color:#6f665b}
     {id:'brief',        num:'',   label:'',                  group:'home',  target:'brief',  tag:['brief'], hidden:true},
     {id:'factions',     num:'02', label:'Factions',          group:'world', target:'factions', tag:['factions'], drop:true},
     {id:'classes',      num:'03', label:'Classes',           group:'world', target:'classes', tag:['classes'], drop:true},
-    {id:'systems',      num:'04', label:'Rules That Govern', group:'world', target:'systems', tag:['systems']},
-    {id:'infusions',    num:'05', label:'Infusions',         group:'gear',  target:'infusions', tag:['infusions']},
-    {id:'enchantments', num:'06', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments']},
+    {id:'systems',      num:'04', label:'Systems',            group:'world', target:'systems', tag:['systems']},
+    {id:'infusions',    num:'05', label:'Infusions',         group:'gear',  target:'infusions', tag:['infusions'], hidden:true},
+    {id:'enchantments', num:'06', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments'], hidden:true},
+    {id:'gear',         num:'05', label:'Gear',              group:'gear',  target:'infusions', tag:[], drop:true},
     {id:'vendors',      num:'07', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors'], drop:true},
     {id:'catalog',    num:'08', label:'Catalog',    group:'cat',   target:'catalog', tag:['catalog'], drop:true},
     {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
@@ -3431,9 +3432,16 @@ footer li{color:#6f665b}
   var current=null, currentChap=null;
   var BASE_TITLE='Wicked Dossier';
   var CHAP_TITLE={}; CHAPS.forEach(function(c){ CHAP_TITLE[c.id]=c.aria||c.label; });
+  // The Gear tab merges Infusions and Enchantments into one button to save room on the bar, so
+  // its own two chapters have no button of their own. Landing on Infusions by default should
+  // read as "Infusions" in the title (not the generic "Gear"), and viewing either one by its
+  // dropdown link or a direct #hash should still light up the Gear tab as the active button.
+  CHAP_TITLE['gear']=CHAP_TITLE['infusions'];
+  var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear'};
   function show(group,chap){ current=group; currentChap=chap;
     document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); });
-    bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===chap) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+    var navId=CHAP_NAV_ALIAS[chap]||chap;
+    bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
     document.title=(label&&chap!=='home'&&chap!=='brief')?(label+' - '+BASE_TITLE):BASE_TITLE;
     try{ localStorage.setItem('nrftw-page',group); }catch(e){} }
@@ -3502,6 +3510,16 @@ footer li{color:#6f665b}
       ul.appendChild(li); });
     return ul; }
   var DROP_BUILDERS={
+    // Gear's dropdown isn't built from headings in one section like the others - it's a plain
+    // two-link menu between Infusions and Enchantments, the two chapters merged under this tab
+    // to save room on the bar. Both targets stay ordinary same-page hash links, same as every
+    // other dropdown item, so the existing hashchange/route() handling picks them up unchanged.
+    gear:function(){ var ul=document.createElement('ul'); ul.className='toc-drop';
+      [['infusions','Infusions'],['enchantments','Enchantments']].forEach(function(pair){
+        var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
+        var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
+        row.appendChild(a); li.appendChild(row); ul.appendChild(li); });
+      return ul; },
     classes:function(){ var src=document.querySelector('nav.contents .toc-drop'); return src?src.cloneNode(true):null; },
     factions:function(){ var items=[]; document.querySelectorAll('#factions .fac').forEach(function(f){
         var img=f.querySelector('.fflag'), name=f.querySelector('.fac-name'); if(!img||!name) return;
