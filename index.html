@@ -540,6 +540,8 @@ section{padding-block:48px}
 }
 
 /* --- Cerim Builder ------------------------------------------------------- */
+#cbProfileBars.attrs{gap:11px}
+#cbProfileBars .attr{grid-template-columns:minmax(118px,140px) 1fr auto}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
 .cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
@@ -3057,6 +3059,11 @@ footer li{color:#6f665b}
           <h3>Loadout Manifest</h3>
           <ul class="cb-manifest-list" id="cbManifest"><li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li></ul>
         </div>
+        <div class="cb-panel">
+          <h3>Build Profile</h3>
+          <div class="attrs" id="cbProfileBars"></div>
+          <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
+        </div>
       </div>
     </div>
 
@@ -3305,6 +3312,7 @@ footer li{color:#6f665b}
         minus.disabled=attrVals[a.id]<=10;
         plus.disabled=left<=0 || attrVals[a.id]>=40;
       });
+      renderProfile();
     }
     document.getElementById('cbLevel').addEventListener('input',function(){
       document.getElementById('cbLevelVal').textContent=this.value;
@@ -3324,17 +3332,90 @@ footer li{color:#6f665b}
     function renderManifest(){
       var ul=document.getElementById('cbManifest');
       var ids=Object.keys(equipped);
-      if(!ids.length){ ul.innerHTML='<li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li>'; return; }
-      ul.innerHTML='';
-      ids.forEach(function(id){
-        var key=equipped[id]; var item=cards[key]; if(!item) return;
-        var meta=slotEls[id];
-        var li=document.createElement('li');
-        li.innerHTML='<span class="cb-mf-slot">'+(meta.label||'')+'</span>'+
-          '<span class="cb-mf-name r-'+(item.r||'standard')+'">'+item.n+'</span>'+
-          (item.lv?'<span class="cb-mf-lv">Lv '+item.lv+'</span>':'');
-        ul.appendChild(li);
-      });
+      if(!ids.length){
+        ul.innerHTML='<li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li>';
+      } else {
+        ul.innerHTML='';
+        ids.forEach(function(id){
+          var key=equipped[id]; var item=cards[key]; if(!item) return;
+          var meta=slotEls[id];
+          var li=document.createElement('li');
+          li.innerHTML='<span class="cb-mf-slot">'+(meta.label||'')+'</span>'+
+            '<span class="cb-mf-name r-'+(item.r||'standard')+'">'+item.n+'</span>'+
+            (item.lv?'<span class="cb-mf-lv">Lv '+item.lv+'</span>':'');
+          ul.appendChild(li);
+        });
+      }
+      renderProfile();
+    }
+
+    var PROFILE_METRICS=[
+      {id:'damage',label:'Damage Output',cats:['weapon','offhand']},
+      {id:'defense',label:'Defense',cats:['helm','chest','legs','gloves']},
+      {id:'survivability',label:'Survivability',cats:[]},
+      {id:'mobility',label:'Mobility',cats:[]},
+      {id:'utility',label:'Utility',cats:['ring','rune']}
+    ];
+    function itemsOfCat(catList){
+      if(!cards) return [];
+      return Object.keys(equipped)
+        .filter(function(id){ return slotEls[id] && catList.indexOf(slotEls[id].cat)>-1; })
+        .map(function(id){ return cards[equipped[id]]; })
+        .filter(Boolean);
+    }
+    function avgLevel(items){
+      if(!items.length) return 0;
+      var lvl=+document.getElementById('cbLevel').value, s=0;
+      items.forEach(function(it){ s+=it.lv||lvl; });
+      return s/items.length;
+    }
+    function computeProfile(){
+      var a=attrVals;
+      var weaponItems=itemsOfCat(['weapon','offhand']);
+      var armorItems=itemsOfCat(['helm','chest','legs','gloves']);
+      var ringItems=itemsOfCat(['ring']);
+      var runeItems=itemsOfCat(['rune']);
+      var offenseAttr=Math.max(a.strength,a.dexterity,a.intelligence,a.faith)-10;
+
+      var dmg=weaponItems.length*14 + avgLevel(weaponItems)*2 + offenseAttr*1.2;
+      var def=armorItems.length*20 + avgLevel(armorItems)*1.4;
+      var surv=(a.health-10)*2.2 + (a.stamina-10)*1.4 + armorItems.length*6;
+      var totalGear=weaponItems.length+armorItems.length+ringItems.length;
+      var mob=90 - totalGear*7;
+      var util=(a.focus-10)*2 + runeItems.length*12 + ringItems.length*8;
+
+      return [
+        {id:'damage',label:'Damage Output',value:Math.max(0,Math.min(100,Math.round(dmg)))},
+        {id:'defense',label:'Defense',value:Math.max(0,Math.min(100,Math.round(def)))},
+        {id:'survivability',label:'Survivability',value:Math.max(0,Math.min(100,Math.round(surv)))},
+        {id:'mobility',label:'Mobility',value:Math.max(5,Math.min(100,Math.round(mob)))},
+        {id:'utility',label:'Utility',value:Math.max(0,Math.min(100,Math.round(util)))}
+      ];
+    }
+    function profileTier(v){
+      if(v>=80) return 'High';
+      if(v>=55) return 'Strong';
+      if(v>=30) return 'Moderate';
+      if(v>=10) return 'Low';
+      return 'Minimal';
+    }
+    function renderProfile(){
+      var wrap=document.getElementById('cbProfileBars');
+      if(!wrap) return;
+      var rows=computeProfile();
+      wrap.innerHTML=rows.map(function(r){
+        return '<div class="attr"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
+      }).join('');
+      var note=document.getElementById('cbProfileNote');
+      var nothingInvested=!Object.keys(equipped).length && ptsSpent()===0;
+      var top=rows.slice().sort(function(x,y){ return y.value-x.value; })[0];
+      if(nothingInvested){
+        note.textContent='Equip gear and spend attribute points above to see where this build leans.';
+      } else if(top.value<10){
+        note.textContent="Nothing stands out yet — equip more gear or raise attributes to shape this build's identity.";
+      } else {
+        note.textContent='This build currently leans hardest on '+top.label+'.';
+      }
     }
 
     function setSlotEmpty(id){
