@@ -23,7 +23,7 @@
    the bar's own (contained) edges. */
 .pgbar::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;z-index:-1;background:rgba(10,8,7,.92);backdrop-filter:blur(6px);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
 @media (max-width:760px){.pgbar::before{left:0;width:100%;margin-left:0}}
-.pgbar button{appearance:none;background:none;border:1px solid transparent;color:var(--muted);font-family:"Arcon",var(--body);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:color .15s,border-color .15s}
+.pgbar button{appearance:none;background:none;border:1px solid transparent;color:var(--muted);font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:color .15s,border-color .15s}
 .pgbar button:hover{color:var(--bone)}
 .pgbar button[aria-current="page"]{color:var(--gold);font-weight:600}
 .pgbar .pg-num{color:#6f6758;margin-right:6px}
@@ -43,7 +43,7 @@ body.paged .contents{display:none}
 [id]{scroll-margin-top:96px}
 @media (max-width:600px){.pgbar button{padding:8px 10px;font-size:10.5px;letter-spacing:.1em}}
 /* mobile: a floating burger replaces the tab row, opening a dropdown panel with the chapters (and the search box) */
-.pgbar-burger{display:none;align-items:center;gap:8px;appearance:none;background:none;border:1px solid var(--edge);color:var(--gold-dim);padding:9px 14px;margin:0 0 0 auto;cursor:pointer;font-family:"Arcon",var(--body);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;transition:color .15s,border-color .15s}
+.pgbar-burger{display:none;align-items:center;gap:8px;appearance:none;background:none;border:1px solid var(--edge);color:var(--gold-dim);padding:9px 14px;margin:0 0 0 auto;cursor:pointer;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;transition:color .15s,border-color .15s}
 .pgbar-burger:hover,.pgbar-burger:focus-visible{color:var(--gold);border-color:var(--gold-dim)}
 .pgbar-burger .bg-ic{width:16px;height:16px;display:block;flex:none}
 .pgbar-burger .bg-ic path{transition:opacity .15s,transform .15s}
@@ -1141,7 +1141,7 @@ section,article.klass{scroll-margin-top:24px}
 .toc-drop a:hover img{opacity:1;filter:none;transform:scale(1.12)}
 .pgbar .toc-has-drop{display:flex}
 .pgbar .toc-drop{z-index:55;max-height:min(60vh,420px);overflow:auto}
-.pgbar .toc-drop a{font-family:"Arcon",var(--body);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}
+.pgbar .toc-drop a{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}
 .toc-ic-wrap{width:26px;height:26px;overflow:hidden;flex:none;position:relative;opacity:.65;filter:grayscale(.3) brightness(.95);transition:opacity .15s,filter .15s,transform .15s}
 .toc-drop a:hover .toc-ic-wrap{opacity:1;filter:none;transform:scale(1.12)}
 .toc-ic-wrap .m-ic{display:block;transform:scale(.5417);transform-origin:0 0;background-color:transparent;border:none}
