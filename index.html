@@ -303,6 +303,27 @@ footer>*{position:relative;z-index:1}
   padding-block:26px 10px;
   position:relative;
 }
+/* same idea as the footer scene: a wide shot of the game's world sits behind the masthead,
+   full-bleed, graded into the site's own ink/gold/ember palette. The source art already
+   carries its own alpha fade (opaque at top, dissolving to transparent toward the bottom),
+   so it blends straight down into the page background with no separate CSS gradient layer. */
+.header-bg{
+  position:absolute;
+  top:0;
+  height:460px;
+  left:50%;
+  width:100vw;
+  margin-left:-50vw;
+  z-index:-1;
+  background-image:url(img/header-scene-bg.webp);
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center top;
+  pointer-events:none;
+}
+.masthead>*{position:relative;z-index:1}
+.masthead>.header-bg{position:absolute;z-index:-1}
+@media (max-width:760px){.header-bg{height:320px}}
 
 /* --- separators: a family of thin gradient rules used between sections -- */
 .sep{height:1px;margin:0;border:0;background:linear-gradient(90deg,transparent,var(--edge-hot) 12%,transparent 60%)}
@@ -1191,6 +1212,7 @@ footer li{color:#6f665b}
 <div class="wrap">
 
   <header class="masthead">
+    <div class="header-bg" aria-hidden="true"></div>
     <img class="logo" src="img/logo.webp" alt="No Rest for the Wicked Dossier">
 
     <div class="keybar">
