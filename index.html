@@ -3045,17 +3045,13 @@ footer li{color:#6f665b}
     var ROWS=[
       {label:'Main Hand',icon:'weapon',cells:[{kind:'item',cat:'weapon'},{kind:'inf'},{kind:'inf'}]},
       {label:'Off Hand',icon:'shield',cells:[{kind:'item',cat:'offhand'},{kind:'inf'},{kind:'inf'}]},
-      {label:'Chest',icon:'armor',cells:[{kind:'item',cat:'chest'},{kind:'inf'}]},
-      {label:'Gloves',icon:'armor',cells:[{kind:'item',cat:'gloves'},{kind:'inf'}]},
-      {label:'Legs',icon:'armor',cells:[{kind:'item',cat:'legs'},{kind:'inf'}]},
+      {label:'Armor',icon:'armor',cells:[{kind:'item',cat:'armor'},{kind:'item',cat:'armor'},{kind:'item',cat:'armor'},{kind:'item',cat:'armor'}]},
       {label:'Rings',icon:'ring',cells:[{kind:'item',cat:'ring'},{kind:'item',cat:'ring'},{kind:'item',cat:'ring'}]}
     ];
     var CAT_META={
       weapon:{title:'Main Hand'},
       offhand:{title:'Off Hand'},
-      chest:{title:'Chest'},
-      gloves:{title:'Gloves'},
-      legs:{title:'Legs'},
+      armor:{title:'Armor'},
       ring:{title:'Ring'},
       rune:{title:'Utility Rune'},
       inf:{title:'Infusion'}
@@ -3094,9 +3090,7 @@ footer li{color:#6f665b}
       switch(cat){
         case 'weapon': return item.cat==='weapons';
         case 'offhand': return item.cat==='shields' || (item.cat==='weapons' && /^(One-Handed|Dual Wielding)/.test(item.t||''));
-        case 'chest': return item.cat==='armor' && /Body$/.test(item.t||'');
-        case 'gloves': return item.cat==='armor' && /Gloves$/.test(item.t||'');
-        case 'legs': return item.cat==='armor' && /Pants$/.test(item.t||'');
+        case 'armor': return item.cat==='armor' && /Body$|Gloves$|Pants$/.test(item.t||'');
         case 'ring': return item.cat==='trinkets';
         case 'rune': return item.cat==='runes';
         case 'inf': return item.cat==='gems';
@@ -3104,7 +3098,7 @@ footer li{color:#6f665b}
       return false;
     }
     function groupKey(item,cat){
-      if(cat==='helm'||cat==='chest'||cat==='gloves'||cat==='legs') return (item.t||'').split(' ')[0];
+      if(cat==='armor') return item.t||'Other';
       if(cat==='weapon'||cat==='offhand') return item.t||'Other';
       return null;
     }
