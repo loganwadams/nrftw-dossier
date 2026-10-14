@@ -3348,9 +3348,16 @@ footer li{color:#6f665b}
     }
 
     var pickerOpenFor=null;
+    var pickerOpenPanel=null;
+    function scrollBackToPanel(){
+      if(!pickerOpenPanel) return;
+      pickerOpenPanel.scrollIntoView({block:'center',inline:'center',behavior:'smooth'});
+      pickerOpenPanel=null;
+    }
     function openPicker(id){
       var meta=slotEls[id]; if(!meta) return;
       pickerOpenFor=id;
+      pickerOpenPanel=meta.el.closest('.cb-panel');
       var picker=document.getElementById('cbPicker');
       document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item')+(meta.ord>1?' ('+meta.ord+')':'');
       document.getElementById('cbPickerSearch').value='';
@@ -3400,6 +3407,7 @@ footer li{color:#6f665b}
       e.preventDefault(); e.stopPropagation();
       equipSlot(pickerOpenFor,card.dataset.k);
       closePicker();
+      scrollBackToPanel();
     });
 
     function onSlotsClick(e){
