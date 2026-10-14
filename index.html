@@ -544,6 +544,7 @@ section{padding-block:48px}
 #cbProfileBars .attr{grid-template-columns:minmax(118px,140px) 1fr auto}
 #cbProfileBars .attr>span:first-child{font-family:var(--body);font-size:15px;letter-spacing:normal;text-transform:none}
 #cbProfileNote.cb-note-warn{border-left-color:var(--rust);color:#d9a98c}
+.cb-profile-warn-chip{font-family:var(--data);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rust);border:1px solid var(--rust);border-radius:3px;padding:2px 7px;margin-left:10px;vertical-align:middle}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
 .cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
@@ -618,6 +619,9 @@ section{padding-block:48px}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
 .cb-slot-clear:hover{color:var(--rust);border-color:var(--rust)}
+.cb-slot.cb-slot-warn{border-color:var(--rust)}
+.cb-slot.cb-slot-warn.filled{border-color:var(--rust)}
+.cb-slot-warn-badge{position:absolute;top:-7px;left:-7px;width:16px;height:16px;border-radius:50%;background:var(--rust);color:#1b140c;border:1px solid #1b140c;font-family:var(--data);font-size:11px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px rgba(0,0,0,.4);pointer-events:none}
 .cb-row-label{display:none}
 
 /* loadout manifest */
@@ -3058,7 +3062,7 @@ footer li{color:#6f665b}
           <div class="cb-rows" id="cbRows"></div>
         </div>
         <div class="cb-panel">
-          <h3>Build Profile</h3>
+          <h3>Build Profile<span class="cb-profile-warn-chip" id="cbProfileWarnChip" hidden>&#9888; Mismatch</span></h3>
           <div class="attrs" id="cbProfileBars"></div>
           <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
         </div>
@@ -3383,10 +3387,18 @@ footer li{color:#6f665b}
       items.forEach(function(it){ s+=it.lv||lvl; });
       return s/items.length;
     }
+    function armorSlotEntries(){
+      if(!cards) return [];
+      return Object.keys(equipped)
+        .filter(function(id){ return slotEls[id] && ['helm','chest','legs','gloves'].indexOf(slotEls[id].cat)>-1; })
+        .map(function(id){ return {id:id,item:cards[equipped[id]]}; })
+        .filter(function(e){ return !!e.item; });
+    }
     function computeProfile(){
       var a=attrVals;
       var weaponItems=itemsOfCat(['weapon','offhand']);
-      var armorItems=itemsOfCat(['helm','chest','legs','gloves']);
+      var armorEntries=armorSlotEntries();
+      var armorItems=armorEntries.map(function(e){ return e.item; });
       var ringItems=itemsOfCat(['ring']);
       var runeItems=itemsOfCat(['rune']);
       var offenseAttr=Math.max(a.strength,a.dexterity,a.intelligence,a.faith)-10;
@@ -3399,18 +3411,21 @@ footer li{color:#6f665b}
       var util=(a.focus-10)*2 + runeItems.length*12 + ringItems.length*8;
 
       var mismatch=null;
+      var warnIds=[];
       var synergy=CLASS_SYNERGY[selectedClass];
       if(synergy){
-        var heavyPieces=armorItems.filter(function(it){ return armorWeightTier(it)>synergy.weightCeiling; });
+        var heavyPieces=armorEntries.filter(function(e){ return armorWeightTier(e.item)>synergy.weightCeiling; });
         if(heavyPieces.length){
           mob-=heavyPieces.length*synergy.mobilityPenalty;
           def*=synergy.defenseDampen;
           mismatch=synergy.mismatch;
+          warnIds=heavyPieces.map(function(e){ return e.id; });
         }
       }
 
       return {
         mismatch:mismatch,
+        warnIds:warnIds,
         rows:[
           {id:'damage',label:'Damage Output',color:'var(--rust)',value:Math.max(0,Math.min(100,Math.round(dmg)))},
           {id:'defense',label:'Defense',color:'var(--c-storm)',value:Math.max(0,Math.min(100,Math.round(def)))},
@@ -3427,6 +3442,27 @@ footer li{color:#6f665b}
       if(v>=10) return 'Low';
       return 'Minimal';
     }
+    function clearSlotWarnings(){
+      Object.keys(slotEls).forEach(function(id){
+        var el=slotEls[id].el;
+        el.classList.remove('cb-slot-warn');
+        var b=el.querySelector('.cb-slot-warn-badge');
+        if(b) b.remove();
+      });
+    }
+    function applySlotWarnings(ids,msg){
+      ids.forEach(function(id){
+        var meta=slotEls[id]; if(!meta) return;
+        meta.el.classList.add('cb-slot-warn');
+        if(!meta.el.querySelector('.cb-slot-warn-badge')){
+          var b=document.createElement('span');
+          b.className='cb-slot-warn-badge';
+          b.title=msg||'Not optimized for this class';
+          b.textContent='!';
+          meta.el.appendChild(b);
+        }
+      });
+    }
     function renderProfile(){
       var wrap=document.getElementById('cbProfileBars');
       if(!wrap) return;
@@ -3436,6 +3472,12 @@ footer li{color:#6f665b}
         var tint=r.value>0?r.color:'var(--edge-hot)';
         return '<div class="attr" style="--accent:'+tint+'"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
       }).join('');
+      clearSlotWarnings();
+      if(result.warnIds && result.warnIds.length){
+        applySlotWarnings(result.warnIds,result.mismatch);
+      }
+      var warnChip=document.getElementById('cbProfileWarnChip');
+      if(warnChip) warnChip.hidden=!result.mismatch;
       var note=document.getElementById('cbProfileNote');
       note.classList.toggle('cb-note-warn',!!result.mismatch);
       var nothingInvested=!Object.keys(equipped).length && ptsSpent()===0;
