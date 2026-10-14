@@ -593,6 +593,12 @@ section{padding-block:48px}
 .cb-slot.locked svg{width:15px;height:15px;stroke:#5a5146;fill:none;stroke-width:1.5}
 .cb-row-label{display:none}
 
+/* utility runes get a pentagon badge shape instead of a plain square, matching the game's
+   rune icons - the row itself stays horizontal, only the slot outline changes */
+#cbRuneCells.cb-cells{gap:12px}
+#cbRuneCells .cb-slot{clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);border-radius:0;border-width:1.5px}
+#cbRuneCells .cb-slot .m-ic{clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%)}
+
 /* loadout manifest */
 .cb-manifest-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .cb-manifest-empty{font-size:13px;color:var(--muted);font-style:italic;padding:6px 0}
