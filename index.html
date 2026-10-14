@@ -1473,6 +1473,16 @@ footer li{color:#6f665b}
         var v=vids[i]; if(!v) return;
         if(paused){ v.pause(); } else { playCurrent(); }
       });
+      // Called whenever the page router lands on Home, since the one-time play() above can
+      // land on a hidden/inactive hero (e.g. a direct link to another section) and nothing
+      // else would ever retry it. Re-calling playCurrent() unconditionally (not just when
+      // .paused reads true) matters: a video that was .play()'d while hidden can report
+      // paused===false yet never actually be decoding frames, so currentTime sits frozen
+      // at 0 until something re-kicks it now that the element is visible again.
+      window.__heroResume=function(){
+        if(paused) return;
+        playCurrent();
+      };
     }
   })();
   </script>
@@ -4396,7 +4406,12 @@ footer li{color:#6f665b}
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
     document.title=(label&&chap!=='home'&&chap!=='brief')?(label+' - '+BASE_TITLE):BASE_TITLE;
-    try{ localStorage.setItem('nrftw-page',group); }catch(e){} }
+    // The hero video only gets told to play once, when its own inline script first runs - if
+    // Home wasn't the active page at that moment (a direct link to another section, say), it's
+    // left paused on its poster frame with nothing to ever resume it. Covering that here means
+    // landing on Home always finds the clip actually playing, not just whenever the timing lined up.
+    if(group==='home' && window.__heroResume) window.__heroResume();
+  }
   // Root path for the site (served from the domain root). Every pushState below writes an
   // explicit, absolute URL rather than relying on whatever location.pathname happens to be -
   // which matters now that some pages live at a clean path (/vendors) instead of always "/".
@@ -4537,7 +4552,6 @@ footer li{color:#6f665b}
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMenu(); });
   document.addEventListener('click',function(e){ if(bar.classList.contains('menu-open') && !bar.contains(e.target)) closeMenu(); });
   window.addEventListener('hashchange',closeMenu);
-  var routedOnce=false;
   function route(){ var h=decodeURIComponent(location.hash.slice(1)); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
     // No hash match: check whether the pathname itself names one of the clean-path pages
@@ -4546,18 +4560,11 @@ footer li{color:#6f665b}
       var p=location.pathname.replace(/\/$/,'')||'/';
       if(p in PATH_TO_GROUP){ group=PATH_TO_GROUP[p]; chap=GROUP_FIRST_CHAP[group]; }
     }
-    // Still nothing: a bare "/" with no hash. On the very first load that's a bookmark-style
-    // visit, so honor whatever page localStorage says they were last on. On any later route()
-    // call (hashchange/popstate) it's a real navigation BACK to the root, which always means
-    // Home - falling back to localStorage here would wrongly re-show whatever page was active
-    // right before, since every show() call keeps that key updated.
-    if(!group){
-      if(!routedOnce){ var saved=null; try{ saved=localStorage.getItem('nrftw-page'); }catch(e){} group=(saved&&GROUPS.some(function(g){return g.id===saved}))?saved:'home'; }
-      else group='home';
-    }
+    // Still nothing: a bare "/" with no hash, on first load or any later navigation back to
+    // the root (hashchange/popstate) - either way that always means Home.
+    if(!group) group='home';
     if(!chap) chap=GROUP_FIRST_CHAP[group];
     show(group,chap);
-    routedOnce=true;
     // Landing on a group's own first chapter (e.g. #infusions, the top of the merged Gear page)
     // should go to the true page top, same as activate() does for a tab click - not
     // scrollIntoView's target-plus-96px offset, which leaves a gap above it.
