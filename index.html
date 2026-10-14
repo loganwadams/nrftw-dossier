@@ -546,6 +546,9 @@ section{padding-block:48px}
 .cb-panel{background:var(--panel);border:1px solid var(--edge);padding:20px 22px 24px;position:relative}
 .cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
 .cb-optional{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7c7265;font-weight:400;border:1px solid var(--edge);border-radius:2px;padding:2px 6px;margin-left:8px;vertical-align:middle}
+.cb-h3-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cb-reset-btn{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--edge);padding:5px 12px;cursor:pointer;transition:color .15s,border-color .15s;flex:none}
+.cb-reset-btn:hover{color:var(--rust);border-color:var(--rust)}
 
 /* class picker */
 .cb-class-drop{position:relative;margin-bottom:14px}
@@ -3044,7 +3047,7 @@ footer li{color:#6f665b}
 
       <div class="cb-col">
         <div class="cb-panel">
-          <h3>Equipment</h3>
+          <h3 class="cb-h3-row">Equipment<button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button></h3>
           <div class="cb-rows" id="cbRows"></div>
         </div>
         <div class="cb-panel">
@@ -3337,6 +3340,13 @@ footer li{color:#6f665b}
       meta.el.classList.remove('filled');
       meta.el.innerHTML='<span class="cb-slot-plus">+</span>';
     }
+    function resetBuild(){
+      Object.keys(equipped).forEach(function(id){
+        if(id.charAt(0)==='r') setSlotEmpty(id);
+      });
+      renderManifest();
+    }
+    document.getElementById('cbResetBuild').addEventListener('click', resetBuild);
     function equipSlot(id,key){
       var meta=slotEls[id]; if(!meta) return;
       var item=cards[key]; if(!item) return;
