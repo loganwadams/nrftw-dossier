@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf8">
+<title>Wicked Dossier</title>
+<!-- GitHub Pages SPA fallback: this file is served for any path with no matching file
+     (e.g. a direct visit or refresh on /vendors). Redirect to the real app at "/" with the
+     original path+search+hash encoded in ?p=, so index.html's own SPA-PATH-BOOT script can
+     restore the clean URL via history.replaceState before the page's routing script runs. -->
+<script>(function(){
+  var dest = '/?p=' + encodeURIComponent(location.pathname + location.search + location.hash);
+  location.replace(dest);
+})();</script>
+</head>
+<body>
+<p>Redirecting&hellip; <a href="/">Continue to Wicked Dossier</a></p>
+</body>
+</html>

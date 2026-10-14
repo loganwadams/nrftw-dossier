@@ -1,4 +1,18 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="192x192" href="img/favicon/android-chrome-192x192.png"><link rel="apple-touch-icon" href="img/favicon/apple-touch-icon.png"><link rel="stylesheet" href="tt.css"><!-- TT:css -->
+<!doctype html><html><head><meta charset=utf8>
+<!-- SPA-PATH-BOOT: GitHub Pages has no server-side router, so a direct visit or refresh on a
+     clean URL (e.g. /vendors) has no matching file and is served 404.html instead, which
+     redirects here with the real path encoded in ?p=. Restore it via replaceState, as early as
+     possible and before the PG routing script runs, so the address bar shows the clean path
+     again instead of the redirect's own query string. -->
+<script>(function(){
+  var m = location.search.match(/[?&]p=([^&]*)/);
+  if(m){
+    var path = decodeURIComponent(m[1]);
+    var rest = location.search.replace(/[?&]p=[^&]*/,'').replace(/^&/,'?').replace(/^\?$/,'');
+    try{ history.replaceState(null,'',path+rest); }catch(e){}
+  }
+})();</script>
+<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="192x192" href="img/favicon/android-chrome-192x192.png"><link rel="apple-touch-icon" href="img/favicon/apple-touch-icon.png"><link rel="stylesheet" href="tt.css"><!-- TT:css -->
 <!-- PG:css --><style>
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
 .pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;padding:8px 0}
@@ -3383,6 +3397,12 @@ footer li{color:#6f665b}
     {id:'catalog',    num:'08', label:'Catalog',    group:'cat',   target:'catalog', tag:['catalog'], drop:true},
     {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'}
   ];
+  // Vendors, Catalog and Media are each a standalone page (one chapter, nothing else sharing
+  // the group) so they get a real clean path instead of a #hash. Factions/Classes share one
+  // page ("world"), and Infusions/Enchantments share one page ("gear"), so those stay on
+  // hash-based chapter anchors within their shared page.
+  var CLEAN_PATHS={vend:'/vendors', cat:'/catalog', vid:'/media'};
+  var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
   document.querySelectorAll('article.klass').forEach(function(a){ a.setAttribute('data-page','world'); a.setAttribute('data-chap','classes'); });
@@ -3401,15 +3421,27 @@ footer li{color:#6f665b}
     var label=CHAP_TITLE[chap];
     document.title=(label&&chap!=='home'&&chap!=='brief')?(label+' - '+BASE_TITLE):BASE_TITLE;
     try{ localStorage.setItem('nrftw-page',group); }catch(e){} }
+  // Root path for the site (served from the domain root). Every pushState below writes an
+  // explicit, absolute URL rather than relying on whatever location.pathname happens to be -
+  // which matters now that some pages live at a clean path (/vendors) instead of always "/".
+  var ROOT_PATH='/';
+  // Absolute URL for a given target id: CLEAN_PATHS form for Vendors/Catalog/Media, plain
+  // root+hash form for everything else (Home, Factions/Classes, Infusions/Enchantments).
+  // Shared with the search module (exposed on window below) so every piece of code that
+  // changes the address bar agrees on the same URL shape.
+  function urlFor(group,id){
+    if(group in CLEAN_PATHS){
+      var base=CLEAN_PATHS[group];
+      return (id && id!==GROUP_FIRST_CHAP[group]) ? (base+'#'+id) : base;
+    }
+    return (!id||id==='home') ? ROOT_PATH : (ROOT_PATH+'#'+id);
+  }
   // a tab click is always deterministic: switch to its chapter and scroll to its top,
   // regardless of whether the URL hash actually changes or fires an event for it
   function activate(c){ show(c.group,c.id);
-    if(c.id==='home'){
-      try{ if(history.pushState) history.pushState(null,'',location.pathname+location.search); else location.hash=''; }catch(e){}
-      window.scrollTo({top:0,left:0,behavior:'smooth'});
-      return;
-    }
-    try{ if(history.pushState) history.pushState(null,'','#'+c.target); else location.hash='#'+c.target; }catch(e){ try{ location.hash='#'+c.target; }catch(e2){} }
+    var url=urlFor(c.group, c.id==='home'?null:c.target);
+    try{ if(history.pushState) history.pushState(null,'',url); else location.hash=(url.indexOf('#')>-1)?url.slice(url.indexOf('#')):''; }catch(e){}
+    if(c.id==='home'){ window.scrollTo({top:0,left:0,behavior:'smooth'}); return; }
     // the first chapter of a group IS the top of that page - nothing else in the group is above
     // it once the other groups are hidden - so land on the actual page top, same as Home, rather
     // than scrollIntoView's target-plus-96px-offset, which can leave a visible gap above it. A
@@ -3417,6 +3449,19 @@ footer li{color:#6f665b}
     // its own section, since there's real content above it to skip past.
     if(GROUP_FIRST_CHAP[c.group]===c.id){ window.scrollTo({top:0,left:0,behavior:'smooth'}); return; }
     var el=document.getElementById(c.target); if(el) el.scrollIntoView({block:'start'}); else bar.scrollIntoView({block:'start'}); }
+  // Shared with the search module (separate closure) so a cross-page search-result jump into
+  // Vendors/Catalog/Media lands on the clean path instead of a bare "#id" that would leave the
+  // address bar showing a mismatched pathname.
+  window.__pgGoto=function(id){
+    var el=document.getElementById(id); if(!el) return false;
+    var group=pageOf(el); if(!group) return false;
+    var chap=chapOf(el)||GROUP_FIRST_CHAP[group];
+    show(group,chap);
+    var url=urlFor(group,id);
+    try{ if(history.pushState) history.pushState(null,'',url); }catch(e){}
+    el.scrollIntoView({block:'start'});
+    return true;
+  };
   // dropdown item lists, one per chapter that has one: icon + name, each linking straight to that item.
   // an item can also carry children: [{id,name}] (currently just Armor Sets' material types), shown as
   // a collapsed sub-list behind a "+" toggle rather than always expanded.
@@ -3504,14 +3549,31 @@ footer li{color:#6f665b}
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMenu(); });
   document.addEventListener('click',function(e){ if(bar.classList.contains('menu-open') && !bar.contains(e.target)) closeMenu(); });
   window.addEventListener('hashchange',closeMenu);
+  var routedOnce=false;
   function route(){ var h=decodeURIComponent(location.hash.slice(1)); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
-    if(!group){ var saved=null; try{ saved=localStorage.getItem('nrftw-page'); }catch(e){} group=(saved&&GROUPS.some(function(g){return g.id===saved}))?saved:'home'; }
+    // No hash match: check whether the pathname itself names one of the clean-path pages
+    // (Vendors/Catalog/Media) - a direct load or refresh of e.g. /vendors has no hash at all.
+    if(!group){
+      var p=location.pathname.replace(/\/$/,'')||'/';
+      if(p in PATH_TO_GROUP){ group=PATH_TO_GROUP[p]; chap=GROUP_FIRST_CHAP[group]; }
+    }
+    // Still nothing: a bare "/" with no hash. On the very first load that's a bookmark-style
+    // visit, so honor whatever page localStorage says they were last on. On any later route()
+    // call (hashchange/popstate) it's a real navigation BACK to the root, which always means
+    // Home - falling back to localStorage here would wrongly re-show whatever page was active
+    // right before, since every show() call keeps that key updated.
+    if(!group){
+      if(!routedOnce){ var saved=null; try{ saved=localStorage.getItem('nrftw-page'); }catch(e){} group=(saved&&GROUPS.some(function(g){return g.id===saved}))?saved:'home'; }
+      else group='home';
+    }
     if(!chap) chap=GROUP_FIRST_CHAP[group];
     show(group,chap);
-    if(el) el.scrollIntoView({block:'start'}); else bar.scrollIntoView({block:'start'}); }
+    routedOnce=true;
+    if(el) el.scrollIntoView({block:'start'}); else window.scrollTo(0,0); }
   document.body.classList.add('paged');
   window.addEventListener('hashchange',route);
+  window.addEventListener('popstate',route);
   route();
   if(!location.hash) window.scrollTo(0,0);
   else window.addEventListener('load',function(){ setTimeout(function(){ var el=document.getElementById(decodeURIComponent(location.hash.slice(1))); if(el) el.scrollIntoView({block:'start'}); },150); });
@@ -3581,7 +3643,12 @@ footer li{color:#6f665b}
     index.forEach(function(r){ var i=r.key.indexOf(ql); if(i<0) return; (r.label.toLowerCase().indexOf(ql)===0?starts:within).push(r); });
     results=starts.concat(within).slice(0,40); render(q); }
   function go(r){ list.classList.remove('on'); input.blur();
-    var id=idFor(r.el); location.hash='#'+id;
+    var id=idFor(r.el);
+    // __pgGoto (set up by the PG module above) knows about Vendors/Catalog/Media's clean paths,
+    // so a search hit on one of those pages lands on e.g. /vendors#id instead of a bare "#id"
+    // that would leave the address bar showing a mismatched pathname. Fall back to the old
+    // plain hash jump if that hook isn't there for any reason.
+    if(!(window.__pgGoto && window.__pgGoto(id))) location.hash='#'+id;
     setTimeout(function(){ r.el.scrollIntoView({block:'center'}); r.el.classList.remove('sr-hit'); void r.el.offsetWidth; r.el.classList.add('sr-hit');
       if(r.el.classList.contains('m-card')) r.el.click(); },60); }
   input.addEventListener('input',search);
