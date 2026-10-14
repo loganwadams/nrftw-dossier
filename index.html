@@ -538,6 +538,90 @@ section{padding-block:48px}
   text-shadow:0 0 8px rgba(142,203,232,.55);
   box-shadow:0 0 10px rgba(142,203,232,.2) inset;
 }
+
+/* --- Cerim Builder ------------------------------------------------------- */
+.cb-note{font-size:13px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
+.cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:1px;background:var(--edge);border:1px solid var(--edge)}
+.cb-col{display:flex;flex-direction:column;gap:1px}
+.cb-panel{background:var(--panel);padding:20px 22px 24px;position:relative}
+.cb-panel::before,.cb-panel::after{content:"";position:absolute;width:13px;height:13px;border:1px solid rgba(201,169,110,.5);pointer-events:none}
+.cb-panel::before{top:7px;left:7px;border-right:none;border-bottom:none}
+.cb-panel::after{bottom:7px;right:7px;border-left:none;border-top:none}
+.cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
+
+/* character / attributes */
+.cb-level-row{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.cb-level-row label{font-family:var(--data);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#7c7265;flex:none}
+.cb-level-row input[type=range]{flex:1;accent-color:var(--gold)}
+.cb-level-row span{font-family:var(--display);font-size:16px;color:var(--gold);min-width:22px;text-align:right;font-variant-numeric:tabular-nums}
+.cb-points{font-family:var(--data);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#7c7265;margin-bottom:16px}
+.cb-points strong{font-family:var(--display);color:var(--gold);font-weight:400;font-size:15px}
+.cb-points.cb-pts-zero strong{color:var(--rust)}
+.cb-attr-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(51,39,29,.6)}
+.cb-attr-row:last-child{border-bottom:none}
+.cb-attr-dot{width:8px;height:8px;border-radius:50%;flex:none;box-shadow:0 0 6px currentColor}
+.cb-attr-name{flex:1;font-size:13.5px;color:var(--bone)}
+.cb-stepper{display:flex;align-items:center;gap:8px;flex:none}
+.cb-stepper button{width:22px;height:22px;border:1px solid var(--edge-hot);background:rgba(0,0,0,.3);color:var(--gold-dim);font-family:var(--body);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .15s,border-color .15s}
+.cb-stepper button:hover:not(:disabled){color:var(--gold);border-color:var(--gold)}
+.cb-stepper button:disabled{opacity:.3;cursor:default}
+.cb-stepper span{min-width:22px;text-align:center;font-family:var(--data);font-size:14px;color:var(--gold);font-variant-numeric:tabular-nums}
+
+/* gear rows */
+.cb-rows{display:flex;flex-direction:column;gap:14px}
+.cb-row{display:flex;align-items:center;gap:16px}
+.cb-row-icon{flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--gold-dim)}
+.cb-row-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.cb-cells{display:flex;gap:8px}
+.cb-slot{position:relative;width:58px;height:58px;flex:none;border:1px solid var(--edge);background:rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.cb-slot.cb-slot-sm{width:46px;height:46px}
+.cb-slot:hover{border-color:var(--gold-dim)}
+.cb-slot-plus{color:var(--edge-hot);font-family:var(--body);font-size:22px;line-height:1;transition:color .15s}
+.cb-slot:hover .cb-slot-plus{color:var(--gold-dim)}
+.cb-slot.filled{border-color:rgba(201,169,110,.4);cursor:default}
+.cb-slot.filled:hover{border-color:var(--gold)}
+.cb-slot-main{width:100%;height:100%;display:block}
+.cb-slot .m-ic{width:100%;height:100%;border:none}
+.cb-slot-lv{position:absolute;right:2px;bottom:1px;font-family:var(--data);font-size:9px;color:var(--gold);background:rgba(10,8,7,.75);padding:0 3px;line-height:1.5}
+.cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
+.cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
+.cb-slot-clear:hover{color:var(--rust);border-color:var(--rust)}
+.cb-slot.locked{cursor:default;opacity:.55}
+.cb-slot.locked:hover{border-color:var(--edge)}
+.cb-slot.locked svg{width:15px;height:15px;stroke:#5a5146;fill:none;stroke-width:1.5}
+.cb-row-label{display:none}
+
+/* loadout manifest */
+.cb-manifest-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.cb-manifest-empty{font-size:13px;color:var(--muted);font-style:italic;padding:6px 0}
+.cb-manifest-list li{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid rgba(51,39,29,.6)}
+.cb-manifest-list li:last-child{border-bottom:none}
+.cb-mf-slot{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7c7265;flex:none;width:72px}
+.cb-mf-name{flex:1;font-size:13.5px;color:var(--bone)}
+.cb-mf-name.r-magical{color:#8fb7ff}
+.cb-mf-name.r-plagued{color:#c6a0ff}
+.cb-mf-name.r-unique{color:#f2c35c}
+.cb-mf-lv{font-family:var(--data);font-size:10.5px;color:#7c7265;flex:none}
+
+/* picker */
+.cb-picker{margin-top:24px;border:1px solid var(--edge);background:var(--panel);padding:20px 22px}
+.cb-picker-head{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--edge)}
+.cb-picker-head h4{margin:0;font-family:var(--display);font-size:16px;letter-spacing:.06em;color:var(--gold);flex:none}
+.cb-picker-search{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:13px;letter-spacing:.04em;padding:8px 12px;outline:none}
+.cb-picker-search:focus{border-color:var(--gold-dim)}
+.cb-picker-close{flex:none;width:26px;height:26px;background:none;border:none;color:var(--gold-dim);font-size:22px;line-height:1;cursor:pointer}
+.cb-picker-close:hover{color:var(--gold)}
+.cb-picker-body{max-height:480px;overflow-y:auto}
+.cb-picker-body h5{margin:18px 0 8px;font-family:var(--display);font-size:13px;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}
+.cb-picker-body h5:first-child{margin-top:0}
+.cb-picker-body h5 span{font-family:var(--data);font-size:10.5px;letter-spacing:.08em;color:#8b8174;text-transform:none;margin-left:6px}
+.cb-picker-empty{font-size:13px;color:var(--muted);font-style:italic;padding:10px 0}
+
+@media (max-width:820px){
+  .cb-wrap{grid-template-columns:1fr}
+  .cb-slot{width:50px;height:50px}
+  .cb-slot.cb-slot-sm{width:42px;height:42px}
+}
 h2{
   font-family:var(--display);
   font-weight:400;
@@ -2905,12 +2989,334 @@ footer li{color:#6f665b}
     </div>
   </section>
   <section id="cerim-builder">
-    <!-- Remove this badge once the planner is live - it's a placeholder marker, not a permanent
-         part of the page header. -->
-    <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Coming Soon</span></div>
-    <p class="standfirst">An interactive planner for building out a character &mdash; weapon, stance, infusions and enchantments, assembled on screen as you choose them.</p>
-    <p class="vid-empty">The build planner is currently a work in process &mdash; nothing to build with here just yet.</p>
+    <!-- Remove this badge once the planner is fully built out - it's a placeholder marker, not a
+         permanent part of the page header. -->
+    <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Early Preview</span></div>
+    <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Catalog.</p>
+    <p class="cb-note">Early preview &mdash; attribute math is illustrative and enchantments aren&rsquo;t wired in yet, but every item, icon and stat panel below is real game data.</p>
+
+    <div class="cb-wrap">
+      <div class="cb-col">
+        <div class="cb-panel">
+          <h3>Character</h3>
+          <div class="cb-level-row"><label>Level</label><input type="range" id="cbLevel" min="1" max="30" value="15"><span id="cbLevelVal">15</span></div>
+          <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">70</strong>&nbsp;/&nbsp;<span id="cbPtsTotal">70</span></div>
+          <div class="cb-attr-list" id="cbAttrs"></div>
+        </div>
+        <div class="cb-panel">
+          <h3>Utility Runes</h3>
+          <div class="cb-cells" id="cbRuneCells"></div>
+        </div>
+      </div>
+
+      <div class="cb-col">
+        <div class="cb-panel">
+          <h3>Equipment</h3>
+          <div class="cb-rows" id="cbRows"></div>
+        </div>
+        <div class="cb-panel">
+          <h3>Loadout Manifest</h3>
+          <ul class="cb-manifest-list" id="cbManifest"><li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-picker" id="cbPicker" hidden>
+      <div class="cb-picker-head">
+        <h4 id="cbPickerTitle">Choose an item</h4>
+        <input type="text" class="cb-picker-search" id="cbPickerSearch" placeholder="Search&hellip;">
+        <button type="button" class="cb-picker-close" id="cbPickerClose" aria-label="Close">&times;</button>
+      </div>
+      <div class="cb-picker-body" id="cbPickerBody"></div>
+    </div>
   </section>
+  <script>
+  (function(){
+    var ATTRS=[
+      {id:'health',name:'Health',color:'var(--blood)'},
+      {id:'stamina',name:'Stamina',color:'var(--verdigris)'},
+      {id:'strength',name:'Strength',color:'var(--rust)'},
+      {id:'dexterity',name:'Dexterity',color:'var(--gold)'},
+      {id:'intelligence',name:'Intelligence',color:'var(--c-storm)'},
+      {id:'faith',name:'Faith',color:'var(--c-wraith)'},
+      {id:'focus',name:'Focus',color:'var(--c-plague)'}
+    ];
+    var ROWS=[
+      {label:'Main Hand',icon:'sword',cells:[{kind:'item',cat:'weapon'},{kind:'inf'},{kind:'inf'}]},
+      {label:'Off Hand',icon:'offhand',cells:[{kind:'item',cat:'offhand'},{kind:'inf'},{kind:'inf'}]},
+      {label:'Helmet',icon:'helm',cells:[{kind:'item',cat:'helm'},{kind:'inf'}]},
+      {label:'Chest',icon:'chest',cells:[{kind:'item',cat:'chest'},{kind:'inf'}]},
+      {label:'Gloves',icon:'gloves',cells:[{kind:'item',cat:'gloves'},{kind:'inf'}]},
+      {label:'Legs',icon:'legs',cells:[{kind:'item',cat:'legs'},{kind:'inf'}]},
+      {label:'Rings',icon:'ring',cells:[{kind:'item',cat:'ring'},{kind:'item',cat:'ring'},{kind:'item',cat:'ring'}]}
+    ];
+    var CAT_META={
+      weapon:{title:'Main Hand'},
+      offhand:{title:'Off Hand'},
+      helm:{title:'Helmet'},
+      chest:{title:'Chest'},
+      gloves:{title:'Gloves'},
+      legs:{title:'Legs'},
+      ring:{title:'Ring'},
+      rune:{title:'Utility Rune'},
+      inf:{title:'Infusion'}
+    };
+    var ICONS={
+      sword:'<path d="M5 19L19 5"/><path d="M14 5h5v5"/><path d="M5 19l-1.5 1.5"/><path d="M9 9l2 2"/>',
+      offhand:'<path d="M19 19L5 5"/><path d="M10 19H5v-5"/><path d="M19 5l1.5-1.5"/><path d="M15 15l-2-2"/>',
+      helm:'<path d="M4 14c0-5 3.5-9 8-9s8 4 8 9"/><path d="M4 14h16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2Z"/><path d="M9 18v2M15 18v2"/>',
+      chest:'<path d="M8 4l4 2 4-2 3 3-2 3-2-1v10H9V9l-2 1-2-3 3-3Z"/>',
+      gloves:'<path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V5a1.5 1.5 0 0 1 3 0v5M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 9a1.5 1.5 0 0 1 3 0v5c0 3-2 6-5 6H9c-2.5 0-4-1.8-4-4v-3.5c0-1 .6-1.7 1.4-2.3L7 11"/>',
+      legs:'<path d="M8 3h8l1 8-2 10h-2l-1-8-1 8H9L7 11 8 3Z"/>',
+      ring:'<circle cx="12" cy="14" r="5"/><path d="M9 9l1.5-5h3L15 9"/>'
+    };
+    var LOCK='<svg viewBox="0 0 24 24"><path d="M6 11V8a6 6 0 0 1 12 0v3"/><rect x="4" y="11" width="16" height="10" rx="1.5"/></svg>';
+
+    var cards=null, cardsLoading=null, allItems=null;
+    function loadCards(){
+      if(cards) return Promise.resolve(cards);
+      if(cardsLoading) return cardsLoading;
+      cardsLoading=fetch('data/cards.json').then(function(r){return r.json()}).then(function(j){
+        cards=j;
+        allItems=Object.keys(j).map(function(k){
+          var v=j[k], parts=k.split('/');
+          return {k:k,n:v.n,t:v.t,lv:v.lv,r:v.r||'standard',p:v.p,cat:parts[2]};
+        });
+        return j;
+      });
+      return cardsLoading;
+    }
+
+    function icHtml(p,cls){
+      if(!p) return '<span class="'+(cls||'m-ic')+'"></span>';
+      return '<span class="'+(cls||'m-ic')+'" style="background-position:-'+(p[0]*48)+'px -'+(p[1]*48)+'px"></span>';
+    }
+
+    function slotFilter(item,cat){
+      switch(cat){
+        case 'weapon': return item.cat==='weapons';
+        case 'offhand': return item.cat==='shields' || (item.cat==='weapons' && /^(One-Handed|Dual Wielding)/.test(item.t||''));
+        case 'helm': return item.cat==='armor' && /Helmet$/.test(item.t||'');
+        case 'chest': return item.cat==='armor' && /Body$/.test(item.t||'');
+        case 'gloves': return item.cat==='armor' && /Gloves$/.test(item.t||'');
+        case 'legs': return item.cat==='armor' && /Pants$/.test(item.t||'');
+        case 'ring': return item.cat==='trinkets';
+        case 'rune': return item.cat==='runes';
+        case 'inf': return item.cat==='gems';
+      }
+      return false;
+    }
+    function groupKey(item,cat){
+      if(cat==='helm'||cat==='chest'||cat==='gloves'||cat==='legs') return (item.t||'').split(' ')[0];
+      if(cat==='weapon'||cat==='offhand') return item.t||'Other';
+      return null;
+    }
+
+    var equipped={}; // slotId -> key
+    var slotEls={}; // slotId -> {cell, cat}
+
+    function buildRows2(){
+      var wrap=document.getElementById('cbRows');
+      wrap.innerHTML='';
+      ROWS.forEach(function(row,ri){
+        var r=document.createElement('div'); r.className='cb-row';
+        var ic=document.createElement('div'); ic.className='cb-row-icon';
+        ic.innerHTML='<svg viewBox="0 0 24 24">'+(ICONS[row.icon]||'')+'</svg>';
+        ic.title=row.label;
+        r.appendChild(ic);
+        var cellsWrap=document.createElement('div'); cellsWrap.className='cb-cells';
+        var itemSlotId=null;
+        row.cells.forEach(function(cell,ci){
+          var id='r'+ri+'c'+ci;
+          var slot=document.createElement('div');
+          var isInf=cell.kind==='inf';
+          slot.className='cb-slot'+(isInf?' cb-slot-sm locked':'');
+          slot.dataset.slot=id;
+          slot.innerHTML=isInf?('<svg viewBox="0 0 24 24">'+LOCK.replace(/<\/?svg[^>]*>/g,'')+'</svg>'):'<span class="cb-slot-plus">+</span>';
+          cellsWrap.appendChild(slot);
+          var cat=isInf?'inf':cell.cat;
+          slotEls[id]={el:slot,cat:cat,kind:cell.kind,label:isInf?('Infusion — '+row.label):row.label};
+          if(!isInf) itemSlotId=id;
+        });
+        // remember which item slot governs this row's infusion locks
+        row.cells.forEach(function(cell,ci){
+          if(cell.kind==='inf') slotEls['r'+ri+'c'+ci].governedBy=itemSlotId;
+        });
+        r.appendChild(cellsWrap);
+        wrap.appendChild(r);
+      });
+    }
+
+    function buildRunes(){
+      var wrap=document.getElementById('cbRuneCells');
+      for(var i=0;i<4;i++){
+        var id='u'+i;
+        var slot=document.createElement('div');
+        slot.className='cb-slot cb-slot-sm';
+        slot.dataset.slot=id;
+        slot.innerHTML='<span class="cb-slot-plus">+</span>';
+        wrap.appendChild(slot);
+        slotEls[id]={el:slot,cat:'rune',kind:'item',label:'Utility Rune'};
+      }
+    }
+
+    function buildAttrs(){
+      var wrap=document.getElementById('cbAttrs');
+      ATTRS.forEach(function(a){
+        var row=document.createElement('div'); row.className='cb-attr-row';
+        row.innerHTML='<span class="cb-attr-dot" style="background:'+a.color+';color:'+a.color+'"></span>'+
+          '<span class="cb-attr-name">'+a.name+'</span>'+
+          '<span class="cb-stepper"><button type="button" data-d="-1" aria-label="Decrease '+a.name+'">&minus;</button>'+
+          '<span id="cbv-'+a.id+'">10</span>'+
+          '<button type="button" data-d="1" aria-label="Increase '+a.name+'">+</button></span>';
+        wrap.appendChild(row);
+      });
+    }
+
+    var attrVals={}; ATTRS.forEach(function(a){ attrVals[a.id]=10; });
+    function ptsTotal(){ var lvl=+document.getElementById('cbLevel').value; return 70+(lvl-15)*3; }
+    function ptsSpent(){ var s=0; ATTRS.forEach(function(a){ s+=attrVals[a.id]-10; }); return s; }
+    function refreshPoints(){
+      var total=ptsTotal(), spent=ptsSpent(), left=total-spent;
+      document.getElementById('cbPtsTotal').textContent=total;
+      document.getElementById('cbPtsLeft').textContent=left;
+      document.getElementById('cbPoints').classList.toggle('cb-pts-zero',left<=0);
+      ATTRS.forEach(function(a){
+        var row=document.getElementById('cbv-'+a.id).closest('.cb-attr-row');
+        var minus=row.querySelector('[data-d="-1"]'), plus=row.querySelector('[data-d="1"]');
+        minus.disabled=attrVals[a.id]<=10;
+        plus.disabled=left<=0 || attrVals[a.id]>=40;
+      });
+    }
+    document.getElementById('cbLevel').addEventListener('input',function(){
+      document.getElementById('cbLevelVal').textContent=this.value;
+      refreshPoints();
+    });
+    document.getElementById('cbAttrs').addEventListener('click',function(e){
+      var btn=e.target.closest('button[data-d]'); if(!btn) return;
+      var row=btn.closest('.cb-attr-row'); var span=row.querySelector('span[id^="cbv-"]');
+      var id=span.id.slice(4); var d=+btn.dataset.d;
+      var next=attrVals[id]+d;
+      if(next<10||next>40) return;
+      if(d>0 && ptsSpent()>=ptsTotal()) return;
+      attrVals[id]=next; span.textContent=next;
+      refreshPoints();
+    });
+
+    function renderManifest(){
+      var ul=document.getElementById('cbManifest');
+      var ids=Object.keys(equipped);
+      if(!ids.length){ ul.innerHTML='<li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li>'; return; }
+      ul.innerHTML='';
+      ids.forEach(function(id){
+        var key=equipped[id]; var item=cards[key]; if(!item) return;
+        var meta=slotEls[id];
+        var li=document.createElement('li');
+        li.innerHTML='<span class="cb-mf-slot">'+(meta.label||'')+'</span>'+
+          '<span class="cb-mf-name r-'+(item.r||'standard')+'">'+item.n+'</span>'+
+          (item.lv?'<span class="cb-mf-lv">Lv '+item.lv+'</span>':'');
+        ul.appendChild(li);
+      });
+    }
+
+    function setSlotEmpty(id){
+      var meta=slotEls[id]; if(!meta) return;
+      delete equipped[id];
+      var isInf=meta.kind==='inf';
+      meta.el.classList.remove('filled');
+      meta.el.innerHTML=isInf?('<svg viewBox="0 0 24 24">'+LOCK.replace(/<\/?svg[^>]*>/g,'')+'</svg>'):'<span class="cb-slot-plus">+</span>';
+    }
+    function equipSlot(id,key){
+      var meta=slotEls[id]; if(!meta) return;
+      var item=cards[key]; if(!item) return;
+      equipped[id]=key;
+      meta.el.classList.add('filled');
+      meta.el.innerHTML='<span class="cb-slot-main m-ic" data-k="'+key+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
+        (item.lv?'<span class="cb-slot-lv">'+item.lv+'</span>':'')+
+        '<button type="button" class="cb-slot-clear" aria-label="Remove">&times;</button>';
+      // unlock this row's infusion slots now that the item slot is filled
+      Object.keys(slotEls).forEach(function(oid){
+        if(slotEls[oid].governedBy===id){
+          slotEls[oid].el.classList.remove('locked');
+        }
+      });
+      renderManifest();
+    }
+
+    var pickerOpenFor=null;
+    function openPicker(id){
+      var meta=slotEls[id]; if(!meta) return;
+      if(meta.kind==='inf' && meta.el.classList.contains('locked')) return;
+      pickerOpenFor=id;
+      var picker=document.getElementById('cbPicker');
+      document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item');
+      document.getElementById('cbPickerSearch').value='';
+      picker.hidden=false;
+      renderPicker(meta.cat,'');
+      picker.scrollIntoView({block:'nearest',behavior:'smooth'});
+      document.getElementById('cbPickerSearch').focus();
+    }
+    function closePicker(){
+      document.getElementById('cbPicker').hidden=true;
+      pickerOpenFor=null;
+    }
+    function renderPicker(cat,q){
+      var body=document.getElementById('cbPickerBody');
+      body.innerHTML='';
+      loadCards().then(function(){
+        var pool=allItems.filter(function(it){ return slotFilter(it,cat); });
+        if(q) pool=pool.filter(function(it){ return it.n.toLowerCase().indexOf(q.toLowerCase())>-1; });
+        if(!pool.length){ body.innerHTML='<p class="cb-picker-empty">No items match.</p>'; return; }
+        var groups={}, order=[];
+        pool.forEach(function(it){
+          var g=groupKey(it,cat)||'';
+          if(!groups[g]){ groups[g]=[]; order.push(g); }
+          groups[g].push(it);
+        });
+        order.sort();
+        order.forEach(function(g){
+          var items=groups[g].sort(function(a,b){ return a.n.localeCompare(b.n); });
+          if(g){ var h5=document.createElement('h5'); h5.innerHTML=g+' <span>'+items.length+'</span>'; body.appendChild(h5); }
+          var grid=document.createElement('div'); grid.className='m-cards';
+          items.forEach(function(it){
+            var card=document.createElement('span'); card.className='m-card'; card.tabIndex=0; card.dataset.k=it.k;
+            card.innerHTML=icHtml(it.p)+'<span class="m-card-name">'+it.n+'</span><span class=m-card-lv>'+(it.lv?'Lv '+it.lv:'')+'</span>';
+            grid.appendChild(card);
+          });
+          body.appendChild(grid);
+        });
+      });
+    }
+    document.getElementById('cbPickerSearch').addEventListener('input',function(){
+      if(!pickerOpenFor) return;
+      renderPicker(slotEls[pickerOpenFor].cat,this.value);
+    });
+    document.getElementById('cbPickerClose').addEventListener('click',closePicker);
+    document.getElementById('cbPickerBody').addEventListener('click',function(e){
+      var card=e.target.closest('.m-card[data-k]'); if(!card||!pickerOpenFor) return;
+      e.preventDefault(); e.stopPropagation();
+      equipSlot(pickerOpenFor,card.dataset.k);
+      closePicker();
+    });
+
+    function onSlotsClick(e){
+      var clear=e.target.closest('.cb-slot-clear');
+      var slotEl=e.target.closest('.cb-slot'); if(!slotEl) return;
+      var id=slotEl.dataset.slot; var meta=slotEls[id]; if(!meta) return;
+      if(clear){ e.preventDefault(); e.stopPropagation(); setSlotEmpty(id); renderManifest();
+        Object.keys(slotEls).forEach(function(oid){ if(slotEls[oid].governedBy===id){ setSlotEmpty(oid); slotEls[oid].el.classList.add('locked'); } });
+        return; }
+      if(!equipped[id]){ e.preventDefault(); openPicker(id); }
+    }
+    document.getElementById('cbRows').addEventListener('click',onSlotsClick);
+    document.getElementById('cbRuneCells').addEventListener('click',onSlotsClick);
+
+    buildRows2();
+    buildRunes();
+    buildAttrs();
+    refreshPoints();
+  })();
+  </script>
 <script>
 (function(){
   // one entry per video: { id: YouTube video id, title, note }
