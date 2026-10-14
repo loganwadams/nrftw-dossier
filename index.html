@@ -3352,7 +3352,7 @@ footer li{color:#6f665b}
       var meta=slotEls[id]; if(!meta) return;
       pickerOpenFor=id;
       var picker=document.getElementById('cbPicker');
-      document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item')+(meta.ord?' ('+meta.ord+')':'');
+      document.getElementById('cbPickerTitle').textContent='Choose '+(CAT_META[meta.cat]?CAT_META[meta.cat].title:'Item')+(meta.ord>1?' ('+meta.ord+')':'');
       document.getElementById('cbPickerSearch').value='';
       picker.hidden=false;
       renderPicker(meta.cat,'');
