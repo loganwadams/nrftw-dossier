@@ -545,6 +545,26 @@ section{padding-block:48px}
 #cbProfileBars .attr>span:first-child{font-family:var(--body);font-size:15px;letter-spacing:normal;text-transform:none}
 #cbProfileNote.cb-note-warn{border-left-color:var(--rust);color:#d9a98c}
 .cb-profile-warn-chip{font-family:var(--data);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rust);border:1px solid var(--rust);border-radius:3px;padding:2px 7px;margin-left:10px;vertical-align:middle}
+
+/* build analysis report */
+.cb-report-wrap{text-align:center;margin:30px 0 0}
+.cb-report-btn{font-family:var(--data);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#e9f1f7;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border:1px solid #6fa3bd;padding:11px 30px;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:filter .15s,transform .15s}
+.cb-report-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.cb-report-btn:active{filter:brightness(.95);transform:translateY(0)}
+.cb-report{margin:26px 0 0}
+.cb-report-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--edge);padding-bottom:14px;margin-bottom:4px}
+.cb-report-head h3{margin:0}
+.cb-report-verdict{font-family:var(--data);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px}
+.cb-report-verdict.v-good{color:var(--verdigris);border:1px solid var(--verdigris)}
+.cb-report-verdict.v-warn{color:#d9a98c;border:1px solid var(--rust)}
+.cb-report-verdict.v-bad{color:var(--rust);border:1px solid var(--rust)}
+.cb-report-verdict.v-empty{color:var(--muted);border:1px solid var(--edge)}
+.cb-report-sub{font-size:14.5px;color:var(--muted);margin:12px 0 0}
+.cb-report-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:860px){.cb-report-grid{grid-template-columns:1fr}}
+.marks.recs li::before{background:var(--gold)}
+.marks li.cb-report-none{color:var(--muted);font-style:italic;padding-left:0}
+.marks li.cb-report-none::before{content:none}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
 .cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
@@ -3073,6 +3093,31 @@ footer li{color:#6f665b}
       </div>
     </div>
 
+    <div class="cb-report-wrap">
+      <button type="button" class="cb-report-btn" id="cbAnalyzeBuild">Analyze Build</button>
+    </div>
+    <div class="cb-report" id="cbReport" hidden>
+      <div class="cb-report-head">
+        <h3>Build Analysis</h3>
+        <span class="cb-report-verdict" id="cbReportVerdict"></span>
+      </div>
+      <p class="cb-report-sub" id="cbReportSub"></p>
+      <div class="cb-report-grid">
+        <div class="panel">
+          <h3>Strengths</h3>
+          <ul class="marks pros" id="cbReportPros"></ul>
+        </div>
+        <div class="panel">
+          <h3>Needs Attention</h3>
+          <ul class="marks cons" id="cbReportCons"></ul>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Recommendations</h3>
+        <ul class="marks recs" id="cbReportRecs"></ul>
+      </div>
+    </div>
+
     <div class="cb-picker" id="cbPicker" hidden>
       <div class="cb-picker-head">
         <h4 id="cbPickerTitle">Choose an item</h4>
@@ -3135,6 +3180,16 @@ footer li{color:#6f665b}
         weaponWeightCeiling:2,weaponMobilityPenalty:15,weaponDamageDampen:.85,
         weaponMismatch:"A two-handed weapon (or great shield) fights the same kit — Wraith's stamina economy and multi-hit strings assume something fast in hand, not a slow heavy swing."
       }
+    };
+
+    // Attribute priority, straight from each class's own "Recommended emphasis" panel
+    // in the Classes section (e.g. Wraith: Stamina 1st, Dexterity 2nd, Health floor,
+    // Focus super). "order" ranks every attribute the class panel calls out; anything
+    // left off is a dump stat for that class. Only classes with published emphasis bars
+    // are listed — the report falls back to a generic read for everyone else.
+    var CLASS_EMPHASIS={
+      wraith:{order:['stamina','dexterity','health','focus'],
+        note:"Wraith's own guidance: Stamina first, Dexterity second, Health as a floor rather than a focus, Focus as a bonus for illusion uptime."}
     };
 
     function closeClassDrop(){
@@ -3513,6 +3568,139 @@ footer li{color:#6f665b}
       }
     }
 
+    function computeReport(){
+      var profile=computeProfile();
+      var cls=CLASSES.filter(function(c){ return c.id===selectedClass; })[0];
+      var className=cls?cls.name:'this class';
+      var level=+document.getElementById('cbLevel').value;
+      var total=ptsTotal(), spent=ptsSpent(), left=total-spent;
+      var equippedCount=Object.keys(equipped).length;
+      var totalSlots=ROWS.reduce(function(n,row){ return n+row.cells.length; },0)+4;
+
+      if(!equippedCount && spent===0 && !selectedClass){
+        return {empty:true};
+      }
+
+      var pros=[], cons=[], recs=[];
+
+      // class synergy — reuse the Build Profile's own mismatch detection
+      if(profile.mismatch){
+        (profile.warnGroups||[]).forEach(function(g){ cons.push(g.message); });
+      } else if(selectedClass){
+        pros.push("No equipped gear fights the kit — nothing flagged against "+className+"'s documented loadout guidance.");
+      }
+
+      // equipment completeness
+      var rowGaps=[];
+      ROWS.forEach(function(row,ri){
+        var filled=0;
+        row.cells.forEach(function(cell,ci){ if(equipped['r'+ri+'c'+ci]) filled++; });
+        if(filled<row.cells.length) rowGaps.push(row.label+' ('+filled+'/'+row.cells.length+')');
+      });
+      var runeFilled=0;
+      for(var i=0;i<4;i++){ if(equipped['u'+i]) runeFilled++; }
+      if(runeFilled<4) rowGaps.push('Utility Runes ('+runeFilled+'/4)');
+      if(rowGaps.length){
+        cons.push('Open slots: '+rowGaps.join(', ')+'.');
+        recs.push('Fill the remaining slot'+(rowGaps.length>1?' groups':'')+' — '+rowGaps.join(', ')+' — an empty slot is always a missed stat, never a neutral one.');
+      } else {
+        pros.push('Every equipment and rune slot is filled.');
+      }
+
+      // attribute points
+      if(left>0){
+        cons.push(left+' unspent attribute point'+(left>1?'s':'')+'.');
+        recs.push('Spend the remaining '+left+' point'+(left>1?'s':'')+' — unspent points do nothing for you sitting in reserve.');
+      } else if(spent>0){
+        pros.push('All available attribute points are spent.');
+      }
+
+      var emphasis=CLASS_EMPHASIS[selectedClass];
+      if(emphasis){
+        var invested=ATTRS.map(function(a){ return {id:a.id,name:a.name,over:attrVals[a.id]-10}; }).filter(function(x){ return x.over>0; });
+        if(invested.length){
+          var top=invested.slice().sort(function(x,y){ return y.over-x.over; })[0];
+          var topPriorityId=emphasis.order[0];
+          if(top.id===topPriorityId){
+            pros.push('Heaviest attribute investment is in '+top.name+', matching '+className+"'s top priority.");
+          } else {
+            var topPriorityName=ATTRS.filter(function(a){ return a.id===topPriorityId; })[0].name;
+            cons.push('Heaviest attribute investment is in '+top.name+', not '+topPriorityName+', which '+className+"'s own guidance calls the first priority.");
+            recs.push(emphasis.note);
+          }
+        }
+      } else if(selectedClass){
+        cons.push("Detailed attribute guidance for "+className+" isn't mapped yet, so point allocation can't be checked against it.");
+      }
+
+      if(!selectedClass){
+        cons.push('No class selected — these notes are generic rather than tuned to a specific kit.');
+        recs.push('Pick a class above so gear and attribute checks can be matched to its documented loadout guidance.');
+      }
+
+      // gear level vs character level
+      if(cards){
+        var lvlSum=0, lvlCount=0;
+        Object.keys(equipped).forEach(function(id){
+          var it=cards[equipped[id]]; if(it && it.lv){ lvlSum+=+it.lv; lvlCount++; }
+        });
+        if(lvlCount){
+          var avgItemLv=lvlSum/lvlCount;
+          if(level-avgItemLv>=5){
+            var gap=Math.round(level-avgItemLv);
+            cons.push('Equipped gear averages level '+avgItemLv.toFixed(1)+' against a level '+level+' character.');
+            recs.push('Check the Catalog for higher-level upgrades in your filled slots — a '+gap+'-level gap is usually free stats left on the table.');
+          }
+        }
+      }
+
+      var verdictLabel, verdictClass;
+      if(profile.mismatch){
+        verdictLabel='Needs Rework'; verdictClass='v-bad';
+      } else if(cons.length){
+        verdictLabel='Needs Attention'; verdictClass='v-warn';
+      } else {
+        verdictLabel='Optimized'; verdictClass='v-good';
+      }
+
+      var sub=className+' · Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
+
+      return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs};
+    }
+
+    function renderReport(){
+      var box=document.getElementById('cbReport');
+      var report=computeReport();
+      box.hidden=false;
+      var verdictEl=document.getElementById('cbReportVerdict');
+      var subEl=document.getElementById('cbReportSub');
+      var prosEl=document.getElementById('cbReportPros');
+      var consEl=document.getElementById('cbReportCons');
+      var recsEl=document.getElementById('cbReportRecs');
+      function listOrNone(ul,items,noneText){
+        ul.innerHTML = items.length
+          ? items.map(function(s){ return '<li>'+s+'</li>'; }).join('')
+          : '<li class="cb-report-none">'+noneText+'</li>';
+      }
+      if(report.empty){
+        verdictEl.textContent='Incomplete';
+        verdictEl.className='cb-report-verdict v-empty';
+        subEl.textContent='Nothing to analyze yet.';
+        listOrNone(prosEl,[],'Nothing equipped or spent yet.');
+        listOrNone(consEl,[],'—');
+        listOrNone(recsEl,[],'Pick a class, spend attribute points, and equip some gear above, then analyze again.');
+      } else {
+        verdictEl.textContent=report.verdictLabel;
+        verdictEl.className='cb-report-verdict '+report.verdictClass;
+        subEl.textContent=report.sub;
+        listOrNone(prosEl,report.pros,'Nothing stands out yet.');
+        listOrNone(consEl,report.cons,'Nothing flagged.');
+        listOrNone(recsEl,report.recs,'No specific recommendations — this build looks solid.');
+      }
+      box.scrollIntoView({block:'start',behavior:'smooth'});
+    }
+    document.getElementById('cbAnalyzeBuild').addEventListener('click', renderReport);
+
     function setSlotEmpty(id){
       var meta=slotEls[id]; if(!meta) return;
       delete equipped[id];
@@ -3539,6 +3727,10 @@ footer li{color:#6f665b}
         document.getElementById('cbv-'+a.id).textContent=10;
       });
       refreshPoints();
+
+      // stale analysis no longer reflects the (now-cleared) build
+      var reportBox=document.getElementById('cbReport');
+      if(reportBox) reportBox.hidden=true;
     }
     document.getElementById('cbResetBuild').addEventListener('click', resetBuild);
     function equipSlot(id,key){
