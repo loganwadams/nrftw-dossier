@@ -30,15 +30,17 @@
 .pgbar-item{position:relative;display:flex}
 .pgbar button.has-drop{display:inline-flex;align-items:center;gap:5px}
 .pgbar button.has-drop .toc-caret{margin-left:0}
-/* Cerim Builder: set apart from the rest of the chapter tabs with some breathing room and a
-   faint yellow glow, since it's a different kind of page (an interactive tool, not a reference
-   chapter) rather than one more entry in the reading order. */
-.pgbar button.pg-cerim{margin-left:18px;color:#e8c96a;text-shadow:0 0 8px rgba(232,201,106,.85),0 0 16px rgba(232,201,106,.55);animation:cerim-glow 2.6s ease-in-out infinite}
+/* Cerim Builder: set apart from the rest of the chapter tabs - pushed out to the far right edge
+   of the bar (not just nudged over) with a faint yellow glow on its text, since it's a different
+   kind of page (an interactive tool, not a reference chapter) rather than one more entry in the
+   reading order. The auto margin goes on the item wrapper, not the button, so it's the whole tab
+   that's shoved over, with the bar's own edge padding still applying after it. */
+.pgbar-item.pg-cerim-wrap{margin-left:auto}
+.pgbar button.pg-cerim{color:#e8c96a;text-shadow:0 0 8px rgba(232,201,106,.85),0 0 16px rgba(232,201,106,.55);animation:cerim-glow 2.6s ease-in-out infinite}
 .pgbar button.pg-cerim:hover{color:#f6dd8e;text-shadow:0 0 10px rgba(246,221,142,.95),0 0 20px rgba(246,221,142,.7)}
 .pgbar button.pg-cerim[aria-current="page"]{color:var(--gold);text-shadow:0 0 10px rgba(232,201,106,.95),0 0 20px rgba(232,201,106,.7)}
 @keyframes cerim-glow{0%,100%{text-shadow:0 0 6px rgba(232,201,106,.6),0 0 12px rgba(232,201,106,.35)}50%{text-shadow:0 0 10px rgba(232,201,106,.95),0 0 22px rgba(232,201,106,.65)}}
-@media (max-width:760px){.pgbar button.pg-cerim{margin-left:0}
-  .pgbar.menu-open .pgbar-item .pgbar-row button.pg-cerim{margin-left:0}}
+@media (max-width:760px){.pgbar-item.pg-cerim-wrap{margin-left:0}}
 body.paged [data-page]:not(.pg-on){display:none!important}
 body.paged .contents{display:none}
 [data-page]{scroll-margin-top:96px}
@@ -3414,11 +3416,11 @@ footer li{color:#6f665b}
     {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
     {id:'cerim-builder', num:'10', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'}
   ];
-  // Vendors, Catalog and Media are each a standalone page (one chapter, nothing else sharing
-  // the group) so they get a real clean path instead of a #hash. Factions/Classes share one
-  // page ("world"), and Infusions/Enchantments share one page ("gear"), so those stay on
-  // hash-based chapter anchors within their shared page.
-  var CLEAN_PATHS={vend:'/vendors', cat:'/catalog', vid:'/media'};
+  // Vendors, Catalog, Media and Cerim Builder are each a standalone page (one chapter, nothing
+  // else sharing the group) so they get a real clean path instead of a #hash. Factions/Classes
+  // share one page ("world"), and Infusions/Enchantments share one page ("gear"), so those stay
+  // on hash-based chapter anchors within their shared page.
+  var CLEAN_PATHS={vend:'/vendors', cat:'/catalog', vid:'/media', cerim:'/cerim-builder'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
@@ -3550,7 +3552,7 @@ footer li{color:#6f665b}
   };
   CHAPS.forEach(function(c){ if(c.hidden) return;   // tagged for show()/chapOf() but not shown as its own tab
     var dropEl = c.drop && DROP_BUILDERS[c.id] ? DROP_BUILDERS[c.id]() : null;
-    var wrap=document.createElement('span'); wrap.className='pgbar-item'+(dropEl?' toc-has-drop':'');
+    var wrap=document.createElement('span'); wrap.className='pgbar-item'+(dropEl?' toc-has-drop':'')+(c.cls?' '+c.cls+'-wrap':'');
     var row=document.createElement('span'); row.className='pgbar-row';
     var b=document.createElement('button'); b.type='button'; b.dataset.chap=c.id; if(dropEl) b.className='has-drop'; if(c.cls) b.classList.add(c.cls); if(c.aria) b.setAttribute('aria-label',c.aria);
     b.innerHTML=c.label+(dropEl?'<span class="toc-caret"></span>':'');
