@@ -3179,6 +3179,24 @@ footer li{color:#6f665b}
         mismatch:"Plate on Wraith fights the kit it's built around — its defense is dodging the hit, not absorbing it. Heavy armor costs more Mobility than the Defense is worth.",
         weaponWeightCeiling:2,weaponMobilityPenalty:15,weaponDamageDampen:.85,
         weaponMismatch:"A two-handed weapon (or great shield) fights the same kit — Wraith's stamina economy and multi-hit strings assume something fast in hand, not a slow heavy swing."
+      },
+      'frost-mage':{
+        weightCeiling:2,mobilityPenalty:20,defenseDampen:.4,
+        mismatch:"Plate buries a kit that was never going to tank hits — Frost Mage's own guidance says armor value on a robe build isn't going to save you anyway, so heavy plate just adds Mobility cost on top of a Defense stat you weren't relying on."
+        // No weapon-weight check: the class's signature weapon is a Two-Handed Staff, so
+        // "heavy" weapon weight is the intended loadout here, not a mismatch.
+      },
+      plaguebearer:{
+        weightCeiling:3,mobilityPenalty:15,defenseDampen:.7,
+        mismatch:"Plate goes past what Plaguebearer's own guidance calls for — Medium is the stated ceiling. The extra Mobility cost isn't worth it once you're already built around standing in melee range of infected packs."
+        // No weapon-weight check: the class is shown wielding a polearm and its loadout
+        // never asks for anything light, so a heavy weapon isn't a mismatch here.
+      },
+      stormbringer:{
+        weightCeiling:2,mobilityPenalty:20,defenseDampen:.4,
+        mismatch:"Plate fights Stormbringer's own build note — “you are not absorbing hits.” This is a dodge-and-punish kit meant for light-to-normal armor; heavy plate just taxes Mobility for Defense the kit isn't built to use."
+        // No weapon-weight check: nothing in the class's published loadout calls for a
+        // specific weapon weight, so this stays an armor-only synergy for now.
       }
     };
 
@@ -3189,7 +3207,13 @@ footer li{color:#6f665b}
     // are listed — the report falls back to a generic read for everyone else.
     var CLASS_EMPHASIS={
       wraith:{order:['stamina','dexterity','health','focus'],
-        note:"Wraith's own guidance: Stamina first, Dexterity second, Health as a floor rather than a focus, Focus as a bonus for illusion uptime."}
+        note:"Wraith's own guidance: Stamina first, Dexterity second, Health as a floor rather than a focus, Focus as a bonus for illusion uptime."},
+      'frost-mage':{order:['focus','intelligence','stamina','health'],
+        note:"Frost Mage's own guidance: Focus first — it's the real weapon upgrade, a fresh bar every 100 points — then Intelligence, Stamina third, Health as a floor."},
+      plaguebearer:{order:['health','stamina','focus','intelligence'],
+        note:"Plaguebearer's own guidance: Health first — it's both survivability and the pool your infection lifesteal refills — then Stamina, Focus third, Intelligence as a scaling stat."},
+      stormbringer:{order:['stamina','focus','health','intelligence'],
+        note:"Stormbringer's own guidance: Stamina first, Focus second, Health as a floor, Intelligence as a damage dial that can wait since weapon attribute requirements go away at 1.0."}
     };
 
     function closeClassDrop(){
