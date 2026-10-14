@@ -546,8 +546,8 @@ section{padding-block:48px}
 .cb-panel{background:var(--panel);border:1px solid var(--edge);padding:20px 22px 24px;position:relative}
 .cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
 .cb-optional{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7c7265;font-weight:400;border:1px solid var(--edge);border-radius:2px;padding:2px 6px;margin-left:8px;vertical-align:middle}
-.cb-h3-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.cb-reset-btn{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--edge);padding:5px 12px;cursor:pointer;transition:color .15s,border-color .15s;flex:none}
+.cb-reset-wrap{text-align:center;margin:0 0 22px}
+.cb-reset-btn{font-family:var(--data);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--edge);padding:9px 22px;cursor:pointer;transition:color .15s,border-color .15s}
 .cb-reset-btn:hover{color:var(--rust);border-color:var(--rust)}
 
 /* class picker */
@@ -3020,6 +3020,8 @@ footer li{color:#6f665b}
     <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Catalog.</p>
     <p class="cb-note">Early preview &mdash; attribute math is illustrative and enchantments aren&rsquo;t wired in yet, but every item, icon and stat panel below is real game data.</p>
 
+    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button></div>
+
     <div class="cb-wrap">
       <div class="cb-col">
         <div class="cb-panel">
@@ -3047,7 +3049,7 @@ footer li{color:#6f665b}
 
       <div class="cb-col">
         <div class="cb-panel">
-          <h3 class="cb-h3-row">Equipment<button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button></h3>
+          <h3>Equipment</h3>
           <div class="cb-rows" id="cbRows"></div>
         </div>
         <div class="cb-panel">
@@ -3341,10 +3343,25 @@ footer li{color:#6f665b}
       meta.el.innerHTML='<span class="cb-slot-plus">+</span>';
     }
     function resetBuild(){
-      Object.keys(equipped).forEach(function(id){
-        if(id.charAt(0)==='r') setSlotEmpty(id);
-      });
+      // equipment + utility rune slots
+      Object.keys(equipped).forEach(function(id){ setSlotEmpty(id); });
       renderManifest();
+
+      // class
+      selectedClass=null;
+      document.querySelectorAll('.cb-class-opt.on').forEach(function(b){ b.classList.remove('on'); });
+      document.getElementById('cbClassSelected').innerHTML='No class selected &mdash; building generic.';
+      document.getElementById('cbClassTrigger').querySelector('.cb-class-trigger-label').innerHTML='<span>Select a class&hellip;</span>';
+
+      // character: level + attributes
+      var levelEl=document.getElementById('cbLevel');
+      levelEl.value=15;
+      document.getElementById('cbLevelVal').textContent=15;
+      ATTRS.forEach(function(a){
+        attrVals[a.id]=10;
+        document.getElementById('cbv-'+a.id).textContent=10;
+      });
+      refreshPoints();
     }
     document.getElementById('cbResetBuild').addEventListener('click', resetBuild);
     function equipSlot(id,key){
