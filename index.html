@@ -3385,11 +3385,11 @@ footer li{color:#6f665b}
       var util=(a.focus-10)*2 + runeItems.length*12 + ringItems.length*8;
 
       return [
-        {id:'damage',label:'Damage Output',value:Math.max(0,Math.min(100,Math.round(dmg)))},
-        {id:'defense',label:'Defense',value:Math.max(0,Math.min(100,Math.round(def)))},
-        {id:'survivability',label:'Survivability',value:Math.max(0,Math.min(100,Math.round(surv)))},
-        {id:'mobility',label:'Mobility',value:Math.max(5,Math.min(100,Math.round(mob)))},
-        {id:'utility',label:'Utility',value:Math.max(0,Math.min(100,Math.round(util)))}
+        {id:'damage',label:'Damage Output',color:'var(--rust)',value:Math.max(0,Math.min(100,Math.round(dmg)))},
+        {id:'defense',label:'Defense',color:'var(--c-storm)',value:Math.max(0,Math.min(100,Math.round(def)))},
+        {id:'survivability',label:'Survivability',color:'var(--blood)',value:Math.max(0,Math.min(100,Math.round(surv)))},
+        {id:'mobility',label:'Mobility',color:'var(--verdigris)',value:Math.max(5,Math.min(100,Math.round(mob)))},
+        {id:'utility',label:'Utility',color:'var(--c-plague)',value:Math.max(0,Math.min(100,Math.round(util)))}
       ];
     }
     function profileTier(v){
@@ -3404,7 +3404,8 @@ footer li{color:#6f665b}
       if(!wrap) return;
       var rows=computeProfile();
       wrap.innerHTML=rows.map(function(r){
-        return '<div class="attr"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
+        var tint=r.value>0?r.color:'var(--edge-hot)';
+        return '<div class="attr" style="--accent:'+tint+'"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
       }).join('');
       var note=document.getElementById('cbProfileNote');
       var nothingInvested=!Object.keys(equipped).length && ptsSpent()===0;
