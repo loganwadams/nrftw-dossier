@@ -781,7 +781,16 @@ input:placeholder-shown ~ .cb-clr{display:none}
 @media (min-width:601px){.cb-gs{min-width:230px}}
 .cb-detail-slot,.cb-detail-facet{padding-right:26px}
 .cb-gs-ic{width:30px;height:30px;overflow:hidden;flex:none;background:rgba(0,0,0,.25);border:1px solid rgba(201,169,110,.12);box-sizing:border-box}.cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}.cb-gs-ic .m-ic{display:block;transform:scale(.58);transform-origin:0 0;margin:-1px 0 0 -1px;background-color:transparent;border:none}
-.cb-detail-ench{width:100%}
+.cb-detail-ench{width:100%}.cb-clrw.cb-has-fill>input.cb-detail-ench{display:none}
+.cb-ench-fill{display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-height:32px;box-sizing:border-box;padding:3px 28px 3px 8px;background:var(--panel);border:1px solid var(--edge);border-radius:2px;font-family:var(--body);font-size:13px;color:var(--bone);cursor:text;line-height:1.35}
+.cb-ench-fill:focus-within{border-color:var(--gold)}
+.cb-ench-fill .cb-ench-num{width:62px;padding:2px 5px;margin:0 1px;font-family:var(--data);font-size:12px;color:#ffe9a8;background:rgba(201,169,110,.10);border:1px solid rgba(201,169,110,.5);border-radius:2px;text-align:center;-moz-appearance:textfield}
+.cb-ench-fill .cb-ench-num::-webkit-outer-spin-button,.cb-ench-fill .cb-ench-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.cb-ench-fill .cb-ench-num::placeholder{color:#8b8174}
+.cb-ench-fill.cb-fill-locked{cursor:default}
+.cb-clrw:has(>input[data-etype="2"]) .cb-ench-fill{color:#ff7b72;border-color:rgba(214,60,52,.55);background:rgba(120,20,16,.18)}
+.cb-clrw:has(>input.cb-need) .cb-ench-fill{border-color:#e0645c;box-shadow:0 0 0 1px rgba(224,100,92,.5)}
+.cb-clrw .cb-clr{z-index:1}
 .cb-detail-row input[type="text"].cb-need{border-color:#e0645c;box-shadow:0 0 0 1px rgba(224,100,92,.5)}
 .cb-detail-slots.cb-ench-col{flex-direction:column;flex-wrap:nowrap;align-items:stretch;flex:1 1 0;min-width:0;width:100%}
 .cb-ench-col .cb-detail-slot{width:100%}
@@ -3947,7 +3956,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var el=cur; el.value=r[0];
         var m=itemMeta[el.dataset.id]; if(m) m.enchants[+el.dataset.i]=r[0];
         var j=r[0].indexOf('__'); close();
-        el.focus(); if(j>-1) el.setSelectionRange(j,j+2);
+        refreshFill(el);
+        var nb=el.closest('.cb-clrw')&&el.closest('.cb-clrw').querySelector('.cb-ench-num');
+        if(nb) nb.focus(); else { el.focus(); if(j>-1) el.setSelectionRange(j,j+2); }
       }
       function mark(n){
         var els=pop.querySelectorAll('.ek-row'); if(!els.length) return;
@@ -4114,7 +4125,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           ph=(lbl+(same>1?' '+nth:'')).trim();
         }
         var clr='<button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button>';
-        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw">', wrapClose=(locked?'':clr)+'</span>';
+        var fillH=(group==='enchants'&&!locked)?enchFillHtml(v,enchPoolFor(id),!!ownT):'';
+        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw'+(fillH?' cb-has-fill':'')+'">', wrapClose=fillH+(locked?'':clr)+'</span>';
         return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' autocomplete="off"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'"'+(ownT&&!locked?' data-ulock="'+ownT.replace(/"/g,'&quot;')+'"':'')+(locked?' readonly title="Comes with the weapon and cannot be removed"':'')+' placeholder="'+ph+'">'+wrapClose;
       }).join('');
     }
@@ -4232,6 +4244,66 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         renderManifest();
       }
     });
+    // ---- inline number boxes: an enchantment with a blank shows its wording with a small box where each __ was ----
+    function escH(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+    function enchTplOf(v,poolName){
+      v=String(v||''); if(!v) return null;
+      var P=ENCH_BY_SLOT[poolName||'weapon_melee']||[];
+      for(var k=0;k<P.length;k++){
+        var tpl=P[k][0]; if(tpl.indexOf('__')<0) continue;
+        var re=new RegExp('^'+tpl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/__/g,'(-?\\d+(?:\\.\\d+)?|__)')+'$');
+        var mt=re.exec(v); if(mt) return {tpl:tpl,nums:mt.slice(1).map(function(x){ return x==='__'?'':x; }),rng:P[k][1]||''};
+      }
+      return v.indexOf('__')>-1?{tpl:v,nums:[],rng:''}:null;
+    }
+    function enchFillHtml(v,poolName,ulock){
+      var info=enchTplOf(v,poolName); if(!info) return '';
+      var segs=info.tpl.split('__'); if(segs.length<2) return '';
+      var out='<span class="cb-ench-fill'+(ulock?' cb-fill-locked':'')+'" data-tpl="'+escH(info.tpl)+'">'+escH(segs[0]);
+      for(var k=1;k<segs.length;k++){
+        var ph=(k===1&&info.rng)?String(info.rng).replace(/%/g,'').replace(/\s/g,''):'#';
+        out+='<input type="number" step="any" class="cb-ench-num" data-k="'+(k-1)+'" value="'+escH(info.nums[k-1]||'')+'" placeholder="'+escH(ph)+'" aria-label="Value">'+escH(segs[k]);
+      }
+      return out+'</span>';
+    }
+    function refreshFill(inp){
+      var w=inp&&inp.closest('.cb-clrw'); if(!w) return;
+      var old=w.querySelector('.cb-ench-fill'); if(old) old.remove();
+      var html=inp.dataset.edit?'':enchFillHtml(inp.value,inp.getAttribute('data-pool'),!!inp.getAttribute('data-ulock'));
+      w.classList.toggle('cb-has-fill',!!html);
+      if(html) inp.insertAdjacentHTML('afterend',html);
+    }
+    function assembleFill(fill){
+      var segs=fill.getAttribute('data-tpl').split('__'), boxes=fill.querySelectorAll('.cb-ench-num'), t=segs[0];
+      for(var k=1;k<segs.length;k++){ var b=boxes[k-1]; t+=((b&&b.value!=='')?b.value:'__')+segs[k]; }
+      return t;
+    }
+    document.addEventListener('input',function(e){
+      var n=e.target; if(!(n.classList&&n.classList.contains('cb-ench-num'))) return;
+      var fill=n.closest('.cb-ench-fill'), inp=fill.parentNode.querySelector('.cb-detail-ench'); if(!inp) return;
+      inp.value=assembleFill(fill);
+      var m=itemMeta[inp.dataset.id]; if(m) m.enchants[+inp.dataset.i]=inp.value;
+    },true);
+    document.addEventListener('change',function(e){
+      var n=e.target; if(!(n.classList&&n.classList.contains('cb-ench-num'))) return;
+      e.stopPropagation();
+      var fill=n.closest('.cb-ench-fill'), inp=fill.parentNode.querySelector('.cb-detail-ench'); if(!inp) return;
+      inp.value=assembleFill(fill);
+      inp.dispatchEvent(new Event('change',{bubbles:true})); // stores, clamps to the allowed range and refreshes the manifest
+      refreshFill(inp);
+    },true);
+    document.addEventListener('click',function(e){
+      var f=e.target.closest&&e.target.closest('.cb-ench-fill'); if(!f||e.target.classList.contains('cb-ench-num')||f.classList.contains('cb-fill-locked')) return;
+      var inp=f.parentNode.querySelector('.cb-detail-ench'); if(!inp) return;
+      inp.dataset.edit='1'; refreshFill(inp); inp.focus();
+    });
+    document.addEventListener('focusout',function(e){
+      var t=e.target; if(!(t.classList&&t.classList.contains('cb-detail-ench')&&t.dataset.edit)) return;
+      setTimeout(function(){ if(document.activeElement===t) return; delete t.dataset.edit; refreshFill(t); },120);
+    });
+    document.addEventListener('focusin',function(e){
+      var n=e.target; if(n.classList&&n.classList.contains('cb-ench-num')) try{ n.select(); }catch(x){}
+    });
     // Each enchantment rolls its first blank within a fixed range (e.g. "10%-20%"). Find the pool entry a typed
     // enchantment came from and return the bounds plus the number typed, or null if it can't be matched.
     function enchLimits(text,poolName){
@@ -4317,6 +4389,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var pl=e.target.getAttribute('data-pool')||'weapon_melee', fixed=clampEnchantText(e.target.value,pl);
           if(fixed!==e.target.value){ e.target.value=fixed; e.target.classList.add('cb-need'); setTimeout(function(){ e.target.classList.remove('cb-need'); },1400); }
           var lim=enchLimits(e.target.value,pl); e.target.title=lim?('Allowed range: '+lim.rng):'';
+          if(!e.target.dataset.edit) refreshFill(e.target);
         }
         m[group][i]=e.target.value;
         if(group==='gems'||group==='runes'){ var ic=e.target.parentNode&&e.target.parentNode.querySelector('.cb-gs-ic'); if(ic) ic.innerHTML=slotIconHtml(e.target.value); }
@@ -4382,7 +4455,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         Array.prototype.forEach.call(blanks,function(inp){ inp.classList.remove('cb-need'); if(inp.value.indexOf('__')>-1||enchMalformed(inp.value,inp.getAttribute('data-pool'))){ inp.classList.add('cb-need'); bad.push(inp); } });
         if(bad.length){
           errEl.textContent='Can\u2019t finish yet: '+(bad.length===1?'one enchantment still has':bad.length+' enchantments still have')+' a blank or invalid value. Replace each __ with the number you rolled (it must fall inside the enchantment\u2019s range).';
-          errEl.hidden=false; errEl.style.visibility=''; bad[0].scrollIntoView({block:'center'}); bad[0].focus(); var bj=bad[0].value.indexOf('__'); try{ bad[0].setSelectionRange(bj,bj+2); }catch(err){} return;
+          errEl.hidden=false; errEl.style.visibility=''; var tgt=bad[0].closest('.cb-clrw'), nbx=tgt&&(Array.prototype.filter.call(tgt.querySelectorAll('.cb-ench-num'),function(x){ return x.value===''; })[0]||tgt.querySelector('.cb-ench-num'));
+          if(nbx){ nbx.scrollIntoView({block:'center'}); nbx.focus(); } else { bad[0].scrollIntoView({block:'center'}); bad[0].focus(); var bj=bad[0].value.indexOf('__'); try{ bad[0].setSelectionRange(bj,bj+2); }catch(err){} } return;
         }
         clearErr(); closeCfg();
       });
