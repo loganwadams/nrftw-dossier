@@ -4333,7 +4333,7 @@ footer li{color:#6f665b}
 
       var verdictLabel=cs.cls.name+' · '+pctNow+'%';
       var verdictClass=cs.ratio>=1?'v-bad':(cs.ratio>=.6?'v-warn':'v-good');
-      var sub=className+' · Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
+      var sub=(selectedClass?className+' · ':'')+'Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
 
       return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs};
     }
