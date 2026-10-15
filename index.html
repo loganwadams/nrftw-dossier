@@ -724,6 +724,17 @@ section{padding-block:48px}
 .cb-row-label{display:none}
 
 /* loadout manifest */
+.cb-mf-block{margin-top:20px}
+.cb-manifest-list.cb-mf-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px 20px;align-items:start}
+.cb-mf-sec{display:block}
+.cb-mf-sec.wide{grid-column:1/-1}
+.cb-mf-sec-h{margin:0 0 8px;padding:0 0 7px;border-bottom:1px solid var(--edge);font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:400}
+.cb-mf-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:start}
+.cb-mf-card{background:rgba(0,0,0,.18);border:1px solid var(--edge);padding:11px 13px;display:flex;flex-direction:column}
+.cb-mf-card.open{grid-column:1/-1}
+.cb-mf-card .cb-mf-sum{margin-left:0}
+.cb-mf-card .cb-mf-detail{background:none;border:none;border-top:1px solid var(--edge);padding:12px 0 0;margin:10px 0 0}
+
 .cb-manifest-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .cb-manifest-empty{font-size:14.5px;color:var(--muted);font-style:italic;padding:6px 0}
 .cb-manifest-list li{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid rgba(51,39,29,.6)}
@@ -3228,11 +3239,12 @@ footer li{color:#6f665b}
           <div class="attrs" id="cbProfileBars"></div>
           <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
         </div>
-        <div class="cb-panel">
-          <h3>Loadout Manifest</h3>
-          <ul class="cb-manifest-list" id="cbManifest"><li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li></ul>
-        </div>
       </div>
+    </div>
+
+    <div class="cb-panel cb-mf-block">
+      <h3>Loadout Manifest</h3>
+      <div class="cb-manifest-list cb-mf-board" id="cbManifest"><div class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</div></div>
     </div>
 
     <div class="cb-report-wrap">
@@ -3904,30 +3916,36 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(runes.length) rows.push(['Runes',runes.map(dmgEsc).join(', ')]);
       return '<div class="cb-mf-sum">'+rows.map(function(r){ return '<span><b>'+r[0]+'</b> '+(r[0]==='Facet'||r[0]==='Rarity'?dmgEsc(r[1]):r[1])+'</span>'; }).join('')+'</div>';
     }
+    var MF_SECTIONS=[
+      {cat:'weapon',title:'Main Hand'},{cat:'offhand',title:'Off-Hand'},{cat:'helm',title:'Helmet'},
+      {cat:'chest',title:'Body'},{cat:'legs',title:'Legs'},{cat:'gloves',title:'Gloves'},
+      {cat:'ring',title:'Rings'},{cat:'rune',title:'Utility Runes'}
+    ];
     function renderManifest(){
-      var ul=document.getElementById('cbManifest');
-      var ids=Object.keys(equipped);
+      var box=document.getElementById('cbManifest');
+      var ids=Object.keys(equipped).filter(function(id){ return cards&&cards[equipped[id]]&&slotEls[id]; });
       if(!ids.length){
-        ul.innerHTML='<li class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</li>';
+        box.innerHTML='<div class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</div>';
       } else {
-        ul.innerHTML='';
-        ids.forEach(function(id){
-          var key=equipped[id]; var item=cards[key]; if(!item) return;
-          var meta=slotEls[id];
-          var hasDetails=!!itemMeta[id];
-          var m=itemMeta[id];
-          var rarityId=m?m.rarity:(item.r||'standard');
-          var levelShown=m?m.level:item.lv;
-          var li=document.createElement('li'); li.className='cb-mf-item';
-          li.innerHTML='<div class="cb-mf-row">'+
-            '<span class="cb-mf-slot">'+(meta.label||'')+'</span>'+
-            '<span class="cb-mf-name r-'+rarityId+'">'+item.n+'</span>'+
-            (levelShown?'<span class="cb-mf-lv">Lv '+levelShown+'</span>':'')+
-            (hasDetails?'<button type="button" class="cb-mf-toggle" data-id="'+id+'" aria-expanded="'+(expandedDetails[id]?'true':'false')+'">'+(expandedDetails[id]?'Hide details':(m&&m.cat==='ring'?'Enchantments&hellip;':'Rarity / Gems / Facet&hellip;'))+'</button>':'')+
-            '</div>'+
-            (hasDetails&&expandedDetails[id]?renderDetailPanel(id,item):(hasDetails?manifestSummary(m):''));
-          ul.appendChild(li);
+        var html='';
+        MF_SECTIONS.forEach(function(sec){
+          var list=ids.filter(function(id){ return slotEls[id].cat===sec.cat; }).sort(function(a,b){ return a<b?-1:1; });
+          if(!list.length) return;
+          html+='<div class="cb-mf-sec'+((list.length>1||list.some(function(i){ return expandedDetails[i]; }))?' wide':'')+'"><h4 class="cb-mf-sec-h">'+sec.title+'</h4><div class="cb-mf-cards">';
+          list.forEach(function(id){
+            var item=cards[equipped[id]], m=itemMeta[id], hasDetails=!!m;
+            var rarityId=m?m.rarity:(item.r||'standard');
+            var levelShown=m?m.level:item.lv;
+            var open=!!expandedDetails[id];
+            html+='<div class="cb-mf-card'+(open?' open':'')+'"><div class="cb-mf-row">'+
+              '<span class="cb-mf-name r-'+rarityId+'">'+item.n+'</span>'+
+              (levelShown?'<span class="cb-mf-lv">Lv '+levelShown+'</span>':'')+
+              (hasDetails?'<button type="button" class="cb-mf-toggle" data-id="'+id+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'Hide details':(m&&m.cat==='ring'?'Enchantments&hellip;':'Rarity / Gems / Facet&hellip;'))+'</button>':'')+
+              '</div>'+(hasDetails&&open?renderDetailPanel(id,item):(hasDetails?manifestSummary(m):''))+'</div>';
+          });
+          html+='</div></div>';
         });
+        box.innerHTML=html;
       }
       renderProfile();
     }
