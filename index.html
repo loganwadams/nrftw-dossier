@@ -4405,7 +4405,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var FACET_FX={
       heavy:{dmg:20,note:'+20% damage (costs +25% stamina)'},
       reliable:{dmg:20,poisePct:20,note:'+20% damage and +20% poise damage (gives up critical chance)'},
-      sharp:{critMult:0.30,note:'+30% critical damage'},
+      sharp:{dmg:-10,critMult:0.30,note:'−10% damage, +30% critical damage'},
+      mundane:{dmg:20,note:'+20% damage (−25% Focus gain on hit)'},
+      clumsy:{dmg:20,note:'+20% damage (slower attacks)'},
+      quick:{dmg:-10,note:'−10% damage (faster attacks)'},
+      flaming:{dmg:-10,note:'−10% damage (adds a fire infusion)'},
+      frigid:{dmg:-10,note:'−10% damage (adds an ice infusion)'},
+      voltaic:{dmg:-10,note:'−10% damage (adds a lightning infusion)'},
+      festering:{dmg:-10,note:'−10% damage (adds a plague infusion)'},
       keen:{critChance:0.05,note:'+5% critical chance (gives up poise damage)'},
       razor:{critChance:0.05,note:'+5% critical chance (needs repair powder)'},
       blunt:{poisePct:20,note:'+20% poise damage (gives up Focus gain)'}
@@ -4562,8 +4569,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var G=newDmgBucket();
         armorEnch.forEach(function(a){ applyDmgEnchant(a.p,G,st,a.src,item.n); });
 
-        var weaponDmg=(st.base+attrBonus)*(1+L.pct/100)*pm;
-        var Lpct=((1+L.pct/100)*pm-1)*100;
+        // weapon-local bonuses add to the upgrade bonus (+20% per upgrade level) instead of multiplying it
+        var upPct=(lvNow-1)*20, locMul=(1+(upPct+L.pct)/100)/(1+upPct/100);
+        var weaponDmg=(st.base+attrBonus)*locMul*pm;
+        var Lpct=(locMul*pm-1)*100;
         var attackDmg=weaponDmg*(1+G.pct/100);
         var cc=Math.max(0,Math.min(1,st.critChance+L.critChance+G.critChance));
         var cm=st.critMult+L.critMult+G.critMult;
