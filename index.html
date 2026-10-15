@@ -799,6 +799,7 @@ body.cb-cfg-open{overflow:hidden}
 .cb-detail-hint{display:block;width:100%;color:#a4512a;font-size:11.5px;font-style:italic}
 .ek-row.ek-dis{opacity:.38;cursor:not-allowed}
 .ek-row.ek-dis:hover{background:none}
+.cb-detail-hint.cb-warn,.cb-mf-sum .cb-warn{color:#d0604f;font-style:normal}
 .cb-detail-hint.cb-rule{color:#8b8174;font-style:normal;margin-top:4px}
 @media (max-width:640px){
   .cb-detail-label{width:100%}
@@ -3952,6 +3953,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return '<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+ph+'">';
       }).join('');
     }
+    // The game wants a minimum number of each kind of enchantment (Magical 1, Plagued 2 plus 1 drawback, Unique 1).
+    function enchShortfall(m){
+      var rule=RARITY_RULES[m.rarity]; if(!rule||m.cat==='ring') return [];
+      var plan=enchantPlan(m.rarity,m.level), out=[];
+      rule.groups.forEach(function(g){
+        var have=0; plan.forEach(function(sl,i){ if(sl.type===g.type && String((m.enchants||[])[i]||'').trim()) have++; });
+        if(have<g.min) out.push('Item should have at least '+g.min+' '+g.label+' enchantment'+(g.min>1?'s':'')+(have?' ('+have+' chosen so far)':''));
+      });
+      return out;
+    }
     function gemRuleText(r){
       return r==='standard'?'Common items take up to 4 gems, but no enchantments.':'Magical, Plagued and Unique items take 1 gem; Common items take 4.';
     }
@@ -3978,7 +3989,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       html+=detailFieldRow('Facet','<input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None">');
       html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span><small class="cb-detail-hint cb-rule">'+gemRuleText(m.rarity)+'</small>');
       html+=m.enchants.length
-        ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span><small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>')
+        ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span><small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>'+enchShortfall(m).map(function(w){ return '<small class="cb-detail-hint cb-warn">'+w+'</small>'; }).join(''))
         : detailFieldRow('Enchants','<small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>');
       if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
         html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
@@ -4000,9 +4011,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       rows.push(['Gems',gems.length?gems.map(dmgEsc).join(', '):'<em>none</em>'+(m.gems&&m.gems.length?' ('+m.gems.length+' open)':'')]);
       var ench=(m.enchants||[]).filter(function(e){ return e&&e.trim(); });
       if((m.enchants||[]).length) rows.push(['Enchants',ench.length?ench.map(dmgEsc).join(' &middot; '):'<em>none</em>']);
+      var shortMsgs=enchShortfall(m);
       var runes=(m.runes||[]).filter(function(r){ return r&&r.trim(); });
       if(runes.length) rows.push(['Runes',runes.map(dmgEsc).join(', ')]);
-      return '<div class="cb-mf-sum">'+rows.map(function(r){ return '<span><b>'+r[0]+'</b> '+(r[0]==='Facet'||r[0]==='Rarity'?dmgEsc(r[1]):r[1])+'</span>'; }).join('')+'</div>';
+      return '<div class="cb-mf-sum">'+rows.map(function(r){ return '<span><b>'+r[0]+'</b> '+(r[0]==='Facet'||r[0]==='Rarity'?dmgEsc(r[1]):r[1])+'</span>'; }).join('')+shortMsgs.map(function(w){ return '<span class="cb-warn"><b>Needs</b> '+dmgEsc(w.replace('Item should have ',''))+'</span>'; }).join('')+'</div>';
     }
     var MF_SECTIONS=[
       {cat:'weapon',title:'Main Hand'},{cat:'offhand',title:'Off-Hand'},{cat:'helm',title:'Helmet'},
@@ -4098,21 +4110,22 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can change any of this later from the Loadout Manifest.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
       document.body.appendChild(ov);
       var body=ov.querySelector('#cbCfgBody');
-      function sig(m){ return [m.rarity,(m.gems||[]).length,(m.enchants||[]).length,(m.runes||[]).length].join('|'); }
+      function sig(m){ return [m.rarity,(m.gems||[]).length,(m.enchants||[]).length,(m.runes||[]).length,enchShortfall(m).join(',')].join('|'); }
+      var lastSig='';
       window.openCfg=function(id){
         var item=cards[equipped[id]], m=itemMeta[id], meta=slotEls[id]; if(!item||!m||!meta) return;
         cfgId=id;
         ov.querySelector('#cbCfgSlot').textContent=(meta.label||'')+(meta.ord?' '+meta.ord:'');
         ov.querySelector('#cbCfgTitle').textContent=item.n;
-        body.innerHTML=renderDetailPanel(id,item);
+        body.innerHTML=renderDetailPanel(id,item); lastSig=sig(m);
         ov.hidden=false; document.body.classList.add('cb-cfg-open');
       };
       function closeCfg(){ ov.hidden=true; cfgId=null; document.body.classList.remove('cb-cfg-open'); renderManifest(); }
       body.addEventListener('change',function(e){
         if(!cfgId) return;
-        var m=itemMeta[cfgId], before=m?sig(m):'';
+        var m=itemMeta[cfgId];
         onDetailChange(e);
-        if(m && sig(m)!==before) body.innerHTML=renderDetailPanel(cfgId,cards[equipped[cfgId]]);
+        if(m && sig(m)!==lastSig){ lastSig=sig(m); var rid=cfgId; setTimeout(function(){ if(cfgId===rid) body.innerHTML=renderDetailPanel(rid,cards[equipped[rid]]); },0); }
       });
       ov.querySelector('#cbCfgDone').addEventListener('click',closeCfg);
       ov.querySelector('#cbCfgX').addEventListener('click',closeCfg);
