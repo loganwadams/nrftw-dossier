@@ -807,7 +807,7 @@ body.cb-cfg-open{overflow:hidden}
 .ek-none{padding:9px 12px;font-size:13px;color:#8b8174;font-style:italic}
 
 .cb-detail-hint{display:block;width:100%;color:#a4512a;font-size:11.5px;font-style:italic}
-.gm-ic{flex:0 0 34px;width:34px;height:34px;overflow:hidden}.gm-ic .m-ic{display:block;transform:scale(.7);transform-origin:0 0;background-color:transparent;border:none}.gm-d{color:#9d917f;font-size:12.5px}.gm-row{align-items:center}.gm-row.gm-none .gm-d{font-style:italic;color:#6f6758}
+.gm-ic{flex:0 0 34px;width:34px;height:34px;overflow:hidden}.gm-ic .m-ic{display:block;transform:scale(.7);transform-origin:0 0;background-color:transparent;border:none}.gm-d{color:#c9bfae;font-size:12.5px}.gm-row{align-items:center}.gm-row.gm-none .gm-d{font-style:italic;color:#6f6758}
 .ek-row.ek-dis{opacity:.38;cursor:not-allowed}
 .ek-row.ek-dis:hover{background:none}
 .cb-detail-hint.cb-warn,.cb-mf-sum .cb-warn{color:#d0604f;font-style:normal}
@@ -3852,9 +3852,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // ---- Enchantment picker: a searchable, colour-coded list under the box ---------------------
     // Stat words are tinted by kind and the roll range shows in blue where the number goes. Typing
     // filters the list; Up/Down + Enter or a click picks; the blank then sits selected for the number.
-    var ENCH_KW=/(Max Health|Max Focus|Max Stamina|Focus Gain|Focus Cost|Focus Regeneration|Stamina Cost|Stamina Recovery|Equip Load|Armor Penetration|Movement Speed|Attack Speed|Overall Speed|Health|Healing|Focus|Stamina|Armor|Durability|Weight|(?:Critical|Stagger|Attack|Rune Attack|Charged Attack|Fire|Heat|Cold|Lightning|Electric|Plague|Physical|Elemental|Bomb|Burn|Poison|Bleed) Damage|Damage|(?:Fire|Cold|Lightning|Plague|Physical|Stagger|Damage) Resistance|All Resistances|Thorns|Poise|Barrier|Buildup|Potency|Critical Hit Chance|Parry|Block)/g;
+    var ENCH_KW=/\b(Max Health|Max Focus|Max Stamina|Focus Gain|Focus Cost|Focus Regeneration|Stamina Cost|Stamina Recovery|Equip Load|Armor Penetration|Movement Speed|Attack Speed|Overall Speed|Health|Healing|Focus|Stamina|Armor|Durability|Weight|(?:Critical|Stagger|Attack|Rune Attack|Charged Attack|Fire|Heat|Cold|Lightning|Electric|Plague|Physical|Elemental|Bomb|Burn|Poison|Bleed) Damage|Damage|(?:Fire|Cold|Lightning|Plague|Physical|Stagger|Damage) Resistance|All Resistances|Thorns|Poise|Barrier|Buildup|Potency|Critical Hit Chance|Parry|Blocking|Block|Infusion|Lifesteal|Enchantment Power|Experience Gain|Regainable Health)\b/g;
     function enchKind(w){
-      if(/Health|Healing/.test(w)) return ['hp','img/cb/icon-attr-health.webp'];
+      if(/Enchantment Power|Infusion/.test(w)) return ['ot',''];
+      if(/Health|Healing|Lifesteal/.test(w)) return ['hp','img/cb/icon-attr-health.webp'];
       if(/Focus/.test(w)) return ['fo','img/cb/icon-attr-focus.webp'];
       if(/Stamina/.test(w)) return ['st','img/cb/icon-attr-stamina.webp'];
       if(/Equip Load|Weight/.test(w)) return ['eq','img/cb/icon-attr-equipload.webp'];
@@ -3980,6 +3981,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var meta=slotEls[id]; if(meta&&meta.cat==='offhand') return 'Off-Hands';
       return 'Weapons';
     }
+    // Same colour-coding as the enchantment list: stat words tinted by kind, numbers in blue.
+    function gemTextHtml(text){
+      var esc=dmgEsc(text);
+      esc=esc.replace(ENCH_KW,function(w){ return '<b class="ek-'+enchKind(w)[0]+'">'+w+'</b>'; });
+      return esc.replace(/(<[^>]*>)|(\d+(?:\.\d+)?%?)/g,function(m,tag,num){ return tag?tag:'<span class="ek-n">'+num+'</span>'; });
+    }
     function gemEffectLines(id,m){
       var lab=gemSlotLabel(id), idx=gemIndex(), out=[];
       (m.gems||[]).forEach(function(g){
@@ -3987,7 +3994,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var gi=idx[n];
         if(!gi){ out.push('<small class="cb-detail-hint">'+dmgEsc(String(g).trim())+': not a known gem.</small>'); return; }
         var t=gi.fx[lab];
-        out.push('<small class="cb-detail-hint cb-gemfx"><b>'+dmgEsc(gi.n)+'</b> &mdash; '+(t?dmgEsc(t):'no effect on this slot')+'</small>');
+        out.push('<small class="cb-detail-hint cb-gemfx"><b>'+dmgEsc(gi.n)+'</b> &mdash; '+(t?gemTextHtml(t):'no effect on this slot')+'</small>');
       });
       return out.join('');
     }
@@ -4011,7 +4018,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         pop.innerHTML=rows.length?rows.map(function(g,i){
           var t=g.fx[lab];
           var ic=g.p?'<span class="m-ic" style="background-position:-'+(g.p[0]*48)+'px -'+(g.p[1]*48)+'px"></span>':'';
-          return '<div class="ek-row gm-row'+(t?'':' gm-none')+'" data-i="'+i+'"><span class="gm-ic">'+ic+'</span><span class="ek-t"><b>'+dmgEsc(g.n)+'</b><br><span class="gm-d">'+(t?dmgEsc(t):'No effect on this slot')+'</span></span></div>';
+          return '<div class="ek-row gm-row'+(t?'':' gm-none')+'" data-i="'+i+'"><span class="gm-ic">'+ic+'</span><span class="ek-t"><b>'+dmgEsc(g.n)+'</b><br><span class="gm-d">'+(t?gemTextHtml(t):'No effect on this slot')+'</span></span></div>';
         }).join(''):'<div class="ek-none">No gem matches that.</div>';
         hi=-1; place();
       }
