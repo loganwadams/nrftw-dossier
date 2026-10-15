@@ -3650,7 +3650,7 @@ footer li{color:#6f665b}
         case 'legs': return item.cat==='armor' && /Pants$/.test(item.t||'');
         case 'gloves': return item.cat==='armor' && /Gloves$/.test(item.t||'');
         case 'ring': return item.cat==='trinkets';
-        case 'rune': return item.cat==='runes';
+        case 'rune': return item.cat==='runes' && /Slot this Rune into a Utility Slot/.test(((cards&&cards[item.k]&&cards[item.k].h)||'').replace(/<[^>]+>/g,'')); // weapon runes (Armageddon, Dual Flurry...) belong in a weapon's rune sockets
         case 'inf': return item.cat==='gems';
       }
       return false;
