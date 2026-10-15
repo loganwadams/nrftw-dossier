@@ -145,6 +145,7 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-body{position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:170px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
 .lt-text{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
 .lt-node.up .lt-body{bottom:calc(50% + 56px)}
+@media (min-width:861px){.lt-node.up .lt-text{flex-direction:column-reverse}}
 .lt-node.down .lt-body{top:calc(50% + 56px);flex-direction:column-reverse}
 .lt-ic{width:66px;height:66px;display:grid;place-items:center;background:url(img/lore-icon.png) center / contain no-repeat;filter:drop-shadow(0 6px 14px rgba(0,0,0,.7)) brightness(.92);transition:filter .25s,transform .25s}
 .lt-ic svg{display:none}
