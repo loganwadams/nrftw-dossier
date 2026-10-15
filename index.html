@@ -3258,7 +3258,7 @@ footer li{color:#6f665b}
       </div>
       <div class="cb-report-grid">
         <div class="panel">
-          <h3>Strengths</h3>
+          <h3>Your Numbers</h3>
           <ul class="marks pros" id="cbReportPros"></ul>
         </div>
         <div class="panel">
@@ -3267,7 +3267,7 @@ footer li{color:#6f665b}
         </div>
       </div>
       <div class="panel">
-        <h3>Recommendations</h3>
+        <h3>What Would Change It</h3>
         <ul class="marks recs" id="cbReportRecs"></ul>
       </div>
     </div>
@@ -3968,7 +3968,7 @@ footer li{color:#6f665b}
     function renderProfile(){
       var wrap=document.getElementById('cbProfileBars');
       if(!wrap) return;
-      var result=computeProfile();
+      var result={mismatch:null,warnGroups:[]};
       var cs=computeCharStats();
       var rows=[
         ['Health',cs.health,null,'var(--blood)'],
@@ -4272,15 +4272,9 @@ footer li{color:#6f665b}
       }
 
       var pros=[], cons=[], recs=[];
+      var cs=computeCharStats();
 
-      // class synergy — reuse the Build Profile's own mismatch detection
-      if(profile.mismatch){
-        (profile.warnGroups||[]).forEach(function(g){ cons.push(g.message); });
-      } else if(selectedClass){
-        pros.push("No equipped gear fights the kit — nothing flagged against "+className+"'s documented loadout guidance.");
-      }
-
-      // equipment completeness
+      // Everything below is arithmetic on the game's own numbers - no opinions about "good" or "bad".
       var rowGaps=[];
       ROWS.forEach(function(row,ri){
         var filled=0;
@@ -4290,67 +4284,55 @@ footer li{color:#6f665b}
       var runeFilled=0;
       for(var i=0;i<4;i++){ if(equipped['u'+i]) runeFilled++; }
       if(runeFilled<4) rowGaps.push('Utility Runes ('+runeFilled+'/4)');
-      if(rowGaps.length){
-        cons.push('Open slots: '+rowGaps.join(', ')+'.');
-        recs.push('Fill the remaining slot'+(rowGaps.length>1?' groups':'')+' — '+rowGaps.join(', ')+' — an empty slot is always a missed stat, never a neutral one.');
-      } else {
-        pros.push('Every equipment and rune slot is filled.');
+      if(rowGaps.length) cons.push('Open slots: '+rowGaps.join(', ')+'.');
+      else pros.push('Every equipment and rune slot is filled.');
+      if(left>0) cons.push(left+' unspent attribute point'+(left>1?'s':'')+'.');
+      else if(spent>0) pros.push('All '+total+' attribute points are spent.');
+
+      // Character
+      pros.push('Health '+cs.health+' · Stamina '+cs.stamina+' · Focus '+cs.focus+'.');
+      if(cs.armor) pros.push('Armor '+cs.armor+' across '+cs.armorParts.length+' piece'+(cs.armorParts.length>1?'s':'')+'.');
+      var Rk=Object.keys(cs.res);
+      if(Rk.length) pros.push('Resistances: '+Rk.map(function(k){ return RES_NAMES[k]+' +'+cs.res[k]+'%'; }).join(', ')+'.');
+
+      // Load
+      var pctNow=Math.round(cs.ratio*100);
+      var loadLine='Carrying '+(Math.round(cs.weight*10)/10)+' of '+Math.round(cs.capacity)+' ('+pctNow+'%): '+cs.cls.name+', stamina recovery ×'+cs.cls.rec+'.';
+      (cs.cls.name==='Overencumbered'?cons:pros).push(loadLine);
+      var ci2=LOAD_CLASSES.indexOf(cs.cls);
+      if(ci2>0 && cs.weight>0){
+        var prev=LOAD_CLASSES[ci2-1], limit=prev.max;
+        var drop=cs.weight-limit*cs.capacity+0.05;
+        var needCap=cs.weight/limit+0.05, needBase=needCap/(1+cs.loadBonus/100)-70, need=null;
+        for(var x=attrVals.equipload+1;x<=99;x++){ if(csCurve(CS_LOAD,x)>=needBase){ need=x; break; } }
+        var opt=['shed about '+Math.ceil(drop)+' weight'];
+        if(need!==null && need-attrVals.equipload<=left+0) opt.push('raise Equip Load to '+need+' ('+(need-attrVals.equipload)+' more point'+(need-attrVals.equipload>1?'s':'')+')');
+        else if(need!==null) opt.push('raise Equip Load to '+need);
+        recs.push('To drop from '+cs.cls.name+' to '+prev.name+' (under '+Math.round(limit*100)+'%, stamina recovery ×'+prev.rec+'): '+opt.join(', or ')+'.');
       }
 
-      // attribute points
-      if(left>0){
-        cons.push(left+' unspent attribute point'+(left>1?'s':'')+'.');
-        recs.push('Spend the remaining '+left+' point'+(left>1?'s':'')+' — unspent points do nothing for you sitting in reserve.');
-      } else if(spent>0){
-        pros.push('All available attribute points are spent.');
-      }
-
-      var emphasis=CLASS_EMPHASIS[selectedClass];
-      if(emphasis){
-        var invested=ATTRS.map(function(a){ return {id:a.id,name:a.name,over:attrVals[a.id]-10}; }).filter(function(x){ return x.over>0; });
-        if(invested.length){
-          var top=invested.slice().sort(function(x,y){ return y.over-x.over; })[0];
-          var topPriorityId=emphasis.order[0];
-          if(top.id===topPriorityId){
-            pros.push('Heaviest attribute investment is in '+top.name+', matching '+className+"'s top priority.");
-          } else {
-            var topPriorityName=ATTRS.filter(function(a){ return a.id===topPriorityId; })[0].name;
-            cons.push('Heaviest attribute investment is in '+top.name+', not '+topPriorityName+', which '+className+"'s own guidance calls the first priority.");
-            recs.push(emphasis.note);
-          }
-        }
-      } else if(selectedClass){
-        cons.push("Detailed attribute guidance for "+className+" isn't mapped yet, so point allocation can't be checked against it.");
-      }
-
-
-      // gear level vs character level
-      if(cards){
-        var lvlSum=0, lvlCount=0;
-        Object.keys(equipped).forEach(function(id){
-          var it=cards[equipped[id]]; var m=itemMeta[id];
-          var lv=m?m.level:(it&&it.lv);
-          if(lv){ lvlSum+=+lv; lvlCount++; }
+      // Damage per weapon, and what one more point in each scaling attribute is worth
+      var dmg=computeDamage();
+      dmg.rows.forEach(function(r){
+        pros.push(r.item.n+': '+Math.floor(r.attackDmg)+' damage per hit'+(r.cc>0?' ('+dmgFmt(r.avg)+' average with '+Math.round(r.cc*100)+'% crit)':'')+'.');
+        var mult=(r.st.base+r.attrBonus)>0?r.attackDmg/(r.st.base+r.attrBonus):1;
+        var best=null;
+        r.st.scales.forEach(function(n){
+          var pts=Math.max(0,(attrVals[n.toLowerCase()]||10)-10);
+          var gain=r.st.base*(dmgAttrFrac(pts+1)-dmgAttrFrac(pts))*mult;
+          if(!best||gain>best.gain) best={n:n,gain:gain};
         });
-        if(lvlCount){
-          var avgItemLv=lvlSum/lvlCount;
-          if(level-avgItemLv>=5){
-            var gap=Math.round(level-avgItemLv);
-            cons.push('Equipped gear averages level '+avgItemLv.toFixed(1)+' against a level '+level+' character.');
-            recs.push('Check the Catalog for higher-level upgrades in your filled slots — a '+gap+'-level gap is usually free stats left on the table.');
-          }
-        }
+        if(best && left>0) recs.push('One more point of '+best.n+' adds about '+dmgFmt(best.gain)+' damage per hit with '+r.item.n+'.');
+      });
+      if(left>0){
+        var hp=csCurve(CS_HEALTH,attrVals.health+1)-csCurve(CS_HEALTH,attrVals.health);
+        var st2=csCurve(CS_STAMINA,attrVals.stamina+1)-csCurve(CS_STAMINA,attrVals.stamina);
+        recs.push('One more point: Health +'+dmgFmt(hp)+', Stamina +'+dmgFmt(st2)+', Equip Load +'+dmgFmt(10*(1+cs.loadBonus/100))+' capacity.');
       }
+      if(cs.resNote) recs.push('Fireproof and Purified give resistance, but the amounts aren’t in the game data, so they aren’t counted above.');
 
-      var verdictLabel, verdictClass;
-      if(profile.mismatch){
-        verdictLabel='Needs Rework'; verdictClass='v-bad';
-      } else if(cons.length){
-        verdictLabel='Needs Attention'; verdictClass='v-warn';
-      } else {
-        verdictLabel='Optimized'; verdictClass='v-good';
-      }
-
+      var verdictLabel=cs.cls.name+' · '+pctNow+'%';
+      var verdictClass=cs.ratio>=1?'v-bad':(cs.ratio>=.6?'v-warn':'v-good');
       var sub=className+' · Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
 
       return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs};
