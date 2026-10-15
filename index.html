@@ -4081,6 +4081,94 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       window.addEventListener('resize',place);
       window.addEventListener('scroll',function(){ if(cur) place(); },true);
     })();
+    // ---- weapon runes: which weapons each rune can be socketed into (from the rune card's "Applies To" line) ----
+    var runeIdxCache=null;
+    function runeIndex(){
+      if(runeIdxCache||!cards) return runeIdxCache||{};
+      runeIdxCache={};
+      Object.keys(cards).forEach(function(k){
+        if(k.indexOf('/db/runes/')!==0) return;
+        var c=cards[k], t=String(c.h||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+        var ap=/Applies To (.*?) (?:Sell Value|Source|$)/.exec(t), into=/Slot this Rune into (.*?) to gain/.exec(t);
+        var d=/(?:Rune Attack|Technique|Spell)\. (.*?) (?:Type |$)/.exec(t);
+        var name=c.n; if(!name||runeIdxCache[name.toLowerCase()]) return;
+        runeIdxCache[name.toLowerCase()]={n:name,p:c.p,applies:ap?ap[1].trim():'',utility:/Utility Slot/.test(into?into[1]:''),desc:d?d[1].trim():''};
+      });
+      return runeIdxCache;
+    }
+    // What kind of weapon is in this slot, in the rune cards' own words.
+    function weaponRuneClass(id){
+      var c=cards&&cards[equipped[id]]; if(!c||(equipped[id]||'').indexOf('/db/weapons/')!==0) return null;
+      var t=c.t||'';
+      if(/Bow$/.test(t)) return 'Bow';
+      if(/(Staff|Wand)$/.test(t)) return 'Staff, Wand';
+      if(/Gauntlet|Unarmed/.test(t)) return 'Gauntlet';
+      if(/Double Dagger/.test(t)) return 'Double Dagger';
+      if(/^One-Handed/.test(t)) return 'One-Handed Weapons';
+      if(/^Two-Handed/.test(t)) return 'Two-Handed Weapons';
+      return null;
+    }
+    function runeFits(r,cls){
+      if(r.utility||r.applies==='–'||!r.applies) return false;
+      if(!cls) return true;
+      if(/^All Weapons/.test(r.applies)) return cls!=='Bow';
+      return r.applies===cls;
+    }
+    function compatibleRunes(id){
+      var idx=runeIndex(), cls=weaponRuneClass(id);
+      return Object.keys(idx).map(function(k){ return idx[k]; }).filter(function(r){ return runeFits(r,cls); }).sort(function(a,b){ return a.n<b.n?-1:1; });
+    }
+    // Search box for weapon runes: icon, name and what the attack does; only runes this weapon can take.
+    (function runePicker(){
+      if(document.getElementById('cbRunePop')) return;
+      var pop=document.createElement('div'); pop.id='cbRunePop'; pop.className='cb-ench-pop cb-gem-pop'; pop.hidden=true; document.body.appendChild(pop);
+      var cur=null, rows=[], hi=-1;
+      function place(){
+        if(!cur) return; var r=cur.getBoundingClientRect();
+        var w=Math.min(Math.max(r.width,460),window.innerWidth-16); pop.style.width=w+'px'; pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-w-8))+'px';
+        var below=window.innerHeight-r.bottom-12, above=r.top-12, up=below<340&&above>below, avail=up?above:below;
+        pop.style.maxHeight=Math.max(220,Math.min(560,avail))+'px';
+        if(up){ pop.style.top=''; pop.style.bottom=(window.innerHeight-r.top+4)+'px'; }
+        else { pop.style.bottom=''; pop.style.top=(r.bottom+4)+'px'; }
+      }
+      function fill(){
+        var q=String(cur.value||'').toLowerCase().split(/\s+/).filter(Boolean), used={};
+        var m=itemMeta[cur.dataset.id]; if(m) (m.runes||[]).forEach(function(v,i){ if(v&&i!==+cur.dataset.i) used[String(v).toLowerCase()]=1; });
+        rows=compatibleRunes(cur.dataset.id).filter(function(r){ var n=r.n.toLowerCase(); return !used[n]&&q.every(function(w){ return n.indexOf(w)>-1; }); });
+        pop.innerHTML=rows.length?rows.map(function(g,i){
+          var ic=g.p?'<span class="m-ic" style="background-position:-'+(g.p[0]*48)+'px -'+(g.p[1]*48)+'px"></span>':'';
+          return '<div class="ek-row gm-row" data-i="'+i+'"><span class="gm-ic">'+ic+'</span><span class="ek-t"><b>'+dmgEsc(g.n)+'</b><br><span class="gm-d">'+dmgEsc(g.desc||'')+'</span></span></div>';
+        }).join(''):'<div class="ek-none">No rune that fits this weapon matches that.</div>';
+        hi=-1; place();
+      }
+      function open(el){ cur=el; pop.hidden=false; fill(); }
+      function close(){ pop.hidden=true; cur=null; }
+      function pick(i){
+        var g=rows[i]; if(!g||!cur) return; var el=cur; close();
+        el.value=g.n; el.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+      function mark(n){
+        var els=pop.querySelectorAll('.ek-row'); if(!els.length) return;
+        hi=(n+els.length)%els.length;
+        els.forEach(function(e,i){ e.classList.toggle('on',i===hi); });
+        els[hi].scrollIntoView({block:'nearest'});
+      }
+      function isRune(el){ return el&&el.matches&&el.matches('input[data-group="runes"]')&&!el.readOnly; }
+      document.addEventListener('focusin',function(e){ if(isRune(e.target)) open(e.target); });
+      document.addEventListener('click',function(e){ if(isRune(e.target)&&(e.target!==cur||pop.hidden)) open(e.target); });
+      document.addEventListener('focusout',function(e){ if(e.target===cur) setTimeout(function(){ if(document.activeElement!==cur) close(); },0); });
+      document.addEventListener('input',function(e){ if(e.target===cur){ pop.hidden=false; fill(); } });
+      document.addEventListener('keydown',function(e){
+        if(!cur||pop.hidden) return;
+        if(e.key==='ArrowDown'){ e.preventDefault(); mark(hi+1); }
+        else if(e.key==='ArrowUp'){ e.preventDefault(); mark(hi-1); }
+        else if(e.key==='Enter' && hi>-1){ e.preventDefault(); pick(hi); }
+        else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); close(); }
+      },true);
+      pop.addEventListener('mousedown',function(e){ var row=e.target.closest('.ek-row'); if(!row) return; e.preventDefault(); pick(+row.dataset.i); });
+      window.addEventListener('resize',place);
+      window.addEventListener('scroll',function(){ if(cur) place(); },true);
+    })();
     // Which list a slot draws from. Melee weapons, ranged weapons, shields, the four armor pieces and rings
     // each have their own pool in the game data (bits 2, 4, 256, 8/16/32/64 and 128 of the enchantment's item type).
     var RANGED_FOLDERS={bow:1,great_bow:1,staff:1,wand:1};
@@ -4390,6 +4478,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(fixed!==e.target.value){ e.target.value=fixed; e.target.classList.add('cb-need'); setTimeout(function(){ e.target.classList.remove('cb-need'); },1400); }
           var lim=enchLimits(e.target.value,pl); e.target.title=lim?('Allowed range: '+lim.rng):'';
           if(!e.target.dataset.edit) refreshFill(e.target);
+        }
+        if(group==='runes'&&e.target.value&&!e.target.readOnly){
+          // only runes this weapon can take are allowed; anything else is refused
+          var okr=compatibleRunes(id).filter(function(r){ return r.n.toLowerCase()===e.target.value.trim().toLowerCase(); })[0];
+          if(okr) e.target.value=okr.n;
+          else { e.target.value=''; e.target.placeholder='That rune doesn\u2019t fit this weapon'; e.target.classList.add('cb-need'); setTimeout(function(){ e.target.classList.remove('cb-need'); e.target.placeholder='Rune '+(i+1); },1800); }
         }
         m[group][i]=e.target.value;
         if(group==='gems'||group==='runes'){ var ic=e.target.parentNode&&e.target.parentNode.querySelector('.cb-gs-ic'); if(ic) ic.innerHTML=slotIconHtml(e.target.value); }
