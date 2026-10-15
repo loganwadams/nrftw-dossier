@@ -764,7 +764,12 @@ section{padding-block:48px}
 .cb-detail-level{width:60px}
 .cb-detail-slots{display:flex;flex-wrap:wrap;gap:6px}
 .cb-detail-slot{width:118px}
-.cb-gs{display:inline-flex;align-items:center;gap:4px}.cb-gs-ic{width:30px;height:30px;overflow:hidden;flex:none;background:rgba(0,0,0,.25);border:1px solid rgba(201,169,110,.12);box-sizing:border-box}.cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}.cb-gs-ic .m-ic{display:block;transform:scale(.58);transform-origin:0 0;margin:-1px 0 0 -1px;background-color:transparent;border:none}
+.cb-gs{display:inline-flex;align-items:center;gap:4px}.cb-clrw{position:relative;display:inline-block}.cb-gs{position:relative}
+.cb-clr{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:20px;height:20px;line-height:18px;padding:0;border:0;background:transparent;color:#8b8174;font-size:17px;cursor:pointer;border-radius:3px}.cb-clr:hover{color:#d0604f;background:rgba(208,96,79,.12)}
+input:placeholder-shown ~ .cb-clr{display:none}
+@media (min-width:601px){.cb-gs{min-width:230px}}
+.cb-detail-slot,.cb-detail-facet{padding-right:26px}
+.cb-gs-ic{width:30px;height:30px;overflow:hidden;flex:none;background:rgba(0,0,0,.25);border:1px solid rgba(201,169,110,.12);box-sizing:border-box}.cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}.cb-gs-ic .m-ic{display:block;transform:scale(.58);transform-origin:0 0;margin:-1px 0 0 -1px;background-color:transparent;border:none}
 .cb-detail-ench{width:100%}
 .cb-ench-pop{position:fixed;z-index:400;max-height:300px;overflow-y:auto;background:#0d0a08;border:1px solid var(--edge);box-shadow:0 8px 24px rgba(0,0,0,.6);padding:4px 0}
 .ek-row{display:flex;gap:9px;align-items:flex-start;padding:7px 12px;font-size:13.5px;line-height:1.35;color:#c9bfae;cursor:pointer}
@@ -3983,7 +3988,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var mm=itemMeta[id]||{}, plan=(group==='enchants'&&mm.cat!=='ring')?enchantPlan(mm.rarity,mm.level):null;
       return values.map(function(v,i){
         var pl=plan&&plan[i], ph=pl?(pl.label+' '+(pl.fixed?'':(plan.filter(function(x,j){ return j<=i&&x.type===pl.type; }).length))).trim():placeholder+' '+(i+1);
-        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'', wrapClose=wrapOpen?'</span>':'';
+        var clr='<button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button>';
+        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw">', wrapClose=clr+'</span>';
         return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+ph+'">'+wrapClose;
       }).join('');
     }
@@ -4023,7 +4029,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
         html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
       }
-      html+=detailFieldRow('Facet','<input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None">');
+      html+=detailFieldRow('Facet','<span class="cb-clrw"><input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None"><button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button></span>');
       html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span><small class="cb-detail-hint cb-rule">'+gemRuleText(m.rarity)+'</small><span class="cb-gemfx-box">'+gemEffectLines(id,m)+'</span>');
       html+=m.enchants.length
         ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span><small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>'+enchShortfall(m).map(function(w){ return '<small class="cb-detail-hint cb-warn">'+w+'</small>'; }).join(''))
@@ -4130,6 +4136,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
     }
     document.getElementById('cbManifest').addEventListener('change',onDetailChange);
+    // The small x beside a filled slot empties it (same path as typing the field blank).
+    document.addEventListener('mousedown',function(e){ if(e.target.classList&&e.target.classList.contains('cb-clr')) e.preventDefault(); });
+    document.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('.cb-clr'); if(!b) return;
+      var inp=b.parentNode.querySelector('input'); if(!inp||!inp.value) return;
+      inp.value=''; inp.dispatchEvent(new Event('change',{bubbles:true}));
+    });
 
 
     // ---- Set up an item as soon as it is picked ---------------------------------------------
