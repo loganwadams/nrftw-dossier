@@ -3164,7 +3164,7 @@ footer li{color:#6f665b}
          permanent part of the page header. -->
     <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Early Preview</span></div>
     <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Catalog.</p>
-    <p class="cb-note">Early preview &mdash; attribute math is illustrative and enchantments aren&rsquo;t wired in yet, but every item, icon and stat panel below is real game data.</p>
+    <p class="cb-note">Early preview &mdash; weapon damage and attribute scaling use the game&rsquo;s own numbers, but enchantments aren&rsquo;t wired in yet. Every item, icon and stat panel below is real game data.</p>
 
     <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button></div>
 
@@ -3220,7 +3220,7 @@ footer li{color:#6f665b}
       </div>
       <p class="cb-report-sub" id="cbReportSub"></p>
       <div class="panel cb-dmg" id="cbDmg" hidden>
-        <h3>Damage Breakdown <span class="cb-dmg-chip">Attribute scaling illustrative</span></h3>
+        <h3>Damage Breakdown <span class="cb-dmg-chip">Attribute scaling from game data</span></h3>
         <p class="cb-dmg-formula">Attack Damage = <b>(Base + Attribute Bonus)</b> &times; <b>Local</b> &times; <b>Global</b> &mdash; per hit, before enemy resistances and combo multipliers.</p>
         <div class="cb-dmg-scroll">
           <table class="cb-dmg-table">
@@ -3861,12 +3861,26 @@ footer li{color:#6f665b}
     // ---- Damage Breakdown (inside the Build Analysis) --------------------------------------
     // Every equipped weapon is read straight from its own item card - the same data the Catalog
     // shows: base damage, poise damage, critical chance and multiplier, the attributes it scales
-    // with, and its damage type. Two things are NOT published numbers and stay illustrative until
-    // the game's own curves are datamined: what an attribute point is worth (DMG_ATTR_RATE) and
-    // how base damage moves with item level (the printed card value is used as-is). Gem, facet
-    // and enchantment lines only count when they are plain, unconditional damage bonuses;
-    // anything conditional is listed under "How these numbers are built" instead of baked in.
-    var DMG_ATTR_RATE=0.008; // illustrative: +0.8% of Base per attribute point above 10, per scaling attribute
+    // with, and its damage type. Attribute scaling and base damage by item level come from the
+    // game's own balance data (see DMG_ATTR_CURVE and DMG_BASE_AT_L1), checked against in-game
+    // readouts. Gem, facet and enchantment lines only count when they are plain, unconditional
+    // damage bonuses; anything conditional is listed under "How these numbers are built".
+    // Attribute Bonus = Base x curve(points above 10). Curve points are [attribute points, fraction of Base].
+    var DMG_ATTR_CURVE=[[0,0],[5,0.35],[10,0.65],[20,1.15],[80,3.55]];
+    function dmgAttrFrac(pts){
+      if(!(pts>0)) return 0;
+      var c=DMG_ATTR_CURVE;
+      for(var i=1;i<c.length;i++){
+        if(pts<=c[i][0]) return c[i-1][1]+(c[i][1]-c[i-1][1])*(pts-c[i-1][0])/(c[i][0]-c[i-1][0]);
+      }
+      return c[c.length-1][1];
+    }
+    // Base damage at item level 1, by weapon family. Base at level L = floor(B * (1 + 5.8*(L-1)/29)).
+    var DMG_BASE_AT_L1={axe:18.125,club:16.25,curved_great_sword:30,curved_sword:16.25,double_dagger:10,gauntlet:10,great_axe:24,great_bow:10,great_club:28.125,great_hammer:30,great_sword:28.125,halberd:24,hammer:20,knife:10,mace:16.25,rapier:10,scythe:18.125,spear:14,staff:12,straight_sword:14,wakizashi:14,wand:10};
+    function dmgBaseAtLevel(folder,lv){
+      var B=DMG_BASE_AT_L1[folder]; if(!B) return null;
+      return Math.floor(B*(1+5.8*(lv-1)/29)+1e-6);
+    }
     var DMG_ATTR_ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FTH'};
     var DMG_SCHOOL_LABEL={physical:'Physical',fire:'Fire',ice:'Ice',lightning:'Lightning',plague:'Plague',bleed:'Bleed'};
     // Mottled (tier 2) element gems on a weapon: "<Element> Damage increased by 10%", counted when
@@ -3904,7 +3918,7 @@ footer li{color:#6f665b}
       if(weaponStatCache[key]) return weaponStatCache[key];
       var item=cards&&cards[key]; if(!item||!item.h) return null;
       var doc=new DOMParser().parseFromString(item.h,'text/html');
-      var st={base:0,poise:0,critChance:0,critMult:1,scales:[],school:'physical',schoolLabel:'Physical'};
+      var st={base:0,poise:0,critChance:0,critMult:1,scales:[],school:'physical',schoolLabel:'Physical',folder:(key.split('/')[3]||'')};
       doc.querySelectorAll('.top-icon-line').forEach(function(line){
         var mv=line.querySelector('.mod-value'); var v=mv?parseFloat(mv.textContent):NaN;
         if(isNaN(v)) return;
@@ -3979,16 +3993,22 @@ footer li{color:#6f665b}
       }).sort(slotOrder).forEach(function(id){
         var meta=slotEls[id], key=equipped[id], item=cards&&cards[key]; if(!item) return;
         if((key.split('/')[2]||'')==='shields'){ res.shields++; return; }
-        var st=weaponStats(key); if(!st) return;
+        var st0=weaponStats(key); if(!st0) return;
         var m=itemMeta[id]||defaultItemMeta(meta.cat,item.lv);
+        var st=Object.assign({},st0);
+        var lvNow=Math.max(1,Math.min(16,+(m.level||item.lv)||1));
+        if(st.base>0 && lvNow!==(+item.lv||lvNow)){
+          var b2=dmgBaseAtLevel(st.folder,lvNow); if(b2!=null) st.base=b2;
+        }
 
-        var attrPts=0, attrTxt=[];
+        var attrPts=0, attrTxt=[], attrFrac=0;
         st.scales.forEach(function(n){
           var v=attrVals[n.toLowerCase()]||10;
           attrPts+=Math.max(0,v-10);
+          attrFrac+=dmgAttrFrac(Math.max(0,v-10));
           attrTxt.push(DMG_ATTR_ABBR[n]+' '+v);
         });
-        var attrBonus=st.base*attrPts*DMG_ATTR_RATE;
+        var attrBonus=st.base*attrFrac;
 
         var L=newDmgBucket();
         (m.gems||[]).forEach(function(g){
@@ -4089,7 +4109,7 @@ footer li{color:#6f665b}
         if(segs.length) counted.push('<li><b>'+dmgEsc(r.item.n)+'</b><br>'+segs.join('<br>')+'</li>');
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
-      var h='<h4>Formula</h4><p><b>Base</b> is the damage printed on the weapon’s own card. <b>Attribute Bonus</b> is a placeholder: +'+dmgFmt(DMG_ATTR_RATE*100)+'% of Base for every attribute point above 10, for each attribute the weapon scales with. The game’s real curve isn’t in the Catalog data, so read it as a direction, not a prediction. <b>Local</b> modifiers come from that weapon’s own gems, facet and enchantments; <b>Global</b> modifiers come from armor enchantments and apply to every weapon. Item level changes aren’t modeled yet.</p>';
+      var h='<h4>Formula</h4><p><b>Base</b> is the damage printed on the weapon’s own card. <b>Attribute Bonus</b> is Base times the game’s own scaling curve, applied to the points you have above 10 (+65% of Base at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Base</b> follows the item level you set (levels 1&ndash;16). <b>Local</b> modifiers come from that weapon’s own gems, facet and enchantments; <b>Global</b> modifiers come from armor enchantments and apply to every weapon.</p>';
       h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest, then analyze again.</p>');
       h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
       document.getElementById('cbDmgNotesBody').innerHTML=h;
