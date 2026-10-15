@@ -4094,7 +4094,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var stockN=group==='runes'?stockRuneCount(id):0;
       return values.map(function(v,i){
         var locked=(i<stockN&&!!v)||(group==='enchants'&&mm.rarity==='unique'&&uniqueOwn(id)&&i<uniqueOwn(id).length&&!!v);
-        var pl=plan&&plan[i], ph=pl?(pl.label+' '+(pl.fixed?'':(plan.filter(function(x,j){ return j<=i&&x.type===pl.type; }).length))).trim():placeholder+' '+(i+1);
+        var pl=plan&&plan[i], ph=placeholder+' '+(i+1);
+        if(pl){
+          var same=plan.filter(function(x){ return x.type===pl.type; }).length, nth=plan.filter(function(x,j){ return j<=i&&x.type===pl.type; }).length;
+          var lbl=pl.type===1?'Enchantment':pl.label; // plagued items just list their enchantments, plus one drawback
+          ph=(lbl+(same>1?' '+nth:'')).trim();
+        }
         var clr='<button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button>';
         var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw">', wrapClose=(locked?'':clr)+'</span>';
         return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' autocomplete="off"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'"'+(locked?' readonly title="Comes with the weapon and cannot be removed"':'')+' placeholder="'+ph+'">'+wrapClose;
