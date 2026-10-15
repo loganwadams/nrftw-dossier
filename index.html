@@ -771,6 +771,22 @@ section{padding-block:48px}
 .ek-t b{font-weight:600}
 .ek-n{font-weight:700;color:#8ab6ff}
 .ek-hp{color:#e2685d}.ek-fo{color:#e6c24f}.ek-st{color:#8fd0a0}.ek-eq{color:#d9b06a}.ek-df{color:#7fb2e6}.ek-dm{color:#d9885c}.ek-ot{color:#d58ab0}
+.cb-cfg{position:fixed;inset:0;z-index:300;background:rgba(4,3,2,.72);display:flex;align-items:center;justify-content:center;padding:20px}
+.cb-cfg[hidden]{display:none}
+.cb-cfg-panel{width:min(620px,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--edge);box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.cb-cfg-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px 22px 12px;border-bottom:1px solid var(--edge)}
+.cb-cfg-slot{font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#7c7265;margin-bottom:4px}
+.cb-cfg-head h3{margin:0;font-family:var(--display);font-size:20px;letter-spacing:.06em;color:var(--gold)}
+.cb-cfg-x{background:none;border:none;color:#8b8174;font-size:26px;line-height:1;cursor:pointer;padding:0 4px}
+.cb-cfg-x:hover{color:var(--bone)}
+.cb-cfg-body{padding:6px 22px 14px;overflow-y:auto}
+.cb-cfg-body .cb-mf-detail{background:none;border:none;padding:0;margin:8px 0 0}
+.cb-cfg-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 22px 16px;border-top:1px solid var(--edge)}
+.cb-cfg-hint{font-size:12.5px;color:#8b8174;font-style:italic}
+.cb-cfg-done{background:var(--gold);color:#1a120a;border:none;padding:9px 26px;font-family:var(--data);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;font-weight:600}
+.cb-cfg-done:hover{filter:brightness(1.1)}
+body.cb-cfg-open{overflow:hidden}
+.cb-ench-pop{z-index:420}
 .fx-row{align-items:flex-start;gap:14px}
 .fx-name{flex:0 0 96px;font-weight:600;color:#e8dfce}
 .fx-lines{flex:1;display:flex;flex-direction:column;gap:2px}
@@ -3774,7 +3790,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(e.key==='ArrowDown'){ e.preventDefault(); mark(hi+1); }
         else if(e.key==='ArrowUp'){ e.preventDefault(); mark(hi-1); }
         else if(e.key==='Enter' && hi>-1){ e.preventDefault(); pick(hi); }
-        else if(e.key==='Escape'){ close(); }
+        else if(e.key==='Escape'){ e.preventDefault(); close(); }
       });
       pop.addEventListener('mousedown',function(e){
         var row=e.target.closest('.ek-row'); if(!row) return;
@@ -3852,7 +3868,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(e.key==='ArrowDown'){ e.preventDefault(); mark(hi+1); }
         else if(e.key==='ArrowUp'){ e.preventDefault(); mark(hi-1); }
         else if(e.key==='Enter' && hi>-1){ e.preventDefault(); pick(hi); }
-        else if(e.key==='Escape'){ close(); }
+        else if(e.key==='Escape'){ e.preventDefault(); close(); }
       });
       pop.addEventListener('mousedown',function(e){
         var row=e.target.closest('.ek-row'); if(!row) return;
@@ -3957,7 +3973,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         renderManifest();
       }
     });
-    document.getElementById('cbManifest').addEventListener('change',function(e){
+    function onDetailChange(e){
       var id=e.target.dataset.id; if(!id) return;
       var m=itemMeta[id]; if(!m) return;
       if(e.target.classList.contains('cb-detail-rarity')){
@@ -3983,7 +3999,46 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(group==='gems') normalizeItemMeta(m);
         if(group==='gems' || group==='enchants') renderManifest();
       }
-    });
+    }
+    document.getElementById('cbManifest').addEventListener('change',onDetailChange);
+
+
+    // ---- Set up an item as soon as it is picked ---------------------------------------------
+    // Picking a weapon, armor piece or ring opens this panel so rarity, level, gems, facet and
+    // enchantments are chosen right away. It edits the same data as the Loadout Manifest.
+    var cfgId=null;
+    (function cfgModal(){
+      var ov=document.createElement('div'); ov.id='cbCfg'; ov.className='cb-cfg'; ov.hidden=true;
+      ov.innerHTML='<div class="cb-cfg-panel" role="dialog" aria-modal="true" aria-labelledby="cbCfgTitle">'+
+        '<div class="cb-cfg-head"><div><div class="cb-cfg-slot" id="cbCfgSlot"></div><h3 id="cbCfgTitle"></h3></div>'+
+        '<button type="button" class="cb-cfg-x" id="cbCfgX" aria-label="Close">&times;</button></div>'+
+        '<div class="cb-cfg-body" id="cbCfgBody"></div>'+
+        '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can change any of this later from the Loadout Manifest.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
+      document.body.appendChild(ov);
+      var body=ov.querySelector('#cbCfgBody');
+      function sig(m){ return [m.rarity,(m.gems||[]).length,(m.enchants||[]).length,(m.runes||[]).length].join('|'); }
+      window.openCfg=function(id){
+        var item=cards[equipped[id]], m=itemMeta[id], meta=slotEls[id]; if(!item||!m||!meta) return;
+        cfgId=id;
+        ov.querySelector('#cbCfgSlot').textContent=(meta.label||'')+(meta.ord?' '+meta.ord:'');
+        ov.querySelector('#cbCfgTitle').textContent=item.n;
+        body.innerHTML=renderDetailPanel(id,item);
+        ov.hidden=false; document.body.classList.add('cb-cfg-open');
+      };
+      function closeCfg(){ ov.hidden=true; cfgId=null; document.body.classList.remove('cb-cfg-open'); renderManifest(); }
+      body.addEventListener('change',function(e){
+        if(!cfgId) return;
+        var m=itemMeta[cfgId], before=m?sig(m):'';
+        onDetailChange(e);
+        if(m && sig(m)!==before) body.innerHTML=renderDetailPanel(cfgId,cards[equipped[cfgId]]);
+      });
+      ov.querySelector('#cbCfgDone').addEventListener('click',closeCfg);
+      ov.querySelector('#cbCfgX').addEventListener('click',closeCfg);
+      ov.addEventListener('mousedown',function(e){ if(e.target===ov) closeCfg(); });
+      document.addEventListener('keydown',function(e){
+        if(e.key==='Escape' && !e.defaultPrevented && !ov.hidden) closeCfg();
+      });
+    })();
 
     var PROFILE_METRICS=[
       {id:'damage',label:'Damage Output',cats:['weapon','offhand']},
@@ -4794,9 +4849,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     document.getElementById('cbPickerBody').addEventListener('click',function(e){
       var card=e.target.closest('.m-card[data-k]'); if(!card||!pickerOpenFor) return;
       e.preventDefault(); e.stopPropagation();
-      equipSlot(pickerOpenFor,card.dataset.k);
+      var pickedId=pickerOpenFor;
+      equipSlot(pickedId,card.dataset.k);
       closePicker();
       scrollBackToPanel();
+      if(itemMeta[pickedId]) openCfg(pickedId);
     });
 
     function onSlotsClick(e){
