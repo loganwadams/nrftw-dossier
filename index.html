@@ -3984,13 +3984,22 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var pp=iconIdx[String(name||'').trim().toLowerCase()];
       return pp?'<span class="m-ic" style="background-position:-'+(pp[0]*48)+'px -'+(pp[1]*48)+'px"></span>':'';
     }
+    // Runes a weapon ships with are fixed: the game does not let you remove them.
+    function stockRuneCount(id){
+      try{
+        var item=cards&&cards[equipped[id]]; if(!item||!item.h) return 0;
+        return new DOMParser().parseFromString(item.h,'text/html').querySelectorAll('.item-rune-grid .item-link-name').length;
+      }catch(err){ return 0; }
+    }
     function detailSlotInputs(id,group,values,placeholder){
       var mm=itemMeta[id]||{}, plan=(group==='enchants'&&mm.cat!=='ring')?enchantPlan(mm.rarity,mm.level):null;
+      var stockN=group==='runes'?stockRuneCount(id):0;
       return values.map(function(v,i){
+        var locked=i<stockN&&!!v;
         var pl=plan&&plan[i], ph=pl?(pl.label+' '+(pl.fixed?'':(plan.filter(function(x,j){ return j<=i&&x.type===pl.type; }).length))).trim():placeholder+' '+(i+1);
         var clr='<button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button>';
-        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw">', wrapClose=clr+'</span>';
-        return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+ph+'">'+wrapClose;
+        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw">', wrapClose=(locked?'':clr)+'</span>';
+        return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'"'+(locked?' readonly title="Comes with the weapon and cannot be removed"':'')+' placeholder="'+ph+'">'+wrapClose;
       }).join('');
     }
     // The game wants a minimum number of each kind of enchantment (Magical 1, Plagued 2 plus 1 drawback, Unique 1).
