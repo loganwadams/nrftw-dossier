@@ -708,9 +708,9 @@ section{padding-block:48px}
 .cb-cells-2up{flex-wrap:wrap;width:124px}
 .cb-slot{position:relative;width:58px;height:58px;flex:none;border:1px solid var(--edge);background:rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
 .cb-slot-main{overflow:hidden}
-.cb-slot.cb-slot-uniq,.cb-glow-uniq{position:relative}
-.cb-slot.cb-slot-uniq{box-shadow:0 0 14px 3px rgba(242,195,92,.55),0 0 34px 8px rgba(242,195,92,.22),inset 0 0 14px rgba(242,195,92,.25);background:radial-gradient(circle at 50% 55%,rgba(242,195,92,.35),rgba(242,195,92,0) 72%)}
-.cb-glow-uniq{box-shadow:0 0 12px 3px rgba(242,195,92,.5),0 0 28px 6px rgba(242,195,92,.2);background:radial-gradient(circle at 50% 55%,rgba(242,195,92,.35),rgba(242,195,92,0) 72%)}
+.cb-slot.cb-slot-uniq .cb-slot-main{overflow:visible;filter:drop-shadow(0 0 3px rgba(242,195,92,.95)) drop-shadow(0 0 9px rgba(242,195,92,.6))}
+.cb-glow-uniq{overflow:visible!important}
+.cb-glow-uniq .m-ic{filter:drop-shadow(0 0 2px rgba(242,195,92,.95)) drop-shadow(0 0 7px rgba(242,195,92,.6))}
 .cb-slot.cb-slot-sm{width:46px;height:46px}
 .cb-slot:hover{border-color:var(--gold-dim)}
 .cb-slot-plus{color:var(--edge-hot);font-family:var(--body);font-size:20px;line-height:1;transition:color .15s}
@@ -3287,9 +3287,6 @@ footer li{color:#6f665b}
       <div class="cb-manifest-list cb-mf-board" id="cbManifest"><div class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</div></div>
     </div>
 
-    <div class="cb-report-wrap">
-      <button type="button" class="cb-report-btn" id="cbAnalyzeBuild">Analyze Build</button>
-    </div>
     <div class="cb-report" id="cbReport" hidden>
       <div class="cb-report-head">
         <h3>Build Analysis</h3>
@@ -4842,7 +4839,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       });
       return res;
     }
-    (function(){ var c=document.getElementById('cbDmgCond'); if(c) c.addEventListener('change',function(){ var b=document.getElementById('cbAnalyzeBuild'); if(b) b.click(); }); })();
+    (function(){ var c=document.getElementById('cbDmgCond'); if(c) c.addEventListener('change',function(){ scheduleReport(); }); })();
     function renderDamageBreakdown(show){
       var box=document.getElementById('cbDmg'); if(!box) return;
       box.hidden=!show; if(!show) return;
@@ -4912,7 +4909,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
       var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
-      h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest, then analyze again.</p>');
+      h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest.</p>');
       h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
       document.getElementById('cbDmgNotesBody').innerHTML=h;
       notesEl.hidden=false;
@@ -5017,7 +5014,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         subEl.textContent='Nothing to analyze yet.';
         listOrNone(prosEl,[],'Nothing equipped or spent yet.');
         listOrNone(consEl,[],'—');
-        listOrNone(recsEl,[],'Pick a class, spend attribute points, and equip some gear above, then analyze again.');
+        listOrNone(recsEl,[],'Pick a class, spend attribute points, and equip some gear above.');
       } else {
         verdictEl.textContent=report.verdictLabel;
         verdictEl.className='cb-report-verdict '+report.verdictClass;
@@ -5030,9 +5027,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // of the report down with it
       try{ renderDamageBreakdown(!report.empty); }
       catch(err){ var dbox=document.getElementById('cbDmg'); if(dbox) dbox.hidden=true; if(window.console) console.error('Damage breakdown failed',err); }
-      box.scrollIntoView({block:'start',behavior:'smooth'});
     }
-    document.getElementById('cbAnalyzeBuild').addEventListener('click', renderReport);
+    // The analysis and damage table follow the build live: any click, edit or keystroke in the builder
+    // (including its pickers and popups) re-runs them a moment later.
+    var reportTimer=null;
+    function scheduleReport(){
+      clearTimeout(reportTimer);
+      reportTimer=setTimeout(function(){
+        var sec=document.getElementById('cerim-builder');
+        if(!sec||!sec.offsetParent) return;
+        try{ renderReport(); }catch(err){ if(window.console) console.error('Live analysis failed',err); }
+      },250);
+    }
+    ['click','change','input','keyup'].forEach(function(t){ document.addEventListener(t,scheduleReport,true); });
+    scheduleReport();
 
     function setSlotEmpty(id){
       var meta=slotEls[id]; if(!meta) return;
