@@ -708,6 +708,9 @@ section{padding-block:48px}
 .cb-cells-2up{flex-wrap:wrap;width:124px}
 .cb-slot{position:relative;width:58px;height:58px;flex:none;border:1px solid var(--edge);background:rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
 .cb-slot-main{overflow:hidden}
+.cb-slot.cb-slot-uniq,.cb-glow-uniq{position:relative}
+.cb-slot.cb-slot-uniq{box-shadow:0 0 14px 3px rgba(242,195,92,.55),0 0 34px 8px rgba(242,195,92,.22),inset 0 0 14px rgba(242,195,92,.25);background:radial-gradient(circle at 50% 55%,rgba(242,195,92,.35),rgba(242,195,92,0) 72%)}
+.cb-glow-uniq{box-shadow:0 0 12px 3px rgba(242,195,92,.5),0 0 28px 6px rgba(242,195,92,.2);background:radial-gradient(circle at 50% 55%,rgba(242,195,92,.35),rgba(242,195,92,0) 72%)}
 .cb-slot.cb-slot-sm{width:46px;height:46px}
 .cb-slot:hover{border-color:var(--gold-dim)}
 .cb-slot-plus{color:var(--edge-hot);font-family:var(--body);font-size:20px;line-height:1;transition:color .15s}
@@ -4167,7 +4170,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       {cat:'chest',title:'Body'},{cat:'legs',title:'Legs'},{cat:'gloves',title:'Gloves'},
       {cat:'ring',title:'Rings'},{cat:'rune',title:'Utility Runes'}
     ];
+    // Unique rarity gives the item's slot a golden glow, matching the damage breakdown row.
+    function syncSlotGlow(){
+      Object.keys(slotEls).forEach(function(id){
+        var el=slotEls[id]&&slotEls[id].el; if(!el) return;
+        el.classList.toggle('cb-slot-uniq',!!(equipped[id]&&itemMeta[id]&&itemMeta[id].rarity==='unique'));
+      });
+    }
     function renderManifest(){
+      syncSlotGlow();
       var box=document.getElementById('cbManifest');
       var ids=Object.keys(equipped).filter(function(id){ return cards&&cards[equipped[id]]&&slotEls[id]; });
       if(!ids.length){
@@ -4859,7 +4870,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       body.innerHTML=res.rows.map(function(r){
         var it=r.item, st=r.st;
         var rarity=(itemMeta[r.id]&&itemMeta[r.id].rarity)||it.r||'standard';
-        var icon='<span class="cb-dmg-icw"><span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span></span>';
+        var icon='<span class="cb-dmg-icw'+(rarity==='unique'?' cb-glow-uniq':'')+'"><span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span></span>';
         if(!(st.base>0)){
           var dash='<span class="cb-dmg-none">&mdash;</span>';
           return '<tr class="cb-dmg-row">'+
@@ -5027,7 +5038,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var meta=slotEls[id]; if(!meta) return;
       delete equipped[id];
       delete itemMeta[id];
-      meta.el.classList.remove('filled');
+      meta.el.classList.remove('filled'); meta.el.classList.remove('cb-slot-uniq');
       meta.el.innerHTML='<span class="cb-slot-plus">+</span>';
     }
     function resetBuild(){
@@ -5073,7 +5084,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       } else {
         delete itemMeta[id];
       }
-      meta.el.classList.add('filled');
+      meta.el.classList.add('filled'); syncSlotGlow();
       meta.el.innerHTML='<span class="cb-slot-main m-ic" data-k="'+key+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
         (item.lv?'<span class="cb-slot-lv">'+item.lv+'</span>':'')+
         (itemMeta[id]?'<span class="cb-slot-edit">Edit</span>':'')+
