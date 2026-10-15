@@ -611,6 +611,8 @@ section{padding-block:48px}
 .cb-dmg-type.t-bleed{color:#c0463a}
 .cb-dmg-none{color:#6f6758}
 .cb-dmg-gain{color:var(--verdigris)}
+.cb-dmg-loss{color:#d0604f}
+.cb-dmg-warn{display:block;color:#d0604f;font-size:11px;margin-top:2px}
 .cb-dmg-big{font-family:var(--display);font-size:19px;color:var(--bone);letter-spacing:.02em}
 .cb-dmg-final{min-width:150px}
 .cb-dmg-final .cb-dmg-big{color:var(--gold);font-size:22px}
@@ -4327,6 +4329,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var B=DMG_BASE_AT_L1[folder]; if(!B) return null;
       return Math.floor(B*(1+5.8*(lv-1)/29)+1e-6);
     }
+    // Attribute requirements grow with item level (game curves, item level -> points needed) for items with
+    // one, two or three required attributes.
+    var REQ_CURVE={1:[[1,10],[5,22],[9,36]],2:[[1,10],[5,16],[9,23]],3:[[1,10],[5,14],[9,19]]};
+    function reqAtLevel(count,lv){
+      var c=REQ_CURVE[count]||REQ_CURVE[1]; lv=Math.max(1,lv);
+      if(lv>=c[c.length-1][0]) return c[c.length-1][1];
+      for(var i=1;i<c.length;i++) if(lv<=c[i][0]) return Math.round(c[i-1][1]+(c[i][1]-c[i-1][1])*(lv-c[i-1][0])/(c[i][0]-c[i-1][0]));
+    }
+    // Being under any requirement costs 80% of the weapon's damage (checked against the other planner at
+    // 2, 5 and 9 points short on a single requirement and 5 short on each of two).
+    var REQ_PENALTY_MULT=0.2;
     var DMG_ATTR_ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FTH'};
     var DMG_SCHOOL_LABEL={physical:'Physical',fire:'Fire',ice:'Ice',lightning:'Lightning',plague:'Plague',bleed:'Bleed'};
     // Mottled (tier 2) element gems on a weapon: "<Element> Damage increased by 10%", counted when
@@ -4361,14 +4374,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function dmgEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     function dmgNorm(s){ return String(s||'').toLowerCase().replace(/\s+/g,' ').trim(); }
     function dmgFmt(n){ var r=Math.round(n*10)/10; return r%1===0?String(r):r.toFixed(1); }
-    function dmgPctCell(p){ return p?('<span class="cb-dmg-gain">+'+dmgFmt(p)+'%</span>'):'<span class="cb-dmg-none">&mdash;</span>'; }
+    function dmgPctCell(p){ return p>0?('<span class="cb-dmg-gain">+'+dmgFmt(p)+'%</span>'):(p<0?('<span class="cb-dmg-loss">&minus;'+dmgFmt(-p)+'%</span>'):'<span class="cb-dmg-none">&mdash;</span>'); }
 
     var weaponStatCache={};
     function weaponStats(key){
       if(weaponStatCache[key]) return weaponStatCache[key];
       var item=cards&&cards[key]; if(!item||!item.h) return null;
       var doc=new DOMParser().parseFromString(item.h,'text/html');
-      var st={base:0,poise:0,critChance:0,critMult:1,scales:[],school:'physical',schoolLabel:'Physical',folder:(key.split('/')[3]||'')};
+      var st={base:0,poise:0,critChance:0,critMult:1,scales:[],req:[],school:'physical',schoolLabel:'Physical',folder:(key.split('/')[3]||'')};
       doc.querySelectorAll('.top-icon-line').forEach(function(line){
         var mv=line.querySelector('.mod-value'); var v=mv?parseFloat(mv.textContent):NaN;
         if(isNaN(v)) return;
@@ -4381,6 +4394,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(!gotCrit && /Chance to Deal/i.test(txt)){
           var mv=el.querySelectorAll('.mod-value');
           if(mv.length>=2){ st.critChance=parseFloat(mv[0].textContent)/100; st.critMult=parseFloat(mv[1].textContent)/100; gotCrit=true; }
+        }
+        if(/^\s*Requirements/i.test(txt) && el.parentElement){
+          el.parentElement.querySelectorAll('.attribute').forEach(function(a){
+            var m=(a.className||'').match(/o-icons-fi-(Strength|Dexterity|Intelligence|Faith)/);
+            var box=a.closest('.pr-3'), num=box&&box.querySelector('.pl-1'), n=num?parseInt(num.textContent,10):NaN;
+            if(m && !isNaN(n)) st.req.push({attr:m[1],n:n});
+          });
         }
         if(/^\s*Scales with/i.test(txt) && el.parentElement){
           el.parentElement.querySelectorAll('.attribute').forEach(function(a){
@@ -4460,7 +4480,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         });
         var attrBonus=st.base*attrFrac;
 
+        var cardLv=+item.lv||lvNow;
+        var reqList=(st.req||[]).map(function(r){ return {attr:r.attr,n:lvNow!==cardLv?reqAtLevel(st.req.length,lvNow):r.n}; });
+        var reqShort=reqList.filter(function(r){ return (attrVals[r.attr.toLowerCase()]||10)<r.n; });
+        var pm=reqShort.length?REQ_PENALTY_MULT:1;
+        var reqTxt=reqShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ');
+
         var L=newDmgBucket();
+        if(pm<1) L.parts.push('Below requirement ('+reqTxt+'): −80% damage');
         (m.gems||[]).forEach(function(g){
           var n=dmgNorm(g); if(!n) return;
           if(GEM_DMG[n]){
@@ -4485,13 +4512,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var G=newDmgBucket();
         armorEnch.forEach(function(a){ applyDmgEnchant(a.p,G,st,a.src,item.n); });
 
-        var weaponDmg=(st.base+attrBonus)*(1+L.pct/100);
+        var weaponDmg=(st.base+attrBonus)*(1+L.pct/100)*pm;
+        var Lpct=((1+L.pct/100)*pm-1)*100;
         var attackDmg=weaponDmg*(1+G.pct/100);
         var cc=Math.max(0,Math.min(1,st.critChance+L.critChance+G.critChance));
         var cm=st.critMult+L.critMult+G.critMult;
         res.rows.push({
           id:id,key:key,item:item,st:st,slot:(meta.label||'Weapon')+(meta.ord?' '+meta.ord:''),
-          attrPts:attrPts,attrTxt:attrTxt,attrBonus:attrBonus,L:L,G:G,
+          attrPts:attrPts,attrTxt:attrTxt,attrBonus:attrBonus,L:L,G:G,Lpct:Lpct,reqTxt:reqTxt,pm:pm,
           weaponDmg:weaponDmg,attackDmg:attackDmg,cc:cc,cm:cm,
           avg:attackDmg*(1+cc*(cm-1)),
           poise:st.poise*(1+(L.poisePct+G.poisePct)/100)+L.poiseFlat
@@ -4513,7 +4541,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       // utility items (a torch, say) sit in weapon slots but carry no damage stat at all
       var dealers=res.rows.filter(function(r){ return r.st.base>0; });
-      var max=Math.max.apply(null,dealers.map(function(r){ return r.attackDmg; }))||1;
+      var max=Math.max.apply(null,dealers.map(function(r){ return Math.max(r.attackDmg,r.st.base+r.attrBonus); }))||1;
       var topId=dealers.length>1?dealers.slice().sort(function(a,b){ return b.attackDmg-a.attackDmg; })[0].id:null;
       body.innerHTML=res.rows.map(function(r){
         var it=r.item, st=r.st;
@@ -4536,12 +4564,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
             '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
             '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Lv '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
-            '<small>'+critTxt+'</small></div></div></td>'+
+            '<small>'+critTxt+'</small>'+(r.reqTxt?'<small class="cb-dmg-warn">Under its requirement ('+dmgEsc(r.reqTxt)+') &mdash; damage cut by 80%</small>':'')+'</div></div></td>'+
           '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'">'+dmgEsc(st.schoolLabel)+'</span></td>'+
           '<td>'+dmgFmt(st.base)+'</td>'+
           '<td>'+(r.attrBonus>0?'<span class="cb-dmg-gain">+'+dmgFmt(r.attrBonus)+'</span>':'<span class="cb-dmg-none">&mdash;</span>')+
             (r.attrTxt.length?'<small>'+dmgEsc(r.attrTxt.join(' · '))+'</small>':'<small>no scaling</small>')+'</td>'+
-          '<td title="'+dmgEsc(r.L.parts.join('; '))+'">'+dmgPctCell(r.L.pct)+'</td>'+
+          '<td title="'+dmgEsc(r.L.parts.join('; '))+'">'+dmgPctCell(r.Lpct)+'</td>'+
           '<td class="cb-dmg-derived"><span class="cb-dmg-big">'+dmgFmt(r.weaponDmg)+'</span></td>'+
           '<td title="'+dmgEsc(r.G.parts.join('; '))+'">'+dmgPctCell(r.G.pct)+'</td>'+
           '<td class="cb-dmg-derived cb-dmg-final"><span class="cb-dmg-big">'+dmgFmt(r.attackDmg)+'</span><small>'+avgTxt+'</small>'+
@@ -4559,7 +4587,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(segs.length) counted.push('<li><b>'+dmgEsc(r.item.n)+'</b><br>'+segs.join('<br>')+'</li>');
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
-      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
+      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
       h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest, then analyze again.</p>');
       h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
       document.getElementById('cbDmgNotesBody').innerHTML=h;
