@@ -4719,6 +4719,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       equipped[id]=key;
       if(DETAIL_CATS.indexOf(meta.cat)>-1){
         itemMeta[id]=normalizeItemMeta(defaultItemMeta(meta.cat,item.lv));
+        // some weapons ship with a rune already socketed (the card lists it ahead of the empty slots)
+        if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
+          try{
+            var rg=new DOMParser().parseFromString(item.h||'','text/html');
+            Array.prototype.forEach.call(rg.querySelectorAll('.item-rune-grid .item-link-name'),function(n,i){
+              if(i<itemMeta[id].runes.length) itemMeta[id].runes[i]=n.textContent.trim();
+            });
+          }catch(err){}
+        }
       } else {
         delete itemMeta[id];
       }
