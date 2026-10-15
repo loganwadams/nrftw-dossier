@@ -780,6 +780,7 @@ input:placeholder-shown ~ .cb-clr{display:none}
 .cb-detail-slot,.cb-detail-facet{padding-right:26px}
 .cb-gs-ic{width:30px;height:30px;overflow:hidden;flex:none;background:rgba(0,0,0,.25);border:1px solid rgba(201,169,110,.12);box-sizing:border-box}.cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}.cb-gs-ic .m-ic{display:block;transform:scale(.58);transform-origin:0 0;margin:-1px 0 0 -1px;background-color:transparent;border:none}
 .cb-detail-ench{width:100%}
+.cb-detail-row input[type="text"].cb-need{border-color:#e0645c;box-shadow:0 0 0 1px rgba(224,100,92,.5)}
 .cb-detail-slots.cb-ench-col{flex-direction:column;flex-wrap:nowrap;align-items:stretch;flex:1 1 0;min-width:0;width:100%}
 .cb-ench-col .cb-detail-slot{width:100%}
 .cb-ench-col .cb-clrw{display:block;width:100%}
@@ -4224,6 +4225,40 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         renderManifest();
       }
     });
+    // Each enchantment rolls its first blank within a fixed range (e.g. "10%-20%"). Find the pool entry a typed
+    // enchantment came from and return the bounds plus the number typed, or null if it can't be matched.
+    function enchLimits(text,poolName){
+      var pool=ENCH_BY_SLOT[poolName||'weapon_melee']||[], t=String(text||'');
+      for(var k=0;k<pool.length;k++){
+        var tpl=pool[k][0], rng=pool[k][1];
+        if(tpl.indexOf('__')<0||!rng) continue;
+        var nums=String(rng).match(/\d+(?:\.\d+)?/g); if(!nums) continue;
+        var re=new RegExp('^'+tpl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/__/g,'(-?\\d+(?:\\.\\d+)?)')+'$');
+        var mt=re.exec(t); if(!mt) continue;
+        var lo=parseFloat(nums[0]), hi=parseFloat(nums[nums.length-1]);
+        return {idx:tpl.indexOf('__'),raw:mt[1],lo:lo,hi:hi,val:parseFloat(mt[1]),rng:rng,tpl:tpl,pct:/%/.test(rng),entry:pool[k]};
+      }
+      return null;
+    }
+    // True when a typed enchantment starts like a known one but its number is missing or not a number.
+    function enchMalformed(text,poolName){
+      var pool=ENCH_BY_SLOT[poolName||'weapon_melee']||[], t=String(text||''), close=false;
+      if(!t) return false;
+      for(var k=0;k<pool.length;k++){
+        var tpl=pool[k][0], idx=tpl.indexOf('__'); if(idx<0) continue;
+        var re=new RegExp('^'+tpl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/__/g,'(-?\\d+(?:\\.\\d+)?)')+'$');
+        if(re.test(t)) return false;
+        if(idx>8&&t.indexOf(tpl.slice(0,idx))===0) close=true;
+      }
+      return close;
+    }
+    // Snap an out-of-range typed value to the nearest allowed bound. Returns the corrected text (or the same text).
+    function clampEnchantText(text,poolName){
+      var L=enchLimits(text,poolName); if(!L||isNaN(L.val)) return text;
+      var v=Math.min(L.hi,Math.max(L.lo,L.val)); if(v===L.val) return text;
+      var fmt=String(Math.round(v*100)/100);
+      return String(text).slice(0,L.idx)+fmt+String(text).slice(L.idx+L.raw.length);
+    }
     function onDetailChange(e){
       var id=e.target.dataset.id; if(!id) return;
       var m=itemMeta[id]; if(!m) return;
@@ -4266,6 +4301,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       if(e.target.classList.contains('cb-detail-slot')){
         var group=e.target.dataset.group, i=+e.target.dataset.i;
+        if(group==='enchants'){
+          var pl=e.target.getAttribute('data-pool')||'weapon_melee', fixed=clampEnchantText(e.target.value,pl);
+          if(fixed!==e.target.value){ e.target.value=fixed; e.target.classList.add('cb-need'); setTimeout(function(){ e.target.classList.remove('cb-need'); },1400); }
+          var lim=enchLimits(e.target.value,pl); e.target.title=lim?('Allowed range: '+lim.rng):'';
+        }
         m[group][i]=e.target.value;
         if(group==='gems'||group==='runes'){ var ic=e.target.parentNode&&e.target.parentNode.querySelector('.cb-gs-ic'); if(ic) ic.innerHTML=slotIconHtml(e.target.value); }
         if(group==='gems'){ normalizeItemMeta(m); try{ var gb=e.target.closest('.cb-mf-detail').querySelector('.cb-gemfx-box'); if(gb) gb.innerHTML=gemEffectLines(id,m); }catch(err){} }
@@ -4307,7 +4347,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         body.innerHTML=renderDetailPanel(id,item); lastSig=sig(m);
         ov.hidden=false; document.body.classList.add('cb-cfg-open');
       };
-      function closeCfg(){ ov.hidden=true; cfgId=null; document.body.classList.remove('cb-cfg-open'); renderManifest(); }
+      function closeCfg(){ ov.hidden=true; try{ errEl.hidden=true; errEl.style.visibility=''; }catch(x){} cfgId=null; document.body.classList.remove('cb-cfg-open'); renderManifest(); }
       body.addEventListener('change',function(e){
         if(!cfgId) return;
         var m=itemMeta[cfgId];
@@ -4318,12 +4358,19 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       ov.querySelector('#cbCfgDrop').addEventListener('click',function(){ var rid=cfgId; closeCfg(); if(rid){ setSlotEmpty(rid); renderManifest(); } });
       // The game will not save an item that is short of its minimum enchantments, so Done is held back until it has them.
       var errEl=ov.querySelector('#cbCfgErr');
-      function clearErr(){ errEl.hidden=true; errEl.textContent=''; }
+      function clearErr(){ if(!errEl.hidden) errEl.style.visibility='hidden'; }
       ov.querySelector('#cbCfgDone').addEventListener('click',function(){
         var m=cfgId&&itemMeta[cfgId], miss=m?enchShortfall(m):[];
         if(miss.length){
           errEl.textContent='Can\u2019t finish yet: '+miss.join('; ')+'. The game won\u2019t save an item without its minimum enchantments, so add one above (or pick a different rarity).';
-          errEl.hidden=false; body.scrollTop=body.scrollHeight; return;
+          errEl.hidden=false; errEl.style.visibility=''; body.scrollTop=body.scrollHeight; return;
+        }
+        // an enchantment still showing its "__" blank has no value yet - make the player type the number in
+        var blanks=m?body.querySelectorAll('.cb-detail-ench'):[], bad=[];
+        Array.prototype.forEach.call(blanks,function(inp){ inp.classList.remove('cb-need'); if(inp.value.indexOf('__')>-1||enchMalformed(inp.value,inp.getAttribute('data-pool'))){ inp.classList.add('cb-need'); bad.push(inp); } });
+        if(bad.length){
+          errEl.textContent='Can\u2019t finish yet: '+(bad.length===1?'one enchantment still has':bad.length+' enchantments still have')+' a blank or invalid value. Replace each __ with the number you rolled (it must fall inside the enchantment\u2019s range).';
+          errEl.hidden=false; errEl.style.visibility=''; bad[0].scrollIntoView({block:'center'}); bad[0].focus(); var bj=bad[0].value.indexOf('__'); try{ bad[0].setSelectionRange(bj,bj+2); }catch(err){} return;
         }
         clearErr(); closeCfg();
       });
