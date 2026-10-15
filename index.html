@@ -675,7 +675,7 @@ section{padding-block:48px}
 .cb-picker{margin-top:24px;border:1px solid var(--edge);background:var(--panel);padding:20px 22px}
 .cb-picker-head{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--edge)}
 .cb-picker-head h4{margin:0;font-family:var(--display);font-size:16px;letter-spacing:.06em;color:var(--gold);flex:none}
-.cb-picker-search{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:12px;letter-spacing:.04em;padding:8px 12px;outline:none}
+.cb-picker-search{flex:1;min-width:0;background:rgba(0,0,0,.3);border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:12px;letter-spacing:.04em;padding:8px 12px;outline:none}
 .cb-picker-search:focus{border-color:var(--gold-dim)}
 .cb-picker-close{flex:none;width:26px;height:26px;background:none;border:none;color:var(--gold-dim);font-size:22px;line-height:1;cursor:pointer}
 .cb-picker-close:hover{color:var(--gold)}
@@ -690,6 +690,21 @@ section{padding-block:48px}
   .cb-slot{width:50px;height:50px}
   .cb-slot.cb-slot-sm{width:42px;height:42px}
   .cb-cells-2up{width:108px}
+  /* Picker becomes a true full-screen modal on mobile instead of an inline block the user
+     has to scroll down the page to find — opening it no longer depends on where the slot
+     that was tapped happens to sit in the stacked single-column layout. */
+  .cb-picker{position:fixed;inset:0;z-index:200;margin:0;border:none;padding:0;display:flex;flex-direction:column}
+  /* Title, search and close no longer share one row - at 390px wide a real title ("Choose
+     Dual Wielding Gauntlet") plus a flex:1 search box plus a close button don't fit on one
+     line, and a flex-shrunk <input> stops shrinking at its intrinsic width, so the close
+     button was getting pushed off the right edge of the screen entirely. Title sits in its
+     own row with the close button pinned top-right over it; search gets the full width below. */
+  .cb-picker-head{flex:none;flex-wrap:wrap;padding:16px;margin:0;gap:10px;position:relative}
+  .cb-picker-head h4{font-size:14px;flex:1 1 100%;padding-right:36px}
+  .cb-picker-search{flex:1 1 100%;min-width:0;font-size:16px;padding:10px 12px}
+  .cb-picker-close{position:absolute;top:14px;right:14px;width:34px;height:34px;font-size:26px}
+  .cb-picker-body{flex:1;max-height:none;padding:0 16px 20px}
+  body.cb-picker-locked{overflow:hidden}
 }
 h2{
   font-family:var(--display);
@@ -3796,10 +3811,20 @@ footer li{color:#6f665b}
     var pickerOpenFor=null;
     var pickerOpenPanel=null;
     function scrollBackToPanel(){
-      if(!pickerOpenPanel) return;
+      // On mobile the picker is a fixed full-screen overlay (see openPicker) that never
+      // scrolled the underlying page away in the first place, so there's nothing to
+      // scroll back to - jumping the page here would just be a surprise scroll on close.
+      if(!pickerOpenPanel || CB_IS_MOBILE_PICKER.matches){ pickerOpenPanel=null; return; }
       pickerOpenPanel.scrollIntoView({block:'center',inline:'center',behavior:'smooth'});
       pickerOpenPanel=null;
     }
+    var CB_IS_MOBILE_PICKER=window.matchMedia('(max-width:820px)');
+    // Desktop/mouse users get the search box focused immediately, since a keyboard shortcut
+    // to jump into typing is a convenience there. On touch, autofocus instead yanks the
+    // on-screen keyboard open the moment the + box is tapped, covering half the item list
+    // before the user has even seen what opened - so touch devices leave focus alone until
+    // the user deliberately taps the search field themselves.
+    var CB_WANTS_AUTOFOCUS=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
     function openPicker(id){
       var meta=slotEls[id]; if(!meta) return;
       pickerOpenFor=id;
@@ -3809,11 +3834,18 @@ footer li{color:#6f665b}
       document.getElementById('cbPickerSearch').value='';
       picker.hidden=false;
       renderPicker(meta.cat,'');
-      picker.scrollIntoView({block:'nearest',behavior:'smooth'});
-      document.getElementById('cbPickerSearch').focus();
+      if(CB_IS_MOBILE_PICKER.matches){
+        // Full-screen modal on mobile (see CSS) - no page scroll needed, and the body is
+        // locked so the item list is the only thing that scrolls while it's open.
+        document.body.classList.add('cb-picker-locked');
+      }else{
+        picker.scrollIntoView({block:'nearest',behavior:'smooth'});
+      }
+      if(CB_WANTS_AUTOFOCUS) document.getElementById('cbPickerSearch').focus();
     }
     function closePicker(){
       document.getElementById('cbPicker').hidden=true;
+      document.body.classList.remove('cb-picker-locked');
       pickerOpenFor=null;
     }
     function renderPicker(cat,q){
@@ -4293,6 +4325,11 @@ footer li{color:#6f665b}
   document.addEventListener('touchstart',function(e){
     var t=e.touches[0]; tStartX=t.clientX; tStartY=t.clientY; tMoved=false;
     tTarget=e.target.closest&&e.target.closest('[data-k]');
+    // The item picker's cards also carry data-k (so hover/click can reuse this same tooltip
+    // on desktop), but a tap there means "equip this item", not "show its info card" -
+    // leaving tTarget set would preventDefault() the touchend below and silently eat the
+    // click the picker's own handler needs to actually select the item.
+    if(tTarget&&tTarget.closest&&tTarget.closest('.cb-picker')) tTarget=null;
   },{passive:true});
   document.addEventListener('touchmove',function(e){
     var t=e.touches[0];
