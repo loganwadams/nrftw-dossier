@@ -800,7 +800,7 @@ body.cb-cfg-open{overflow:hidden}
 .ek-row.ek-dis{opacity:.38;cursor:not-allowed}
 .ek-row.ek-dis:hover{background:none}
 .cb-detail-hint.cb-warn,.cb-mf-sum .cb-warn{color:#d0604f;font-style:normal}
-.cb-dmg-cond{display:block;margin:6px 0 10px;color:#b9ad9a;font-size:13px;cursor:pointer}.cb-dmg-cond input{margin-right:6px}
+.cb-dmg-shield{margin:0 0 10px;color:#b9ad9a;font-size:13px}.cb-dmg-cond{display:block;margin:6px 0 10px;color:#b9ad9a;font-size:13px;cursor:pointer}.cb-dmg-cond input{margin-right:6px}
 .cb-detail-hint.cb-rule{color:#8b8174;font-style:normal;margin-top:4px}
 .cb-detail-hint.cb-gemfx{color:#b9ad9a;margin-top:3px;display:block}.cb-detail-hint.cb-gemfx b{color:#d9c9a8;font-weight:600}
 @media (max-width:640px){
@@ -3284,6 +3284,7 @@ footer li{color:#6f665b}
         <h3>Damage Breakdown</h3>
         <p class="cb-dmg-formula">Damage per hit = <b>(Listed + Stat Scaling)</b> &times; <b>Weapon Bonus</b> &times; <b>Build Bonus</b> &mdash; before enemy resistances and combo multipliers.</p>
         <label class="cb-dmg-cond"><input type="checkbox" id="cbDmgCond"> Count conditional damage bonuses as if their condition is always met (full health, full focus, large enemies and similar)</label>
+        <div class="cb-dmg-shield" id="cbDmgShield" hidden></div>
         <div class="cb-dmg-scroll">
           <table class="cb-dmg-table">
             <thead>
@@ -4466,6 +4467,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(isNaN(v)) return;
         if(line.querySelector('.o-icons-fi-StatDamage')) st.base=v;
         else if(line.querySelector('.o-icons-fi-PoiseDamage')) st.poise=v;
+        else if(line.querySelector('.o-icons-iconItemShieldArmor')) st.armor=v;
       });
       var gotCrit=false;
       doc.querySelectorAll('.item-subtitle').forEach(function(el){
@@ -4545,7 +4547,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       return (+pa[1]-+pb[1])||(+pa[2]-+pb[2]);
     }
     function computeDamage(){
-      var res={rows:[],shields:0};
+      var res={rows:[],shields:0,shieldRows:[]};
       var armorEnch=[];
       armorSlotEntries().concat(slotEntriesOfCat(['ring'])).forEach(function(e){
         var m=itemMeta[e.id]; if(!m) return;
@@ -4555,7 +4557,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var meta=slotEls[id]; return meta && (meta.cat==='weapon'||meta.cat==='offhand');
       }).sort(slotOrder).forEach(function(id){
         var meta=slotEls[id], key=equipped[id], item=cards&&cards[key]; if(!item) return;
-        if((key.split('/')[2]||'')==='shields'){ res.shields++; return; }
+        if((key.split('/')[2]||'')==='shields'){
+          res.shields++;
+          var sst=weaponStats(key), sm=itemMeta[id]||defaultItemMeta(meta.cat,item.lv);
+          if(sst && sst.armor){
+            var sLv=Math.max(1,Math.min(16,+(sm.level||item.lv)||1)), sCard=+item.lv||sLv, sCr=Math.max(1,Math.min(sLv,+(sm.creation||sCard)||sCard));
+            var sReq=(sst.req||[]).map(function(r){ return {attr:r.attr,n:sCr!==sCard?reqAtLevel(sst.req.length,sCr):r.n}; });
+            var sShort=sReq.filter(function(r){ return (attrVals[r.attr.toLowerCase()]||10)<r.n; });
+            res.shieldRows.push({name:item.n,armor:sst.armor,eff:sst.armor*(sShort.length?REQ_PENALTY_MULT:1),
+              txt:sShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ')});
+          }
+          return;
+        }
         var st0=weaponStats(key); if(!st0) return;
         var m=itemMeta[id]||defaultItemMeta(meta.cat,item.lv);
         var st=Object.assign({},st0);
@@ -4630,6 +4643,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var keyEl=document.getElementById('cbDmgKey');
       var notesEl=document.getElementById('cbDmgNotes');
       var res=computeDamage();
+      var shEl=document.getElementById('cbDmgShield');
+      if(shEl){
+        shEl.innerHTML=res.shieldRows.map(function(r){
+          return r.txt ? '<span class="cb-dmg-warn">'+dmgEsc(r.name)+' &mdash; under its requirement ('+dmgEsc(r.txt)+'): shield armor '+r.armor+' &rarr; '+(Math.round(r.eff*10)/10)+' (&minus;80%)</span>'
+                       : dmgEsc(r.name)+' &mdash; shield armor '+r.armor+', requirement met';
+        }).map(function(t){ return '<div>'+t+'</div>'; }).join('');
+        shEl.hidden=!res.shieldRows.length;
+      }
       if(!res.rows.length){
         body.innerHTML='<tr><td colspan="8" class="cb-dmg-empty">No weapons selected'+(res.shields?' &mdash; a shield adds blocking, not attack damage.':'')+'</td></tr>';
         keyEl.hidden=true; notesEl.hidden=true;
