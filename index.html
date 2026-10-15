@@ -3184,7 +3184,7 @@ footer li{color:#6f665b}
         <div class="cb-panel">
           <h3>Character</h3>
           <div class="cb-level-row"><label>Level</label><input type="range" id="cbLevel" min="1" max="30" value="15"><span id="cbLevelVal">15</span></div>
-          <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">70</strong>&nbsp;/&nbsp;<span id="cbPtsTotal">70</span></div>
+          <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">42</strong>&nbsp;/&nbsp;<span id="cbPtsTotal">42</span></div>
           <div class="cb-attr-list" id="cbAttrs"></div>
         </div>
         <div class="cb-panel">
@@ -3423,7 +3423,8 @@ footer li{color:#6f665b}
       {id:'dexterity',name:'Dexterity',color:'var(--gold)',icon:'img/cb/icon-attr-dexterity.webp'},
       {id:'intelligence',name:'Intelligence',color:'var(--c-storm)',icon:'img/cb/icon-attr-intelligence.webp'},
       {id:'faith',name:'Faith',color:'var(--c-wraith)',icon:'img/cb/icon-attr-faith.webp'},
-      {id:'focus',name:'Focus',color:'var(--c-plague)',icon:'img/cb/icon-attr-focus.webp'}
+      {id:'focus',name:'Focus',color:'var(--c-plague)',icon:'img/cb/icon-attr-focus.webp'},
+      {id:'equipload',name:'Equip Load',color:'var(--gold-dim)',icon:'img/cb/icon-attr-equipload.webp'}
     ];
     var ROWS=[
       {label:'Main Hand',icon:'weapon',cells:[{kind:'item',cat:'weapon'},{kind:'item',cat:'weapon'},{kind:'item',cat:'weapon'}]},
@@ -3455,6 +3456,8 @@ footer li{color:#6f665b}
     // Gem sockets follow rarity per the dossier's own Systems page: common gear carries
     // four, magical/plagued/unique carry one each.
     function gemSlotsForRarity(r){ return r==='standard'?4:1; }
+    // Enchantment slots by rarity: Common none, Magical up to 3, Plagued up to 4 magical plus 1 plagued, Unique up to 4.
+    function enchantSlotsForRarity(r){ return {standard:0,magical:3,plagued:5,unique:4}[r]||0; }
     // Facet names pulled verbatim from the per-class guidance already written elsewhere on
     // the site, offered as suggestions (not a closed list - a facet field stays free text).
     var FACET_SUGGESTIONS=['Agile','Blunt','Bulky','Dense','Durable','Festering','Fireproof',
@@ -3467,7 +3470,7 @@ footer li{color:#6f665b}
         level:Math.max(1,Math.min(16,+lv||1)),
         facet:'',
         gems:new Array(gemSlotsForRarity('standard')).fill(''),
-        enchants:new Array(gemSlotsForRarity('standard')).fill(''),
+        enchants:new Array(enchantSlotsForRarity('standard')).fill(''),
         runes:WEAPON_DETAIL_CATS.indexOf(cat)>-1?new Array(4).fill(''):[]
       };
     }
@@ -3478,7 +3481,7 @@ footer li{color:#6f665b}
       while(m.gems.length<gemSlots) m.gems.push('');
       m.gems=m.gems.slice(0,gemSlots);
       var hasGem=m.gems.some(function(g){ return g; });
-      var enchantSlots=hasGem?1:gemSlots;
+      var enchantSlots=enchantSlotsForRarity(m.rarity);
       while(m.enchants.length<enchantSlots) m.enchants.push('');
       m.enchants=m.enchants.slice(0,enchantSlots);
       return m;
@@ -3595,7 +3598,7 @@ footer li{color:#6f665b}
     }
 
     var attrVals={}; ATTRS.forEach(function(a){ attrVals[a.id]=10; });
-    function ptsTotal(){ var lvl=+document.getElementById('cbLevel').value; return 70+(lvl-15)*3; }
+    function ptsTotal(){ var lvl=+document.getElementById('cbLevel').value; return 3*(lvl-1); }
     function ptsSpent(){ var s=0; ATTRS.forEach(function(a){ s+=attrVals[a.id]-10; }); return s; }
     function refreshPoints(){
       var total=ptsTotal(), spent=ptsSpent(), left=total-spent;
@@ -3644,9 +3647,9 @@ footer li{color:#6f665b}
       html+=detailFieldRow('Item Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
       html+=detailFieldRow('Facet','<input type="text" class="cb-detail-facet" data-id="'+id+'" list="cbFacetList" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None">');
       html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span>');
-      html+=detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')',
-        '<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span>'+
-        (hasGem?'<small class="cb-detail-hint">Limited to 1 &mdash; this item carries a gem.</small>':''));
+      html+=m.enchants.length
+        ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span>')
+        : detailFieldRow('Enchants','<small class="cb-detail-hint" style="color:#8b8174;font-style:normal">Common items carry no enchantments.</small>');
       if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
         html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
       }
@@ -3700,6 +3703,7 @@ footer li{color:#6f665b}
       if(e.target.classList.contains('cb-detail-level')){
         var v=Math.max(1,Math.min(16,+e.target.value||1));
         m.level=v; e.target.value=v;
+        try{ var sl=slotEls[e.target.getAttribute('data-id')]; var lb=sl&&sl.el&&sl.el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=v; }catch(err){}
         renderProfile();
         return;
       }
@@ -4074,7 +4078,7 @@ footer li{color:#6f665b}
           return '<tr class="cb-dmg-row">'+
             '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
               '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
-              '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(it.lv?' · Lv '+dmgEsc(it.lv):'')+'</small>'+
+              '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Lv '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
               '<small>No damage stat &mdash; a utility item</small></div></div></td>'+
             '<td class="cb-dmg-t">'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td>'+
             '<td class="cb-dmg-derived">'+dash+'</td><td>'+dash+'</td><td class="cb-dmg-derived cb-dmg-final">'+dash+'</td></tr>';
@@ -4085,7 +4089,7 @@ footer li{color:#6f665b}
         return '<tr class="cb-dmg-row'+(r.id===topId?' cb-dmg-top':'')+'">'+
           '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
             '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
-            '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(it.lv?' · Lv '+dmgEsc(it.lv):'')+'</small>'+
+            '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Lv '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
             '<small>'+critTxt+'</small></div></div></td>'+
           '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'">'+dmgEsc(st.schoolLabel)+'</span></td>'+
           '<td>'+dmgFmt(st.base)+'</td>'+
