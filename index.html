@@ -3859,7 +3859,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var enchRxCache={};
     function enchRx(tpl){
       if(enchRxCache[tpl]) return enchRxCache[tpl];
-      var rx=tpl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/__%?/g,'\\(?[\\d.]+%?(?:\\s*[–-]\\s*[\\d.]+%?)?\\)?');
+      var rx=tpl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/__%?/g,'\\(?(?:__|[\\d.]+)%?(?:\\s*[–-]\\s*(?:__|[\\d.]+)%?)?\\)?');
       return enchRxCache[tpl]=new RegExp('^\\s*'+rx+'\\s*$','i');
     }
     function enchEntryFor(pool,text){
@@ -3872,7 +3872,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var m=itemMeta[id], used={}; if(!m) return used;
       (m.enchants||[]).forEach(function(t,j){
         if(j===skipIndex||!t) return;
-        var e=enchEntryFor(pool,t); if(e&&e[3]) used[e[3]]=String(t).trim();
+        var e=enchEntryFor(pool,t); if(!e) return;
+        used['t:'+e[0]+'|'+e[2]]=String(t).trim(); // the very same enchantment cannot be taken twice
+        if(e[3]) used[e[3]]=String(t).trim();
       });
       return used;
     }
@@ -3881,7 +3883,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var pop=document.createElement('div'); pop.id='cbEnchPop'; pop.className='cb-ench-pop'; pop.hidden=true;
       document.body.appendChild(pop);
       var cur=null, rows=[], hi=-1, usedGroups={};
-      function blocked(r){ return r[3]&&usedGroups[r[3]]?usedGroups[r[3]]:''; }
+      function blocked(r){ return usedGroups['t:'+r[0]+'|'+r[2]]||(r[3]&&usedGroups[r[3]])||''; }
       function norm(t){ return String(t||'').toLowerCase().replace(/_/g,'').replace(/%/g,'').replace(/\s+/g,' ').trim(); }
       function place(){
         if(!cur) return; var r=cur.getBoundingClientRect();
