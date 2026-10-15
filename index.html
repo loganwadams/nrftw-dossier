@@ -670,6 +670,24 @@ section{padding-block:48px}
 .cb-mf-name.r-plagued{color:#c6a0ff}
 .cb-mf-name.r-unique{color:#f2c35c}
 .cb-mf-lv{font-family:var(--data);font-size:9.5px;color:#7c7265;flex:none}
+.cb-mf-item{flex-direction:column;align-items:stretch!important}
+.cb-mf-row{display:flex;align-items:baseline;gap:10px}
+.cb-mf-toggle{margin-left:auto;flex:none;background:none;border:1px solid var(--edge);color:var(--gold);font-family:var(--data);font-size:10.5px;letter-spacing:.04em;padding:3px 9px;cursor:pointer;border-radius:2px}
+.cb-mf-toggle:hover{background:rgba(200,160,74,.1)}
+.cb-mf-detail{margin:10px 0 4px;padding:12px 14px;background:rgba(0,0,0,.18);border:1px solid var(--edge);display:flex;flex-direction:column;gap:8px}
+.cb-detail-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cb-detail-label{font-family:var(--data);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#7c7265;flex:none;width:130px}
+.cb-detail-row select,.cb-detail-row input[type="text"],.cb-detail-row input[type="number"]{
+  font-family:var(--body);font-size:13px;background:var(--panel);color:var(--bone);
+  border:1px solid var(--edge);padding:5px 8px;border-radius:2px}
+.cb-detail-level{width:60px}
+.cb-detail-slots{display:flex;flex-wrap:wrap;gap:6px}
+.cb-detail-slot{width:118px}
+.cb-detail-hint{display:block;width:100%;color:#a4512a;font-size:11.5px;font-style:italic}
+@media (max-width:640px){
+  .cb-detail-label{width:100%}
+  .cb-detail-slot{width:calc(50% - 3px)}
+}
 
 /* picker */
 .cb-picker{margin-top:24px;border:1px solid var(--edge);background:var(--panel);padding:20px 22px}
@@ -3337,6 +3355,47 @@ footer li{color:#6f665b}
       rune:{title:'Utility Rune'},
       inf:{title:'Infusion'}
     };
+    // Weapons and armor are the only pieces that carry rarity, gems, enchantments, a facet
+    // and (for weapons) runes - rings and utility runes don't get this sub-editor.
+    var DETAIL_CATS=['weapon','offhand','helm','chest','legs','gloves'];
+    var WEAPON_DETAIL_CATS=['weapon','offhand'];
+    var RARITIES=[
+      {id:'standard',name:'Common'},
+      {id:'magical',name:'Magical'},
+      {id:'plagued',name:'Plagued'},
+      {id:'unique',name:'Unique'}
+    ];
+    // Gem sockets follow rarity per the dossier's own Systems page: common gear carries
+    // four, magical/plagued/unique carry one each.
+    function gemSlotsForRarity(r){ return r==='standard'?4:1; }
+    // Facet names pulled verbatim from the per-class guidance already written elsewhere on
+    // the site, offered as suggestions (not a closed list - a facet field stays free text).
+    var FACET_SUGGESTIONS=['Agile','Blunt','Bulky','Dense','Durable','Festering','Fireproof',
+      'Frantic','Frigid','Frostwoven','Heavy','Insulated','Keen','Mundane','Mystic','Purified',
+      'Quick','Rapid','Razor','Reliable','Ritualistic','Sharp','Stable','Voltaic'];
+    var itemMeta={}; // slotId -> {rarity,level,facet,gems:[],enchants:[],runes:[]}
+    function defaultItemMeta(cat,lv){
+      return {
+        rarity:'standard',
+        level:Math.max(1,Math.min(16,+lv||1)),
+        facet:'',
+        gems:new Array(gemSlotsForRarity('standard')).fill(''),
+        enchants:new Array(gemSlotsForRarity('standard')).fill(''),
+        runes:WEAPON_DETAIL_CATS.indexOf(cat)>-1?new Array(4).fill(''):[]
+      };
+    }
+    // Reconciles gem/enchant array lengths with the current rarity, and enforces the rule
+    // that an item carrying any gem is limited to a single enchantment.
+    function normalizeItemMeta(m){
+      var gemSlots=gemSlotsForRarity(m.rarity);
+      while(m.gems.length<gemSlots) m.gems.push('');
+      m.gems=m.gems.slice(0,gemSlots);
+      var hasGem=m.gems.some(function(g){ return g; });
+      var enchantSlots=hasGem?1:gemSlots;
+      while(m.enchants.length<enchantSlots) m.enchants.push('');
+      m.enchants=m.enchants.slice(0,enchantSlots);
+      return m;
+    }
     // Row icons are cropped straight from the game's own build-planner UI (user-supplied
     // screenshot), recolored to the dossier's gold rather than redrawn from scratch.
     var ROW_ICON_IMG={
@@ -3479,6 +3538,34 @@ footer li{color:#6f665b}
       refreshPoints();
     });
 
+    var expandedDetails={}; // slotId -> true while its gear-detail editor is open
+    function detailFieldRow(label,inputHtml){
+      return '<div class="cb-detail-row"><span class="cb-detail-label">'+label+'</span>'+inputHtml+'</div>';
+    }
+    function detailSlotInputs(id,group,values,placeholder){
+      return values.map(function(v,i){
+        return '<input type="text" class="cb-detail-slot" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'" value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+placeholder+' '+(i+1)+'">';
+      }).join('');
+    }
+    function renderDetailPanel(id,item){
+      var m=itemMeta[id]; if(!m) return '';
+      var meta=slotEls[id];
+      var hasGem=m.gems.some(function(g){ return g; });
+      var rarityOpts=RARITIES.map(function(r){ return '<option value="'+r.id+'"'+(r.id===m.rarity?' selected':'')+'>'+r.name+'</option>'; }).join('');
+      var html='<div class="cb-mf-detail" data-id="'+id+'">';
+      html+=detailFieldRow('Rarity','<select class="cb-detail-rarity" data-id="'+id+'">'+rarityOpts+'</select>');
+      html+=detailFieldRow('Item Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
+      html+=detailFieldRow('Facet','<input type="text" class="cb-detail-facet" data-id="'+id+'" list="cbFacetList" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None">');
+      html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span>');
+      html+=detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')',
+        '<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span>'+
+        (hasGem?'<small class="cb-detail-hint">Limited to 1 &mdash; this item carries a gem.</small>':''));
+      if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
+        html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
+      }
+      html+='</div>';
+      return html;
+    }
     function renderManifest(){
       var ul=document.getElementById('cbManifest');
       var ids=Object.keys(equipped);
@@ -3489,15 +3576,57 @@ footer li{color:#6f665b}
         ids.forEach(function(id){
           var key=equipped[id]; var item=cards[key]; if(!item) return;
           var meta=slotEls[id];
-          var li=document.createElement('li');
-          li.innerHTML='<span class="cb-mf-slot">'+(meta.label||'')+'</span>'+
-            '<span class="cb-mf-name r-'+(item.r||'standard')+'">'+item.n+'</span>'+
-            (item.lv?'<span class="cb-mf-lv">Lv '+item.lv+'</span>':'');
+          var hasDetails=!!itemMeta[id];
+          var m=itemMeta[id];
+          var rarityId=m?m.rarity:(item.r||'standard');
+          var levelShown=m?m.level:item.lv;
+          var li=document.createElement('li'); li.className='cb-mf-item';
+          li.innerHTML='<div class="cb-mf-row">'+
+            '<span class="cb-mf-slot">'+(meta.label||'')+'</span>'+
+            '<span class="cb-mf-name r-'+rarityId+'">'+item.n+'</span>'+
+            (levelShown?'<span class="cb-mf-lv">Lv '+levelShown+'</span>':'')+
+            (hasDetails?'<button type="button" class="cb-mf-toggle" data-id="'+id+'" aria-expanded="'+(expandedDetails[id]?'true':'false')+'">'+(expandedDetails[id]?'Hide details':'Rarity / Gems / Facet&hellip;')+'</button>':'')+
+            '</div>'+
+            (hasDetails&&expandedDetails[id]?renderDetailPanel(id,item):'');
           ul.appendChild(li);
         });
       }
       renderProfile();
     }
+    document.getElementById('cbManifest').addEventListener('click',function(e){
+      var toggle=e.target.closest('.cb-mf-toggle');
+      if(toggle){
+        var id=toggle.dataset.id;
+        expandedDetails[id]=!expandedDetails[id];
+        renderManifest();
+      }
+    });
+    document.getElementById('cbManifest').addEventListener('change',function(e){
+      var id=e.target.dataset.id; if(!id) return;
+      var m=itemMeta[id]; if(!m) return;
+      if(e.target.classList.contains('cb-detail-rarity')){
+        m.rarity=e.target.value;
+        normalizeItemMeta(m);
+        renderManifest();
+        return;
+      }
+      if(e.target.classList.contains('cb-detail-level')){
+        var v=Math.max(1,Math.min(16,+e.target.value||1));
+        m.level=v; e.target.value=v;
+        renderProfile();
+        return;
+      }
+      if(e.target.classList.contains('cb-detail-facet')){
+        m.facet=e.target.value;
+        return;
+      }
+      if(e.target.classList.contains('cb-detail-slot')){
+        var group=e.target.dataset.group, i=+e.target.dataset.i;
+        m[group][i]=e.target.value;
+        if(group==='gems') normalizeItemMeta(m);
+        if(group==='gems' || group==='enchants') renderManifest();
+      }
+    });
 
     var PROFILE_METRICS=[
       {id:'damage',label:'Damage Output',cats:['weapon','offhand']},
@@ -3516,11 +3645,21 @@ footer li{color:#6f665b}
     function itemsOfCat(catList){
       return slotEntriesOfCat(catList).map(function(e){ return e.item; });
     }
-    function avgLevel(items){
-      if(!items.length) return 0;
+    function avgLevel(entries){
+      if(!entries.length) return 0;
       var lvl=+document.getElementById('cbLevel').value, s=0;
-      items.forEach(function(it){ s+=it.lv||lvl; });
-      return s/items.length;
+      entries.forEach(function(e){ var m=itemMeta[e.id]; s+=(m?m.level:null)||e.item.lv||lvl; });
+      return s/entries.length;
+    }
+    // Common gear rolls four gem slots and a full facet; rarer gear trades that breadth for a
+    // stronger, more concentrated roll - a light stat nudge here keeps rarity choices visible
+    // in the Build Profile without letting it swamp the gear/attribute math.
+    var RARITY_MULT={standard:1,magical:1.06,plagued:1.1,unique:1.14};
+    function rarityMultiplier(entries){
+      if(!entries.length) return 1;
+      var s=0;
+      entries.forEach(function(e){ var m=itemMeta[e.id]; s+=RARITY_MULT[m?m.rarity:'standard']||1; });
+      return s/entries.length;
     }
     function armorSlotEntries(){
       return slotEntriesOfCat(['helm','chest','legs','gloves']);
@@ -3535,8 +3674,8 @@ footer li{color:#6f665b}
       var runeItems=itemsOfCat(['rune']);
       var offenseAttr=Math.max(a.strength,a.dexterity,a.intelligence,a.faith)-10;
 
-      var dmg=weaponItems.length*14 + avgLevel(weaponItems)*2 + offenseAttr*1.2;
-      var def=armorItems.length*20 + avgLevel(armorItems)*1.4;
+      var dmg=(weaponItems.length*14 + avgLevel(weaponEntries)*2 + offenseAttr*1.2)*rarityMultiplier(weaponEntries);
+      var def=(armorItems.length*20 + avgLevel(armorEntries)*1.4)*rarityMultiplier(armorEntries);
       var surv=(a.health-10)*2.2 + (a.stamina-10)*1.4 + armorItems.length*6;
       var totalGear=weaponItems.length+armorItems.length+ringItems.length;
       var mob=90 - totalGear*7;
@@ -3706,7 +3845,9 @@ footer li{color:#6f665b}
       if(cards){
         var lvlSum=0, lvlCount=0;
         Object.keys(equipped).forEach(function(id){
-          var it=cards[equipped[id]]; if(it && it.lv){ lvlSum+=+it.lv; lvlCount++; }
+          var it=cards[equipped[id]]; var m=itemMeta[id];
+          var lv=m?m.level:(it&&it.lv);
+          if(lv){ lvlSum+=+lv; lvlCount++; }
         });
         if(lvlCount){
           var avgItemLv=lvlSum/lvlCount;
@@ -3768,6 +3909,7 @@ footer li{color:#6f665b}
     function setSlotEmpty(id){
       var meta=slotEls[id]; if(!meta) return;
       delete equipped[id];
+      delete itemMeta[id];
       meta.el.classList.remove('filled');
       meta.el.innerHTML='<span class="cb-slot-plus">+</span>';
     }
@@ -3801,6 +3943,11 @@ footer li{color:#6f665b}
       var meta=slotEls[id]; if(!meta) return;
       var item=cards[key]; if(!item) return;
       equipped[id]=key;
+      if(DETAIL_CATS.indexOf(meta.cat)>-1){
+        itemMeta[id]=defaultItemMeta(meta.cat,item.lv);
+      } else {
+        delete itemMeta[id];
+      }
       meta.el.classList.add('filled');
       meta.el.innerHTML='<span class="cb-slot-main m-ic" data-k="'+key+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
         (item.lv?'<span class="cb-slot-lv">'+item.lv+'</span>':'')+
@@ -3898,6 +4045,12 @@ footer li{color:#6f665b}
     document.getElementById('cbRows').addEventListener('click',onSlotsClick);
     document.getElementById('cbRuneCells').addEventListener('click',onSlotsClick);
 
+    (function buildFacetList(){
+      if(document.getElementById('cbFacetList')) return;
+      var dl=document.createElement('datalist'); dl.id='cbFacetList';
+      dl.innerHTML=FACET_SUGGESTIONS.map(function(f){ return '<option value="'+f+'">'; }).join('');
+      document.body.appendChild(dl);
+    })();
     buildClassGrid();
     buildRows2();
     buildRunes();
