@@ -4497,6 +4497,30 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function dmgPctCell(p){ return p>0?('<span class="cb-dmg-gain">+'+dmgFmt(p)+'%</span>'):(p<0?('<span class="cb-dmg-loss">&minus;'+dmgFmt(-p)+'%</span>'):'<span class="cb-dmg-none">&mdash;</span>'); }
 
     var weaponStatCache={};
+    // Hover card for an equipped item: show it at the upgrade level, creation-level requirements and rarity picked for it.
+    window.cbTipAdjust=function(anchor,c){
+      var slot=anchor.closest&&anchor.closest('.cb-slot'); if(!slot) return c;
+      var id=slot.dataset.slot, m=itemMeta[id], key=equipped[id]; if(!m||!key) return c;
+      var out=Object.assign({},c), lv=Math.max(1,Math.min(16,+m.level||+c.lv||1));
+      out.lv=lv; out.r=m.rarity||c.r;
+      try{
+        var doc=new DOMParser().parseFromString(c.h||'','text/html'), cardLv=+c.lv||lv;
+        var folder=key.split('/')[3]||'', isShield=(key.split('/')[2]||'')==='shields';
+        if(!isShield && lv!==cardLv){
+          doc.querySelectorAll('.top-icon-line').forEach(function(line){
+            if(line.querySelector('.o-icons-fi-StatDamage')){ var mv=line.querySelector('.mod-value'), b=dmgBaseAtLevel(folder,lv); if(mv&&b!=null) mv.textContent=b; }
+          });
+        }
+        var cr=Math.max(1,Math.min(lv,+(m.creation||cardLv)||cardLv));
+        doc.querySelectorAll('.item-subtitle').forEach(function(el){
+          if(!/^\s*Requirements/i.test(el.textContent||'')||!el.parentElement) return;
+          var boxes=[]; el.parentElement.querySelectorAll('.attribute').forEach(function(a){ var box=a.closest('.pr-3'); if(box) boxes.push(box); });
+          if(cr!==cardLv) boxes.forEach(function(box){ var num=box.querySelector('.pl-1'); if(num) num.textContent=reqAtLevel(boxes.length,cr); });
+        });
+        out.h=doc.body.innerHTML;
+      }catch(err){}
+      return out;
+    };
     function weaponStats(key){
       if(weaponStatCache[key]) return weaponStatCache[key];
       var item=cards&&cards[key]; if(!item||!item.h) return null;
@@ -5510,7 +5534,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function el(){ if(!tip){ tip=document.createElement('div'); tip.className='tt'; document.body.appendChild(tip);} return tip; }
   function place(x,y){ var t=el(), r=t.getBoundingClientRect(), W=innerWidth, H=innerHeight, left=x+18, top=y+18;
     if(left+r.width>W-12) left=Math.max(12,x-r.width-18); if(top+r.height>H-12) top=Math.max(12,H-12-r.height); t.style.left=left+'px'; t.style.top=top+'px'; }
-  function render(k,x,y){ load().then(function(db){ var c=db[k]; if(!c||cur!==k) return; var t=el();
+  var tipAnchor=null;
+  ['pointerover','click','touchstart'].forEach(function(n){ document.addEventListener(n,function(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(a) tipAnchor=a; },true); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Enter'){ var a=document.activeElement; if(a&&a.matches&&a.matches('[data-k]')) tipAnchor=a; } },true);
+  function render(k,x,y){ load().then(function(db){ var c=db[k]; if(!c||cur!==k) return;
+      // the Cerim Builder can show an equipped item at the level and rarity chosen for it
+      try{ if(window.cbTipAdjust&&tipAnchor&&tipAnchor.getAttribute('data-k')===k) c=window.cbTipAdjust(tipAnchor,c)||c; }catch(err){}
+      var t=el();
       t.className='tt r-'+(c.r||'standard');
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
       t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'<div class="tt-foot">game data &middot; norestforthewicked.gg</div>';
