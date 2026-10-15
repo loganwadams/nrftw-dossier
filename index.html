@@ -4116,7 +4116,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       var html='<div class="cb-mf-detail" data-id="'+id+'">';
       html+=detailFieldRow('Rarity','<select class="cb-detail-rarity" data-id="'+id+'">'+rarityOpts+'</select>');
-      html+=detailFieldRow('Creation Level (up to Upgrade)','<input type="number" class="cb-detail-creation" data-id="'+id+'" min="1" max="'+m.level+'" value="'+Math.min(m.creation||m.level,m.level)+'">');
+      html+=detailFieldRow('Creation Level (1&ndash;16)','<input type="number" class="cb-detail-creation" data-id="'+id+'" min="1" max="16" value="'+Math.min(m.creation||m.level,m.level)+'"><small class="cb-detail-hint cb-rule">Upgrade level can\u2019t be lower than creation level, so raising creation raises upgrade too.</small>');
       html+=detailFieldRow('Upgrade Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
       if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
         html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
@@ -4200,15 +4200,24 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return;
       }
       if(e.target.classList.contains('cb-detail-creation')){
-        var cv=Math.max(1,Math.min(m.level||16,+e.target.value||1));
+        // Upgrade level can never sit below creation level, so raising creation pulls upgrade up with it.
+        var cv=Math.max(1,Math.min(16,+e.target.value||1));
         m.creation=cv; e.target.value=cv;
+        if((m.level||1)<cv){
+          m.level=cv;
+          var dd=e.target.closest('.cb-mf-detail'), lin=dd&&dd.querySelector('.cb-detail-level'); if(lin) lin.value=cv;
+          var before2=m.enchants.length; normalizeItemMeta(m);
+          if(m.enchants.length!==before2){ renderManifest(); return; }
+          try{ var sl2=slotEls[e.target.getAttribute('data-id')]; var lb2=sl2&&sl2.el&&sl2.el.querySelector('.cb-slot-lv'); if(lb2) lb2.textContent=cv; }catch(err){}
+          renderProfile();
+        }
         return;
       }
       if(e.target.classList.contains('cb-detail-level')){
         var v=Math.max(1,Math.min(16,+e.target.value||1));
         m.level=v; e.target.value=v;
         if((m.creation||v)>v){ m.creation=v; var ce=e.target.closest('.cb-mf-detail'); ce=ce&&ce.querySelector('.cb-detail-creation'); if(ce) ce.value=v; }
-        try{ var cd=e.target.closest('.cb-mf-detail'), cin=cd&&cd.querySelector('.cb-detail-creation'); if(cin) cin.max=v; }catch(err){}
+        
         var before=m.enchants.length; normalizeItemMeta(m);
         if(m.enchants.length!==before){ renderManifest(); return; }
         try{ var sl=slotEls[e.target.getAttribute('data-id')]; var lb=sl&&sl.el&&sl.el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=v; }catch(err){}
