@@ -643,6 +643,8 @@ section{padding-block:48px}
 .cb-panel h3 .coming-soon-badge{display:inline-block;vertical-align:middle;margin-left:10px;line-height:1.2;position:relative;top:-2px}
 .cb-reset-wrap{text-align:center;margin:0 0 22px}
 .cb-reset-btn{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#1b140c;background:linear-gradient(180deg,#e0b863,var(--gold));border:1px solid #efc877;padding:10px 26px;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:filter .15s,transform .15s}
+.cb-share-btn{margin-left:10px;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border-color:#6fa3bd;color:#e9f1f7}
+.cb-share-msg{display:inline-block;margin-left:12px;font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--verdigris);vertical-align:middle}
 .cb-reset-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .cb-reset-btn:active{filter:brightness(.95);transform:translateY(0)}
 
@@ -3170,7 +3172,7 @@ footer li{color:#6f665b}
     <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Catalog.</p>
     <p class="cb-note">Early preview &mdash; weapon damage and attribute scaling use the game&rsquo;s own numbers, but enchantments aren&rsquo;t wired in yet. Every item, icon and stat panel below is real game data.</p>
 
-    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button></div>
+    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
 
     <div class="cb-wrap">
       <div class="cb-col">
@@ -4331,6 +4333,94 @@ footer li{color:#6f665b}
         '<button type="button" class="cb-slot-clear" aria-label="Remove">&times;</button>';
       renderManifest();
     }
+
+
+    // ---- Save / share a build ------------------------------------------------------------
+    // The whole build (level, attributes, equipped items and their rarity/facet/gems/enchants)
+    // is small enough to live in a link (?b=...) and in this browser's own storage, so it
+    // survives a refresh and can be sent to someone else.
+    var CB_STORE_KEY='cbBuildV1';
+    function serializeBuild(){
+      var a={}; ATTRS.forEach(function(x){ if(attrVals[x.id]!==10) a[x.id]=attrVals[x.id]; });
+      var m={}; Object.keys(itemMeta).forEach(function(id){
+        if(!equipped[id]) return; var v=itemMeta[id];
+        m[id]={r:v.rarity,l:v.level,f:v.facet||'',g:v.gems||[],e:v.enchants||[],u:v.runes||[]};
+      });
+      return {v:1,lv:+document.getElementById('cbLevel').value,a:a,e:Object.assign({},equipped),m:m};
+    }
+    function isDefaultBuild(b){ return !Object.keys(b.e).length && !Object.keys(b.a).length && b.lv===15; }
+    function encodeBuild(b){
+      var j=JSON.stringify(b);
+      return btoa(unescape(encodeURIComponent(j))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    }
+    function decodeBuild(t){
+      try{
+        var b=t.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='=';
+        var o=JSON.parse(decodeURIComponent(escape(atob(b))));
+        return (o&&o.v===1)?o:null;
+      }catch(e){ return null; }
+    }
+    var cbSaveTimer=null, cbRestoring=false;
+    function saveBuildSoon(){
+      if(cbRestoring) return;
+      clearTimeout(cbSaveTimer);
+      cbSaveTimer=setTimeout(function(){
+        try{
+          var b=serializeBuild();
+          if(isDefaultBuild(b)) localStorage.removeItem(CB_STORE_KEY); else localStorage.setItem(CB_STORE_KEY,encodeBuild(b));
+        }catch(e){}
+      },500);
+    }
+    function applyBuild(o){
+      cbRestoring=true;
+      try{
+        Object.keys(equipped).forEach(function(id){ setSlotEmpty(id); });
+        var lvEl=document.getElementById('cbLevel');
+        lvEl.value=Math.max(1,Math.min(30,+o.lv||15));
+        document.getElementById('cbLevelVal').textContent=lvEl.value;
+        ATTRS.forEach(function(x){
+          var v=Math.max(10,Math.min(40,+(o.a&&o.a[x.id])||10));
+          attrVals[x.id]=v; document.getElementById('cbv-'+x.id).textContent=v;
+        });
+        Object.keys(o.e||{}).forEach(function(id){
+          if(slotEls[id] && cards[o.e[id]]) equipSlot(id,o.e[id]);
+        });
+        Object.keys(o.m||{}).forEach(function(id){
+          var cur=itemMeta[id], sv=o.m[id]; if(!cur||!equipped[id]) return;
+          cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.facet=sv.f||'';
+          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=(sv.u||[]).slice();
+          normalizeItemMeta(cur);
+          var lb=slotEls[id].el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=cur.level;
+        });
+        renderManifest(); refreshPoints();
+      } finally { cbRestoring=false; }
+    }
+    function restoreBuild(){
+      var o=null, fromLink=false;
+      try{ var q=new URLSearchParams(location.search).get('b'); if(q){ o=decodeBuild(q); fromLink=!!o; } }catch(e){}
+      if(!o){ try{ var t=localStorage.getItem(CB_STORE_KEY); if(t) o=decodeBuild(t); }catch(e){} }
+      if(o){ applyBuild(o); if(fromLink) saveBuildSoon(); }
+    }
+    (function wireShare(){
+      var btn=document.getElementById('cbShareBuild'), msg=document.getElementById('cbShareMsg');
+      if(!btn) return;
+      btn.addEventListener('click',function(){
+        var b=serializeBuild();
+        var base=location.href.split('#')[0].split('?')[0];
+        var url=isDefaultBuild(b)?base:(base+'?b='+encodeBuild(b));
+        var done=function(t){ msg.textContent=t; setTimeout(function(){ msg.textContent=''; },3500); };
+        var fallback=function(){
+          var ta=document.createElement('textarea'); ta.value=url; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
+          var ok=false; try{ ok=document.execCommand('copy'); }catch(e){} document.body.removeChild(ta);
+          done(ok?'Link copied':'Copy failed');
+        };
+        if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ done('Link copied'); },fallback); else fallback();
+      });
+      var sec=document.getElementById('cerim-builder');
+      if(sec){ ['click','input','change'].forEach(function(ev){ sec.addEventListener(ev,saveBuildSoon,true); }); }
+    })();
+
+    loadCards().then(restoreBuild);
 
     var pickerOpenFor=null;
     var pickerOpenPanel=null;
