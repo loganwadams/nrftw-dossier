@@ -581,7 +581,7 @@ section{padding-block:48px}
 .marks li.cb-report-none::before{content:none}
 
 /* damage breakdown (inside the build analysis): one row per equipped weapon, read left to right as
-   Base -> Attribute bonus -> Local modifiers = Weapon Damage -> Global modifiers = Attack Damage */
+   Listed -> Stat scaling -> Weapon bonus = Weapon total -> Build bonus = Damage per hit */
 .cb-dmg h3{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .cb-dmg-chip{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:400;color:#d9a98c;border:1px solid var(--rust);border-radius:3px;padding:2px 8px}
 .cb-dmg-formula{font-family:var(--data);font-size:11.5px;letter-spacing:.05em;color:var(--muted);margin:-6px 0 14px}
@@ -3275,26 +3275,26 @@ footer li{color:#6f665b}
       <p class="cb-report-sub" id="cbReportSub"></p>
       <div class="panel cb-dmg" id="cbDmg" hidden>
         <h3>Damage Breakdown</h3>
-        <p class="cb-dmg-formula">Attack Damage = <b>(Base + Attribute Bonus)</b> &times; <b>Local</b> &times; <b>Global</b> &mdash; per hit, before enemy resistances and combo multipliers.</p>
+        <p class="cb-dmg-formula">Damage per hit = <b>(Listed + Stat Scaling)</b> &times; <b>Weapon Bonus</b> &times; <b>Build Bonus</b> &mdash; before enemy resistances and combo multipliers.</p>
         <div class="cb-dmg-scroll">
           <table class="cb-dmg-table">
             <thead>
               <tr>
                 <th>Weapon</th>
-                <th style="text-align:left">Damage Type</th>
-                <th>Base</th>
-                <th>Attribute<br>Bonus</th>
-                <th>Local<br>Modifier</th>
-                <th class="cb-dmg-derived">Weapon<br>Damage</th>
-                <th>Global<br>Modifier</th>
-                <th class="cb-dmg-derived">Attack<br>Damage</th>
+                <th style="text-align:left">School</th>
+                <th>Listed<br>Damage</th>
+                <th>Stat<br>Scaling</th>
+                <th>Weapon<br>Bonus</th>
+                <th class="cb-dmg-derived">Weapon<br>Total</th>
+                <th>Build<br>Bonus</th>
+                <th class="cb-dmg-derived">Damage<br>Per Hit</th>
               </tr>
             </thead>
             <tbody id="cbDmgBody"></tbody>
           </table>
         </div>
         <div class="cb-dmg-key" id="cbDmgKey" hidden>
-          <span style="--k:#8b8174">Base</span><span style="--k:var(--gold)">Attributes</span><span style="--k:var(--verdigris)">Modifiers</span>
+          <span style="--k:#8b8174">Listed</span><span style="--k:var(--gold)">Stat scaling</span><span style="--k:var(--verdigris)">Bonuses</span>
         </div>
         <details class="cb-dmg-notes" id="cbDmgNotes" hidden>
           <summary>How these numbers are built</summary>
@@ -4554,12 +4554,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       res.rows.forEach(function(r){
         if(!(r.st.base>0)) return;
         var segs=[];
-        if(r.L.parts.length) segs.push('Local &mdash; '+r.L.parts.map(dmgEsc).join('; '));
-        if(r.G.parts.length) segs.push('Global &mdash; '+r.G.parts.map(dmgEsc).join('; '));
+        if(r.L.parts.length) segs.push('Weapon bonus &mdash; '+r.L.parts.map(dmgEsc).join('; '));
+        if(r.G.parts.length) segs.push('Build bonus &mdash; '+r.G.parts.map(dmgEsc).join('; '));
         if(segs.length) counted.push('<li><b>'+dmgEsc(r.item.n)+'</b><br>'+segs.join('<br>')+'</li>');
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
-      var h='<h4>Formula</h4><p><b>Base</b> is the damage printed on the weapon’s own card. <b>Attribute Bonus</b> is Base times the game’s own scaling curve, applied to the points you have above 10 (+65% of Base at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Base</b> follows the item level you set (levels 1&ndash;16). <b>Local</b> modifiers come from that weapon’s own gems, facet and enchantments; <b>Global</b> modifiers come from armor enchantments and apply to every weapon.</p>';
+      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
       h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest, then analyze again.</p>');
       h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
       document.getElementById('cbDmgNotesBody').innerHTML=h;
