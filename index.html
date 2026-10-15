@@ -6394,6 +6394,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   head.appendChild(form); input=form.querySelector('input'); list=form.querySelector('.sr-list');
   var logo=head.querySelector('img.logo');
   var kicker=head.querySelector('.kicker');
+  // clicking the logo goes Home, same as the Home tab
+  if(logo){ logo.setAttribute('role','link'); logo.setAttribute('tabindex','0'); logo.setAttribute('aria-label','Wicked Dossier - go to the homepage'); logo.style.cursor='pointer';
+    var goHome=function(e){ if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return; e.preventDefault();
+      var hb=document.querySelector('.pgbar button[data-chap="home"]'); if(hb) hb.click(); else { window.scrollTo({top:0,behavior:'smooth'}); } };
+    logo.addEventListener('click',goHome); logo.addEventListener('keydown',goHome); }
   function align(){ if(!logo||innerWidth<=760){ form.style.top=''; return; }
     // center the search box on the full logo image (WICKED + DOSSIER together), not the masthead's padded box
     var t=logo.offsetTop+logo.offsetHeight/2-input.offsetHeight/2; if(t>0) form.style.top=Math.round(t)+'px'; }
