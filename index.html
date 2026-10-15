@@ -775,7 +775,7 @@ input:placeholder-shown ~ .cb-clr{display:none}
 .cb-detail-slot,.cb-detail-facet{padding-right:26px}
 .cb-gs-ic{width:30px;height:30px;overflow:hidden;flex:none;background:rgba(0,0,0,.25);border:1px solid rgba(201,169,110,.12);box-sizing:border-box}.cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}.cb-gs-ic .m-ic{display:block;transform:scale(.58);transform-origin:0 0;margin:-1px 0 0 -1px;background-color:transparent;border:none}
 .cb-detail-ench{width:100%}
-.cb-ench-pop{position:fixed;z-index:400;max-height:300px;overflow-y:auto;background:#0d0a08;border:1px solid var(--edge);box-shadow:0 8px 24px rgba(0,0,0,.6);padding:4px 0}
+.cb-ench-pop{position:fixed;z-index:400;max-height:560px;overflow-y:auto;overflow-x:hidden;background:#0d0a08;border:1px solid var(--edge);box-shadow:0 8px 24px rgba(0,0,0,.6);padding:4px 0}
 .ek-row{display:flex;gap:9px;align-items:flex-start;padding:7px 12px;font-size:13.5px;line-height:1.35;color:#c9bfae;cursor:pointer}
 .ek-row.on,.ek-row:hover{background:#1c1613}
 .ek-ic{flex:0 0 16px;height:16px;margin-top:1px;display:flex;align-items:center;justify-content:center}
@@ -3802,9 +3802,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var cur=null, rows=[], hi=-1;
       function place(){
         if(!cur) return; var r=cur.getBoundingClientRect();
-        var w=Math.min(Math.max(r.width,330),window.innerWidth-16); pop.style.width=w+'px'; pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-w-8))+'px';
-        var below=window.innerHeight-r.bottom, h=Math.min(320,pop.scrollHeight);
-        if(below<h+12 && r.top>below){ pop.style.top=''; pop.style.bottom=(window.innerHeight-r.top+4)+'px'; }
+        var w=Math.min(Math.max(r.width,460),window.innerWidth-16); pop.style.width=w+'px'; pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-w-8))+'px';
+        var below=window.innerHeight-r.bottom-12, above=r.top-12, up=below<340&&above>below, avail=up?above:below;
+        pop.style.maxHeight=Math.max(220,Math.min(560,avail))+'px';
+        if(up){ pop.style.top=''; pop.style.bottom=(window.innerHeight-r.top+4)+'px'; }
         else { pop.style.bottom=''; pop.style.top=(r.bottom+4)+'px'; }
       }
       function fill(){
@@ -3903,9 +3904,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       function norm(t){ return String(t||'').toLowerCase().replace(/_/g,'').replace(/%/g,'').replace(/\s+/g,' ').trim(); }
       function place(){
         if(!cur) return; var r=cur.getBoundingClientRect();
-        pop.style.left=r.left+'px'; pop.style.width=r.width+'px';
-        var below=window.innerHeight-r.bottom, h=Math.min(300,pop.scrollHeight);
-        if(below<h+12 && r.top>below){ pop.style.top=''; pop.style.bottom=(window.innerHeight-r.top+4)+'px'; }
+        var w=Math.min(Math.max(r.width,460),window.innerWidth-16); pop.style.width=w+'px'; pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-w-8))+'px';
+        var below=window.innerHeight-r.bottom-12, above=r.top-12, up=below<340&&above>below, avail=up?above:below;
+        pop.style.maxHeight=Math.max(220,Math.min(560,avail))+'px';
+        if(up){ pop.style.top=''; pop.style.bottom=(window.innerHeight-r.top+4)+'px'; }
         else { pop.style.bottom=''; pop.style.top=(r.bottom+4)+'px'; }
       }
       function fill(){
