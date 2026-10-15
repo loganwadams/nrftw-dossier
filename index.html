@@ -562,12 +562,41 @@ section{padding-block:48px}
 
 /* build analysis report */
 .cb-report-wrap{text-align:center;margin:30px 0 0}
+.cb-grade{margin:4px 0 18px;padding:16px 18px;border:1px solid rgba(201,169,110,.28);background:rgba(0,0,0,.28)}
+.cb-grade-top{display:flex;align-items:center;gap:18px;margin-bottom:12px}
+.cb-grade-score{display:flex;align-items:baseline;gap:6px;padding-right:18px;border-right:1px solid rgba(201,169,110,.25)}
+.cb-grade-score b{font-family:var(--display,inherit);font-size:44px;line-height:1;font-weight:600;color:var(--gold)}
+.cb-grade-score span{font-family:var(--data);font-size:12px;color:#8b8174;letter-spacing:.08em}
+.cb-grade-tier.g-red{color:#e5604f}.cb-grade-tier.g-blue{color:#5da2ff}.cb-grade-tier.g-gold{color:#ffd56b}
+.cb-grade-score.g-red b{color:#e5604f}
+.cb-grade-score.g-blue b{color:#5da2ff}
+.cb-grade-score.g-gold b{color:#ffd56b;text-shadow:0 0 10px rgba(255,205,90,.9),0 0 26px rgba(255,190,60,.65),0 0 48px rgba(255,170,40,.4)}
+.cb-grade-bar.g-red span{background:linear-gradient(90deg,#7a2418,#e5604f)}
+.cb-grade-bar.g-blue span{background:linear-gradient(90deg,#1f4f9a,#5da2ff)}
+.cb-grade-bar.g-gold span{background:linear-gradient(90deg,#b8862b,#ffd56b);box-shadow:0 0 8px rgba(255,205,90,.7)}
+.cb-grade-lab strong{display:block;font-size:20px;color:var(--bone);letter-spacing:.02em}
+.cb-grade-lab small{display:block;margin-top:3px;font-size:12.5px;color:#a89c85}
+.cb-grade-rows{display:grid;grid-template-columns:150px 1fr 38px;gap:6px 12px;align-items:center}
+.cb-grade-row{display:contents}
+.cb-grade-name{font-family:var(--data);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#c9b996}
+.cb-grade-name i{font-style:normal;color:#6f665a;margin-left:4px}
+.cb-grade-bar{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.cb-grade-bar span{display:block;height:100%}
+.cb-grade-row b{font-family:var(--data);font-size:13px;color:var(--bone);text-align:right}
+.cb-grade-bar{overflow:visible}
+.cb-grade-row small{grid-column:1/-1;margin:-3px 0 6px;font-size:12px;color:#8b8174}
+.cb-grade-note{margin:10px 0 0;font-size:11.5px;color:#6f665a;font-style:italic}
+@media (max-width:600px){.cb-grade-rows{grid-template-columns:1fr 38px}.cb-grade-bar{grid-column:1/2}.cb-grade-name{grid-column:1/-1}.cb-grade-top{flex-wrap:wrap}.cb-grade-score{border-right:0;padding-right:0}}
 .cb-report-btn{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#e9f1f7;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border:1px solid #6fa3bd;padding:11px 30px;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:filter .15s,transform .15s}
 .cb-report-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
 .cb-report-btn:active{filter:brightness(.95);transform:translateY(0)}
 .cb-report{margin:26px 0 0}
 .cb-report-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--edge);padding-bottom:14px;margin-bottom:4px}
 .cb-report-head h3{margin:0}
+.cb-report-head h3.cb-report-grade{margin-left:auto}
+.cb-report-grade small{font-size:.62em;opacity:.7;letter-spacing:.08em;margin-left:4px}
+.cb-report-grade.g-red{color:#e5604f}.cb-report-grade.g-blue{color:#5da2ff}
+.cb-report-grade.g-gold{color:#ffd56b;text-shadow:0 0 10px rgba(255,205,90,.9),0 0 26px rgba(255,190,60,.65),0 0 48px rgba(255,170,40,.4)}
 .cb-report-verdict{font-family:var(--data);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px}
 .cb-report-verdict.v-good{color:var(--verdigris);border:1px solid var(--verdigris)}
 .cb-report-verdict.v-warn{color:#d9a98c;border:1px solid var(--rust)}
@@ -3310,8 +3339,10 @@ footer li{color:#6f665b}
       <div class="cb-report-head">
         <h3>Build Analysis</h3>
         <span class="cb-report-verdict" id="cbReportVerdict"></span>
+        <h3 class="cb-report-grade" id="cbReportGrade" hidden></h3>
       </div>
       <p class="cb-report-sub" id="cbReportSub"></p>
+      <div class="cb-grade" id="cbGrade" hidden></div>
       <div class="panel cb-dmg" id="cbDmg" hidden>
         <h3>Damage Breakdown</h3>
         <p class="cb-dmg-formula">Damage per hit = <b>(Listed + Stat Scaling)</b> &times; <b>Weapon Bonus</b> &times; <b>Build Bonus</b> &mdash; before enemy resistances and combo multipliers.</p>
@@ -5155,6 +5186,72 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       notesEl.hidden=false;
     }
 
+    // Build grade out of 10. Five categories, each scored 0-10 from the build's own numbers and weighted together.
+    // It grades how complete and sound the setup is (gear, requirements, scaling, load, enchants) - not a meta tier list.
+    function computeGrade(cs,dmg,spent,total,left){
+      var clamp=function(x){ return Math.max(0,Math.min(10,x)); }, r1=function(x){ return Math.round(x*10)/10; };
+      var catCount=function(c){ return Object.keys(equipped).filter(function(id){ return slotEls[id]&&slotEls[id].cat===c; }).length; };
+      var armorN=['helm','chest','legs','gloves'].filter(function(c){ return catCount(c)>0; }).length;
+      var weapN=catCount('weapon'), offN=catCount('offhand'), ringN=catCount('ring'), runeN=catCount('rune');
+      var out=[];
+      // 1. Gear coverage
+      var gear=10*(armorN/4*.4+(weapN?.25:0)+(offN?.1:0)+Math.min(ringN,3)/3*.1+Math.min(runeN,4)/4*.15);
+      var miss=[]; if(!weapN) miss.push('a main-hand weapon'); if(armorN<4) miss.push((4-armorN)+' armor piece'+(4-armorN>1?'s':'')); if(!offN) miss.push('an off-hand'); if(ringN<3) miss.push((3-ringN)+' ring slot'+(3-ringN>1?'s':'')); if(runeN<4) miss.push((4-runeN)+' utility rune slot'+(4-runeN>1?'s':''));
+      out.push({id:'gear',label:'Gear',w:.20,score:clamp(gear),why:miss.length?'Empty: '+miss.join(', ')+'.':'Every slot is filled.'});
+      // 2. Offense
+      var rows=dmg.rows.filter(function(r){ return r.st.base>0; }), off=0, offWhy='No weapon with a damage stat equipped.';
+      if(rows.length){
+        var best=rows.slice().sort(function(a,b){ return b.attackDmg-a.attackDmg; })[0], bits=[];
+        var reqOk=!rows.some(function(r){ return r.reqTxt; });
+        var scaleN=best.st.scales.length?best.st.scales:[], pts=0; scaleN.forEach(function(n){ pts+=Math.max(0,(attrVals[n.toLowerCase()]||10)-10); });
+        var inv=spent>0?Math.min(1,pts/Math.max(1,spent*.5)):0;
+        var mod=Math.min(1,Math.max(0,best.Lpct||0)/30);
+        off=(reqOk?4:0)+3*inv+2*mod+(rows.length>1?1:0);
+        if(!reqOk) bits.push('a weapon is under its requirement (damage cut 80%)');
+        if(inv<.6) bits.push(scaleN.length?'few points in '+scaleN.join('/')+' for '+best.item.n:'weapon has no attribute scaling');
+        if(mod<.5) bits.push('little bonus damage from enchants, gems or facet');
+        if(rows.length<2) bits.push('only one damage weapon');
+        offWhy=bits.length?bits.join('; ')[0].toUpperCase()+bits.join('; ').slice(1)+'.':'Requirements met, damage attributes invested, bonuses stacked.';
+      }
+      out.push({id:'off',label:'Offense',w:.25,score:clamp(off),why:offWhy});
+      // 3. Defense
+      var resKeys=['fire','cold','lightning','plague'].filter(function(k){ return (cs.res[k]||0)>0; }).length;
+      var def=armorN/4*6+resKeys/4*4;
+      var dw=[]; if(armorN<4) dw.push('missing armor pieces'); if(resKeys<4) dw.push('resistance on '+resKeys+' of 4 elements');
+      out.push({id:'def',label:'Defense',w:.20,score:clamp(def),why:dw.length?dw.join('; ')[0].toUpperCase()+dw.join('; ').slice(1)+'.':'Full armor with every resistance covered.'});
+      // 4. Survivability and load
+      var loadS={Light:10,Normal:8.5,Heavy:5,Overencumbered:1}[cs.cls.name]; if(loadS==null) loadS=5;
+      var hs=Math.max(0,(attrVals.health||10)-10)+Math.max(0,(attrVals.stamina||10)-10);
+      var vit=spent>0?Math.min(1,hs/Math.max(1,spent*.2)):.5;
+      out.push({id:'surv',label:'Survivability',w:.20,score:clamp(loadS*.6+10*vit*.4),why:cs.cls.name+' load ('+Math.round(cs.ratio*100)+'%)'+(vit<.6?'; few points in Health/Stamina.':'; Health and Stamina are covered.')});
+      // 5. Optimization
+      var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; }), eSlots=0,eFill=0,gSlots=0,gFill=0,rareN=0,lvSum=0;
+      det.forEach(function(id){ var m=itemMeta[id]; (m.enchants||[]).forEach(function(v){ eSlots++; if(v&&String(v).indexOf('__')<0) eFill++; }); (m.gems||[]).forEach(function(v){ gSlots++; if(v) gFill++; }); if(m.rarity!=='standard') rareN++; lvSum+=Math.min(16,m.level||1)/16; });
+      var opt=3*(total>0?Math.min(1,spent/total):1)+(eSlots?3*eFill/eSlots:0)+(gSlots?2*gFill/gSlots:0)+(det.length?1*rareN/det.length+1*lvSum/det.length:0);
+      var ow=[]; if(left>0) ow.push(left+' unspent point'+(left>1?'s':'')); if(eSlots&&eFill<eSlots) ow.push((eSlots-eFill)+' empty enchant slot'+(eSlots-eFill>1?'s':'')); if(gSlots&&gFill<gSlots) ow.push((gSlots-gFill)+' empty gem socket'+(gSlots-gFill>1?'s':'')); if(det.length&&rareN<det.length) ow.push((det.length-rareN)+' item'+(det.length-rareN>1?'s':'')+' still Common'); if(det.length&&lvSum/det.length<.95) ow.push('gear not fully upgraded (avg level '+Math.round(lvSum/det.length*16)+'/16)');
+      out.push({id:'opt',label:'Optimization',w:.15,score:clamp(opt),why:ow.length?ow.join(', ')+'.':'Points spent, enchants and gems filled.'});
+      // Strict curve: squaring each category means only a near-flawless category scores high, and a 10 needs every
+      // category perfect - elite builds only.
+      var perfect=out.every(function(c){ return c.score>=9.99; });
+      out.forEach(function(c){ c.score=10*Math.pow(c.score/10,2); });
+      var total10=0; out.forEach(function(c){ total10+=c.score*c.w; });
+      total10=perfect?10:Math.min(9.9,r1(total10));
+      var label=total10>=9?'Exceptional':total10>=8?'Strong':total10>=6.5?'Solid':total10>=5?'Workable':total10>=3.5?'Rough':'Just started';
+      var worst=out.slice().sort(function(a,b){ return (10-b.score)*b.w-(10-a.score)*a.w; }).filter(function(c){ return c.score<9.5; }).slice(0,3)
+        .map(function(c){ return c.label+' (−'+r1((10-c.score)*c.w)+')'; });
+      out.forEach(function(c){ c.score=r1(c.score); });
+      return {score:total10,label:label,cats:out,worst:worst};
+    }
+    function tierOf(v){ return v>=9.995?'g-gold':v>=7?'g-blue':'g-red'; }
+    function gradeHtml(g){
+      var tier=tierOf(g.score);
+      return '<div class="cb-grade-top"><div class="cb-grade-lab"><strong class="cb-grade-tier '+tier+'">'+g.label+'</strong>'+
+        (g.worst.length?'<small>Costing you most: '+g.worst.join(', ')+'</small>':'<small>Nothing is dragging this build down.</small>')+'</div></div>'+
+        '<div class="cb-grade-rows">'+g.cats.map(function(c){
+          return '<div class="cb-grade-row"><span class="cb-grade-name">'+c.label+' <i>'+Math.round(c.w*100)+'%</i></span><span class="cb-grade-bar '+tierOf(c.score)+'"><span style="width:'+(c.score*10)+'%"></span></span><b>'+c.score.toFixed(1)+'</b><small>'+dmgEsc(c.why)+'</small></div>';
+        }).join('')+'</div>'+
+        '<p class="cb-grade-note">Graded on how complete and sound the setup is &mdash; slots filled, requirements met, damage attributes invested, load, enchants and gems. It is not a meta tier list.</p>';
+    }
     function computeReport(){
       var profile=computeProfile();
       var cls=CLASSES.filter(function(c){ return c.id===selectedClass; })[0];
@@ -5231,7 +5328,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var verdictClass=cs.ratio>=1?'v-bad':(cs.ratio>=.6?'v-warn':'v-good');
       var sub=(selectedClass?className+' · ':'')+'Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
 
-      return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs};
+      var grade=null; try{ grade=computeGrade(cs,dmg,spent,total,left); }catch(err){ if(window.console) console.error('Grade failed',err); }
+      return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs,grade:grade};
     }
 
     function renderReport(){
@@ -5248,6 +5346,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           ? items.map(function(s){ return '<li>'+s+'</li>'; }).join('')
           : '<li class="cb-report-none">'+noneText+'</li>';
       }
+      var gradeEl=document.getElementById('cbGrade');
+      if(gradeEl){ if(report.grade){ gradeEl.innerHTML=gradeHtml(report.grade); gradeEl.hidden=false; } else { gradeEl.hidden=true; } }
+      var gradeHead=document.getElementById('cbReportGrade');
+      if(gradeHead){ if(report.grade){ gradeHead.className='cb-report-grade '+tierOf(report.grade.score); gradeHead.innerHTML=report.grade.score.toFixed(1)+'<small>/ 10</small>'; gradeHead.hidden=false; } else gradeHead.hidden=true; }
       if(report.empty){
         verdictEl.textContent='Incomplete';
         verdictEl.className='cb-report-verdict v-empty';
