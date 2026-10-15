@@ -720,6 +720,8 @@ section{padding-block:48px}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
 .cb-cfg-tools{display:flex;gap:8px;margin:0 36px 0 auto;align-self:center}.cb-cfg-tool{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);border-radius:3px;padding:6px 10px;cursor:pointer}.cb-cfg-tool:hover{border-color:var(--gold)}.cb-cfg-tool.cb-cfg-danger{color:#d0604f;border-color:rgba(208,96,79,.5)}.cb-cfg-tool.cb-cfg-danger:hover{border-color:#d0604f}
+.cb-slot-edit{position:absolute;left:0;right:0;top:0;padding:2px 0;text-align:center;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(10,8,6,.72);opacity:0;pointer-events:none;transition:opacity .15s}
+.cb-slot:hover .cb-slot-edit,.cb-slot:focus-visible .cb-slot-edit{opacity:.85}
 .cb-slot-clear:hover{color:var(--rust);border-color:var(--rust)}
 .cb-slot.cb-slot-warn{border-color:var(--rust)}
 .cb-slot.cb-slot-warn.filled{border-color:var(--rust)}
@@ -4917,7 +4919,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       meta.el.classList.add('filled');
       meta.el.innerHTML='<span class="cb-slot-main m-ic" data-k="'+key+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
         (item.lv?'<span class="cb-slot-lv">'+item.lv+'</span>':'')+
+        (itemMeta[id]?'<span class="cb-slot-edit">Edit</span>':'')+
         '<button type="button" class="cb-slot-clear" aria-label="Remove">&times;</button>';
+      if(itemMeta[id]) meta.el.setAttribute('title','Click to edit rarity, gems, facet and enchantments'); else meta.el.removeAttribute('title');
       renderManifest();
     }
 
