@@ -764,6 +764,7 @@ section{padding-block:48px}
 .cb-detail-level{width:60px}
 .cb-detail-slots{display:flex;flex-wrap:wrap;gap:6px}
 .cb-detail-slot{width:118px}
+.cb-gs{display:inline-flex;align-items:center;gap:4px}.cb-gs-ic{width:30px;height:30px;overflow:hidden;flex:none;background:rgba(0,0,0,.25);border:1px solid rgba(201,169,110,.12);box-sizing:border-box}.cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}.cb-gs-ic .m-ic{display:block;transform:scale(.58);transform-origin:0 0;margin:-1px 0 0 -1px;background-color:transparent;border:none}
 .cb-detail-ench{width:100%}
 .cb-ench-pop{position:fixed;z-index:400;max-height:300px;overflow-y:auto;background:#0d0a08;border:1px solid var(--edge);box-shadow:0 8px 24px rgba(0,0,0,.6);padding:4px 0}
 .ek-row{display:flex;gap:9px;align-items:flex-start;padding:7px 12px;font-size:13.5px;line-height:1.35;color:#c9bfae;cursor:pointer}
@@ -805,6 +806,7 @@ body.cb-cfg-open{overflow:hidden}
 .cb-detail-hint.cb-gemfx{color:#b9ad9a;margin-top:3px;display:block}.cb-detail-hint.cb-gemfx b{color:#d9c9a8;font-weight:600}
 @media (max-width:640px){
   .cb-detail-label{width:100%}
+  .cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}
   .cb-detail-slot{width:calc(50% - 3px)}
 }
 
@@ -3969,11 +3971,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(key.split('/')[2]==='shields') return 'shield';
       return RANGED_FOLDERS[key.split('/')[3]]?'weapon_ranged':'weapon_melee';
     }
+    // Gem and rune icons come from the same item sprite sheet as the pickers.
+    var iconIdx=null;
+    function slotIconHtml(name){
+      if(!cards) return '';
+      if(!iconIdx){ iconIdx={}; Object.keys(cards).forEach(function(k){ var c=cards[k]; if(/^\/db\/(gems|runes)\//.test(k)&&c.p&&c.n) iconIdx[c.n.toLowerCase()]=c.p; }); }
+      var pp=iconIdx[String(name||'').trim().toLowerCase()];
+      return pp?'<span class="m-ic" style="background-position:-'+(pp[0]*48)+'px -'+(pp[1]*48)+'px"></span>':'';
+    }
     function detailSlotInputs(id,group,values,placeholder){
       var mm=itemMeta[id]||{}, plan=(group==='enchants'&&mm.cat!=='ring')?enchantPlan(mm.rarity,mm.level):null;
       return values.map(function(v,i){
         var pl=plan&&plan[i], ph=pl?(pl.label+' '+(pl.fixed?'':(plan.filter(function(x,j){ return j<=i&&x.type===pl.type; }).length))).trim():placeholder+' '+(i+1);
-        return '<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+ph+'">';
+        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'', wrapClose=wrapOpen?'</span>':'';
+        return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+ph+'">'+wrapClose;
       }).join('');
     }
     // The game wants a minimum number of each kind of enchantment (Magical 1, Plagued 2 plus 1 drawback, Unique 1).
@@ -4010,13 +4021,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       html+=detailFieldRow('Creation Level (up to Upgrade)','<input type="number" class="cb-detail-creation" data-id="'+id+'" min="1" max="'+m.level+'" value="'+Math.min(m.creation||m.level,m.level)+'">');
       html+=detailFieldRow('Upgrade Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
       html+=detailFieldRow('Facet','<input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None">');
+      if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
+        html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
+      }
       html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span><small class="cb-detail-hint cb-rule">'+gemRuleText(m.rarity)+'</small><span class="cb-gemfx-box">'+gemEffectLines(id,m)+'</span>');
       html+=m.enchants.length
         ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span><small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>'+enchShortfall(m).map(function(w){ return '<small class="cb-detail-hint cb-warn">'+w+'</small>'; }).join(''))
         : detailFieldRow('Enchants','<small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>');
-      if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
-        html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
-      }
       html+='</div>';
       return html;
     }
@@ -4113,6 +4124,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(e.target.classList.contains('cb-detail-slot')){
         var group=e.target.dataset.group, i=+e.target.dataset.i;
         m[group][i]=e.target.value;
+        if(group==='gems'||group==='runes'){ var ic=e.target.parentNode&&e.target.parentNode.querySelector('.cb-gs-ic'); if(ic) ic.innerHTML=slotIconHtml(e.target.value); }
         if(group==='gems'){ normalizeItemMeta(m); try{ var gb=e.target.closest('.cb-mf-detail').querySelector('.cb-gemfx-box'); if(gb) gb.innerHTML=gemEffectLines(id,m); }catch(err){} }
         if(group==='gems' || group==='enchants') renderManifest();
       }
