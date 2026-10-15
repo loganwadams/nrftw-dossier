@@ -3512,7 +3512,8 @@ footer li{color:#6f665b}
     function gemSlotsForRarity(r){ return r==='standard'?4:1; }
     // Enchantment rules, straight from the game's Rarities table. Each rarity rolls one or more groups of
     // enchantments of a given kind (0 magical, 1 plagued, 2 drawback, 3 unique) with a min and max count.
-    // The item level then caps how many can roll: level 1 allows 1, level 4 allows 2, level 9 allows 3, level 16 allows 4.
+    // The planner offers the most an item of that rarity can carry (confirmed against the other planner, which
+    // allows 4 plagued + 1 negative on a level 4 Plagued weapon), so the item level does not shrink the slots.
     var RARITY_RULES={
       standard:{groups:[]},
       magical:{groups:[{type:0,min:1,max:3,label:'Magical'}]},
@@ -3528,9 +3529,9 @@ footer li{color:#6f665b}
     }
     // The list of enchantment slots an item has at this rarity and level, one entry per slot with its kind.
     function enchantPlan(rarity,level){
-      var rule=RARITY_RULES[rarity]||RARITY_RULES.standard, cap=enchantCapForLevel(level), plan=[];
+      var rule=RARITY_RULES[rarity]||RARITY_RULES.standard, plan=[];
       rule.groups.forEach(function(g){
-        var n=g.fixed?g.max:Math.min(g.max,cap);
+        var n=g.max;
         for(var i=0;i<n;i++) plan.push({type:g.type,label:g.label,optional:!g.fixed&&i>=g.min});
       });
       return plan;
@@ -3926,10 +3927,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function enchRuleText(r,lv){
       var rule=RARITY_RULES[r]||RARITY_RULES.standard;
       if(!rule.groups.length) return 'Common items carry no enchantments. Raise the rarity to roll some.';
-      var cap=enchantCapForLevel(lv), nm={standard:'Common',magical:'Magical',plagued:'Plagued',unique:'Unique'}[r];
+      var nm={standard:'Common',magical:'Magical',plagued:'Plagued',unique:'Unique'}[r];
       var parts=rule.groups.map(function(g){ return g.min===g.max?g.max+' '+g.label.toLowerCase():g.min+'&ndash;'+g.max+' '+g.label.toLowerCase(); });
-      var limited=rule.groups.some(function(g){ return !g.fixed&&g.max>cap; });
-      return nm+' items roll '+parts.join(' plus ')+'.'+(limited?' At item level '+lv+' no more than '+cap+' can roll; the cap reaches 4 at level 16.':'');
+      return nm+' items roll '+parts.join(' plus ')+'; every slot is shown, fill as many as the item has.';
     }
     function renderDetailPanel(id,item){
       var m=itemMeta[id]; if(!m) return '';
