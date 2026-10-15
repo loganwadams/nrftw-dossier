@@ -579,6 +579,61 @@ section{padding-block:48px}
 .marks.recs li::before{background:var(--gold)}
 .marks li.cb-report-none{color:var(--muted);font-style:italic;padding-left:0}
 .marks li.cb-report-none::before{content:none}
+
+/* damage breakdown (inside the build analysis): one row per equipped weapon, read left to right as
+   Base -> Attribute bonus -> Local modifiers = Weapon Damage -> Global modifiers = Attack Damage */
+.cb-dmg h3{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cb-dmg-chip{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:400;color:#d9a98c;border:1px solid var(--rust);border-radius:3px;padding:2px 8px}
+.cb-dmg-formula{font-family:var(--data);font-size:11.5px;letter-spacing:.05em;color:var(--muted);margin:-6px 0 14px}
+.cb-dmg-formula b{color:var(--bone);font-weight:500}
+.cb-dmg-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cb-dmg-table{min-width:820px;font-size:14px}
+.cb-dmg-table thead th{color:var(--gold);text-align:right;line-height:1.3;padding:10px 12px;vertical-align:bottom;white-space:normal}
+.cb-dmg-table thead th:first-child{text-align:left}
+.cb-dmg-table thead th.cb-dmg-derived,.cb-dmg-table td.cb-dmg-derived{background:rgba(143,182,214,.06)}
+.cb-dmg-table td{padding:10px 12px;vertical-align:middle;text-align:right;font-variant-numeric:tabular-nums;color:#c9b996}
+.cb-dmg-table td small{display:block;font-family:var(--data);font-size:9.5px;letter-spacing:.06em;color:#8b8174;margin-top:2px;white-space:nowrap}
+.cb-dmg-table td.cb-dmg-w{text-align:left;min-width:230px}
+.cb-dmg-table td.cb-dmg-t{text-align:left}
+.cb-dmg-wrap{display:flex;align-items:center;gap:12px}
+.cb-dmg-icw{position:relative;flex:none;width:36px;height:36px;overflow:hidden}
+.cb-dmg-icw .m-ic{display:block;transform:scale(.72);transform-origin:0 0;background-color:transparent;border:none}
+.cb-dmg-name{display:block;font-size:15px;color:var(--bone);line-height:1.25}
+.cb-dmg-name.r-magical{color:#8fb7ff}
+.cb-dmg-name.r-plagued{color:#c6a0ff}
+.cb-dmg-name.r-unique{color:#f2c35c}
+.cb-dmg-wtxt small{text-align:left}
+.cb-dmg-type{display:inline-block;font-family:var(--data);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;border:1px solid currentColor;border-radius:3px;padding:2px 8px;color:var(--c-barb);white-space:nowrap}
+.cb-dmg-type.t-fire{color:#d8864a}
+.cb-dmg-type.t-ice{color:var(--c-frost)}
+.cb-dmg-type.t-lightning{color:#d8c66a}
+.cb-dmg-type.t-plague{color:var(--c-plague)}
+.cb-dmg-type.t-bleed{color:#c0463a}
+.cb-dmg-none{color:#6f6758}
+.cb-dmg-gain{color:var(--verdigris)}
+.cb-dmg-big{font-family:var(--display);font-size:19px;color:var(--bone);letter-spacing:.02em}
+.cb-dmg-final{min-width:150px}
+.cb-dmg-final .cb-dmg-big{color:var(--gold);font-size:22px}
+.cb-dmg-bar{display:flex;height:5px;margin-top:7px;background:#241c16;border:1px solid #2e241b;overflow:hidden}
+.cb-dmg-bar i{display:block;height:100%}
+.cb-dmg-bar .b{background:#8b8174}
+.cb-dmg-bar .a{background:var(--gold)}
+.cb-dmg-bar .m{background:var(--verdigris)}
+.cb-dmg-row.cb-dmg-top td.cb-dmg-final::after{content:"Highest";display:inline-block;margin-top:5px;font-family:var(--data);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);border-radius:2px;padding:1px 6px}
+.cb-dmg-table td.cb-dmg-empty{text-align:center;color:var(--muted);font-family:var(--body);font-size:15px;padding:26px 12px}
+.cb-dmg-key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0 0;font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
+.cb-dmg-key span::before{content:"";display:inline-block;width:9px;height:9px;margin-right:7px;vertical-align:-1px;background:var(--k)}
+.cb-dmg-notes{margin-top:14px;border-top:1px solid var(--edge);padding-top:12px}
+.cb-dmg-notes summary{cursor:pointer;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);list-style:none}
+.cb-dmg-notes summary::-webkit-details-marker{display:none}
+.cb-dmg-notes summary::before{content:"+";display:inline-block;width:16px;color:var(--gold)}
+.cb-dmg-notes[open] summary::before{content:"\2212"}
+.cb-dmg-notes summary:hover{color:var(--gold)}
+.cb-dmg-notes h4{margin:14px 0 6px;font-family:var(--data);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.cb-dmg-notes p,.cb-dmg-notes li{font-size:14px;color:#b9ad96;margin:0 0 6px}
+.cb-dmg-notes ul{margin:0;padding-left:18px}
+.cb-dmg-notes li b{color:var(--bone);font-weight:500}
+@media (max-width:600px){.cb-dmg-big{font-size:17px}.cb-dmg-final .cb-dmg-big{font-size:19px}}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
 .cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
@@ -3160,6 +3215,34 @@ footer li{color:#6f665b}
         <span class="cb-report-verdict" id="cbReportVerdict"></span>
       </div>
       <p class="cb-report-sub" id="cbReportSub"></p>
+      <div class="panel cb-dmg" id="cbDmg" hidden>
+        <h3>Damage Breakdown <span class="cb-dmg-chip">Attribute scaling illustrative</span></h3>
+        <p class="cb-dmg-formula">Attack Damage = <b>(Base + Attribute Bonus)</b> &times; <b>Local</b> &times; <b>Global</b> &mdash; per hit, before enemy resistances and combo multipliers.</p>
+        <div class="cb-dmg-scroll">
+          <table class="cb-dmg-table">
+            <thead>
+              <tr>
+                <th>Weapon</th>
+                <th style="text-align:left">Damage Type</th>
+                <th>Base</th>
+                <th>Attribute<br>Bonus</th>
+                <th>Local<br>Modifier</th>
+                <th class="cb-dmg-derived">Weapon<br>Damage</th>
+                <th>Global<br>Modifier</th>
+                <th class="cb-dmg-derived">Attack<br>Damage</th>
+              </tr>
+            </thead>
+            <tbody id="cbDmgBody"></tbody>
+          </table>
+        </div>
+        <div class="cb-dmg-key" id="cbDmgKey" hidden>
+          <span style="--k:#8b8174">Base</span><span style="--k:var(--gold)">Attributes</span><span style="--k:var(--verdigris)">Modifiers</span>
+        </div>
+        <details class="cb-dmg-notes" id="cbDmgNotes" hidden>
+          <summary>How these numbers are built</summary>
+          <div id="cbDmgNotesBody"></div>
+        </details>
+      </div>
       <div class="cb-report-grid">
         <div class="panel">
           <h3>Strengths</h3>
@@ -3544,7 +3627,7 @@ footer li{color:#6f665b}
     }
     function detailSlotInputs(id,group,values,placeholder){
       return values.map(function(v,i){
-        return '<input type="text" class="cb-detail-slot" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'" value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+placeholder+' '+(i+1)+'">';
+        return '<input type="text" class="cb-detail-slot" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':'')+' value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="'+placeholder+' '+(i+1)+'">';
       }).join('');
     }
     function renderDetailPanel(id,item){
@@ -3771,6 +3854,244 @@ footer li{color:#6f665b}
       }
     }
 
+    // ---- Damage Breakdown (inside the Build Analysis) --------------------------------------
+    // Every equipped weapon is read straight from its own item card - the same data the Catalog
+    // shows: base damage, poise damage, critical chance and multiplier, the attributes it scales
+    // with, and its damage type. Two things are NOT published numbers and stay illustrative until
+    // the game's own curves are datamined: what an attribute point is worth (DMG_ATTR_RATE) and
+    // how base damage moves with item level (the printed card value is used as-is). Gem, facet
+    // and enchantment lines only count when they are plain, unconditional damage bonuses;
+    // anything conditional is listed under "How these numbers are built" instead of baked in.
+    var DMG_ATTR_RATE=0.008; // illustrative: +0.8% of Base per attribute point above 10, per scaling attribute
+    var DMG_ATTR_ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FTH'};
+    var DMG_SCHOOL_LABEL={physical:'Physical',fire:'Fire',ice:'Ice',lightning:'Lightning',plague:'Plague',bleed:'Bleed'};
+    // Mottled (tier 2) element gems on a weapon: "<Element> Damage increased by 10%", counted when
+    // the weapon actually deals that element. Chipped gems only grant an infusion, with no amount.
+    var GEM_DMG={'mottled spike':['physical',10],'mottled amethyst':['plague',10],'mottled quartz':['lightning',10],'mottled ruby':['fire',10],'mottled sapphire':['ice',10]};
+    var GEM_INFUSE={'chipped spike':'Bleed','chipped amethyst':'Plague','chipped quartz':'Lightning','chipped ruby':'Fire','chipped sapphire':'Ice'};
+    var GEM_POISE={'chipped granite':4,'mottled granite':6};
+    // Facet effects as written in the Classes section's loadout guidance.
+    var FACET_FX={
+      heavy:{dmg:20,note:'+20% damage (costs +25% stamina)'},
+      reliable:{dmg:20,poisePct:20,note:'+20% damage and +20% poise damage (gives up critical chance)'},
+      sharp:{critMult:0.30,note:'+30% critical damage'},
+      keen:{critChance:0.05,note:'+5% critical chance (gives up poise damage)'},
+      razor:{critChance:0.05,note:'+5% critical chance (needs repair powder)'},
+      blunt:{poisePct:20,note:'+20% poise damage (gives up Focus gain)'}
+    };
+    (function buildGemList(){
+      if(document.getElementById('cbGemList')) return;
+      var fams=['Amethyst','Quartz','Ruby','Sapphire','Spike','Black Pearl','Jewel','Marble','Shield Emblem','Emerald','Jade','Dianite','Moon Stone','Topaz','Blood Stone','Meteorite','Granite','Diamond'];
+      var names=[];
+      fams.forEach(function(f){ names.push('Chipped '+f,'Mottled '+f); });
+      names.push('Tiny Fang','Mottled Fang','Tiny Feather','Mottled Feather','Small Skull','Medium Skull');
+      var dl=document.createElement('datalist'); dl.id='cbGemList';
+      dl.innerHTML=names.map(function(n){ return '<option value="'+n+'">'; }).join('');
+      document.body.appendChild(dl);
+    })();
+
+    function dmgEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function dmgNorm(s){ return String(s||'').toLowerCase().replace(/\s+/g,' ').trim(); }
+    function dmgFmt(n){ var r=Math.round(n*10)/10; return r%1===0?String(r):r.toFixed(1); }
+    function dmgPctCell(p){ return p?('<span class="cb-dmg-gain">+'+dmgFmt(p)+'%</span>'):'<span class="cb-dmg-none">&mdash;</span>'; }
+
+    var weaponStatCache={};
+    function weaponStats(key){
+      if(weaponStatCache[key]) return weaponStatCache[key];
+      var item=cards&&cards[key]; if(!item||!item.h) return null;
+      var doc=new DOMParser().parseFromString(item.h,'text/html');
+      var st={base:0,poise:0,critChance:0,critMult:1,scales:[],school:'physical',schoolLabel:'Physical'};
+      doc.querySelectorAll('.top-icon-line').forEach(function(line){
+        var mv=line.querySelector('.mod-value'); var v=mv?parseFloat(mv.textContent):NaN;
+        if(isNaN(v)) return;
+        if(line.querySelector('.o-icons-fi-StatDamage')) st.base=v;
+        else if(line.querySelector('.o-icons-fi-PoiseDamage')) st.poise=v;
+      });
+      var gotCrit=false;
+      doc.querySelectorAll('.item-subtitle').forEach(function(el){
+        var txt=el.textContent||'';
+        if(!gotCrit && /Chance to Deal/i.test(txt)){
+          var mv=el.querySelectorAll('.mod-value');
+          if(mv.length>=2){ st.critChance=parseFloat(mv[0].textContent)/100; st.critMult=parseFloat(mv[1].textContent)/100; gotCrit=true; }
+        }
+        if(/^\s*Scales with/i.test(txt) && el.parentElement){
+          el.parentElement.querySelectorAll('.attribute').forEach(function(a){
+            var m=(a.className||'').match(/o-icons-fi-(Strength|Dexterity|Intelligence|Faith)/);
+            if(m && st.scales.indexOf(m[1])<0) st.scales.push(m[1]);
+          });
+        }
+      });
+      var schools=doc.querySelectorAll('.damage-school');
+      if(schools.length){
+        var cls=(schools[0].className||'').split(/\s+/)[1]||'';
+        if(DMG_SCHOOL_LABEL[cls]){ st.school=cls; st.schoolLabel=DMG_SCHOOL_LABEL[cls]; }
+        else { st.schoolLabel=(schools[0].textContent||'Physical').trim(); }
+      }
+      weaponStatCache[key]=st;
+      return st;
+    }
+
+    // Reads one enchantment line (free text) and says whether it is a plain damage bonus that can
+    // be counted, a critical bonus, a range the person still has to roll, or conditional.
+    function parseDmgEnchant(txt){
+      var t=String(txt||'').replace(/\s+/g,' ').trim(); if(!t) return null;
+      var m=t.match(/^Critical Hit Chance increased by (\d+(?:\.\d+)?)\s*%$/i);
+      if(m) return {kind:'critChance',pct:+m[1],text:t};
+      m=t.match(/^Critical Damage increased by (\d+(?:\.\d+)?)\s*%$/i);
+      if(m) return {kind:'critMult',pct:+m[1],text:t};
+      if(/^(?:Attack |Physical |Fire |Ice |Lightning |Plague )?Damage increased by \d+(?:\.\d+)?\s*[–-]\s*\d+(?:\.\d+)?\s*%\s*$/i.test(t)) return {kind:'range',text:t};
+      m=t.match(/^(Attack |Physical |Fire |Ice |Lightning |Plague )?Damage increased by (\d+(?:\.\d+)?)\s*%\s*$/i);
+      if(m){
+        var lead=(m[1]||'').trim().toLowerCase();
+        return {kind:'flat',pct:+m[2],type:(lead&&lead!=='attack')?lead:null,text:t};
+      }
+      if(/damage/i.test(t) && /%/.test(t) && !/(resistance|rune damage|stagger damage|poise|thorns)/i.test(t)) return {kind:'cond',text:t};
+      return null;
+    }
+    function newDmgBucket(){ return {pct:0,critChance:0,critMult:0,poisePct:0,poiseFlat:0,parts:[],notes:[]}; }
+    function applyDmgEnchant(p,bucket,st,src,wname){
+      var tag=src+': “'+p.text+'”';
+      if(p.kind==='flat'){
+        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+' — not counted.'); return; }
+        bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text);
+      } else if(p.kind==='critChance'){ bucket.critChance+=p.pct/100; bucket.parts.push(src+': '+p.text); }
+      else if(p.kind==='critMult'){ bucket.critMult+=p.pct/100; bucket.parts.push(src+': '+p.text); }
+      else if(p.kind==='range'){ bucket.notes.push(tag+' is a range — type the value you rolled to count it.'); }
+      else { bucket.notes.push(tag+' is conditional — not counted in the per-hit figure.'); }
+    }
+    function slotOrder(a,b){
+      var pa=/^r(\d+)c(\d+)$/.exec(a)||[0,99,99], pb=/^r(\d+)c(\d+)$/.exec(b)||[0,99,99];
+      return (+pa[1]-+pb[1])||(+pa[2]-+pb[2]);
+    }
+    function computeDamage(){
+      var res={rows:[],shields:0};
+      var armorEnch=[];
+      armorSlotEntries().forEach(function(e){
+        var m=itemMeta[e.id]; if(!m) return;
+        (m.enchants||[]).forEach(function(t){ var p=parseDmgEnchant(t); if(p) armorEnch.push({p:p,src:e.item.n}); });
+      });
+      Object.keys(equipped).filter(function(id){
+        var meta=slotEls[id]; return meta && (meta.cat==='weapon'||meta.cat==='offhand');
+      }).sort(slotOrder).forEach(function(id){
+        var meta=slotEls[id], key=equipped[id], item=cards&&cards[key]; if(!item) return;
+        if((key.split('/')[2]||'')==='shields'){ res.shields++; return; }
+        var st=weaponStats(key); if(!st) return;
+        var m=itemMeta[id]||defaultItemMeta(meta.cat,item.lv);
+
+        var attrPts=0, attrTxt=[];
+        st.scales.forEach(function(n){
+          var v=attrVals[n.toLowerCase()]||10;
+          attrPts+=Math.max(0,v-10);
+          attrTxt.push(DMG_ATTR_ABBR[n]+' '+v);
+        });
+        var attrBonus=st.base*attrPts*DMG_ATTR_RATE;
+
+        var L=newDmgBucket();
+        (m.gems||[]).forEach(function(g){
+          var n=dmgNorm(g); if(!n) return;
+          if(GEM_DMG[n]){
+            var gd=GEM_DMG[n];
+            if(gd[0]===st.school){ L.pct+=gd[1]; L.parts.push(g.trim()+': +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage'); }
+            else L.notes.push(g.trim()+' adds +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage, but '+item.n+' deals '+st.schoolLabel+' — not counted.');
+          } else if(GEM_INFUSE[n]){
+            L.notes.push(g.trim()+' grants a '+GEM_INFUSE[n]+' infusion — the amount isn’t published, so it isn’t counted.');
+          } else if(GEM_POISE[n]){
+            L.poiseFlat+=GEM_POISE[n]; L.parts.push(g.trim()+': +'+GEM_POISE[n]+' poise damage');
+          }
+        });
+        var fx=FACET_FX[dmgNorm(m.facet)];
+        if(fx){
+          L.pct+=fx.dmg||0; L.critChance+=fx.critChance||0; L.critMult+=fx.critMult||0; L.poisePct+=fx.poisePct||0;
+          L.parts.push('Facet '+m.facet.trim()+': '+fx.note);
+        } else if(m.facet && m.facet.trim()){
+          L.notes.push('Facet '+m.facet.trim()+' has no damage effect counted here.');
+        }
+        (m.enchants||[]).forEach(function(t){ var p=parseDmgEnchant(t); if(p) applyDmgEnchant(p,L,st,item.n+' enchantment',item.n); });
+
+        var G=newDmgBucket();
+        armorEnch.forEach(function(a){ applyDmgEnchant(a.p,G,st,a.src,item.n); });
+
+        var weaponDmg=(st.base+attrBonus)*(1+L.pct/100);
+        var attackDmg=weaponDmg*(1+G.pct/100);
+        var cc=Math.max(0,Math.min(1,st.critChance+L.critChance+G.critChance));
+        var cm=st.critMult+L.critMult+G.critMult;
+        res.rows.push({
+          id:id,key:key,item:item,st:st,slot:(meta.label||'Weapon')+(meta.ord?' '+meta.ord:''),
+          attrPts:attrPts,attrTxt:attrTxt,attrBonus:attrBonus,L:L,G:G,
+          weaponDmg:weaponDmg,attackDmg:attackDmg,cc:cc,cm:cm,
+          avg:attackDmg*(1+cc*(cm-1)),
+          poise:st.poise*(1+(L.poisePct+G.poisePct)/100)+L.poiseFlat
+        });
+      });
+      return res;
+    }
+    function renderDamageBreakdown(show){
+      var box=document.getElementById('cbDmg'); if(!box) return;
+      box.hidden=!show; if(!show) return;
+      var body=document.getElementById('cbDmgBody');
+      var keyEl=document.getElementById('cbDmgKey');
+      var notesEl=document.getElementById('cbDmgNotes');
+      var res=computeDamage();
+      if(!res.rows.length){
+        body.innerHTML='<tr><td colspan="8" class="cb-dmg-empty">No weapons selected'+(res.shields?' &mdash; a shield adds blocking, not attack damage.':'')+'</td></tr>';
+        keyEl.hidden=true; notesEl.hidden=true;
+        return;
+      }
+      // utility items (a torch, say) sit in weapon slots but carry no damage stat at all
+      var dealers=res.rows.filter(function(r){ return r.st.base>0; });
+      var max=Math.max.apply(null,dealers.map(function(r){ return r.attackDmg; }))||1;
+      var topId=dealers.length>1?dealers.slice().sort(function(a,b){ return b.attackDmg-a.attackDmg; })[0].id:null;
+      body.innerHTML=res.rows.map(function(r){
+        var it=r.item, st=r.st;
+        var rarity=(itemMeta[r.id]&&itemMeta[r.id].rarity)||it.r||'standard';
+        var icon='<span class="cb-dmg-icw"><span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span></span>';
+        if(!(st.base>0)){
+          var dash='<span class="cb-dmg-none">&mdash;</span>';
+          return '<tr class="cb-dmg-row">'+
+            '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
+              '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
+              '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(it.lv?' · Lv '+dmgEsc(it.lv):'')+'</small>'+
+              '<small>No damage stat &mdash; a utility item</small></div></div></td>'+
+            '<td class="cb-dmg-t">'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td>'+
+            '<td class="cb-dmg-derived">'+dash+'</td><td>'+dash+'</td><td class="cb-dmg-derived cb-dmg-final">'+dash+'</td></tr>';
+        }
+        var critTxt='Crit '+dmgFmt(r.cc*100)+'% ×'+dmgFmt(r.cm)+' · Poise '+dmgFmt(r.poise);
+        var baseW=st.base/max*100, attrW=r.attrBonus/max*100, modW=Math.max(0,r.attackDmg-st.base-r.attrBonus)/max*100;
+        var avgTxt='avg with crit '+dmgFmt(r.avg);
+        return '<tr class="cb-dmg-row'+(r.id===topId?' cb-dmg-top':'')+'">'+
+          '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
+            '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
+            '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(it.lv?' · Lv '+dmgEsc(it.lv):'')+'</small>'+
+            '<small>'+critTxt+'</small></div></div></td>'+
+          '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'">'+dmgEsc(st.schoolLabel)+'</span></td>'+
+          '<td>'+dmgFmt(st.base)+'</td>'+
+          '<td>'+(r.attrBonus>0?'<span class="cb-dmg-gain">+'+dmgFmt(r.attrBonus)+'</span>':'<span class="cb-dmg-none">&mdash;</span>')+
+            (r.attrTxt.length?'<small>'+dmgEsc(r.attrTxt.join(' · '))+'</small>':'<small>no scaling</small>')+'</td>'+
+          '<td title="'+dmgEsc(r.L.parts.join('; '))+'">'+dmgPctCell(r.L.pct)+'</td>'+
+          '<td class="cb-dmg-derived"><span class="cb-dmg-big">'+dmgFmt(r.weaponDmg)+'</span></td>'+
+          '<td title="'+dmgEsc(r.G.parts.join('; '))+'">'+dmgPctCell(r.G.pct)+'</td>'+
+          '<td class="cb-dmg-derived cb-dmg-final"><span class="cb-dmg-big">'+dmgFmt(r.attackDmg)+'</span><small>'+avgTxt+'</small>'+
+            '<span class="cb-dmg-bar" aria-hidden="true"><i class="b" style="width:'+baseW.toFixed(1)+'%"></i><i class="a" style="width:'+attrW.toFixed(1)+'%"></i><i class="m" style="width:'+modW.toFixed(1)+'%"></i></span></td>'+
+          '</tr>';
+      }).join('');
+      keyEl.hidden=false;
+
+      var counted=[], notes=[], seen={};
+      res.rows.forEach(function(r){
+        if(!(r.st.base>0)) return;
+        var segs=[];
+        if(r.L.parts.length) segs.push('Local &mdash; '+r.L.parts.map(dmgEsc).join('; '));
+        if(r.G.parts.length) segs.push('Global &mdash; '+r.G.parts.map(dmgEsc).join('; '));
+        if(segs.length) counted.push('<li><b>'+dmgEsc(r.item.n)+'</b><br>'+segs.join('<br>')+'</li>');
+        r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
+      });
+      var h='<h4>Formula</h4><p><b>Base</b> is the damage printed on the weapon’s own card. <b>Attribute Bonus</b> is a placeholder: +'+dmgFmt(DMG_ATTR_RATE*100)+'% of Base for every attribute point above 10, for each attribute the weapon scales with. The game’s real curve isn’t in the Catalog data, so read it as a direction, not a prediction. <b>Local</b> modifiers come from that weapon’s own gems, facet and enchantments; <b>Global</b> modifiers come from armor enchantments and apply to every weapon. Item level changes aren’t modeled yet.</p>';
+      h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest, then analyze again.</p>');
+      h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
+      document.getElementById('cbDmgNotesBody').innerHTML=h;
+      notesEl.hidden=false;
+    }
+
     function computeReport(){
       var profile=computeProfile();
       var cls=CLASSES.filter(function(c){ return c.id===selectedClass; })[0];
@@ -3902,6 +4223,10 @@ footer li{color:#6f665b}
         listOrNone(consEl,report.cons,'Nothing flagged.');
         listOrNone(recsEl,report.recs,'No specific recommendations — this build looks solid.');
       }
+      // the damage table is its own section of the analysis; a fault in it must never take the rest
+      // of the report down with it
+      try{ renderDamageBreakdown(!report.empty); }
+      catch(err){ var dbox=document.getElementById('cbDmg'); if(dbox) dbox.hidden=true; if(window.console) console.error('Damage breakdown failed',err); }
       box.scrollIntoView({block:'start',behavior:'smooth'});
     }
     document.getElementById('cbAnalyzeBuild').addEventListener('click', renderReport);
