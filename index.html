@@ -719,6 +719,7 @@ section{padding-block:48px}
 .cb-slot-lv{position:absolute;right:2px;bottom:1px;font-family:var(--data);font-size:9px;color:var(--gold);background:rgba(10,8,7,.75);padding:0 3px;line-height:1.5}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
+.cb-cfg-err{margin:0;padding:10px 22px;background:rgba(208,96,79,.12);border-top:1px solid rgba(208,96,79,.5);color:#e08a7b;font-size:13px;line-height:1.45}
 .cb-cfg-tools{display:flex;gap:8px;margin:0 36px 0 auto;align-self:center}.cb-cfg-tool{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);border-radius:3px;padding:6px 10px;cursor:pointer}.cb-cfg-tool:hover{border-color:var(--gold)}.cb-cfg-tool.cb-cfg-danger{color:#d0604f;border-color:rgba(208,96,79,.5)}.cb-cfg-tool.cb-cfg-danger:hover{border-color:#d0604f}
 .cb-slot-edit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:3px 8px;border-radius:3px;text-align:center;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(10,8,6,.72);opacity:0;pointer-events:none;transition:opacity .15s}
 .cb-slot:hover .cb-slot-edit,.cb-slot:focus-visible .cb-slot-edit{opacity:.85}
@@ -4168,6 +4169,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-cfg-tools"><button type="button" class="cb-cfg-tool" id="cbCfgSwap">Change item</button><button type="button" class="cb-cfg-tool cb-cfg-danger" id="cbCfgDrop">Remove</button></div>'+
         '<button type="button" class="cb-cfg-x" id="cbCfgX" aria-label="Close">&times;</button></div>'+
         '<div class="cb-cfg-body" id="cbCfgBody"></div>'+
+        '<div class="cb-cfg-err" id="cbCfgErr" role="alert" hidden></div>'+
         '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can change any of this later from the Loadout Manifest.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
       document.body.appendChild(ov);
       var body=ov.querySelector('#cbCfgBody');
@@ -4190,7 +4192,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       });
       ov.querySelector('#cbCfgSwap').addEventListener('click',function(){ var rid=cfgId; closeCfg(); if(rid) openPicker(rid); });
       ov.querySelector('#cbCfgDrop').addEventListener('click',function(){ var rid=cfgId; closeCfg(); if(rid){ setSlotEmpty(rid); renderManifest(); } });
-      ov.querySelector('#cbCfgDone').addEventListener('click',closeCfg);
+      // The game will not save an item that is short of its minimum enchantments, so Done is held back until it has them.
+      var errEl=ov.querySelector('#cbCfgErr');
+      function clearErr(){ errEl.hidden=true; errEl.textContent=''; }
+      ov.querySelector('#cbCfgDone').addEventListener('click',function(){
+        var m=cfgId&&itemMeta[cfgId], miss=m?enchShortfall(m):[];
+        if(miss.length){
+          errEl.textContent='Can\u2019t finish yet: '+miss.join('; ')+'. The game won\u2019t save an item without its minimum enchantments, so add one above (or pick a different rarity).';
+          errEl.hidden=false; body.scrollTop=body.scrollHeight; return;
+        }
+        clearErr(); closeCfg();
+      });
+      body.addEventListener('change',clearErr);
       ov.querySelector('#cbCfgX').addEventListener('click',closeCfg);
       ov.addEventListener('mousedown',function(e){ if(e.target===ov) closeCfg(); });
       document.addEventListener('keydown',function(e){
