@@ -4343,6 +4343,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Facets / gems that move weight or armor (Bulky is read off in-game tooltips: +5 armor, +5 weight).
     var GEM_WEIGHT_PCT={'mottled feather':30};
     var RES_NAMES={fire:'Fire',cold:'Cold',ice:'Cold',lightning:'Lightning',plague:'Plague',physical:'Physical'};
+    // Armor and shield values grow by 20% of their level-1 value per upgrade level (checked against every armor
+    // piece and shield in the data). Level-1 values per type keep the rounding exact.
+    var ARMOR_L1={"Light Shield":50,"Medium Shield":100,"Great Shield":200,"Cloth Helmet":13,"Plate Body":100,"Plate Gloves":25,"Plate Pants":75,"Plate Helmet":50,"Leather Helmet":25,"Mesh Helmet":38,"Mesh Gloves":19,"Mesh Body":75,"Leather Gloves":13,"Leather Pants":38,"Leather Body":50};
+    function armorAtLevel(item,cardVal,L){
+      var cardLv=+item.lv||1, A=ARMOR_L1[item.t];
+      if(!(A&&Math.floor(A*(1+0.2*(cardLv-1))+1e-6)===cardVal)) A=cardVal/(1+0.2*(cardLv-1));
+      return Math.floor(A*(1+0.2*(L-1))+1e-6);
+    }
     function computeCharStats(){
       var a=attrVals, out={armor:0,armorParts:[],weight:0,loadPct:0,res:{},resNote:false};
       out.health=Math.round(csCurve(CS_HEALTH,a.health));
@@ -4357,8 +4365,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(isArmor){
           var cardArmor=cardNum(item,'StatArmor'), cardLv=+item.lv||1, L=m.level||cardLv;
           if(cardArmor!=null){
-            var B=cardArmor/(1+0.2*(cardLv-1));
-            var v=Math.floor(B*(1+0.2*(L-1))+1e-6)+facetFlat(m.facet,enchPoolFor(id),5);
+            var v=armorAtLevel(item,cardArmor,L)+facetFlat(m.facet,enchPoolFor(id),5);
             out.armor+=v; out.armorParts.push({id:id,name:item.n,v:v});
           }
         }
@@ -4506,6 +4513,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       try{
         var doc=new DOMParser().parseFromString(c.h||'','text/html'), cardLv=+c.lv||lv;
         var folder=key.split('/')[3]||'', isShield=(key.split('/')[2]||'')==='shields';
+        if(lv!==cardLv){
+          doc.querySelectorAll('.top-icon-line').forEach(function(line){
+            if(line.querySelector('.o-icons-iconItemShieldArmor, .o-icons-fi-StatArmor, [class*="StatArmor"]')){
+              var mv=line.querySelector('.mod-value'), v0=mv?parseFloat(mv.textContent):NaN;
+              if(mv&&!isNaN(v0)) mv.textContent=armorAtLevel(c,v0,lv);
+            }
+          });
+        }
         if(!isShield && lv!==cardLv){
           doc.querySelectorAll('.top-icon-line').forEach(function(line){
             if(line.querySelector('.o-icons-fi-StatDamage')){ var mv=line.querySelector('.mod-value'), b=dmgBaseAtLevel(folder,lv); if(mv&&b!=null) mv.textContent=b; }
@@ -4628,7 +4643,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var sLv=Math.max(1,Math.min(16,+(sm.level||item.lv)||1)), sCard=+item.lv||sLv, sCr=Math.max(1,Math.min(sLv,+(sm.creation||sCard)||sCard));
             var sReq=(sst.req||[]).map(function(r){ return {attr:r.attr,n:sCr!==sCard?reqAtLevel(sst.req.length,sCr):r.n}; });
             var sShort=sReq.filter(function(r){ return (attrVals[r.attr.toLowerCase()]||10)<r.n; });
-            res.shieldRows.push({name:item.n,armor:sst.armor,eff:sst.armor*(sShort.length?REQ_PENALTY_MULT:1),
+            var sArm=armorAtLevel(item,sst.armor,sLv);
+            res.shieldRows.push({name:item.n,armor:sArm,eff:sArm*(sShort.length?REQ_PENALTY_MULT:1),
               txt:sShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ')});
           }
           return;
