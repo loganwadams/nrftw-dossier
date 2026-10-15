@@ -3645,6 +3645,16 @@ footer li{color:#6f665b}
       var wrap=document.getElementById('cbAttrs');
       wrap.addEventListener('focusin',function(e){ if(e.target.classList.contains('cb-attr-input')) e.target.select(); });
       wrap.addEventListener('keydown',function(e){ if(e.target.classList.contains('cb-attr-input') && e.key==='Enter'){ e.preventDefault(); e.target.blur(); } });
+      // digits only: block letters and symbols as they are typed, and strip anything pasted in
+      wrap.addEventListener('beforeinput',function(e){
+        if(!e.target.classList.contains('cb-attr-input')) return;
+        if(e.data && /\D/.test(e.data)) e.preventDefault();
+      });
+      wrap.addEventListener('input',function(e){
+        var inp=e.target; if(!inp.classList.contains('cb-attr-input')) return;
+        var clean=inp.value.replace(/\D/g,'').slice(0,2);
+        if(clean!==inp.value) inp.value=clean;
+      });
       wrap.addEventListener('change',function(e){
         var inp=e.target; if(!inp.classList.contains('cb-attr-input')) return;
         var id=inp.id.slice(4); var typed=parseInt(String(inp.value).replace(/[^0-9]/g,''),10);
