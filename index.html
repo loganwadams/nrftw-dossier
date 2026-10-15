@@ -691,6 +691,9 @@ section{padding-block:48px}
 .cb-stepper button{width:22px;height:22px;border:1px solid var(--edge-hot);background:rgba(0,0,0,.3);color:var(--gold-dim);font-family:var(--body);font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .15s,border-color .15s}
 .cb-stepper button:hover:not(:disabled){color:var(--gold);border-color:var(--gold)}
 .cb-stepper button:disabled{opacity:.3;cursor:default}
+.cb-attr-input{width:46px;height:24px;text-align:center;font-family:var(--data);font-size:13px;color:var(--gold);background:rgba(0,0,0,.3);border:1px solid var(--edge-hot);padding:0 2px;font-variant-numeric:tabular-nums;outline:none;transition:border-color .15s}
+.cb-attr-input:hover{border-color:var(--gold-dim)}
+.cb-attr-input:focus{border-color:var(--gold);background:rgba(0,0,0,.45)}
 .cb-stepper span{min-width:22px;text-align:center;font-family:var(--data);font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums}
 
 /* gear rows */
@@ -3601,7 +3604,7 @@ footer li{color:#6f665b}
         row.innerHTML='<img class="cb-attr-icon" src="'+a.icon+'" alt="" loading="lazy">'+
           '<span class="cb-attr-name">'+a.name+'</span>'+
           '<span class="cb-stepper"><button type="button" data-d="-1" aria-label="Decrease '+a.name+'">&minus;</button>'+
-          '<span id="cbv-'+a.id+'">10</span>'+
+          '<input type="text" inputmode="numeric" autocomplete="off" class="cb-attr-input" id="cbv-'+a.id+'" value="10" aria-label="'+a.name+' value">'+
           '<button type="button" data-d="1" aria-label="Increase '+a.name+'">+</button></span>';
         wrap.appendChild(row);
       });
@@ -3619,7 +3622,7 @@ footer li{color:#6f665b}
         var row=document.getElementById('cbv-'+a.id).closest('.cb-attr-row');
         var minus=row.querySelector('[data-d="-1"]'), plus=row.querySelector('[data-d="1"]');
         minus.disabled=attrVals[a.id]<=10;
-        plus.disabled=left<=0 || attrVals[a.id]>=40;
+        plus.disabled=left<=0 || attrVals[a.id]>=99;
       });
       renderProfile();
     }
@@ -3629,14 +3632,29 @@ footer li{color:#6f665b}
     });
     document.getElementById('cbAttrs').addEventListener('click',function(e){
       var btn=e.target.closest('button[data-d]'); if(!btn) return;
-      var row=btn.closest('.cb-attr-row'); var span=row.querySelector('span[id^="cbv-"]');
+      var row=btn.closest('.cb-attr-row'); var span=row.querySelector('[id^="cbv-"]');
       var id=span.id.slice(4); var d=+btn.dataset.d;
       var next=attrVals[id]+d;
-      if(next<10||next>40) return;
+      if(next<10||next>99) return;
       if(d>0 && ptsSpent()>=ptsTotal()) return;
-      attrVals[id]=next; span.textContent=next;
+      attrVals[id]=next; span.value=next;
       refreshPoints();
     });
+    // Typing a value straight into the box: keeps it between 10 and what the unspent points allow.
+    (function(){
+      var wrap=document.getElementById('cbAttrs');
+      wrap.addEventListener('focusin',function(e){ if(e.target.classList.contains('cb-attr-input')) e.target.select(); });
+      wrap.addEventListener('keydown',function(e){ if(e.target.classList.contains('cb-attr-input') && e.key==='Enter'){ e.preventDefault(); e.target.blur(); } });
+      wrap.addEventListener('change',function(e){
+        var inp=e.target; if(!inp.classList.contains('cb-attr-input')) return;
+        var id=inp.id.slice(4); var typed=parseInt(String(inp.value).replace(/[^0-9]/g,''),10);
+        if(isNaN(typed)) typed=attrVals[id];
+        var room=ptsTotal()-ptsSpent();               // points still unspent
+        var v=Math.max(10,Math.min(99,typed,attrVals[id]+Math.max(0,room)));
+        attrVals[id]=v; inp.value=v;
+        refreshPoints();
+      });
+    })();
 
     var expandedDetails={}; // slotId -> true while its gear-detail editor is open
     function detailFieldRow(label,inputHtml){
@@ -4309,7 +4327,7 @@ footer li{color:#6f665b}
       document.getElementById('cbLevelVal').textContent=15;
       ATTRS.forEach(function(a){
         attrVals[a.id]=10;
-        document.getElementById('cbv-'+a.id).textContent=10;
+        document.getElementById('cbv-'+a.id).value=10;
       });
       refreshPoints();
 
@@ -4379,8 +4397,8 @@ footer li{color:#6f665b}
         lvEl.value=Math.max(1,Math.min(30,+o.lv||15));
         document.getElementById('cbLevelVal').textContent=lvEl.value;
         ATTRS.forEach(function(x){
-          var v=Math.max(10,Math.min(40,+(o.a&&o.a[x.id])||10));
-          attrVals[x.id]=v; document.getElementById('cbv-'+x.id).textContent=v;
+          var v=Math.max(10,Math.min(99,+(o.a&&o.a[x.id])||10));
+          attrVals[x.id]=v; document.getElementById('cbv-'+x.id).value=v;
         });
         Object.keys(o.e||{}).forEach(function(id){
           if(slotEls[id] && cards[o.e[id]]) equipSlot(id,o.e[id]);
