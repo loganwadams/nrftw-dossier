@@ -807,6 +807,7 @@ body.cb-cfg-open{overflow:hidden}
 .ek-none{padding:9px 12px;font-size:13px;color:#8b8174;font-style:italic}
 
 .cb-detail-hint{display:block;width:100%;color:#a4512a;font-size:11.5px;font-style:italic}
+.gm-ic{flex:0 0 34px;width:34px;height:34px;overflow:hidden}.gm-ic .m-ic{display:block;transform:scale(.7);transform-origin:0 0;background-color:transparent;border:none}.gm-d{color:#9d917f;font-size:12.5px}.gm-row{align-items:center}.gm-row.gm-none .gm-d{font-style:italic;color:#6f6758}
 .ek-row.ek-dis{opacity:.38;cursor:not-allowed}
 .ek-row.ek-dis:hover{background:none}
 .cb-detail-hint.cb-warn,.cb-mf-sum .cb-warn{color:#d0604f;font-style:normal}
@@ -3954,25 +3955,94 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       window.addEventListener('resize',place);
       window.addEventListener('scroll',function(){ if(cur) place(); },true);
     })();
-    // Gem effects per slot, from the game's gem records (key: 0 weapon, 1 shield, 3 helm, 4 gloves, 5 legs, 6 chest).
-    var GEM_FX={"tiny fang":{"0":"Attack Stamina Cost reduced by 10%","1":"Parry Stamina Cost reduced by 30%","3":"Stamina Cost reduced by 6%","4":"Stamina Cost reduced by 6%","5":"Dodge Stamina Cost reduced by 20%","6":"Stamina Cost reduced by 9%"},"chipped jewel":{"0":"At full focus 30%","1":"At full focus 30%","3":"At full focus 30%","4":"At full focus 30%","5":"At full focus 30%","6":"At full focus 30%"},"chipped topaz":{"3":"Focus Gain increased by 8%","4":"Focus Gain increased by 10%","5":"Focus Gain increased by 8%","6":"Focus Gain increased by 8%"},"clear sapphire":{"4":"Cold Potency increased by 15%"},"mottled amethyst":{"0":"Plague Damage increased by 10%","1":"Deal 25% Plague Damage while Blocking","3":"Enchantment Power increased by 25% if it's the only elemental Gem","4":"Enchantment Power increased by 25% if it's the only elemental Gem","5":"Enchantment Power increased by 25% if it's the only elemental Gem","6":"Enchantment Power increased by 25% if it's the only elemental Gem"},"clear diamond":{"3":"Gain more Experience | Lose Experience on Death"},"chipped meteorite":{"0":"Elemental Resistance increased by 6%","1":"Elemental Resistance increased by 6%","3":"Elemental Resistance increased by 6%","4":"Elemental Resistance increased by 6%","5":"Elemental Resistance increased by 6%","6":"Elemental Resistance increased by 6%"},"mottled dianite":{"3":"Focus Cost reduced by 6%","4":"Focus Cost reduced by 6%","5":"Focus Cost reduced by 6%","6":"Focus Cost reduced by 8%"},"mottled jewel":{"0":"At full focus 40%","1":"At full focus 40%","3":"At full focus 40%","4":"At full focus 40%","5":"At full focus 40%","6":"At full focus 40%"},"mottled black pearl":{"0":"At low health 50%","1":"At low health 50%","3":"At low health 50%","4":"At low health 50%","5":"At low health 50%","6":"At low health 50%"},"chipped jade":{"3":"Stamina Recovery increased by 15%","4":"Stamina Recovery increased by 15%","5":"Stamina Recovery increased by 15%","6":"Stamina Recovery increased by 20%"},"mottled fang":{"0":"Attack Stamina Cost reduced by 15%","1":"Parry Stamina Cost reduced by 45%","3":"Stamina Cost reduced by 9%","4":"Stamina Cost reduced by 9%","5":"Dodge Stamina Cost reduced by 30%","6":"Stamina Cost reduced by 12%"},"chipped sapphire":{"0":"Gain Ice Infusion","1":"Cold damage on block 15%","3":"Enchantment Power increased by 20% if it's the only elemental Gem","4":"Enchantment Power increased by 20% if it's the only elemental Gem","5":"Enchantment Power increased by 20% if it's the only elemental Gem","6":"Enchantment Power increased by 20% if it's the only elemental Gem"},"clear meteorite":{},"small skull":{"3":"Regen health in combat 100%","4":"Regen health in combat 100%","5":"Regen health in combat 100%","6":"Regen health in combat 100%"},"mottled marble":{"0":"At full health 40%","1":"At full health 40%","3":"At full health 40%","4":"At full health 40%","5":"At full health 40%","6":"At full health 40%"},"mottled shield emblem":{"0":"If have barrier 30%","1":"If have barrier 30%","3":"Gain 15 Barrier out of Combat","4":"Gain 15 Barrier out of Combat","5":"Gain 15 Barrier out of Combat","6":"Gain 15 Barrier out of Combat"},"large skull":{"4":"Gain 3 Focus on Focus Use"},"clear granite":{},"clear dianite":{},"chipped dianite":{"3":"Focus Cost reduced by 4%","4":"Focus Cost reduced by 4%","5":"Focus Cost reduced by 4%","6":"Focus Cost reduced by 6%"},"mottled ruby":{"0":"Fire Damage increased by 10%","1":"Deal 25% Fire Damage while Blocking","3":"Enchantment Power increased by 25% if it's the only elemental Gem","4":"Enchantment Power increased by 25% if it's the only elemental Gem","5":"Enchantment Power increased by 25% if it's the only elemental Gem","6":"Enchantment Power increased by 25% if it's the only elemental Gem"},"mottled quartz":{"0":"Lightning Damage increased by 10%","1":"Deal 25% Lightning Damage while Blocking","3":"Enchantment Power increased by 25% if it's the only elemental Gem","4":"Enchantment Power increased by 25% if it's the only elemental Gem","5":"Enchantment Power increased by 25% if it's the only elemental Gem","6":"Enchantment Power increased by 25% if it's the only elemental Gem"},"mottled sapphire":{"0":"Ice Damage increased by 10%","1":"Deal 25% Ice Damage while Blocking","3":"Enchantment Power increased by 25% if it's the only elemental Gem","4":"Enchantment Power increased by 25% if it's the only elemental Gem","5":"Enchantment Power increased by 25% if it's the only elemental Gem","6":"Enchantment Power increased by 25% if it's the only elemental Gem"},"clear amethyst":{"4":"Plague Potency increased by 15%"},"mottled meteorite":{"0":"Elemental Resistance increased by 8%","1":"Elemental Resistance increased by 8%","3":"Elemental Resistance increased by 8%","4":"Elemental Resistance increased by 8%","5":"Elemental Resistance increased by 8%","6":"Elemental Resistance increased by 8%"},"clear shield emblem":{},"chipped marble":{"0":"At full health 30%","1":"At full health 30%","3":"At full health 30%","4":"At full health 30%","5":"At full health 30%","6":"At full health 30%"},"clear moon stone":{},"mottled topaz":{"3":"Focus Gain increased by 10%","4":"Focus Gain increased by 12%","5":"Focus Gain increased by 10%","6":"Focus Gain increased by 10%"},"mottled emerald":{"0":"Max Stamina increased by 20%","1":"Max Stamina increased by 15%","3":"Max Stamina increased by 20%","4":"Max Stamina increased by 15%","5":"Max Stamina increased by 15%","6":"Max Stamina increased by 15%"},"chipped granite":{"0":"Poise Damage increased by 4","1":"Poise damage on block increased by 4","3":"Poise Defense increased by 4","4":"Poise Defense increased by 4","5":"Poise Defense increased by 4","6":"Poise Defense increased by 4"},"chipped blood stone":{"0":"Gain 10% Lifesteal","1":"Gain 8% Lifesteal","3":"Gain 20% Regainable Health","4":"Gain 20% Regainable Health","5":"Gain 20% Regainable Health","6":"Gain 25% Regainable Health"},"chipped quartz":{"0":"Gain Lightning Infusion","1":"Deal lightning damage on block 15%","3":"Enchantment Power increased by 20% if it's the only elemental Gem","4":"Enchantment Power increased by 20% if it's the only elemental Gem","5":"Enchantment Power increased by 20% if it's the only elemental Gem","6":"Enchantment Power increased by 20% if it's the only elemental Gem"}};
-    function gemSlotKey(id){
+    // Gem effects per equipment type come straight from the gem cards (Weapons, Shields, Off-Hands, Body, Helmets, Pants, Gloves).
+    var gemIdx=null;
+    function gemIndex(){
+      if(gemIdx||!cards) return gemIdx||{};
+      gemIdx={};
+      Object.keys(cards).forEach(function(k){
+        if(k.indexOf('/db/gems/')!==0) return;
+        var c=cards[k], fx={}, doc;
+        try{ doc=new DOMParser().parseFromString(c.h||'','text/html'); }catch(err){ return; }
+        doc.querySelectorAll('.gem-enchant').forEach(function(g){
+          var nm=g.querySelector('.gem-slot-name'); if(!nm) return;
+          var label=nm.textContent.trim(), t=(g.textContent||'').replace(nm.textContent,'').replace(/\s+/g,' ').trim();
+          fx[label]=(t==='\u2013'||t==='-')?'':t;
+        });
+        gemIdx[c.n.toLowerCase()]={n:c.n,p:c.p,fx:fx};
+      });
+      return gemIdx;
+    }
+    function gemSlotLabel(id){
       var m=itemMeta[id]||{}, cat=m.cat, key=equipped[id]||'';
-      if(cat==='helm') return '3'; if(cat==='gloves') return '4'; if(cat==='legs') return '5'; if(cat==='chest') return '6';
-      if(key.split('/')[2]==='shields') return '1';
-      return '0';
+      if(cat==='helm') return 'Helmets'; if(cat==='gloves') return 'Gloves'; if(cat==='legs') return 'Pants'; if(cat==='chest') return 'Body';
+      if(key.split('/')[2]==='shields') return 'Shields';
+      var meta=slotEls[id]; if(meta&&meta.cat==='offhand') return 'Off-Hands';
+      return 'Weapons';
     }
     function gemEffectLines(id,m){
-      var k=gemSlotKey(id), out=[];
+      var lab=gemSlotLabel(id), idx=gemIndex(), out=[];
       (m.gems||[]).forEach(function(g){
-        var n=String(g||'').trim().toLowerCase(), fx=GEM_FX[n];
-        if(!n) return;
-        if(!fx){ out.push('<small class="cb-detail-hint">'+dmgEsc(g.trim())+': effect not in the game data we have.</small>'); return; }
-        var t=fx[k];
-        out.push('<small class="cb-detail-hint cb-gemfx"><b>'+dmgEsc(g.trim())+'</b> &mdash; '+(t?dmgEsc(t):'no effect on this slot')+'</small>');
+        var n=String(g||'').trim().toLowerCase(); if(!n) return;
+        var gi=idx[n];
+        if(!gi){ out.push('<small class="cb-detail-hint">'+dmgEsc(String(g).trim())+': not a known gem.</small>'); return; }
+        var t=gi.fx[lab];
+        out.push('<small class="cb-detail-hint cb-gemfx"><b>'+dmgEsc(gi.n)+'</b> &mdash; '+(t?dmgEsc(t):'no effect on this slot')+'</small>');
       });
       return out.join('');
     }
+    // Search box for gems: icon, name and what the gem does on this item.
+    (function gemPicker(){
+      if(document.getElementById('cbGemPop')) return;
+      var pop=document.createElement('div'); pop.id='cbGemPop'; pop.className='cb-ench-pop cb-gem-pop'; pop.hidden=true; document.body.appendChild(pop);
+      var cur=null, rows=[], hi=-1;
+      function place(){
+        if(!cur) return; var r=cur.getBoundingClientRect();
+        var w=Math.min(Math.max(r.width,460),window.innerWidth-16); pop.style.width=w+'px'; pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-w-8))+'px';
+        var below=window.innerHeight-r.bottom-12, above=r.top-12, up=below<340&&above>below, avail=up?above:below;
+        pop.style.maxHeight=Math.max(220,Math.min(560,avail))+'px';
+        if(up){ pop.style.top=''; pop.style.bottom=(window.innerHeight-r.top+4)+'px'; }
+        else { pop.style.bottom=''; pop.style.top=(r.bottom+4)+'px'; }
+      }
+      function fill(){
+        var idx=gemIndex(), lab=gemSlotLabel(cur.dataset.id), q=String(cur.value||'').toLowerCase().split(/\s+/).filter(Boolean);
+        rows=Object.keys(idx).map(function(k){ return idx[k]; }).filter(function(g){ var n=g.n.toLowerCase(); return q.every(function(w){ return n.indexOf(w)>-1; }); })
+          .sort(function(a,b){ return a.n<b.n?-1:1; });
+        pop.innerHTML=rows.length?rows.map(function(g,i){
+          var t=g.fx[lab];
+          var ic=g.p?'<span class="m-ic" style="background-position:-'+(g.p[0]*48)+'px -'+(g.p[1]*48)+'px"></span>':'';
+          return '<div class="ek-row gm-row'+(t?'':' gm-none')+'" data-i="'+i+'"><span class="gm-ic">'+ic+'</span><span class="ek-t"><b>'+dmgEsc(g.n)+'</b><br><span class="gm-d">'+(t?dmgEsc(t):'No effect on this slot')+'</span></span></div>';
+        }).join(''):'<div class="ek-none">No gem matches that.</div>';
+        hi=-1; place();
+      }
+      function open(el){ cur=el; pop.hidden=false; fill(); }
+      function close(){ pop.hidden=true; cur=null; }
+      function pick(i){
+        var g=rows[i]; if(!g||!cur) return; var el=cur; close();
+        el.value=g.n; el.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+      function mark(n){
+        var els=pop.querySelectorAll('.ek-row'); if(!els.length) return;
+        hi=(n+els.length)%els.length;
+        els.forEach(function(e,i){ e.classList.toggle('on',i===hi); });
+        els[hi].scrollIntoView({block:'nearest'});
+      }
+      function isGem(el){ return el&&el.matches&&el.matches('input[data-group="gems"]'); }
+      document.addEventListener('focusin',function(e){ if(isGem(e.target)) open(e.target); });
+      document.addEventListener('click',function(e){ if(isGem(e.target)&&e.target!==cur) open(e.target); else if(isGem(e.target)&&pop.hidden) open(e.target); });
+      document.addEventListener('focusout',function(e){ if(e.target===cur) setTimeout(function(){ if(document.activeElement!==cur) close(); },0); });
+      document.addEventListener('input',function(e){ if(e.target===cur){ pop.hidden=false; fill(); } });
+      document.addEventListener('keydown',function(e){
+        if(!cur||pop.hidden) return;
+        if(e.key==='ArrowDown'){ e.preventDefault(); mark(hi+1); }
+        else if(e.key==='ArrowUp'){ e.preventDefault(); mark(hi-1); }
+        else if(e.key==='Enter' && hi>-1){ e.preventDefault(); pick(hi); }
+        else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); close(); }
+      },true);
+      pop.addEventListener('mousedown',function(e){ var row=e.target.closest('.ek-row'); if(!row) return; e.preventDefault(); pick(+row.dataset.i); });
+      window.addEventListener('resize',place);
+      window.addEventListener('scroll',function(){ if(cur) place(); },true);
+    })();
     // Which list a slot draws from. Melee weapons, ranged weapons, shields, the four armor pieces and rings
     // each have their own pool in the game data (bits 2, 4, 256, 8/16/32/64 and 128 of the enchantment's item type).
     var RANGED_FOLDERS={bow:1,great_bow:1,staff:1,wand:1};
@@ -4005,7 +4075,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var pl=plan&&plan[i], ph=pl?(pl.label+' '+(pl.fixed?'':(plan.filter(function(x,j){ return j<=i&&x.type===pl.type; }).length))).trim():placeholder+' '+(i+1);
         var clr='<button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button>';
         var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw">', wrapClose=(locked?'':clr)+'</span>';
-        return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' list="cbGemList"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'"'+(locked?' readonly title="Comes with the weapon and cannot be removed"':'')+' placeholder="'+ph+'">'+wrapClose;
+        return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' autocomplete="off"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'"'+(locked?' readonly title="Comes with the weapon and cannot be removed"':'')+' placeholder="'+ph+'">'+wrapClose;
       }).join('');
     }
     // The game wants a minimum number of each kind of enchantment (Magical 1, Plagued 2 plus 1 drawback, Unique 1).
