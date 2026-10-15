@@ -3208,7 +3208,7 @@ footer li{color:#6f665b}
           <div class="cb-rows" id="cbRows"></div>
         </div>
         <div class="cb-panel">
-          <h3>Build Profile<span class="cb-profile-warn-chip" id="cbProfileWarnChip" hidden>&#9888; Mismatch</span></h3>
+          <h3>Build Stats<span class="cb-profile-warn-chip" id="cbProfileWarnChip" hidden>&#9888; Mismatch</span></h3>
           <div class="attrs" id="cbProfileBars"></div>
           <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
         </div>
@@ -3894,15 +3894,96 @@ footer li{color:#6f665b}
         }
       });
     }
+    // ---- Real character stats (from the game's balance data) ----------------------------------
+    // Health, Stamina, Focus and Equip Load come from the attribute curves ([points, value]).
+    // Equip Load capacity = (70 + curve) x (1 + Equip Load %); verified: 30 points + an 18% ring = 437.
+    // Armor at item level L = floor(B x (1 + 0.2 x (L-1))), where B is read back from the card
+    // (cards show the item at its own level). Load ratio thresholds: <35% Light, <60% Normal,
+    // <100% Heavy, above that Overencumbered, each with a stamina recovery multiplier.
+    var CS_HEALTH=[[10,100],[20,190],[30,280],[40,360],[50,440],[60,520],[70,600],[100,800]];
+    var CS_STAMINA=[[10,50],[15,70],[25,100],[100,250]];
+    var CS_FOCUS=[[10,100],[12,140],[16,200],[81,850],[100,900]];
+    var CS_LOAD=[[10,100],[50,500],[100,800]];
+    var LOAD_CLASSES=[
+      {max:.35,name:'Light',rec:1.2},{max:.6,name:'Normal',rec:1.0},
+      {max:1.0,name:'Heavy',rec:.8},{max:Infinity,name:'Overencumbered',rec:.6}
+    ];
+    function csCurve(c,x){
+      if(x<=c[0][0]) return c[0][1];
+      for(var i=1;i<c.length;i++){
+        if(x<=c[i][0]) return c[i-1][1]+(c[i][1]-c[i-1][1])*(x-c[i-1][0])/(c[i][0]-c[i-1][0]);
+      }
+      return c[c.length-1][1];
+    }
+    function cardNum(item,icon){
+      var h=item&&item.h; if(!h) return null;
+      var i=h.indexOf(icon); if(i<0) return null;
+      var m=/class="mod-value">([\d.]+)/.exec(h.slice(i,i+400));
+      return m?parseFloat(m[1]):null;
+    }
+    // Facets / gems that move weight or armor (Bulky is read off in-game tooltips: +5 armor, +5 weight).
+    var FACET_ARMOR={bulky:5}, FACET_WEIGHT={bulky:5};
+    var GEM_WEIGHT_PCT={'mottled feather':30};
+    var RES_NAMES={fire:'Fire',cold:'Cold',ice:'Cold',lightning:'Lightning',plague:'Plague',physical:'Physical'};
+    function computeCharStats(){
+      var a=attrVals, out={armor:0,armorParts:[],weight:0,loadPct:0,res:{},resNote:false};
+      out.health=Math.round(csCurve(CS_HEALTH,a.health));
+      out.stamina=Math.round(csCurve(CS_STAMINA,a.stamina));
+      out.focus=Math.round(csCurve(CS_FOCUS,a.focus));
+      var lvlDefault=+document.getElementById('cbLevel').value;
+      Object.keys(equipped).forEach(function(id){
+        var item=cards&&cards[equipped[id]]; var meta=slotEls[id]; if(!item||!meta) return;
+        var m=itemMeta[id]||{}; var cat=meta.cat;
+        var facet=dmgNorm(m.facet), w=cardNum(item,'StatWeight')||0;
+        var isArmor=['helm','chest','legs','gloves'].indexOf(cat)>-1;
+        if(isArmor){
+          var cardArmor=cardNum(item,'StatArmor'), cardLv=+item.lv||1, L=m.level||cardLv;
+          if(cardArmor!=null){
+            var B=cardArmor/(1+0.2*(cardLv-1));
+            var v=Math.floor(B*(1+0.2*(L-1))+1e-6)+(FACET_ARMOR[facet]||0);
+            out.armor+=v; out.armorParts.push({id:id,name:item.n,v:v});
+          }
+        }
+        (m.gems||[]).forEach(function(g){
+          var gp=GEM_WEIGHT_PCT[dmgNorm(g)]; if(gp) w*=1-gp/100;
+          if(isArmor && /^mottled meteorite$/.test(dmgNorm(g))) ['fire','cold','lightning','plague'].forEach(function(k){ out.res[k]=(out.res[k]||0)+8; });
+        });
+        w+=(FACET_WEIGHT[facet]||0);
+        out.weight+=w;
+        if(/^(fireproof|purified)$/.test(facet)) out.resNote=true;
+        (m.enchants||[]).forEach(function(e){
+          var t=String(e||''), mm;
+          if((mm=/Equip Load increased by (\d+(?:\.\d+)?)%/i.exec(t))) out.loadBonus=(out.loadBonus||0)+parseFloat(mm[1]);
+          if((mm=/(Fire|Cold|Ice|Lightning|Plague|Physical)\s+Resistance increased by (\d+(?:\.\d+)?)%/i.exec(t))){
+            var k=mm[1].toLowerCase(); k=(k==='ice')?'cold':k; out.res[k]=(out.res[k]||0)+parseFloat(mm[2]);
+          }
+        });
+      });
+      out.loadBonus=out.loadBonus||0;
+      out.capacity=(70+csCurve(CS_LOAD,a.equipload))*(1+out.loadBonus/100);
+      out.ratio=out.capacity?out.weight/out.capacity:0;
+      out.cls=LOAD_CLASSES.filter(function(c){ return out.ratio<c.max; })[0];
+      return out;
+    }
     function renderProfile(){
       var wrap=document.getElementById('cbProfileBars');
       if(!wrap) return;
       var result=computeProfile();
-      var rows=result.rows;
-      wrap.innerHTML=rows.map(function(r){
-        var tint=r.value>0?r.color:'var(--edge-hot)';
-        return '<div class="attr" style="--accent:'+tint+'"><span>'+r.label+'</span><span class="meter"><i style="width:'+r.value+'%"></i></span><b>'+profileTier(r.value)+'</b></div>';
-      }).join('');
+      var cs=computeCharStats();
+      var rows=[
+        ['Health',cs.health,null,'var(--blood)'],
+        ['Stamina',cs.stamina,null,'var(--verdigris)'],
+        ['Focus',cs.focus,null,'var(--c-plague)'],
+        ['Armor',cs.armor,null,'var(--c-storm)']
+      ];
+      var h=rows.map(function(r){ return '<div class="attr" style="--accent:'+r[3]+'"><span>'+r[0]+'</span><span></span><b>'+r[1]+'</b></div>'; }).join('');
+      var pct=Math.min(100,Math.round(cs.ratio*100));
+      var loadColor=cs.ratio>=1?'var(--rust)':(cs.ratio>=.6?'var(--gold)':'var(--verdigris)');
+      h+='<div class="attr" style="--accent:'+loadColor+'"><span>Equip Load</span><span class="meter"><i style="width:'+pct+'%"></i></span><b>'+(Math.round(cs.weight*10)/10)+' / '+Math.round(cs.capacity)+'</b></div>';
+      h+='<div class="attr" style="--accent:'+loadColor+'"><span>Weight Class</span><span></span><b>'+cs.cls.name+' ('+Math.round(cs.ratio*100)+'%) &middot; Stamina Recovery &times;'+cs.cls.rec+'</b></div>';
+      var resKeys=Object.keys(cs.res);
+      if(resKeys.length) h+='<div class="attr" style="--accent:var(--c-plague)"><span>Resistances</span><span></span><b>'+resKeys.map(function(k){ return RES_NAMES[k]+' +'+cs.res[k]+'%'; }).join(' &middot; ')+'</b></div>';
+      wrap.innerHTML=h;
       clearSlotWarnings();
       (result.warnGroups||[]).forEach(function(g){ applySlotWarnings(g.ids,g.message); });
       var warnChip=document.getElementById('cbProfileWarnChip');
@@ -3910,15 +3991,12 @@ footer li{color:#6f665b}
       var note=document.getElementById('cbProfileNote');
       note.classList.toggle('cb-note-warn',!!result.mismatch);
       var nothingInvested=!Object.keys(equipped).length && ptsSpent()===0;
-      var top=rows.slice().sort(function(x,y){ return y.value-x.value; })[0];
       if(result.mismatch){
         note.textContent=result.mismatch;
       } else if(nothingInvested){
-        note.textContent='Equip gear and spend attribute points above to see where this build leans.';
-      } else if(top.value<10){
-        note.textContent="Nothing stands out yet — equip more gear or raise attributes to shape this build's identity.";
+        note.textContent='Equip gear and spend attribute points above to see your stats.';
       } else {
-        note.textContent='This build currently leans hardest on '+top.label+'.';
+        note.textContent='Armor, weight and capacity use the game’s formulas.'+(cs.resNote?' Fireproof/Purified resistance amounts aren’t in the data, so they’re not counted.':'');
       }
     }
 
