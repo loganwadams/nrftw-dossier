@@ -664,6 +664,9 @@ section{padding-block:48px}
 .cb-class-opt.on img{opacity:1;filter:none}
 .cb-class-fac{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#7c7265;padding:8px 10px 4px}
 .cb-class-fac:first-child{padding-top:2px}
+.cb-class-drop.is-locked .cb-class-trigger{opacity:.5;cursor:not-allowed;border-style:dashed}
+.cb-class-drop.is-locked .cb-class-trigger:hover{border-color:var(--edge)}
+.cb-class-drop.is-locked .toc-caret{opacity:.4}
 .cb-class-selected{margin:0;font-size:14.5px;color:var(--muted)}
 .cb-class-selected strong{color:var(--gold);font-weight:400;font-family:var(--display)}
 .cb-class-selected em{color:var(--bone);font-style:normal}
@@ -3167,15 +3170,15 @@ footer li{color:#6f665b}
     <div class="cb-wrap">
       <div class="cb-col">
         <div class="cb-panel">
-          <h3>Class <span class="cb-optional">Optional</span></h3>
-          <div class="cb-class-drop" id="cbClassDrop">
-            <button type="button" class="cb-class-trigger" id="cbClassTrigger" aria-haspopup="listbox" aria-expanded="false">
-              <span class="cb-class-trigger-label"><span>Select a class&hellip;</span></span>
+          <h3>Class <span class="coming-soon-badge">Coming Soon</span></h3>
+          <div class="cb-class-drop is-locked" id="cbClassDrop">
+            <button type="button" class="cb-class-trigger" id="cbClassTrigger" aria-haspopup="listbox" aria-expanded="false" disabled aria-disabled="true">
+              <span class="cb-class-trigger-label"><span>Classes coming soon&hellip;</span></span>
               <span class="toc-caret"></span>
             </button>
             <ul class="cb-class-list" id="cbClassList" role="listbox"></ul>
           </div>
-          <p class="cb-class-selected" id="cbClassSelected">No class selected &mdash; building generic.</p>
+          <p class="cb-class-selected" id="cbClassSelected">Classes haven&rsquo;t been introduced to the game yet &mdash; the builder is class-agnostic until they arrive.</p>
         </div>
         <div class="cb-panel">
           <h3>Character</h3>
@@ -4157,10 +4160,6 @@ footer li{color:#6f665b}
         cons.push("Detailed attribute guidance for "+className+" isn't mapped yet, so point allocation can't be checked against it.");
       }
 
-      if(!selectedClass){
-        cons.push('No class selected — these notes are generic rather than tuned to a specific kit.');
-        recs.push('Pick a class above so gear and attribute checks can be matched to its documented loadout guidance.');
-      }
 
       // gear level vs character level
       if(cards){
@@ -4246,9 +4245,7 @@ footer li{color:#6f665b}
       // class
       selectedClass=null;
       document.querySelectorAll('.cb-class-opt.on').forEach(function(b){ b.classList.remove('on'); });
-      document.getElementById('cbClassSelected').innerHTML='No class selected &mdash; building generic.';
-      document.getElementById('cbClassTrigger').querySelector('.cb-class-trigger-label').innerHTML='<span>Select a class&hellip;</span>';
-
+      
       // character: level + attributes
       var levelEl=document.getElementById('cbLevel');
       levelEl.value=15;
