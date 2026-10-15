@@ -800,6 +800,7 @@ body.cb-cfg-open{overflow:hidden}
 .ek-row.ek-dis{opacity:.38;cursor:not-allowed}
 .ek-row.ek-dis:hover{background:none}
 .cb-detail-hint.cb-warn,.cb-mf-sum .cb-warn{color:#d0604f;font-style:normal}
+.cb-dmg-cond{display:block;margin:6px 0 10px;color:#b9ad9a;font-size:13px;cursor:pointer}.cb-dmg-cond input{margin-right:6px}
 .cb-detail-hint.cb-rule{color:#8b8174;font-style:normal;margin-top:4px}
 .cb-detail-hint.cb-gemfx{color:#b9ad9a;margin-top:3px;display:block}.cb-detail-hint.cb-gemfx b{color:#d9c9a8;font-weight:600}
 @media (max-width:640px){
@@ -3282,6 +3283,7 @@ footer li{color:#6f665b}
       <div class="panel cb-dmg" id="cbDmg" hidden>
         <h3>Damage Breakdown</h3>
         <p class="cb-dmg-formula">Damage per hit = <b>(Listed + Stat Scaling)</b> &times; <b>Weapon Bonus</b> &times; <b>Build Bonus</b> &mdash; before enemy resistances and combo multipliers.</p>
+        <label class="cb-dmg-cond"><input type="checkbox" id="cbDmgCond"> Count conditional damage bonuses as if their condition is always met (full health, full focus, large enemies and similar)</label>
         <div class="cb-dmg-scroll">
           <table class="cb-dmg-table">
             <thead>
@@ -4510,10 +4512,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var lead=(m[1]||'').trim().toLowerCase();
         return {kind:'flat',pct:+m[2],type:(lead&&lead!=='attack')?lead:null,text:t};
       }
-      if(/damage/i.test(t) && /%/.test(t) && !/(resistance|rune damage|stagger damage|poise|thorns)/i.test(t)) return {kind:'cond',text:t};
+      m=t.match(/^(Attack |Physical |Fire |Ice |Lightning |Plague )?Damage reduced by (\d+(?:\.\d+)?)\s*%\s*$/i);
+      if(m){
+        var lead2=(m[1]||'').trim().toLowerCase();
+        return {kind:'flat',pct:-(+m[2]),type:(lead2&&lead2!=='attack')?lead2:null,text:t};
+      }
+      if(/damage/i.test(t) && /%/.test(t) && !/(resistance|rune damage|stagger damage|poise|thorns)/i.test(t)){
+        m=t.match(/^(Attack |Physical |Fire |Ice |Lightning |Plague )?Damage increased by (\d+(?:\.\d+)?)\s*%\s+(?!.*\b(?:each|up to|of)\b)(.+)$/i);
+        if(m){ var lead3=(m[1]||'').trim().toLowerCase(); return {kind:'cond',pct:+m[2],type:(lead3&&lead3!=='attack')?lead3:null,text:t}; }
+        return {kind:'cond',text:t};
+      }
       return null;
     }
     function newDmgBucket(){ return {pct:0,critChance:0,critMult:0,poisePct:0,poiseFlat:0,parts:[],notes:[]}; }
+    function dmgAssumeCond(){ var c=document.getElementById('cbDmgCond'); return !!(c&&c.checked); }
     function applyDmgEnchant(p,bucket,st,src,wname){
       var tag=src+': “'+p.text+'”';
       if(p.kind==='flat'){
@@ -4522,6 +4534,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       } else if(p.kind==='critChance'){ bucket.critChance+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='critMult'){ bucket.critMult+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='range'){ bucket.notes.push(tag+' is a range — type the value you rolled to count it.'); }
+      else if(p.pct && dmgAssumeCond()){
+        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+' — not counted.'); return; }
+        bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text+' (assumed active)');
+      }
       else { bucket.notes.push(tag+' is conditional — not counted in the per-hit figure.'); }
     }
     function slotOrder(a,b){
@@ -4606,6 +4622,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       });
       return res;
     }
+    (function(){ var c=document.getElementById('cbDmgCond'); if(c) c.addEventListener('change',function(){ var b=document.getElementById('cbAnalyzeBuild'); if(b) b.click(); }); })();
     function renderDamageBreakdown(show){
       var box=document.getElementById('cbDmg'); if(!box) return;
       box.hidden=!show; if(!show) return;
