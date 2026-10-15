@@ -3648,7 +3648,7 @@ footer li{color:#6f665b}
       // digits only: block letters and symbols as they are typed, and strip anything pasted in
       wrap.addEventListener('beforeinput',function(e){
         if(!e.target.classList.contains('cb-attr-input')) return;
-        if(e.data && /\D/.test(e.data)) e.preventDefault();
+        if(e.data && e.data.length===1 && /\D/.test(e.data)) e.preventDefault();  // longer inserts (paste) are cleaned by the input handler
       });
       wrap.addEventListener('input',function(e){
         var inp=e.target; if(!inp.classList.contains('cb-attr-input')) return;
