@@ -3549,7 +3549,8 @@ footer li{color:#6f665b}
       return {
         cat:cat,
         rarity:'standard',
-        level:Math.max(1,Math.min(16,+lv||1)),
+        level:Math.max(1,Math.min(16,+lv||1)), // upgrade level (1-16): sets damage and armor
+        creation:Math.max(1,Math.min(16,+lv||1)), // creation level (1-16, never above the upgrade level): sets attribute requirements
         facet:'',
         gems:new Array(gemSlotsForRarity('standard')).fill(''),
         enchants:[],
@@ -3944,7 +3945,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       var html='<div class="cb-mf-detail" data-id="'+id+'">';
       html+=detailFieldRow('Rarity','<select class="cb-detail-rarity" data-id="'+id+'">'+rarityOpts+'</select>');
-      html+=detailFieldRow('Item Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
+      html+=detailFieldRow('Creation Level (up to Upgrade)','<input type="number" class="cb-detail-creation" data-id="'+id+'" min="1" max="'+m.level+'" value="'+Math.min(m.creation||m.level,m.level)+'">');
+      html+=detailFieldRow('Upgrade Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
       html+=detailFieldRow('Facet','<input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None">');
       html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span><small class="cb-detail-hint cb-rule">'+gemRuleText(m.rarity)+'</small>');
       html+=m.enchants.length
@@ -4025,9 +4027,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         renderManifest();
         return;
       }
+      if(e.target.classList.contains('cb-detail-creation')){
+        var cv=Math.max(1,Math.min(m.level||16,+e.target.value||1));
+        m.creation=cv; e.target.value=cv;
+        return;
+      }
       if(e.target.classList.contains('cb-detail-level')){
         var v=Math.max(1,Math.min(16,+e.target.value||1));
         m.level=v; e.target.value=v;
+        if((m.creation||v)>v){ m.creation=v; var ce=e.target.closest('.cb-mf-detail'); ce=ce&&ce.querySelector('.cb-detail-creation'); if(ce) ce.value=v; }
+        try{ var cd=e.target.closest('.cb-mf-detail'), cin=cd&&cd.querySelector('.cb-detail-creation'); if(cin) cin.max=v; }catch(err){}
         var before=m.enchants.length; normalizeItemMeta(m);
         if(m.enchants.length!==before){ renderManifest(); return; }
         try{ var sl=slotEls[e.target.getAttribute('data-id')]; var lb=sl&&sl.el&&sl.el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=v; }catch(err){}
@@ -4480,8 +4489,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         });
         var attrBonus=st.base*attrFrac;
 
-        var cardLv=+item.lv||lvNow;
-        var reqList=(st.req||[]).map(function(r){ return {attr:r.attr,n:lvNow!==cardLv?reqAtLevel(st.req.length,lvNow):r.n}; });
+        var cardLv=+item.lv||lvNow, crLv=Math.max(1,Math.min(lvNow,+(m.creation||cardLv)||cardLv));
+        var reqList=(st.req||[]).map(function(r){ return {attr:r.attr,n:crLv!==cardLv?reqAtLevel(st.req.length,crLv):r.n}; });
         var reqShort=reqList.filter(function(r){ return (attrVals[r.attr.toLowerCase()]||10)<r.n; });
         var pm=reqShort.length?REQ_PENALTY_MULT:1;
         var reqTxt=reqShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ');
@@ -4552,7 +4561,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           return '<tr class="cb-dmg-row">'+
             '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
               '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
-              '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Lv '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
+              '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Upgrade '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
               '<small>No damage stat &mdash; a utility item</small></div></div></td>'+
             '<td class="cb-dmg-t">'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td>'+
             '<td class="cb-dmg-derived">'+dash+'</td><td>'+dash+'</td><td class="cb-dmg-derived cb-dmg-final">'+dash+'</td></tr>';
@@ -4563,7 +4572,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return '<tr class="cb-dmg-row'+(r.id===topId?' cb-dmg-top':'')+'">'+
           '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
             '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
-            '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Lv '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
+            '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Upgrade '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
             '<small>'+critTxt+'</small>'+(r.reqTxt?'<small class="cb-dmg-warn">Under its requirement ('+dmgEsc(r.reqTxt)+') &mdash; damage cut by 80%</small>':'')+'</div></div></td>'+
           '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'">'+dmgEsc(st.schoolLabel)+'</span></td>'+
           '<td>'+dmgFmt(st.base)+'</td>'+
@@ -4776,7 +4785,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var a={}; ATTRS.forEach(function(x){ if(attrVals[x.id]!==10) a[x.id]=attrVals[x.id]; });
       var m={}; Object.keys(itemMeta).forEach(function(id){
         if(!equipped[id]) return; var v=itemMeta[id];
-        m[id]={r:v.rarity,l:v.level,f:v.facet||'',g:v.gems||[],e:v.enchants||[],u:v.runes||[]};
+        m[id]={r:v.rarity,l:v.level,c:v.creation,f:v.facet||'',g:v.gems||[],e:v.enchants||[],u:v.runes||[]};
       });
       return {v:1,lv:+document.getElementById('cbLevel').value,a:a,e:Object.assign({},equipped),m:m};
     }
@@ -4819,7 +4828,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         });
         Object.keys(o.m||{}).forEach(function(id){
           var cur=itemMeta[id], sv=o.m[id]; if(!cur||!equipped[id]) return;
-          cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.facet=sv.f||'';
+          cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.creation=Math.max(1,Math.min(cur.level,+sv.c||+sv.l||1)); cur.facet=sv.f||'';
           cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=(sv.u||[]).slice();
           normalizeItemMeta(cur);
           var lb=slotEls[id].el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=cur.level;
