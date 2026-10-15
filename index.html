@@ -4338,7 +4338,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       for(var i=1;i<c.length;i++) if(lv<=c[i][0]) return Math.round(c[i-1][1]+(c[i][1]-c[i-1][1])*(lv-c[i-1][0])/(c[i][0]-c[i-1][0]));
     }
     // Being under any requirement costs 80% of the weapon's damage (checked against the other planner at
-    // 2, 5 and 9 points short on a single requirement and 5 short on each of two).
+    // 1, 2, 5 and 9 points short on a single requirement and 5 short on each of two).
     var REQ_PENALTY_MULT=0.2;
     var DMG_ATTR_ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FTH'};
     var DMG_SCHOOL_LABEL={physical:'Physical',fire:'Fire',ice:'Ice',lightning:'Lightning',plague:'Plague',bleed:'Bleed'};
