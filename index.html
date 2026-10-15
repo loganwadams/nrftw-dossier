@@ -594,6 +594,7 @@ section{padding-block:48px}
 .cb-report-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--edge);padding-bottom:14px;margin-bottom:4px}
 .cb-report-head h3{margin:0}
 .cb-report-head h3.cb-report-grade{margin-left:auto;font-size:2.6rem;line-height:1;align-self:center;font-weight:600}
+.cb-report-grade small.cb-grade-lbl{font-size:.36em;opacity:.85;letter-spacing:.14em;text-transform:uppercase;margin:0 14px 0 0;vertical-align:middle;color:#d9b45f;text-shadow:none}
 .cb-report-grade small{font-size:.38em;opacity:.7;letter-spacing:.08em;margin-left:6px}
 .cb-report-grade.g-red{color:#e5604f}.cb-report-grade.g-blue{color:#5da2ff}
 .cb-report-grade.g-gold{color:#ffd56b;text-shadow:0 0 10px rgba(255,205,90,.9),0 0 26px rgba(255,190,60,.65),0 0 48px rgba(255,170,40,.4)}
@@ -3330,10 +3331,7 @@ footer li{color:#6f665b}
       </div>
     </div>
 
-    <div class="cb-panel cb-mf-block">
-      <h3>Loadout Manifest</h3>
-      <div class="cb-manifest-list cb-mf-board" id="cbManifest"><div class="cb-manifest-empty">Nothing assembled yet &mdash; choose gear from the board above to begin.</div></div>
-    </div>
+    <div id="cbManifest" hidden></div><!-- the old manifest list; kept as an inert hook for the editing code -->
 
     <div class="cb-report" id="cbReport" hidden>
       <div class="cb-report-head">
@@ -4534,7 +4532,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 
     // ---- Set up an item as soon as it is picked ---------------------------------------------
     // Picking a weapon, armor piece or ring opens this panel so rarity, level, gems, facet and
-    // enchantments are chosen right away. It edits the same data as the Loadout Manifest.
+    // enchantments are chosen right away. It edits the item's rarity, gems, facet and enchantments.
     var cfgId=null;
     (function cfgModal(){
       var ov=document.createElement('div'); ov.id='cbCfg'; ov.className='cb-cfg'; ov.hidden=true;
@@ -4544,7 +4542,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<button type="button" class="cb-cfg-x" id="cbCfgX" aria-label="Close">&times;</button></div>'+
         '<div class="cb-cfg-body" id="cbCfgBody"></div>'+
         '<div class="cb-cfg-err" id="cbCfgErr" role="alert" hidden></div>'+
-        '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can change any of this later from the Loadout Manifest.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
+        '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can reopen this any time by clicking the item in the Equipment board.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
       document.body.appendChild(ov);
       var body=ov.querySelector('#cbCfgBody');
       function sig(m){ return [m.rarity,(m.gems||[]).length,(m.enchants||[]).length,(m.runes||[]).length,enchShortfall(m).join(',')].join('|'); }
@@ -5180,7 +5178,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
       var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
-      h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Add some under Rarity / Gems / Facet&hellip; in the Loadout Manifest.</p>');
+      h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Click an item in the Equipment board and add some under Rarity, Gems or Facet.</p>');
       h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
       document.getElementById('cbDmgNotesBody').innerHTML=h;
       notesEl.hidden=false;
@@ -5205,7 +5203,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var reqOk=!rows.some(function(r){ return r.reqTxt; });
         var scaleN=best.st.scales.length?best.st.scales:[], pts=0; scaleN.forEach(function(n){ pts+=Math.max(0,(attrVals[n.toLowerCase()]||10)-10); });
         var inv=spent>0?Math.min(1,pts/Math.max(1,spent*.5)):0;
-        var mod=Math.min(1,Math.max(0,best.Lpct||0)/30);
+        var mod=Math.min(1,Math.max(0,(best.L&&best.L.pct)||0)/30); // percentage points added by enchants, gems and facet
         off=(reqOk?4:0)+3*inv+2*mod+(rows.length>1?1:0);
         if(!reqOk) bits.push('a weapon is under its requirement (damage cut 80%)');
         if(inv<.6) bits.push(scaleN.length?'few points in '+scaleN.join('/')+' for '+best.item.n:'weapon has no attribute scaling');
@@ -5349,7 +5347,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var gradeEl=document.getElementById('cbGrade');
       if(gradeEl){ if(report.grade){ gradeEl.innerHTML=gradeHtml(report.grade); gradeEl.hidden=false; } else { gradeEl.hidden=true; } }
       var gradeHead=document.getElementById('cbReportGrade');
-      if(gradeHead){ if(report.grade){ gradeHead.className='cb-report-grade '+tierOf(report.grade.score); gradeHead.innerHTML=report.grade.score.toFixed(1)+'<small>/ 10</small>'; gradeHead.hidden=false; } else gradeHead.hidden=true; }
+      if(gradeHead){ if(report.grade){ gradeHead.className='cb-report-grade '+tierOf(report.grade.score); gradeHead.innerHTML='<small class="cb-grade-lbl">Build Grade</small>'+report.grade.score.toFixed(1)+'<small>/ 10</small>'; gradeHead.hidden=false; } else gradeHead.hidden=true; }
       if(report.empty){
         verdictEl.textContent='Incomplete';
         verdictEl.className='cb-report-verdict v-empty';
