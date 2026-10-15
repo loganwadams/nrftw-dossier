@@ -709,7 +709,9 @@ section{padding-block:48px}
 .cb-slot{position:relative;width:58px;height:58px;flex:none;border:1px solid var(--edge);background:rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
 .cb-slot-main{overflow:hidden}
 .cb-slot.cb-slot-uniq .cb-slot-main{overflow:visible;filter:drop-shadow(0 0 3px rgba(242,195,92,.95)) drop-shadow(0 0 9px rgba(242,195,92,.6))}
-.cb-glow-uniq{overflow:visible!important}
+.cb-slot.cb-slot-plag .cb-slot-main{overflow:visible;filter:drop-shadow(0 0 3px rgba(190,24,24,.95)) drop-shadow(0 0 9px rgba(140,10,10,.75))}
+.cb-glow-plag .m-ic{filter:drop-shadow(0 0 2px rgba(190,24,24,.95)) drop-shadow(0 0 7px rgba(140,10,10,.75))}
+.cb-glow-uniq,.cb-glow-plag{overflow:visible!important}
 .cb-glow-uniq .m-ic{filter:drop-shadow(0 0 2px rgba(242,195,92,.95)) drop-shadow(0 0 7px rgba(242,195,92,.6))}
 .cb-slot.cb-slot-sm{width:46px;height:46px}
 .cb-slot:hover{border-color:var(--gold-dim)}
@@ -4171,7 +4173,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function syncSlotGlow(){
       Object.keys(slotEls).forEach(function(id){
         var el=slotEls[id]&&slotEls[id].el; if(!el) return;
-        el.classList.toggle('cb-slot-uniq',!!(equipped[id]&&itemMeta[id]&&itemMeta[id].rarity==='unique'));
+        var rr=equipped[id]&&itemMeta[id]&&itemMeta[id].rarity;
+        el.classList.toggle('cb-slot-uniq',rr==='unique'); el.classList.toggle('cb-slot-plag',rr==='plagued');
       });
     }
     function renderManifest(){
@@ -4867,7 +4870,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       body.innerHTML=res.rows.map(function(r){
         var it=r.item, st=r.st;
         var rarity=(itemMeta[r.id]&&itemMeta[r.id].rarity)||it.r||'standard';
-        var icon='<span class="cb-dmg-icw'+(rarity==='unique'?' cb-glow-uniq':'')+'"><span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span></span>';
+        var icon='<span class="cb-dmg-icw'+(rarity==='unique'?' cb-glow-uniq':(rarity==='plagued'?' cb-glow-plag':''))+'"><span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span></span>';
         if(!(st.base>0)){
           var dash='<span class="cb-dmg-none">&mdash;</span>';
           return '<tr class="cb-dmg-row">'+
@@ -5046,7 +5049,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var meta=slotEls[id]; if(!meta) return;
       delete equipped[id];
       delete itemMeta[id];
-      meta.el.classList.remove('filled'); meta.el.classList.remove('cb-slot-uniq');
+      meta.el.classList.remove('filled'); meta.el.classList.remove('cb-slot-uniq'); meta.el.classList.remove('cb-slot-plag');
       meta.el.innerHTML='<span class="cb-slot-plus">+</span>';
     }
     function resetBuild(){
