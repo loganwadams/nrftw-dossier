@@ -719,6 +719,7 @@ section{padding-block:48px}
 .cb-slot-lv{position:absolute;right:2px;bottom:1px;font-family:var(--data);font-size:9px;color:var(--gold);background:rgba(10,8,7,.75);padding:0 3px;line-height:1.5}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
+.cb-cfg-tools{display:flex;gap:8px;margin:0 36px 0 auto;align-self:center}.cb-cfg-tool{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);border-radius:3px;padding:6px 10px;cursor:pointer}.cb-cfg-tool:hover{border-color:var(--gold)}.cb-cfg-tool.cb-cfg-danger{color:#d0604f;border-color:rgba(208,96,79,.5)}.cb-cfg-tool.cb-cfg-danger:hover{border-color:#d0604f}
 .cb-slot-clear:hover{color:var(--rust);border-color:var(--rust)}
 .cb-slot.cb-slot-warn{border-color:var(--rust)}
 .cb-slot.cb-slot-warn.filled{border-color:var(--rust)}
@@ -4162,6 +4163,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var ov=document.createElement('div'); ov.id='cbCfg'; ov.className='cb-cfg'; ov.hidden=true;
       ov.innerHTML='<div class="cb-cfg-panel" role="dialog" aria-modal="true" aria-labelledby="cbCfgTitle">'+
         '<div class="cb-cfg-head"><div><div class="cb-cfg-slot" id="cbCfgSlot"></div><h3 id="cbCfgTitle"></h3></div>'+
+        '<div class="cb-cfg-tools"><button type="button" class="cb-cfg-tool" id="cbCfgSwap">Change item</button><button type="button" class="cb-cfg-tool cb-cfg-danger" id="cbCfgDrop">Remove</button></div>'+
         '<button type="button" class="cb-cfg-x" id="cbCfgX" aria-label="Close">&times;</button></div>'+
         '<div class="cb-cfg-body" id="cbCfgBody"></div>'+
         '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can change any of this later from the Loadout Manifest.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
@@ -4184,6 +4186,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         onDetailChange(e);
         if(m && sig(m)!==lastSig){ lastSig=sig(m); var rid=cfgId; setTimeout(function(){ if(cfgId===rid) body.innerHTML=renderDetailPanel(rid,cards[equipped[rid]]); },0); }
       });
+      ov.querySelector('#cbCfgSwap').addEventListener('click',function(){ var rid=cfgId; closeCfg(); if(rid) openPicker(rid); });
+      ov.querySelector('#cbCfgDrop').addEventListener('click',function(){ var rid=cfgId; closeCfg(); if(rid){ setSlotEmpty(rid); renderManifest(); } });
       ov.querySelector('#cbCfgDone').addEventListener('click',closeCfg);
       ov.querySelector('#cbCfgX').addEventListener('click',closeCfg);
       ov.addEventListener('mousedown',function(e){ if(e.target===ov) closeCfg(); });
@@ -5093,6 +5097,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var id=slotEl.dataset.slot; var meta=slotEls[id]; if(!meta) return;
       if(clear){ e.preventDefault(); e.stopPropagation(); setSlotEmpty(id); renderManifest(); return; }
       if(!equipped[id]){ e.preventDefault(); openPicker(id); }
+      else if(itemMeta[id] && window.openCfg){ e.preventDefault(); window.openCfg(id); }
     }
     document.getElementById('cbRows').addEventListener('click',onSlotsClick);
     document.getElementById('cbRuneCells').addEventListener('click',onSlotsClick);
