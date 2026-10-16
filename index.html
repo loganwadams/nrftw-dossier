@@ -1338,7 +1338,11 @@ tbody tr:last-child th,tbody tr:last-child td{border-bottom:none}
 html{scroll-behavior:smooth}
 section,article.klass{scroll-margin-top:24px}
 /* --- overview: hero band + chapter tiles --------------------------------- */
-.hero{position:relative;margin:30px 0 0;min-height:360px;display:flex;align-items:flex-end;overflow:hidden;border:1px solid var(--edge);isolation:isolate}
+.hero{position:relative;margin:30px 0 0;min-height:360px;display:flex;align-items:flex-end;overflow:hidden;isolation:isolate;
+  -webkit-mask-image:url("img/brush-splotch-mask.webp");mask-image:url("img/brush-splotch-mask.webp");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center}
 .hero-art{position:absolute;inset:0;z-index:-2;filter:saturate(.92);background:#0a0807}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity 1.8s ease-in-out}
 .hero-slide.on{opacity:1}
