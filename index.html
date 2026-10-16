@@ -858,6 +858,18 @@ a:hover{color:#dcb561}
   .klass.bleed .portrait{overflow:visible;justify-content:flex-start}
   .klass.bleed .portrait img{max-width:none}
 }
+/* Below 861px the two-column layout collapses to one, so there's no neighboring column for the
+   blade to bleed into - but the underlying problem is the same one size smaller: the Wraith art
+   is a near-square crop (900x900) where every other class portrait is a tall rectangle (roughly
+   660x900). With max-width:100% still capping it, "height:100%" never actually reaches 100% -
+   the square image hits the column's width limit well before its height limit and gets scaled
+   down to fit, landing visibly shorter than every other class on the same page. Letting it
+   overflow past the column here too (safe because html has overflow-x:hidden) restores the
+   intended height instead of a width-limited one. */
+@media (max-width:860px){
+  .klass.bleed .portrait{overflow:visible}
+  .klass.bleed .portrait img{max-width:none}
+}
 .portrait.placeholder{
   align-items:center;
   border:1px dashed var(--edge);
