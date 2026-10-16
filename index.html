@@ -145,6 +145,7 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-body{position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:170px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
 .lt-text{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
 .lt-node.up .lt-body{bottom:calc(50% + 56px)}
+.lt-node.up .lt-text{flex-direction:column-reverse}
 .lt-node.down .lt-body{top:calc(50% + 56px);flex-direction:column-reverse}
 .lt-ic{width:66px;height:66px;display:grid;place-items:center;background:url(img/lore-icon.png) center / contain no-repeat;filter:drop-shadow(0 6px 14px rgba(0,0,0,.7)) brightness(.92);transition:filter .25s,transform .25s}
 .lt-ic svg{display:none}
@@ -381,7 +382,11 @@ footer>*{position:relative;z-index:1}
   width:min(260px,45%);
   height:auto;
   margin:0 0 10px;
-  filter:drop-shadow(0 6px 26px rgba(0,0,0,.75));
+  transition:filter .25s ease;
+  filter:drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4));
+}
+@media (hover:hover) and (min-width:601px){
+  .logo:hover,.logo:focus-visible{filter:drop-shadow(0 0 2px rgba(255,214,140,.35)) drop-shadow(0 0 8px rgba(255,170,70,.25)) drop-shadow(0 0 16px rgba(255,140,40,.15));outline:none}
 }
 .kicker{
   font-family:var(--data);
@@ -399,7 +404,7 @@ footer>*{position:relative;z-index:1}
 }
 @media (max-width:600px){
   .masthead{text-align:center}
-  .logo{width:min(380px,70%);margin:0 auto 6px;transform:translateX(-18px);filter:drop-shadow(0 0 2px rgba(0,0,0,.55)) drop-shadow(0 0 5px rgba(0,0,0,.45)) drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+  .logo{width:min(380px,70%);margin:0 auto 6px;transform:translateX(-18px);filter:drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4))}
   .kicker{width:min(560px,92%);margin:0 auto 22px;font-size:10.5px;letter-spacing:.28em;padding-left:.28em}
 }
 h1{
@@ -666,6 +671,8 @@ section{padding-block:48px}
 .cb-dmg-notes ul{margin:0;padding-left:18px}
 .cb-dmg-notes li b{color:var(--bone);font-weight:500}
 @media (max-width:600px){.cb-dmg-table td small{white-space:normal}.cb-dmg-big{font-size:17px}.cb-dmg-final .cb-dmg-big{font-size:19px}}
+.cb-notice{margin:0 0 14px;padding:12px 16px;border:1px solid rgba(142,203,232,.4);border-left:3px solid #8ecbe8;background:rgba(142,203,232,.07);color:#d9ccb0;font-size:14.5px;line-height:1.55;max-width:none}
+.cb-notice strong{color:#8ecbe8;font-weight:600;letter-spacing:.04em}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
 .cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
 .cb-col{display:flex;flex-direction:column;gap:20px}
@@ -827,6 +834,8 @@ input:placeholder-shown ~ .cb-clr{display:none}
 .cb-ench-col .cb-clrw{display:block;width:100%}
 .cb-detail-row input[type="text"].cb-detail-ench[data-etype="2"]{color:#ff7b72;border-color:rgba(214,60,52,.55);background:rgba(120,20,16,.18)}
 .cb-detail-row input[type="text"].cb-detail-ench[data-etype="2"]::placeholder{color:#c4605a}
+.elw{font-weight:600}
+.elw-lightning{color:#f2e34a}.elw-fire{color:#f29a3a}.elw-ice{color:#6fd6f5}.elw-plague{color:#7862f5}.elw-bleed{color:#ec5a4d}
 .cb-ench-pop{position:fixed;z-index:400;max-height:560px;overflow-y:auto;overflow-x:hidden;background:#0d0a08;border:1px solid var(--edge);box-shadow:0 8px 24px rgba(0,0,0,.6);padding:4px 0}
 .ek-row{display:flex;gap:9px;align-items:flex-start;padding:7px 12px;font-size:13.5px;line-height:1.35;color:#c9bfae;cursor:pointer}
 .ek-row.on,.ek-row:hover{background:#1c1613}
@@ -1572,6 +1581,7 @@ body{max-width:100%}
   .pgbar .toc-drop a{white-space:normal}
 }
 
+.warnbox + .rules{margin-top:26px}
 .warnbox{
   border:1px solid var(--rust);
   border-left-width:3px;
@@ -1807,7 +1817,7 @@ footer li{color:#6f665b}
       <div class="fact"><dt>Classes at 1.0</dt><dd>24<small>All playable in the December beta</small></dd></div>
       <div class="fact"><dt>Class traits</dt><dd>280+<small>Unlocked by weapon use</small></dd></div>
       <div class="fact"><dt>Trait slots</dt><dd>6<small>Freely swappable</small></dd></div>
-      <div class="fact"><dt>Factions</dt><dd>6<small>Group the classes in the UI</small></dd></div>
+      <div class="fact"><dt>Factions</dt><dd>6<small>Each with its own quest line</small></dd></div>
     </dl>
 
     <div class="cols2">
@@ -1832,6 +1842,7 @@ footer li{color:#6f665b}
       <div>
         <p>Moon published a screenshot of the class selection screen, and the whole roster is legible in it: six factions, four classes each, twenty-four in total. Every name and every faction placement below is read directly off that screen. <span class="tag t-conf">Confirmed</span></p>
         <p>The screen carries its own warning across the bottom &mdash; subject to change. Names and groupings can still move before March.</p>
+        <p>The factions are more than a way of sorting the roster. Each one has its own quest line, and you are not confined to a single faction &mdash; choosing a class from one does not lock you out of the others&rsquo; stories.</p>
       </div>
       <div>
         <p>What the screen does not give is what the classes do. Only Rogue's description was visible. The mechanics below come from an earlier experimental build documented by the community wiki, which covered nineteen of these names, and from coverage of the class reveal.</p>
@@ -1931,6 +1942,7 @@ footer li{color:#6f665b}
   <div class="sep" data-page="world"></div>
   <section id="classes" style="padding-bottom:0">
     <div class="sect-head"><h2>Classes</h2></div>
+    <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The recommended attribute emphasis shown for each class reflects the current early-access system. Classes can also reportedly be combined, so treat each class below as a starting point rather than a fixed role.</p>
 
   </section>
 
@@ -3145,6 +3157,7 @@ footer li{color:#6f665b}
 <!-- GEN:infusions -->
   <section id="infusions">
     <div class="sect-head"><h2>Infusions</h2></div>
+    <p class="cb-notice"><strong>Heads up:</strong> gem infusions will be introduced into the game at the 1.0 launch, allowing you to combine gems to create new and unique traits.</p>
     <div class="cols2" style="margin-bottom:30px" data-m="intro:infusions">
       <div>
         <p>Infusions are the gems. Every one of them socketed into a weapon, a shield or a piece of armor, and what it does depends on where it sits: the same stone reads differently on a blade than on a helmet. There are forty-two in the live game, in twenty-one families of two tiers each &mdash; the chipped, tiny and small stones are tier one, the mottled and medium stones tier two. </p>
@@ -3308,6 +3321,7 @@ footer li{color:#6f665b}
          permanent part of the page header. -->
     <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Early Preview</span></div>
     <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Catalog.</p>
+    <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The attribute points in this builder reflect the current early-access system.</p>
     <p class="cb-note">Early preview &mdash; damage, attribute scaling, armor, weight and the enchantment and facet lists use the game&rsquo;s own numbers. A few effects (gem amounts, some conditional bonuses) aren&rsquo;t counted in the totals yet and are listed as such.</p>
 
     <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
@@ -3361,7 +3375,7 @@ footer li{color:#6f665b}
       <p class="cb-report-sub" id="cbReportSub"></p>
       <div class="cb-grade" id="cbGrade" hidden></div>
       <div class="panel cb-dmg" id="cbDmg" hidden>
-        <h3>Damage Breakdown</h3>
+        <h3>Damage Output</h3>
         <p class="cb-dmg-formula">Damage per hit = <b>(Listed + Stat Scaling)</b> &times; <b>Weapon Bonus</b> &times; <b>Build Bonus</b> &mdash; before enemy resistances and combo multipliers.</p>
         <label class="cb-dmg-cond"><input type="checkbox" id="cbDmgCond"> Count conditional damage bonuses as if their condition is always met (full health, full focus, large enemies and similar)</label>
         <div class="cb-dmg-shield" id="cbDmgShield" hidden></div>
@@ -3401,7 +3415,7 @@ footer li{color:#6f665b}
         </div>
       </div>
       <div class="panel">
-        <h3>What Would Change It</h3>
+        <h3>Recommended Changes</h3>
         <ul class="marks recs" id="cbReportRecs"></ul>
       </div>
     </div>
@@ -4092,8 +4106,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       function fill(){
         var idx=gemIndex(), lab=gemSlotLabel(cur.dataset.id), q=String(cur.value||'').toLowerCase().split(/\s+/).filter(Boolean);
-        rows=Object.keys(idx).map(function(k){ return idx[k]; }).filter(function(g){ var n=g.n.toLowerCase(); return q.every(function(w){ return n.indexOf(w)>-1; }); })
-          .sort(function(a,b){ return a.n<b.n?-1:1; });
+        rows=Object.keys(idx).map(function(k){ return idx[k]; }).filter(function(g){
+            // match the gem's name, or anything it does on any slot (so "plague" finds every gem with a plague effect)
+            var n=g.n.toLowerCase(), fx=Object.keys(g.fx||{}).map(function(k){ return String(g.fx[k]||'').replace(/<[^>]+>/g,' '); }).join(' ').toLowerCase();
+            g._nm=q.every(function(w){ return n.indexOf(w)>-1; });
+            return g._nm || q.every(function(w){ return (n+' '+fx).indexOf(w)>-1; }); })
+          .sort(function(a,b){ if(a._nm!==b._nm) return a._nm?-1:1; return a.n<b.n?-1:1; });
         pop.innerHTML=rows.length?rows.map(function(g,i){
           var t=g.fx[lab];
           var ic=g.p?'<span class="m-ic" style="background-position:-'+(g.p[0]*48)+'px -'+(g.p[1]*48)+'px"></span>':'';
@@ -5022,13 +5040,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function applyDmgEnchant(p,bucket,st,src,wname){
       var tag=src+': “'+p.text+'”';
       if(p.kind==='flat'){
-        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+' — not counted.'); return; }
+        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).'); return; }
         bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text);
       } else if(p.kind==='critChance'){ bucket.critChance+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='critMult'){ bucket.critMult+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='range'){ bucket.notes.push(tag+' is a range — type the value you rolled to count it.'); }
       else if(p.pct && dmgAssumeCond()){
-        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+' — not counted.'); return; }
+        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).'); return; }
         bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text+' (assumed active)');
       }
       else { bucket.notes.push(tag+' is conditional — not counted in the per-hit figure.'); }
@@ -5091,7 +5109,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(GEM_DMG[n]){
             var gd=GEM_DMG[n];
             if(gd[0]===st.school){ L.pct+=gd[1]; L.parts.push(g.trim()+': +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage'); }
-            else L.notes.push(g.trim()+' adds +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage, but '+item.n+' deals '+st.schoolLabel+' — not counted.');
+            else L.notes.push(g.trim()+' adds +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage, but '+item.n+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).');
           } else if(GEM_INFUSE[n]){
             L.notes.push(g.trim()+' grants a '+GEM_INFUSE[n]+' infusion — the amount isn’t published, so it isn’t counted.');
           } else if(GEM_POISE[n]){
@@ -5345,6 +5363,61 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var verdictClass=cs.ratio>=1?'v-bad':(cs.ratio>=.6?'v-warn':'v-good');
       var sub=(selectedClass?className+' · ':'')+'Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
 
+      // Build-completeness advice: what the grade is marking down, stated as something to do.
+      (function(){
+        var cat=function(c){ return Object.keys(equipped).filter(function(id){ return slotEls[id]&&slotEls[id].cat===c; }).length; };
+        var AN={helm:'helm',chest:'chest piece',legs:'leg armor',gloves:'gloves'};
+        var noArmor=Object.keys(AN).filter(function(c){ return cat(c)===0; }).map(function(c){ return AN[c]; });
+        if(noArmor.length) recs.push('Fill your empty armor slots ('+noArmor.join(', ')+'): armor and resistances are missing, which is most of your Defense score.');
+        else if(!Rk.length) recs.push('Add resistance to your armor: none of the four elements is covered yet.');
+        else if(Rk.length<4) recs.push('Cover the remaining elements: you have resistance on '+Rk.length+' of 4.');
+        var rows=dmg.rows.filter(function(r){ return r.st.base>0; });
+        if(!cat('weapon')) recs.push('Equip a main-hand weapon: there is no damage source at all yet.');
+        else if(rows.length===1) recs.push('Add a second weapon: you only have '+rows[0].item.n+' to deal damage with.');
+        if(!cat('offhand')) recs.push('Fill the off-hand slot with a shield, catalyst or second weapon.');
+        if(cat('ring')<3) recs.push('Equip '+(3-cat('ring'))+' more ring'+(3-cat('ring')>1?'s':'')+': rings are free stats and enchant slots.');
+        if(cat('rune')<4) recs.push('Slot '+(4-cat('rune'))+' more utility rune'+(4-cat('rune')>1?'s':'')+' for the empty rune slots.');
+        rows.forEach(function(r){
+          if(r.reqTxt) recs.push(r.item.n+' is under its requirement ('+r.reqTxt+'): raise those attributes or its damage stays cut by 80%.');
+          var sc=r.st.scales||[];
+          if(!sc.length) return;
+          var mult=(r.st.base+r.attrBonus)>0?r.attackDmg/(r.st.base+r.attrBonus):1;
+          var pts={}, tot=0; sc.forEach(function(n){ pts[n]=Math.max(0,(attrVals[n.toLowerCase()]||10)-10); tot+=pts[n]; });
+          var hpPts=Math.max(0,attrVals.health-10), spentPts=Math.max(1,spent-0);
+          if(tot<spentPts*.5 && hpPts>0){
+            var move=Math.min(hpPts,Math.max(10,Math.round(hpPts*.25)));
+            var bestN=sc.slice().sort(function(a,b){ return pts[a]-pts[b]; })[0];
+            var g=r.st.base*(dmgAttrFrac(pts[bestN]+move)-dmgAttrFrac(pts[bestN]))*mult;
+            var hpAfter=csCurve(CS_HEALTH,attrVals.health-move);
+            recs.push((tot===0?'None of your '+spent+' points go into what ':'Only '+tot+' of your '+spent+' points go into what ')+r.item.n+' scales with ('+sc.join('/')+'). Moving '+move+' Health points into '+bestN+' adds about '+dmgFmt(g)+' damage per hit (Health '+cs.health+' → '+Math.round(hpAfter)+').');
+          }
+        });
+        // Element focus: gem infusions, element damage gems/enchants and the weapon's own school only pay off together.
+        var EL={fire:'Fire',ice:'Ice',lightning:'Lightning',plague:'Plague'}, byEl={}, wEl={};
+        var addEl=function(el,who){ if(!EL[el]) return; (byEl[el]=byEl[el]||[]); if(byEl[el].indexOf(who)<0) byEl[el].push(who); };
+        rows.forEach(function(r){ if(EL[r.st.school]){ addEl(r.st.school,r.item.n); wEl[r.st.school]=(wEl[r.st.school]||0)+1; } });
+        Object.keys(equipped).forEach(function(id){
+          var m=itemMeta[id]; if(!m || (slotEls[id]&&slotEls[id].cat==='rune')) return;
+          var nm=(cards[equipped[id]]||{}).n||'an item';
+          (m.gems||[]).forEach(function(g){ var n=dmgNorm(g); if(GEM_DMG[n]) addEl(GEM_DMG[n][0],nm); else if(GEM_INFUSE[n]) addEl(GEM_INFUSE[n].toLowerCase(),nm); });
+          var tx=(m.enchants||[]).concat([m.facet||'']);
+          tx.forEach(function(t){ t=String(t||''); if(!t||/resist|reduced/i.test(t)||!/damage|infus|electric/i.test(t)) return;
+            var mm=t.match(/\b(fire|ice|cold|lightning|electric|plague)\b/i); if(mm){ var e=mm[1].toLowerCase(); e=e==='cold'?'ice':e==='electric'?'lightning':e; addEl(e,nm); } });
+        });
+        var els=Object.keys(byEl);
+        if(els.length>1){
+          els.sort(function(a,b){ return (wEl[b]||0)*10+byEl[b].length-((wEl[a]||0)*10+byEl[a].length); });
+          var main=els[0], off=els.slice(1).map(function(e){ return EL[e]+' ('+byEl[e].join(', ')+')'; });
+          recs.push('Stick to one element: your gear mixes '+els.map(function(e){ return EL[e]; }).join(' and ')+'. Only one infusion applies to a weapon at a time (a new one replaces the old), and element damage bonuses only boost their own element, so spread across several they each do less. Go all '+EL[main]+' on every weapon, gem and enchant, and swap out the off-element pieces: '+off.join('; ')+'.');
+        }
+        var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; });
+        var eE=0,gE=0,com=0,lowLv=0;
+        det.forEach(function(id){ var m=itemMeta[id]; (m.enchants||[]).forEach(function(v){ if(!v||String(v).indexOf('__')>=0) eE++; }); (m.gems||[]).forEach(function(v){ if(!v) gE++; }); if(m.rarity==='standard') com++; if((m.level||1)<16) lowLv++; });
+        if(gE) recs.push('Socket gems: '+gE+' gem socket'+(gE>1?'s are':' is')+' empty.');
+        if(eE) recs.push('Fill '+eE+' open enchant slot'+(eE>1?'s':'')+' on your gear.');
+        if(com) recs.push('Upgrade '+com+' Common item'+(com>1?'s':'')+' to a higher rarity for more enchant and gem slots.');
+        if(lowLv) recs.push('Upgrade '+(lowLv>1?'your items':'your item')+' toward level 16: '+lowLv+' still below max.');
+      })();
       var grade=null; try{ grade=computeGrade(cs,dmg,spent,total,left); }catch(err){ if(window.console) console.error('Grade failed',err); }
       return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs,grade:grade};
     }
@@ -5658,6 +5731,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 (function(){
   // one entry per video: { id: YouTube video id, title, note }
   var VIDEOS = [
+  {
+  "id": "9M236rDAfgQ",
+  "title": "No Rest for the Wicked | Wicked Inside Showcase | Class System | 1.0 Launch Preview",
+  "note": "26:55",
+  "date": "2026-10-16",
+  "thumb": "img/vid/9M236rDAfgQ.webp"
+  },
   {
   "id": "pXaMfKj-_dg",
   "title": "No Rest for the Wicked | 1.0 Delay Announcement",
@@ -6391,7 +6471,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Landing on a group's own first chapter (e.g. #infusions, the top of the merged Gear page)
     // should go to the true page top, same as activate() does for a tab click - not
     // scrollIntoView's target-plus-96px offset, which leaves a gap above it.
-    if(el && chap===GROUP_FIRST_CHAP[group]) window.scrollTo(0,0);
+    function group_target(g){ return g==='cat'?'catalog':'vendors'; }
+    if(el && chap===GROUP_FIRST_CHAP[group] && !((group==='cat'||group==='vend') && el.id!==group_target(group))) window.scrollTo(0,0);
     else if(el) el.scrollIntoView({block:'start'});
     else window.scrollTo(0,0); }
   document.body.classList.add('paged');
@@ -6413,6 +6494,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   head.appendChild(form); input=form.querySelector('input'); list=form.querySelector('.sr-list');
   var logo=head.querySelector('img.logo');
   var kicker=head.querySelector('.kicker');
+  // clicking the logo goes Home
+  if(logo){ logo.setAttribute('role','link'); logo.setAttribute('tabindex','0'); logo.setAttribute('aria-label','Wicked Dossier - go to the homepage'); logo.style.cursor='pointer';
+    var goHome=function(e){ if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return; e.preventDefault(); var hb=document.querySelector('.pgbar button[data-chap="home"]'); if(hb) hb.click(); else window.scrollTo({top:0,behavior:'smooth'}); };
+    logo.addEventListener('click',goHome); logo.addEventListener('keydown',goHome); }
   function align(){ if(!logo||innerWidth<=760){ form.style.top=''; return; }
     // center the search box on the full logo image (WICKED + DOSSIER together), not the masthead's padded box
     var t=logo.offsetTop+logo.offsetHeight/2-input.offsetHeight/2; if(t>0) form.style.top=Math.round(t)+'px'; }
@@ -6539,4 +6624,29 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 })();
 </script>
 <!-- /LT -->
+
+<script>
+/* element words (Lightning, Fire, Ice, Plague, Bleed) are colour-coded wherever the builder's dropdowns and item panels list them */
+(function(){
+  var RE=/\b(Lightning|Electric|Fire|Ice|Cold|Plague|Bleed)\b/g, MAP={lightning:'lightning',electric:'lightning',fire:'fire',ice:'ice',cold:'ice',plague:'plague',bleed:'bleed'};
+  var SEL='.cb-ench-pop,#cbCfg,#cbManifest';
+  function wrap(root){
+    var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+      var p=n.parentNode; if(!p||/^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/.test(p.nodeName)||(p.classList&&p.classList.contains('elw'))) return NodeFilter.FILTER_REJECT;
+      RE.lastIndex=0; return RE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }}), list=[], n;
+    while((n=w.nextNode())) list.push(n);
+    list.forEach(function(t){
+      var f=document.createDocumentFragment(), txt=t.nodeValue, last=0, m; RE.lastIndex=0;
+      while((m=RE.exec(txt))){ if(m.index>last) f.appendChild(document.createTextNode(txt.slice(last,m.index)));
+        var sp=document.createElement('span'); sp.className='elw elw-'+MAP[m[1].toLowerCase()]; sp.textContent=m[1]; f.appendChild(sp); last=m.index+m[1].length; }
+      if(last<txt.length) f.appendChild(document.createTextNode(txt.slice(last)));
+      t.parentNode.replaceChild(f,t);
+    });
+  }
+  var busy=false, pending=false;
+  var mo=new MutationObserver(function(){ if(busy||pending) return; pending=true; requestAnimationFrame(function(){ pending=false; busy=true; try{ document.querySelectorAll(SEL).forEach(function(r){ if(!r.hidden||r.id==='cbManifest') wrap(r); }); }catch(e){} busy=false; }); });
+  function start(){ mo.observe(document.body,{childList:true,subtree:true,characterData:true}); }
+  if(document.body) start(); else document.addEventListener('DOMContentLoaded',start);
+})();
+</script>
 </body></html>
