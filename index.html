@@ -4092,8 +4092,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       function fill(){
         var idx=gemIndex(), lab=gemSlotLabel(cur.dataset.id), q=String(cur.value||'').toLowerCase().split(/\s+/).filter(Boolean);
-        rows=Object.keys(idx).map(function(k){ return idx[k]; }).filter(function(g){ var n=g.n.toLowerCase(); return q.every(function(w){ return n.indexOf(w)>-1; }); })
-          .sort(function(a,b){ return a.n<b.n?-1:1; });
+        rows=Object.keys(idx).map(function(k){ return idx[k]; }).filter(function(g){
+            // match the gem's name, or anything it does on any slot (so "plague" finds every gem with a plague effect)
+            var n=g.n.toLowerCase(), fx=Object.keys(g.fx||{}).map(function(k){ return String(g.fx[k]||'').replace(/<[^>]+>/g,' '); }).join(' ').toLowerCase();
+            g._nm=q.every(function(w){ return n.indexOf(w)>-1; });
+            return g._nm || q.every(function(w){ return (n+' '+fx).indexOf(w)>-1; }); })
+          .sort(function(a,b){ if(a._nm!==b._nm) return a._nm?-1:1; return a.n<b.n?-1:1; });
         pop.innerHTML=rows.length?rows.map(function(g,i){
           var t=g.fx[lab];
           var ic=g.p?'<span class="m-ic" style="background-position:-'+(g.p[0]*48)+'px -'+(g.p[1]*48)+'px"></span>':'';
