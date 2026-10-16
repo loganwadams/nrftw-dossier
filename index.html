@@ -382,7 +382,11 @@ footer>*{position:relative;z-index:1}
   width:min(260px,45%);
   height:auto;
   margin:0 0 10px;
+  transition:filter .25s ease;
   filter:drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4));
+}
+@media (hover:hover) and (min-width:601px){
+  .logo:hover,.logo:focus-visible{filter:drop-shadow(0 0 3px rgba(255,214,140,.95)) drop-shadow(0 0 10px rgba(255,170,70,.85)) drop-shadow(0 0 24px rgba(255,140,40,.6));outline:none}
 }
 .kicker{
   font-family:var(--data);
