@@ -828,6 +828,8 @@ input:placeholder-shown ~ .cb-clr{display:none}
 .cb-ench-col .cb-clrw{display:block;width:100%}
 .cb-detail-row input[type="text"].cb-detail-ench[data-etype="2"]{color:#ff7b72;border-color:rgba(214,60,52,.55);background:rgba(120,20,16,.18)}
 .cb-detail-row input[type="text"].cb-detail-ench[data-etype="2"]::placeholder{color:#c4605a}
+.elw{font-weight:600}
+.elw-lightning{color:#f2e34a}.elw-fire{color:#f29a3a}.elw-ice{color:#6fd6f5}.elw-plague{color:#9fd65c}.elw-bleed{color:#ec5a4d}
 .cb-ench-pop{position:fixed;z-index:400;max-height:560px;overflow-y:auto;overflow-x:hidden;background:#0d0a08;border:1px solid var(--edge);box-shadow:0 8px 24px rgba(0,0,0,.6);padding:4px 0}
 .ek-row{display:flex;gap:9px;align-items:flex-start;padding:7px 12px;font-size:13.5px;line-height:1.35;color:#c9bfae;cursor:pointer}
 .ek-row.on,.ek-row:hover{background:#1c1613}
@@ -6600,4 +6602,29 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 })();
 </script>
 <!-- /LT -->
+
+<script>
+/* element words (Lightning, Fire, Ice, Plague, Bleed) are colour-coded wherever the builder's dropdowns and item panels list them */
+(function(){
+  var RE=/\b(Lightning|Electric|Fire|Ice|Cold|Plague|Bleed)\b/g, MAP={lightning:'lightning',electric:'lightning',fire:'fire',ice:'ice',cold:'ice',plague:'plague',bleed:'bleed'};
+  var SEL='.cb-ench-pop,#cbCfg,#cbManifest';
+  function wrap(root){
+    var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+      var p=n.parentNode; if(!p||/^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/.test(p.nodeName)||(p.classList&&p.classList.contains('elw'))) return NodeFilter.FILTER_REJECT;
+      RE.lastIndex=0; return RE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }}), list=[], n;
+    while((n=w.nextNode())) list.push(n);
+    list.forEach(function(t){
+      var f=document.createDocumentFragment(), txt=t.nodeValue, last=0, m; RE.lastIndex=0;
+      while((m=RE.exec(txt))){ if(m.index>last) f.appendChild(document.createTextNode(txt.slice(last,m.index)));
+        var sp=document.createElement('span'); sp.className='elw elw-'+MAP[m[1].toLowerCase()]; sp.textContent=m[1]; f.appendChild(sp); last=m.index+m[1].length; }
+      if(last<txt.length) f.appendChild(document.createTextNode(txt.slice(last)));
+      t.parentNode.replaceChild(f,t);
+    });
+  }
+  var busy=false, pending=false;
+  var mo=new MutationObserver(function(){ if(busy||pending) return; pending=true; requestAnimationFrame(function(){ pending=false; busy=true; try{ document.querySelectorAll(SEL).forEach(function(r){ if(!r.hidden||r.id==='cbManifest') wrap(r); }); }catch(e){} busy=false; }); });
+  function start(){ mo.observe(document.body,{childList:true,subtree:true,characterData:true}); }
+  if(document.body) start(); else document.addEventListener('DOMContentLoaded',start);
+})();
+</script>
 </body></html>
