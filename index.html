@@ -5026,13 +5026,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function applyDmgEnchant(p,bucket,st,src,wname){
       var tag=src+': “'+p.text+'”';
       if(p.kind==='flat'){
-        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+' — not counted.'); return; }
+        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).'); return; }
         bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text);
       } else if(p.kind==='critChance'){ bucket.critChance+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='critMult'){ bucket.critMult+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='range'){ bucket.notes.push(tag+' is a range — type the value you rolled to count it.'); }
       else if(p.pct && dmgAssumeCond()){
-        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+' — not counted.'); return; }
+        if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).'); return; }
         bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text+' (assumed active)');
       }
       else { bucket.notes.push(tag+' is conditional — not counted in the per-hit figure.'); }
@@ -5095,7 +5095,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(GEM_DMG[n]){
             var gd=GEM_DMG[n];
             if(gd[0]===st.school){ L.pct+=gd[1]; L.parts.push(g.trim()+': +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage'); }
-            else L.notes.push(g.trim()+' adds +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage, but '+item.n+' deals '+st.schoolLabel+' — not counted.');
+            else L.notes.push(g.trim()+' adds +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage, but '+item.n+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).');
           } else if(GEM_INFUSE[n]){
             L.notes.push(g.trim()+' grants a '+GEM_INFUSE[n]+' infusion — the amount isn’t published, so it isn’t counted.');
           } else if(GEM_POISE[n]){
@@ -5394,10 +5394,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(els.length>1){
           els.sort(function(a,b){ return (wEl[b]||0)*10+byEl[b].length-((wEl[a]||0)*10+byEl[a].length); });
           var main=els[0], off=els.slice(1).map(function(e){ return EL[e]+' ('+byEl[e].join(', ')+')'; });
-          recs.push('Stick to one element: your gear mixes '+els.map(function(e){ return EL[e]; }).join(' and ')+'. Infusions and element bonuses only boost matching damage, so spread across several they each do less. Go all '+EL[main]+' on every weapon, gem and enchant, and swap out the off-element pieces: '+off.join('; ')+'.');
-        } else if(els.length===1){
-          var lone=els[0], ph=rows.filter(function(r){ return r.st.school!==lone; });
-          if(ph.length && rows.length) recs.push(EL[lone]+' bonuses only apply to '+EL[lone]+' damage: '+ph.map(function(r){ return r.item.n; }).join(', ')+' deal'+(ph.length>1?'':'s')+' '+(ph[0].st.schoolLabel||'another type of')+' damage, so those bonuses are wasted there. Put them on '+EL[lone]+' weapons or change the element.');
+          recs.push('Stick to one element: your gear mixes '+els.map(function(e){ return EL[e]; }).join(' and ')+'. Only one infusion applies to a weapon at a time (a new one replaces the old), and element damage bonuses only boost their own element, so spread across several they each do less. Go all '+EL[main]+' on every weapon, gem and enchant, and swap out the off-element pieces: '+off.join('; ')+'.');
         }
         var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; });
         var eE=0,gE=0,com=0,lowLv=0;
