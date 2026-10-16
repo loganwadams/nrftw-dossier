@@ -145,7 +145,6 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-body{position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:170px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
 .lt-text{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
 .lt-node.up .lt-body{bottom:calc(50% + 56px)}
-@media (min-width:861px){.lt-node.up .lt-text{flex-direction:column-reverse}}
 .lt-node.down .lt-body{top:calc(50% + 56px);flex-direction:column-reverse}
 .lt-ic{width:66px;height:66px;display:grid;place-items:center;background:url(img/lore-icon.png) center / contain no-repeat;filter:drop-shadow(0 6px 14px rgba(0,0,0,.7)) brightness(.92);transition:filter .25s,transform .25s}
 .lt-ic svg{display:none}
@@ -382,7 +381,7 @@ footer>*{position:relative;z-index:1}
   width:min(260px,45%);
   height:auto;
   margin:0 0 10px;
-  filter:drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4)) drop-shadow(0 6px 26px rgba(0,0,0,.75));
+  filter:drop-shadow(0 6px 26px rgba(0,0,0,.75));
 }
 .kicker{
   font-family:var(--data);
@@ -400,7 +399,7 @@ footer>*{position:relative;z-index:1}
 }
 @media (max-width:600px){
   .masthead{text-align:center}
-  .logo{width:min(380px,70%);margin:0 auto 6px;transform:translateX(-18px);filter:drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4))}
+  .logo{width:min(380px,70%);margin:0 auto 6px;transform:translateX(-18px);filter:drop-shadow(0 0 2px rgba(0,0,0,.55)) drop-shadow(0 0 5px rgba(0,0,0,.45)) drop-shadow(0 2px 6px rgba(0,0,0,.4))}
   .kicker{width:min(560px,92%);margin:0 auto 22px;font-size:10.5px;letter-spacing:.28em;padding-left:.28em}
 }
 h1{
@@ -1575,7 +1574,6 @@ body{max-width:100%}
 }
 .warnbox h3{color:var(--rust)}
 .warnbox p:last-child{margin-bottom:0}
-.warnbox + .rules{margin-top:26px}
 
 footer{
   padding-block:120px 60px;
@@ -6370,7 +6368,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMenu(); });
   document.addEventListener('click',function(e){ if(bar.classList.contains('menu-open') && !bar.contains(e.target)) closeMenu(); });
   window.addEventListener('hashchange',closeMenu);
-  function group_target(g){ return g==='cat'?'catalog':'vendors'; }
   function route(){ var h=decodeURIComponent(location.hash.slice(1)); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
     // No hash match: check whether the pathname itself names one of the clean-path pages
@@ -6387,9 +6384,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Landing on a group's own first chapter (e.g. #infusions, the top of the merged Gear page)
     // should go to the true page top, same as activate() does for a tab click - not
     // scrollIntoView's target-plus-96px offset, which leaves a gap above it.
-    // ...but an item inside the Catalog or Vendors (a section like Weapons, a vendor, or a card in one)
-    // should land on that item, expanded - only the bare Catalog/Vendors target itself goes to the top.
-    if(el && chap===GROUP_FIRST_CHAP[group] && !((group==='cat'||group==='vend') && el.id!==group_target(group))) window.scrollTo(0,0);
+    if(el && chap===GROUP_FIRST_CHAP[group]) window.scrollTo(0,0);
     else if(el) el.scrollIntoView({block:'start'});
     else window.scrollTo(0,0); }
   document.body.classList.add('paged');
@@ -6411,11 +6406,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   head.appendChild(form); input=form.querySelector('input'); list=form.querySelector('.sr-list');
   var logo=head.querySelector('img.logo');
   var kicker=head.querySelector('.kicker');
-  // clicking the logo goes Home, same as the Home tab
-  if(logo){ logo.setAttribute('role','link'); logo.setAttribute('tabindex','0'); logo.setAttribute('aria-label','Wicked Dossier - go to the homepage'); logo.style.cursor='pointer';
-    var goHome=function(e){ if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return; e.preventDefault();
-      var hb=document.querySelector('.pgbar button[data-chap="home"]'); if(hb) hb.click(); else { window.scrollTo({top:0,behavior:'smooth'}); } };
-    logo.addEventListener('click',goHome); logo.addEventListener('keydown',goHome); }
   function align(){ if(!logo||innerWidth<=760){ form.style.top=''; return; }
     // center the search box on the full logo image (WICKED + DOSSIER together), not the masthead's padded box
     var t=logo.offsetTop+logo.offsetHeight/2-input.offsetHeight/2; if(t>0) form.style.top=Math.round(t)+'px'; }
