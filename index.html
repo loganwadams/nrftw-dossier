@@ -5369,7 +5369,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var bestN=sc.slice().sort(function(a,b){ return pts[a]-pts[b]; })[0];
             var g=r.st.base*(dmgAttrFrac(pts[bestN]+move)-dmgAttrFrac(pts[bestN]))*mult;
             var hpAfter=csCurve(CS_HEALTH,attrVals.health-move);
-            recs.push('Only '+tot+' of your '+spent+' points go into what '+r.item.n+' scales with ('+sc.join('/')+'). Moving '+move+' Health points into '+bestN+' adds about '+dmgFmt(g)+' damage per hit (Health '+cs.health+' → '+Math.round(hpAfter)+').');
+            recs.push((tot===0?'None of your '+spent+' points go into what ':'Only '+tot+' of your '+spent+' points go into what ')+r.item.n+' scales with ('+sc.join('/')+'). Moving '+move+' Health points into '+bestN+' adds about '+dmgFmt(g)+' damage per hit (Health '+cs.health+' → '+Math.round(hpAfter)+').');
           }
         });
         var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; });
