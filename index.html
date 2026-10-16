@@ -5372,6 +5372,27 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             recs.push((tot===0?'None of your '+spent+' points go into what ':'Only '+tot+' of your '+spent+' points go into what ')+r.item.n+' scales with ('+sc.join('/')+'). Moving '+move+' Health points into '+bestN+' adds about '+dmgFmt(g)+' damage per hit (Health '+cs.health+' → '+Math.round(hpAfter)+').');
           }
         });
+        // Element focus: gem infusions, element damage gems/enchants and the weapon's own school only pay off together.
+        var EL={fire:'Fire',ice:'Ice',lightning:'Lightning',plague:'Plague'}, byEl={}, wEl={};
+        var addEl=function(el,who){ if(!EL[el]) return; (byEl[el]=byEl[el]||[]); if(byEl[el].indexOf(who)<0) byEl[el].push(who); };
+        rows.forEach(function(r){ if(EL[r.st.school]){ addEl(r.st.school,r.item.n); wEl[r.st.school]=(wEl[r.st.school]||0)+1; } });
+        Object.keys(equipped).forEach(function(id){
+          var m=itemMeta[id]; if(!m || (slotEls[id]&&slotEls[id].cat==='rune')) return;
+          var nm=(cards[equipped[id]]||{}).n||'an item';
+          (m.gems||[]).forEach(function(g){ var n=dmgNorm(g); if(GEM_DMG[n]) addEl(GEM_DMG[n][0],nm); else if(GEM_INFUSE[n]) addEl(GEM_INFUSE[n].toLowerCase(),nm); });
+          var tx=(m.enchants||[]).concat([m.facet||'']);
+          tx.forEach(function(t){ t=String(t||''); if(!t||/resist|reduced/i.test(t)||!/damage|infus|electric/i.test(t)) return;
+            var mm=t.match(/\b(fire|ice|cold|lightning|electric|plague)\b/i); if(mm){ var e=mm[1].toLowerCase(); e=e==='cold'?'ice':e==='electric'?'lightning':e; addEl(e,nm); } });
+        });
+        var els=Object.keys(byEl);
+        if(els.length>1){
+          els.sort(function(a,b){ return (wEl[b]||0)*10+byEl[b].length-((wEl[a]||0)*10+byEl[a].length); });
+          var main=els[0], off=els.slice(1).map(function(e){ return EL[e]+' ('+byEl[e].join(', ')+')'; });
+          recs.push('Stick to one element: your gear mixes '+els.map(function(e){ return EL[e]; }).join(' and ')+'. Infusions and element bonuses only boost matching damage, so spread across several they each do less. Go all '+EL[main]+' on every weapon, gem and enchant, and swap out the off-element pieces: '+off.join('; ')+'.');
+        } else if(els.length===1){
+          var lone=els[0], ph=rows.filter(function(r){ return r.st.school!==lone; });
+          if(ph.length && rows.length) recs.push(EL[lone]+' bonuses only apply to '+EL[lone]+' damage: '+ph.map(function(r){ return r.item.n; }).join(', ')+' deal'+(ph.length>1?'':'s')+' '+(ph[0].st.schoolLabel||'another type of')+' damage, so those bonuses are wasted there. Put them on '+EL[lone]+' weapons or change the element.');
+        }
         var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; });
         var eE=0,gE=0,com=0,lowLv=0;
         det.forEach(function(id){ var m=itemMeta[id]; (m.enchants||[]).forEach(function(v){ if(!v||String(v).indexOf('__')>=0) eE++; }); (m.gems||[]).forEach(function(v){ if(!v) gE++; }); if(m.rarity==='standard') com++; if((m.level||1)<16) lowLv++; });
