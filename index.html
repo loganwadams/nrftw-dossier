@@ -1050,8 +1050,8 @@ a:hover{color:#dcb561}
    overflow past the column here too (safe because html has overflow-x:hidden) restores the
    intended height instead of a width-limited one. */
 @media (max-width:860px){
-  .klass.bleed .portrait{overflow:visible}
-  .klass.bleed .portrait img{max-width:none}
+  .klass.bleed .portrait{overflow:hidden}
+  .klass.bleed .portrait img{max-width:none;transform:translateX(22%)}
 }
 .portrait.placeholder{
   align-items:center;
