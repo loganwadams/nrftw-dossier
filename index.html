@@ -6479,6 +6479,44 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   route();
   if(!location.hash) window.scrollTo(0,0);
   else window.addEventListener('load',function(){ setTimeout(function(){ var el=document.getElementById(decodeURIComponent(location.hash.slice(1))); if(el) el.scrollIntoView({block:'start'}); },150); });
+
+  // Scroll-spy: Factions/Classes/Systems (and any other page holding more than one chapter)
+  // are one continuous scroll, not separate pages - a tab click gets you there, but scrolling
+  // further under your own power should keep the bar honest about where you actually are
+  // rather than leaving it stuck on whichever tab you last clicked.
+  (function(){
+    var spyGroups={};
+    CHAPS.forEach(function(c){
+      if(c.hidden) return;
+      var navId=CHAP_NAV_ALIAS[c.id]||c.id, el=document.getElementById(c.target);
+      if(!el) return;
+      (spyGroups[c.group]=spyGroups[c.group]||[]).push({navId:navId, el:el});
+    });
+    // only a group with more than one distinct nav target can drift out of sync with itself
+    Object.keys(spyGroups).forEach(function(g){
+      var seen={}, uniq=spyGroups[g].filter(function(s){ if(seen[s.navId]) return false; seen[s.navId]=true; return true; });
+      if(uniq.length<2) delete spyGroups[g]; else spyGroups[g]=uniq;
+    });
+    if(!Object.keys(spyGroups).length) return;
+    function applyChap(navId){
+      if(navId===currentChap) return;
+      currentChap=navId;
+      bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+      var label=CHAP_TITLE[navId];
+      document.title=(label&&navId!=='home'&&navId!=='brief')?(label+' - '+BASE_TITLE):BASE_TITLE;
+    }
+    var ticking=false;
+    function onScrollSpy(){
+      ticking=false;
+      var list=spyGroups[current]; if(!list) return;
+      var line=100; // same ballpark as the scroll-margin-top used for anchor jumps, so a tab
+                    // click and a manual scroll agree on which chapter counts as "arrived"
+      var activeId=list[0].navId;
+      for(var i=0;i<list.length;i++){ if(list[i].el.getBoundingClientRect().top<=line) activeId=list[i].navId; else break; }
+      applyChap(activeId);
+    }
+    window.addEventListener('scroll',function(){ if(!ticking){ ticking=true; requestAnimationFrame(onScrollSpy); } },{passive:true});
+  })();
 })();
 </script>
 <!-- /PG -->
