@@ -3359,7 +3359,7 @@ footer li{color:#6f665b}
       <p class="cb-report-sub" id="cbReportSub"></p>
       <div class="cb-grade" id="cbGrade" hidden></div>
       <div class="panel cb-dmg" id="cbDmg" hidden>
-        <h3>Damage Breakdown</h3>
+        <h3>Damage Output</h3>
         <p class="cb-dmg-formula">Damage per hit = <b>(Listed + Stat Scaling)</b> &times; <b>Weapon Bonus</b> &times; <b>Build Bonus</b> &mdash; before enemy resistances and combo multipliers.</p>
         <label class="cb-dmg-cond"><input type="checkbox" id="cbDmgCond"> Count conditional damage bonuses as if their condition is always met (full health, full focus, large enemies and similar)</label>
         <div class="cb-dmg-shield" id="cbDmgShield" hidden></div>
@@ -5343,6 +5343,43 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var verdictClass=cs.ratio>=1?'v-bad':(cs.ratio>=.6?'v-warn':'v-good');
       var sub=(selectedClass?className+' · ':'')+'Level '+level+' · '+equippedCount+'/'+totalSlots+' slots filled · '+spent+'/'+total+' attribute points spent';
 
+      // Build-completeness advice: what the grade is marking down, stated as something to do.
+      (function(){
+        var cat=function(c){ return Object.keys(equipped).filter(function(id){ return slotEls[id]&&slotEls[id].cat===c; }).length; };
+        var AN={helm:'helm',chest:'chest piece',legs:'leg armor',gloves:'gloves'};
+        var noArmor=Object.keys(AN).filter(function(c){ return cat(c)===0; }).map(function(c){ return AN[c]; });
+        if(noArmor.length) recs.push('Fill your empty armor slots ('+noArmor.join(', ')+'): armor and resistances are missing, which is most of your Defense score.');
+        else if(!Rk.length) recs.push('Add resistance to your armor: none of the four elements is covered yet.');
+        else if(Rk.length<4) recs.push('Cover the remaining elements: you have resistance on '+Rk.length+' of 4.');
+        var rows=dmg.rows.filter(function(r){ return r.st.base>0; });
+        if(!cat('weapon')) recs.push('Equip a main-hand weapon: there is no damage source at all yet.');
+        else if(rows.length===1) recs.push('Add a second weapon: you only have '+rows[0].item.n+' to deal damage with.');
+        if(!cat('offhand')) recs.push('Fill the off-hand slot with a shield, catalyst or second weapon.');
+        if(cat('ring')<3) recs.push('Equip '+(3-cat('ring'))+' more ring'+(3-cat('ring')>1?'s':'')+': rings are free stats and enchant slots.');
+        if(cat('rune')<4) recs.push('Slot '+(4-cat('rune'))+' more utility rune'+(4-cat('rune')>1?'s':'')+' for the empty rune slots.');
+        rows.forEach(function(r){
+          if(r.reqTxt) recs.push(r.item.n+' is under its requirement ('+r.reqTxt+'): raise those attributes or its damage stays cut by 80%.');
+          var sc=r.st.scales||[];
+          if(!sc.length) return;
+          var mult=(r.st.base+r.attrBonus)>0?r.attackDmg/(r.st.base+r.attrBonus):1;
+          var pts={}, tot=0; sc.forEach(function(n){ pts[n]=Math.max(0,(attrVals[n.toLowerCase()]||10)-10); tot+=pts[n]; });
+          var hpPts=Math.max(0,attrVals.health-10), spentPts=Math.max(1,spent-0);
+          if(tot<spentPts*.5 && hpPts>0){
+            var move=Math.min(hpPts,Math.max(10,Math.round(hpPts*.25)));
+            var bestN=sc.slice().sort(function(a,b){ return pts[a]-pts[b]; })[0];
+            var g=r.st.base*(dmgAttrFrac(pts[bestN]+move)-dmgAttrFrac(pts[bestN]))*mult;
+            var hpAfter=csCurve(CS_HEALTH,attrVals.health-move);
+            recs.push('Only '+tot+' of your '+spent+' points go into what '+r.item.n+' scales with ('+sc.join('/')+'). Moving '+move+' Health points into '+bestN+' adds about '+dmgFmt(g)+' damage per hit (Health '+cs.health+' → '+Math.round(hpAfter)+').');
+          }
+        });
+        var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; });
+        var eE=0,gE=0,com=0,lowLv=0;
+        det.forEach(function(id){ var m=itemMeta[id]; (m.enchants||[]).forEach(function(v){ if(!v||String(v).indexOf('__')>=0) eE++; }); (m.gems||[]).forEach(function(v){ if(!v) gE++; }); if(m.rarity==='standard') com++; if((m.level||1)<16) lowLv++; });
+        if(gE) recs.push('Socket gems: '+gE+' gem socket'+(gE>1?'s are':' is')+' empty.');
+        if(eE) recs.push('Fill '+eE+' open enchant slot'+(eE>1?'s':'')+' on your gear.');
+        if(com) recs.push('Upgrade '+com+' Common item'+(com>1?'s':'')+' to a higher rarity for more enchant and gem slots.');
+        if(lowLv) recs.push('Upgrade '+(lowLv>1?'your items':'your item')+' toward level 16: '+lowLv+' still below max.');
+      })();
       var grade=null; try{ grade=computeGrade(cs,dmg,spent,total,left); }catch(err){ if(window.console) console.error('Grade failed',err); }
       return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs,grade:grade};
     }
