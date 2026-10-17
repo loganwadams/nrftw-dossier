@@ -16,13 +16,11 @@
 <!-- PG:css --><style>
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
 .pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;padding:8px 0}
-/* the bar's dark glass background/border run edge-to-edge on desktop, breaking out of .wrap's
-   max-width, while the nav itself (and its buttons) stay where they were - only the backdrop
-   is full-bleed, same left:50%/100vw/-50vw technique used for the footer scene. Mobile keeps
-   the bar contained, matching the burger-panel dropdown below it which is positioned against
-   the bar's own (contained) edges. */
+/* the bar's dark glass background/border run edge-to-edge on both desktop and mobile, breaking
+   out of .wrap's max-width (and its mobile padding), while the nav itself (and its buttons,
+   and the burger-panel dropdown below it) stay where they were - only the backdrop is
+   full-bleed, same left:50%/100vw/-50vw technique used for the footer scene. */
 .pgbar::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;z-index:-1;background:rgba(10,8,7,.92);backdrop-filter:blur(6px);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
-@media (max-width:760px){.pgbar::before{left:0;width:100%;margin-left:0}}
 .pgbar button{appearance:none;background:none;border:1px solid transparent;color:var(--muted);font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:color .15s,border-color .15s}
 .pgbar button:hover{color:var(--bone)}
 .pgbar button[aria-current="page"]{color:var(--gold);font-weight:600}
