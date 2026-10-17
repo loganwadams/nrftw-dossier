@@ -312,6 +312,29 @@ body.lt-on #lore .lore-beats{display:none}
 
 :root[data-theme="night"] .toc-drop a:hover{background:rgba(112,24,226,.12)}
 
+/* Night mode: sitewide sweep of the hardcoded tan rgba(201,169,110,X) tint used for hover
+   backgrounds, card/box borders, dividers and shadows, to the violet accent at the same alphas. */
+:root[data-theme="night"] .pgbar.menu-open .toc-has-drop .pgbar-plus:hover,:root[data-theme="night"] .pgbar.menu-open .toc-has-drop .pgbar-plus:focus-visible{background:rgba(112,24,226,.16)}
+:root[data-theme="night"] .sr-item{border-bottom-color:rgba(112,24,226,.16)}
+:root[data-theme="night"] .sr-item:hover,:root[data-theme="night"] .sr-item.sel{background:rgba(112,24,226,.12)}
+:root[data-theme="night"] .vid:hover .vid-play,:root[data-theme="night"] .vid-embed:hover .vid-play,:root[data-theme="night"] .vid-thumb-btn:focus-visible .vid-play{background:rgba(112,24,226,.22)}
+:root[data-theme="night"] .lt-pop{border-color:rgba(112,24,226,.5);background:radial-gradient(120% 90% at 20% 0%,#231a2e 0%,#15101c 60%,#0b0810 100%)}
+:root[data-theme="night"] .lt-pop-close{background:#1a1424;border-color:rgba(112,24,226,.55)}
+:root[data-theme="night"] .lt-pop::before{background:#15101c;border-color:rgba(112,24,226,.5)}
+:root[data-theme="night"] .cb-grade{border-color:rgba(112,24,226,.32)}
+:root[data-theme="night"] .cb-grade-score{border-right-color:rgba(112,24,226,.3)}
+:root[data-theme="night"] .cb-class-opt:hover,:root[data-theme="night"] .cb-class-opt:focus-visible{background:rgba(112,24,226,.12)}
+:root[data-theme="night"] .cb-gs-ic{border-color:rgba(112,24,226,.18)}
+:root[data-theme="night"] .cb-ench-fill .cb-ench-num{color:#e4dcf2;background:rgba(112,24,226,.14);border-color:rgba(112,24,226,.5)}
+:root[data-theme="night"] .contents a:hover{background:rgba(112,24,226,.08)}
+:root[data-theme="night"] .toc-drop-tog:hover{background:rgba(112,24,226,.14)}
+:root[data-theme="night"] .toc-drop-has-sub.open .toc-drop-tog{background:rgba(112,24,226,.1)}
+:root[data-theme="night"] .m-card{border-color:rgba(112,24,226,.26)}
+:root[data-theme="night"] .m-card-noimg,:root[data-theme="night"] .m-ic{border-color:rgba(112,24,226,.18)}
+:root[data-theme="night"] .m-card-uniq .m-card-name{text-decoration-color:rgba(112,24,226,.6)}
+:root[data-theme="night"] .m-setcard:hover,:root[data-theme="night"] .m-setcard.tt-open{box-shadow:0 0 0 1px rgba(112,24,226,.22),0 10px 26px rgba(0,0,0,.45)}
+:root[data-theme="night"] .m-setcard-src{border-top-color:rgba(112,24,226,.15)}
+
 *{box-sizing:border-box}
 
 body{
