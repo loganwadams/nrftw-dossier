@@ -371,21 +371,6 @@ footer>*{position:relative;z-index:1}
 }
 @media (max-width:760px){.header-bg{height:640px;background-size:350% auto}}
 
-/* --- separators: a family of thin gradient rules used between sections -- */
-/* all four dividers share one shape: the actual HUD rule from the game's own loading screen
-   (the line under the player name/level), lifted out as a mask so its real fade-in, fade-out
-   and grain carry over, rendered here in each variant's own site color instead of the game's
-   grey-white. */
-.sep,.sep-gold,.sep-ember,.sep-center{
-  margin:0;border:0;
-  -webkit-mask-image:url("img/divider-line-mask.webp");mask-image:url("img/divider-line-mask.webp");
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-.sep{height:3px;background:var(--edge-hot)}
-.sep-gold{height:3px;background:var(--gold-dim)}
-.sep-ember{height:3px;background:var(--rust)}
-.sep-center{height:3px;background:var(--gold-dim)}
-
 .logo{
   display:block;
   width:min(260px,45%);
@@ -531,13 +516,25 @@ h1 em{
 
 /* --- generic section ---------------------------------------------------- */
 section{padding-block:48px}
+/* the underline below every section title is the actual HUD rule from the game's own loading
+   screen (the line under the player name/level), lifted out as a mask so its real fade-in,
+   fade-out and grain carry over here - the same spot it holds in the game itself, rather than
+   a plain CSS border. */
 .sect-head{
   display:flex;
   align-items:baseline;
   gap:16px;
   margin-bottom:26px;
-  border-bottom:1px solid var(--edge);
+  position:relative;
   padding-bottom:12px;
+}
+.sect-head::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:var(--gold-dim);
+  -webkit-mask-image:url("img/divider-line-mask.webp");mask-image:url("img/divider-line-mask.webp");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
 }
 .sect-num{
   font-family:var(--display);
@@ -1773,7 +1770,6 @@ footer li{color:#6f665b}
     <p class="lore-lead">A fan-made field dossier for <a class="nrftw-link" href="https://norestforthewicked.com/" target="_blank" rel="noopener">No Rest for the Wicked</a> &mdash; the lore, the class system, the gear rules every build answers to, and a full reference for infusions, enchantments, vendors and the item catalog, kept current as Moon Studios reveals more.</p>
   </section>
 
-  <div class="sep-gold" data-page="home"></div>
   <section id="lore">
     <div class="sect-head"><h2>The Lore</h2></div>
     <p class="lore-lead">What happened before the ship ever left harbour. The world of <em><a class="nrftw-link" href="https://norestforthewicked.com/" target="_blank" rel="noopener">No Rest for the Wicked</a></em> is already in motion when the game opens, and the first hours make more sense when you know who set it moving.</p>
@@ -1816,7 +1812,6 @@ footer li{color:#6f665b}
     </div>
   </section>
 
-  <div class="sep-ember" data-page="home"></div>
   <section id="brief">
     <div class="sect-head"><h2>What We Know</h2></div>
 
@@ -1946,7 +1941,6 @@ footer li{color:#6f665b}
 
   </section>
 
-  <div class="sep" data-page="world"></div>
   <section id="classes" style="padding-bottom:0">
     <div class="sect-head"><h2>Classes</h2></div>
     <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The recommended attribute emphasis shown for each class reflects the current early-access system. Classes can also reportedly be combined, so treat each class below as a starting point rather than a fixed role.</p>
@@ -3134,7 +3128,6 @@ footer li{color:#6f665b}
     </div>
   </article>
 
-  <div class="sep-gold" data-page="world"></div>
   <section id="systems">
     <div class="sect-head"><h2>Rules That Govern</h2></div>
     <div class="warnbox">
@@ -3212,7 +3205,6 @@ footer li{color:#6f665b}
 <!-- /GEN:infusions -->
 
 <!-- GEN:enchantments -->
-  <div class="sep-center" data-page="gear"></div>
   <section id="enchantments">
     <div class="sect-head"><h2>Enchantments</h2></div>
     <div class="cols2" style="margin-bottom:30px" data-m="intro:enchantments">
