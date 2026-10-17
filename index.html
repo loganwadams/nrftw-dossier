@@ -67,6 +67,10 @@ body.paged .contents{display:none}
   .pgbar.menu-open .pgbar-item.open .toc-drop{display:block}
   .pgbar-panel .search{position:relative;top:auto;right:auto;transform:none;width:auto;margin:4px 4px 14px}
   .pgbar-search{display:none!important}
+  /* mobile: toggle sits far left, burger (Menu) far right - the reverse of the desktop order,
+     since the burger is what people expect to reach for on the side they open menus from */
+  .pgbar-right{order:-1;margin-left:0;margin-right:auto}
+  .pgbar-burger{margin-left:auto}
 }
 </style><!-- /PG:css -->
 <!-- SR:css --><style>
