@@ -77,7 +77,8 @@ body.paged .contents{display:none}
 /* search: far right of the masthead, vertically centered on the logo block */
 /* sun/moon toggle, swapping the whole site between its warm amber theme and the cool grey/blue
    "night" one - sits above the search box, top-right of the masthead on every breakpoint. */
-.pgbar-right{display:flex;align-items:center;margin-left:auto}
+.pgbar-right{display:flex;align-items:center}
+@media (min-width:761px){.pgbar-right{margin-left:auto}}
 .theme-toggle{flex:none;appearance:none;background:none;border:none;outline:none;color:var(--muted);padding:9px 14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s}
 .theme-toggle:hover,.theme-toggle:focus-visible{color:var(--gold)}
 .theme-toggle svg{width:15px;height:15px;display:block}
