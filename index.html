@@ -73,7 +73,7 @@ body.paged .contents{display:none}
 /* search: far right of the masthead, vertically centered on the logo block */
 /* sun/moon toggle, swapping the whole site between its warm amber theme and the cool grey/blue
    "night" one - sits above the search box, top-right of the masthead on every breakpoint. */
-.theme-toggle{position:absolute;top:0;right:0;z-index:61;appearance:none;background:rgba(0,0,0,.45);border:1px solid var(--edge);color:var(--bone);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.theme-toggle{flex:none;appearance:none;background:none;border:1px solid transparent;color:var(--muted);width:38px;height:38px;margin-left:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
 .theme-toggle:hover,.theme-toggle:focus-visible{color:var(--gold);border-color:var(--gold-dim)}
 .theme-toggle svg{width:17px;height:17px;display:block}
 .theme-toggle .ti-sun{display:none}
@@ -345,6 +345,7 @@ body.lt-on #lore .lore-beats{display:none}
 :root[data-theme="night"] .cb-profile-warn-chip,:root[data-theme="night"] .cb-report-verdict.v-bad,:root[data-theme="night"] .cb-dmg-chip,:root[data-theme="night"] .cb-slot.cb-slot-warn,:root[data-theme="night"] .cb-slot.cb-slot-warn.filled,:root[data-theme="night"] .cb-slot-clear:hover,:root[data-theme="night"] .warnbox{border-color:#b3487a}
 :root[data-theme="night"] #cbProfileNote.cb-note-warn{border-left-color:#b3487a}
 :root[data-theme="night"] .warnbox{background:linear-gradient(180deg,#1f1420,#170f1c)}
+:root[data-theme="night"] .cb-row-icon img{filter:grayscale(.45) sepia(.65) hue-rotate(230deg) saturate(2.4) brightness(1)}
 
 *{box-sizing:border-box}
 
@@ -6785,7 +6786,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 <!-- NIGHT MODE TOGGLE -->
 <script>
 (function(){
-  var head=document.querySelector('header.masthead'); if(!head) return;
+  var pgbar=document.querySelector('.pgbar'); if(!pgbar) return;
   var btn=document.createElement('button'); btn.type='button'; btn.className='theme-toggle';
   var KEY='nrftw-theme';
   function isNight(){ return document.documentElement.getAttribute('data-theme')==='night'; }
@@ -6800,7 +6801,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     try{ if(night) localStorage.setItem(KEY,'night'); else localStorage.removeItem(KEY); }catch(e){}
     label();
   });
-  head.appendChild(btn);
+  pgbar.appendChild(btn);
 })();
 </script>
 <!-- /NIGHT MODE TOGGLE -->
