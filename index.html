@@ -56,9 +56,11 @@ body.paged .contents{display:none}
 @media (max-width:760px){
   .pgbar{flex-wrap:nowrap;justify-content:flex-start;align-items:center}
   .pgbar-burger{display:inline-flex}
-  /* a small mark of the logo, far left of the bar (mobile only) - taps back to the top of the page */
-  .pgbar-logo{display:flex;align-items:center;order:-2;flex:none;padding:0 10px 0 14px;opacity:.92;transition:opacity .15s}
-  .pgbar-logo:hover,.pgbar-logo:focus-visible{opacity:1}
+  /* a small mark of the logo, far left of the bar (mobile only) - taps back to the top of the page.
+     Only shown once the real logo up top has scrolled out of view (see the IntersectionObserver
+     in the SR script block, which toggles .show-navlogo on the bar). */
+  .pgbar.show-navlogo .pgbar-logo{display:flex;align-items:center;order:-2;flex:none;padding:0 10px 0 14px;opacity:.92;transition:opacity .15s}
+  .pgbar.show-navlogo .pgbar-logo:hover,.pgbar.show-navlogo .pgbar-logo:focus-visible{opacity:1}
   .pgbar-logo img{height:22px;width:auto;display:block}
   .pgbar-panel{display:none}
   .pgbar.menu-open .pgbar-panel{display:flex;flex-direction:column;gap:2px;position:absolute;left:0;right:0;top:100%;margin-top:1px;padding:8px;background:#100d0b;border:1px solid var(--edge);box-shadow:0 18px 44px rgba(0,0,0,.8);max-height:min(82vh,620px);overflow:auto;z-index:55}
@@ -6842,6 +6844,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     pgRight.appendChild(pgBtn);
     if('IntersectionObserver' in window){
       new IntersectionObserver(function(entries){ pgbar.classList.toggle('show-search', !entries[0].isIntersecting); },{threshold:0}).observe(form);
+      // mobile nav logo: only once the real logo at the top has scrolled out of view
+      var heroLogo=document.querySelector('header.masthead .logo');
+      if(heroLogo) new IntersectionObserver(function(entries){ pgbar.classList.toggle('show-navlogo', !entries[0].isIntersecting); },{threshold:0}).observe(heroLogo);
     }
   }
   var index=null, uid=0;
