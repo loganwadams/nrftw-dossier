@@ -372,10 +372,19 @@ footer>*{position:relative;z-index:1}
 @media (max-width:760px){.header-bg{height:640px;background-size:350% auto}}
 
 /* --- separators: a family of thin gradient rules used between sections -- */
-.sep{height:1px;margin:0;border:0;background:linear-gradient(90deg,transparent,var(--edge-hot) 12%,transparent 60%)}
-.sep-gold{height:1px;margin:0;border:0;background:linear-gradient(90deg,transparent,var(--gold-dim) 10%,var(--gold-dim) 90%,transparent)}
-.sep-ember{height:2px;margin:0;border:0;background:linear-gradient(90deg,transparent,var(--rust) 18%,transparent 55%)}
-.sep-center{height:1px;margin:0;border:0;background:radial-gradient(ellipse at center,var(--gold-dim) 0%,transparent 70%)}
+/* all four dividers share one shape: the actual HUD rule from the game's own loading screen
+   (the line under the player name/level), lifted out as a mask so its real fade-in, fade-out
+   and grain carry over, rendered here in each variant's own site color instead of the game's
+   grey-white. */
+.sep,.sep-gold,.sep-ember,.sep-center{
+  margin:0;border:0;
+  -webkit-mask-image:url("img/divider-line-mask.webp");mask-image:url("img/divider-line-mask.webp");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.sep{height:3px;background:var(--edge-hot)}
+.sep-gold{height:3px;background:var(--gold-dim)}
+.sep-ember{height:3px;background:var(--rust)}
+.sep-center{height:3px;background:var(--gold-dim)}
 
 .logo{
   display:block;
