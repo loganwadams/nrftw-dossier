@@ -284,7 +284,7 @@ body.lt-on #lore .lore-beats{display:none}
    colors, which stay their original hue in both themes. */
 :root[data-theme="night"] .cb-cfg-hint,:root[data-theme="night"] .cb-cfg-x,:root[data-theme="night"] .cb-clr,:root[data-theme="night"] .cb-detail-hint.cb-rule,:root[data-theme="night"] .cb-dmg-key,:root[data-theme="night"] .cb-dmg-table td small,:root[data-theme="night"] .cb-ench-fill .cb-ench-num::placeholder,:root[data-theme="night"] .cb-grade-row small,:root[data-theme="night"] .cb-grade-score span,:root[data-theme="night"] .cb-picker-body h5 span,:root[data-theme="night"] .cost-tail,:root[data-theme="night"] .ek-none,:root[data-theme="night"] .fx-tag,:root[data-theme="night"] .lore-beat .lore-when,:root[data-theme="night"] .m-card-lv,:root[data-theme="night"] .m-cat h5 span,:root[data-theme="night"] .m-cat h5 span.m-cont,:root[data-theme="night"] .m-cat p.m-cat-note,:root[data-theme="night"] .m-cat-head span,:root[data-theme="night"] .m-pool h5 span,:root[data-theme="night"] .m-pool-note,:root[data-theme="night"] .m-stock,:root[data-theme="night"] .m-type,:root[data-theme="night"] .sr-item span,:root[data-theme="night"] .src-key-note,:root[data-theme="night"] footer h3,:root[data-theme="night"] .attr b,:root[data-theme="night"] .cb-dmg-bar .b,:root[data-theme="night"] .note,:root[data-theme="night"] .src,:root[data-theme="night"] tbody th{color:#928da0}
 
-:root[data-theme="night"] .cb-cfg-slot,:root[data-theme="night"] .cb-class-fac,:root[data-theme="night"] .cb-detail-label,:root[data-theme="night"] .cb-level-row label,:root[data-theme="night"] .cb-mf-lv,:root[data-theme="night"] .cb-mf-slot,:root[data-theme="night"] .cb-mf-sum b,:root[data-theme="night"] .cb-optional,:root[data-theme="night"] .cb-points,:root[data-theme="night"] .ench-col h4 span,:root[data-theme="night"] .ench-count,:root[data-theme="night"] .ench-glabel,:root[data-theme="night"] .inf-role,:root[data-theme="night"] .m-projects h4 span,:root[data-theme="night"] .m-role,:root[data-theme="night"] .m-stack h4 span,:root[data-theme="night"] .m-wares h4 span,:root[data-theme="night"] .fac-meta,:root[data-theme="night"] .fact dt{color:#847e8f}
+:root[data-theme="night"] .cb-cfg-slot,:root[data-theme="night"] .cb-class-fac,:root[data-theme="night"] .cb-detail-label,:root[data-theme="night"] .cb-level-row label,:root[data-theme="night"] .cb-mf-lv,:root[data-theme="night"] .cb-mf-slot,:root[data-theme="night"] .cb-mf-sum b,:root[data-theme="night"] .cb-optional,:root[data-theme="night"] .cb-points,:root[data-theme="night"] .ench-col h4 span,:root[data-theme="night"] .ench-count,:root[data-theme="night"] .ench-glabel,:root[data-theme="night"] .inf-role,:root[data-theme="night"] .m-projects h4 span,:root[data-theme="night"] .m-role,:root[data-theme="night"] .m-stack h4 span,:root[data-theme="night"] .m-wares h4 span,:root[data-theme="night"] .fac-meta,:root[data-theme="night"] .fact dt,:root[data-theme="night"] .cb-exalt-lbl{color:#847e8f}
 
 :root[data-theme="night"] .cb-dmg-none,:root[data-theme="night"] .cb-mf-sum em,:root[data-theme="night"] .gm-row.gm-none .gm-d,:root[data-theme="night"] .lt-hint,:root[data-theme="night"] .pgbar .pg-num,:root[data-theme="night"] .search input::placeholder,:root[data-theme="night"] .sr-empty,:root[data-theme="night"] footer li,:root[data-theme="night"] .cb-grade-name i,:root[data-theme="night"] .cb-grade-note,:root[data-theme="night"] footer,:root[data-theme="night"] .plate,:root[data-theme="night"] .byline,:root[data-theme="night"] .portrait.placeholder .coming-soon{color:#756f7e}
 
@@ -1046,10 +1046,34 @@ body.cb-cfg-open{overflow:hidden}
 .cb-dmg-shield{margin:0 0 10px;color:#b9ad9a;font-size:13px}.cb-dmg-cond{display:block;margin:6px 0 10px;color:#b9ad9a;font-size:13px;cursor:pointer}.cb-dmg-cond input{margin-right:6px}
 .cb-detail-hint.cb-rule{color:#8b8174;font-style:normal;margin-top:4px}
 .cb-detail-hint.cb-gemfx{color:#b9ad9a;margin-top:3px;display:block}.cb-detail-hint.cb-gemfx b{color:#d9c9a8;font-weight:600}
+
+/* Exalting: each enchant row can draw on the item's shared 4-exalt pool (never 4 per row). */
+.cb-ench-col .cb-clrw{display:flex;align-items:center;gap:10px}
+.cb-ench-col .cb-clrw .cb-ench-fill{flex:1 1 auto;min-width:0}
+.cb-ench-col .cb-clrw .cb-clr{position:static;flex:none}
+.cb-exalt-budget{display:block;font-family:var(--data);font-size:9.5px;letter-spacing:.06em;text-transform:none;color:var(--gold-dim);margin-top:2px}
+.cb-exalt-budget b{color:#f2c35c;font-weight:600}
+.cb-exalt-budget.full{color:#d0604f}
+.cb-exalt-budget.full b{color:#e0645c}
+.cb-ench-fill.cb-ex-on{border-color:rgba(242,195,92,.6);box-shadow:0 0 0 1px rgba(242,195,92,.25),0 0 10px rgba(242,195,92,.15)}
+.cb-ench-fill.cb-ex-on .cb-ench-num{color:#fff3cf;background:rgba(242,195,92,.16);border-color:rgba(242,195,92,.65)}
+.cb-exalt{display:flex;flex-direction:column;align-items:flex-start;gap:3px;flex:none}
+.cb-exalt-lbl{font-family:var(--data);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#6b6152}
+.cb-exalt-row{display:flex;align-items:center;gap:7px}
+.cb-exalt-pips{display:flex;gap:3px}
+.cb-exalt-pip{width:11px;height:11px;border:1px solid var(--edge-hot);background:rgba(0,0,0,.35);
+  transform:rotate(45deg);cursor:pointer;transition:background .12s,border-color .12s,box-shadow .12s;padding:0}
+.cb-exalt-pip:hover{border-color:var(--gold-dim)}
+.cb-exalt-pip.on{background:#f2c35c;border-color:#f2c35c;box-shadow:0 0 5px rgba(242,195,92,.75)}
+.cb-exalt-pip.locked{cursor:default;opacity:.28;pointer-events:none}
+.cb-exalt-boost{font-family:var(--data);font-size:10.5px;color:var(--gold-dim);min-width:30px}
+.cb-exalt-boost.on{color:#f2c35c}
 @media (max-width:640px){
   .cb-detail-label{width:100%}
   .cb-gs{width:calc(50% - 3px)}.cb-gs .cb-detail-slot{width:auto;flex:1;min-width:0}
   .cb-detail-slot{width:calc(50% - 3px)}
+  .cb-ench-col .cb-clrw{flex-wrap:wrap}
+  .cb-ench-col .cb-clrw .cb-ench-fill{flex-basis:100%}
 }
 
 /* picker */
@@ -4451,6 +4475,27 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return new DOMParser().parseFromString(item.h,'text/html').querySelectorAll('.item-rune-grid .item-link-name').length;
       }catch(err){ return 0; }
     }
+    // Exalting: an item gets 4 exalt steps TOTAL, split however across its enchants (never 4 per row).
+    // Each step adds +25% to that row's rolled value. Rings, gems/runes and a Plagued item's downside
+    // roll (etype 2) can't be exalted at all, per the wiki's Modifying Equipment page.
+    function cbExaltTotal(mm){
+      var ex=mm.exalts||[], t=0; for(var k=0;k<ex.length;k++) t+=ex[k]||0; return t;
+    }
+    function exaltBudgetHtml(mm){
+      if(mm.cat==='ring') return '';
+      var t=cbExaltTotal(mm);
+      return '<span class="cb-exalt-budget'+(t>=4?' full':'')+'"><b>'+t+'</b> / 4 exalted</span>';
+    }
+    function exaltCtrlHtml(id,mm,i,pl,eligible){
+      if(!eligible) return '';
+      var ex=(mm.exalts&&mm.exalts[i])||0, total=cbExaltTotal(mm);
+      var pips='';
+      for(var n=1;n<=4;n++){
+        var on=n<=ex, canLight=on||(total<4);
+        pips+='<span class="cb-exalt-pip'+(on?' on':'')+(canLight?'':' locked')+'" data-n="'+n+'" role="button" tabindex="0" aria-label="Exalt step '+n+'"></span>';
+      }
+      return '<div class="cb-exalt" data-id="'+id+'" data-i="'+i+'"><span class="cb-exalt-lbl">Exalt</span><div class="cb-exalt-row"><div class="cb-exalt-pips">'+pips+'</div><span class="cb-exalt-boost'+(ex?' on':'')+'">'+(ex?('+'+(ex*25)+'%'):'&mdash;')+'</span></div></div>';
+    }
     function detailSlotInputs(id,group,values,placeholder){
       var mm=itemMeta[id]||{}, plan=(group==='enchants'&&mm.cat!=='ring')?enchantPlan(mm.rarity,mm.level):null;
       var stockN=group==='runes'?stockRuneCount(id):0;
@@ -4465,7 +4510,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         }
         var clr='<button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button>';
         var fillH=(group==='enchants'&&!locked)?enchFillHtml(v,enchPoolFor(id),!!ownT):'';
-        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw'+(fillH?' cb-has-fill':'')+'">', wrapClose=fillH+(locked?'':clr)+'</span>';
+        var exEligible=group==='enchants'&&!locked&&mm.cat!=='ring'&&!!fillH&&!(pl&&pl.type===2);
+        var ex=(mm.exalts&&mm.exalts[i])||0;
+        if(fillH&&ex) fillH=fillH.replace('class="cb-ench-fill','class="cb-ench-fill cb-ex-on');
+        var exH=exaltCtrlHtml(id,mm,i,pl,exEligible);
+        var wrapOpen=(group==='gems'||group==='runes')?'<span class="cb-gs"><span class="cb-gs-ic">'+slotIconHtml(v)+'</span>':'<span class="cb-clrw'+(fillH?' cb-has-fill':'')+'">', wrapClose=fillH+exH+(locked?'':clr)+'</span>';
         return wrapOpen+'<input type="text"'+(pl?' data-etype="'+pl.type+'"':'')+' class="cb-detail-slot'+(group==='enchants'?' cb-detail-ench':'')+'" data-id="'+id+'" data-group="'+group+'" data-i="'+i+'"'+(group==='gems'?' autocomplete="off"':(group==='enchants'?' data-pool="'+enchPoolFor(id)+'" autocomplete="off"':''))+' value="'+(v||'').replace(/"/g,'&quot;')+'"'+(ownT&&!locked?' data-ulock="'+ownT.replace(/"/g,'&quot;')+'"':'')+(locked?' readonly title="Comes with the weapon and cannot be removed"':'')+' placeholder="'+ph+'">'+wrapClose;
       }).join('');
     }
@@ -4498,6 +4547,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(m.cat==='ring'){
         return '<div class="cb-mf-detail" data-id="'+id+'">'+
           detailFieldRow('Enchants ('+m.enchants.length+')','<span class="cb-detail-slots cb-ench-col">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span>')+'</div>';
+        // Rings can't be exalted (Sublime Ember / the Watcher won't take them), so no budget readout here.
       }
       var html='<div class="cb-mf-detail" data-id="'+id+'">';
       html+=detailFieldRow('Rarity','<select class="cb-detail-rarity" data-id="'+id+'">'+rarityOpts+'</select>');
@@ -4509,7 +4559,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       html+=detailFieldRow('Facet','<span class="cb-clrw"><input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None"><button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button></span>');
       html+=detailFieldRow('Gems ('+m.gems.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'gems',m.gems,'Gem')+'</span><small class="cb-detail-hint cb-rule">'+gemRuleText(m.rarity)+'</small><span class="cb-gemfx-box">'+gemEffectLines(id,m)+'</span>');
       html+=m.enchants.length
-        ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')','<span class="cb-detail-slots cb-ench-col">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span><small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>'+enchShortfall(m).map(function(w){ return '<small class="cb-detail-hint cb-warn">'+w+'</small>'; }).join(''))
+        ? detailFieldRow('Enchant'+(m.enchants.length>1?'s':'')+' ('+m.enchants.length+')'+exaltBudgetHtml(m),'<span class="cb-detail-slots cb-ench-col">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span><small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>'+enchShortfall(m).map(function(w){ return '<small class="cb-detail-hint cb-warn">'+w+'</small>'; }).join(''))
         : detailFieldRow('Enchants','<small class="cb-detail-hint cb-rule">'+enchRuleText(m.rarity,m.level)+'</small>');
       html+='</div>';
       return html;
@@ -4811,7 +4861,46 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       document.addEventListener('keydown',function(e){
         if(e.key==='Escape' && !e.defaultPrevented && !ov.hidden) closeCfg();
       });
+      // Exposed so an exalt-pip click (handled outside this closure) can keep an open item modal in sync.
+      window.cbRefreshCfgBody=function(id){ if(!ov.hidden && cfgId===id) body.innerHTML=renderDetailPanel(id,cards[equipped[id]]); };
     })();
+
+    // Exalting: each click allocates/frees one step from the item's shared 4-exalt pool and reapplies
+    // the +25%-per-step boost to that enchant's rolled value (past its normal max, same as the Watcher).
+    function cbExaltApply(id,i,want){
+      var m=itemMeta[id]; if(!m) return false;
+      if(!m.exalts) m.exalts=[];
+      var cur=m.exalts[i]||0, total=cbExaltTotal(m), budgetLeft=4-(total-cur);
+      want=Math.max(0,Math.min(want,budgetLeft,4));
+      if(want===cur) return false;
+      var info=enchTplOf(m.enchants[i],enchPoolFor(id));
+      if(!info||!info.tpl||info.tpl.split('__').length<2||info.nums[0]==='') return false;
+      if(!m.exBase) m.exBase={};
+      if(m.exBase[i]==null){
+        var curNum=parseFloat(info.nums[0]); if(isNaN(curNum)) return false;
+        m.exBase[i]=curNum/(1+0.25*cur);
+      }
+      var newNum=Math.round(m.exBase[i]*(1+0.25*want)*100)/100;
+      var segs=info.tpl.split('__'), t=segs[0];
+      for(var k=1;k<segs.length;k++){ var val=(k===1)?String(newNum):(info.nums[k-1]||''); t+=(val!==''?val:'__')+segs[k]; }
+      m.enchants[i]=t; m.exalts[i]=want;
+      return true;
+    }
+    document.addEventListener('click',function(e){
+      var pip=e.target.closest&&e.target.closest('.cb-exalt-pip'); if(!pip||pip.classList.contains('locked')) return;
+      var wrap=pip.closest('.cb-exalt'); if(!wrap) return;
+      var id=wrap.getAttribute('data-id'), i=+wrap.getAttribute('data-i'), n=+pip.getAttribute('data-n');
+      var m=itemMeta[id]; if(!m) return;
+      var cur=(m.exalts&&m.exalts[i])||0, want=(n===cur)?n-1:n;
+      if(!cbExaltApply(id,i,want)) return;
+      renderManifest();
+      if(window.cbRefreshCfgBody) window.cbRefreshCfgBody(id);
+    });
+    document.addEventListener('keydown',function(e){
+      if(!(e.key==='Enter'||e.key===' ')) return;
+      var t=e.target; if(!(t.classList&&t.classList.contains('cb-exalt-pip'))||t.classList.contains('locked')) return;
+      e.preventDefault(); t.click();
+    });
 
     var PROFILE_METRICS=[
       {id:'damage',label:'Damage Output',cats:['weapon','offhand']},
