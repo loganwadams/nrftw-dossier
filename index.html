@@ -512,9 +512,9 @@ footer>*{position:relative;z-index:1}
 @media (hover:hover) and (min-width:601px){
   .logo:hover,.logo:focus-visible{filter:drop-shadow(0 0 2px rgba(255,214,140,.35)) drop-shadow(0 0 8px rgba(255,170,70,.25)) drop-shadow(0 0 16px rgba(255,140,40,.15));outline:none}
 }
-:root[data-theme="night"] .logo{filter:drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4)) hue-rotate(250deg) saturate(1.6) brightness(.95)}
+:root[data-theme="night"] .logo{filter:hue-rotate(250deg) saturate(1.6) brightness(.95) drop-shadow(0 0 2px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(0,0,0,.4))}
 @media (hover:hover) and (min-width:601px){
-  :root[data-theme="night"] .logo:hover,:root[data-theme="night"] .logo:focus-visible{filter:drop-shadow(0 0 2px rgba(112,24,226,.5)) drop-shadow(0 0 8px rgba(112,24,226,.4)) drop-shadow(0 0 16px rgba(112,24,226,.3)) hue-rotate(250deg) saturate(1.6) brightness(1.05);outline:none}
+  :root[data-theme="night"] .logo:hover,:root[data-theme="night"] .logo:focus-visible{filter:hue-rotate(250deg) saturate(1.6) brightness(1.05) drop-shadow(0 0 2px rgba(112,24,226,.5)) drop-shadow(0 0 8px rgba(112,24,226,.4)) drop-shadow(0 0 16px rgba(112,24,226,.3));outline:none}
 }
 .kicker{
   font-family:var(--data);
