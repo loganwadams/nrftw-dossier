@@ -336,6 +336,16 @@ body.lt-on #lore .lore-beats{display:none}
 :root[data-theme="night"] .m-setcard-src{border-top-color:rgba(112,24,226,.15)}
 :root[data-theme="night"] .sr-ico{stroke:#9b6fe0}
 
+/* Night mode: the "weakness/warning" UI chrome (Strengths/Weaknesses bullets, enchant downsides,
+   build-warning badges and borders) reads rust-orange in day mode; bring it on theme with a
+   warm rose-violet that still reads as a warning, without touching the damage-type, rarity, or
+   confirmed/reported/projected tag colors, which stay on their original hue. */
+:root[data-theme="night"] .cons li::before,:root[data-theme="night"] .ench-downsides .ench-list li::before,:root[data-theme="night"] .cb-slot-warn-badge{background:#b3487a}
+:root[data-theme="night"] .ench-downsides h4,:root[data-theme="night"] .cb-profile-warn-chip,:root[data-theme="night"] .warnbox h3,:root[data-theme="night"] .cb-report-verdict.v-bad,:root[data-theme="night"] .cb-points.cb-pts-zero strong,:root[data-theme="night"] .m-once,:root[data-theme="night"] .cb-slot-clear:hover{color:#b3487a}
+:root[data-theme="night"] .cb-profile-warn-chip,:root[data-theme="night"] .cb-report-verdict.v-bad,:root[data-theme="night"] .cb-dmg-chip,:root[data-theme="night"] .cb-slot.cb-slot-warn,:root[data-theme="night"] .cb-slot.cb-slot-warn.filled,:root[data-theme="night"] .cb-slot-clear:hover,:root[data-theme="night"] .warnbox{border-color:#b3487a}
+:root[data-theme="night"] #cbProfileNote.cb-note-warn{border-left-color:#b3487a}
+:root[data-theme="night"] .warnbox{background:linear-gradient(180deg,#1f1420,#170f1c)}
+
 *{box-sizing:border-box}
 
 body{
