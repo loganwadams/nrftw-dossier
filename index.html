@@ -73,7 +73,8 @@ body.paged .contents{display:none}
 /* search: far right of the masthead, vertically centered on the logo block */
 /* sun/moon toggle, swapping the whole site between its warm amber theme and the cool grey/blue
    "night" one - sits above the search box, top-right of the masthead on every breakpoint. */
-.theme-toggle{flex:none;appearance:none;background:none;border:none;outline:none;color:var(--muted);margin-left:auto;padding:9px 14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s}
+.pgbar-right{display:flex;align-items:center;margin-left:auto}
+.theme-toggle{flex:none;appearance:none;background:none;border:none;outline:none;color:var(--muted);padding:9px 14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s}
 .theme-toggle:hover,.theme-toggle:focus-visible{color:var(--gold)}
 .theme-toggle svg{width:15px;height:15px;display:block}
 .theme-toggle .ti-sun{display:none}
@@ -6729,7 +6730,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var pgBtn=document.createElement('button'); pgBtn.type='button'; pgBtn.className='pgbar-search'; pgBtn.setAttribute('aria-label','Search the dossier');
     pgBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
     pgBtn.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ input.focus(); },260); });
-    pgbar.appendChild(pgBtn);
+    var pgRight=pgbar.querySelector('.pgbar-right'); if(!pgRight){ pgRight=document.createElement('span'); pgRight.className='pgbar-right'; pgbar.appendChild(pgRight); }
+    pgRight.appendChild(pgBtn);
     if('IntersectionObserver' in window){
       new IntersectionObserver(function(entries){ pgbar.classList.toggle('show-search', !entries[0].isIntersecting); },{threshold:0}).observe(form);
     }
@@ -6801,7 +6803,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     try{ if(night) localStorage.setItem(KEY,'night'); else localStorage.removeItem(KEY); }catch(e){}
     label();
   });
-  pgbar.appendChild(btn);
+  var pgRight=pgbar.querySelector('.pgbar-right'); if(!pgRight){ pgRight=document.createElement('span'); pgRight.className='pgbar-right'; pgbar.appendChild(pgRight); }
+  pgRight.appendChild(btn);
 })();
 </script>
 <!-- /NIGHT MODE TOGGLE -->
