@@ -1029,9 +1029,17 @@ a:hover{color:#dcb561}
 .klass{
   --accent:var(--gold);
   padding-block:52px;
-  border-top:1px solid var(--edge);
   position:relative;
 }
+.klass::before{
+  content:"";
+  position:absolute;left:0;right:0;top:0;height:3px;
+  background:var(--gold-dim);
+  -webkit-mask-image:url("img/divider-line-mask.webp");mask-image:url("img/divider-line-mask.webp");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+#classes + .klass::before{display:none}
 .klass-grid{
   display:grid;
   grid-template-columns:minmax(0,0.95fr) minmax(0,1.15fr);
