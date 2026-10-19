@@ -4797,7 +4797,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         m[group][i]=e.target.value;
         if(group==='gems'||group==='runes'){ var ic=e.target.parentNode&&e.target.parentNode.querySelector('.cb-gs-ic'); if(ic) ic.innerHTML=slotIconHtml(e.target.value); }
         if(group==='gems'){ normalizeItemMeta(m); try{ var gb=e.target.closest('.cb-mf-detail').querySelector('.cb-gemfx-box'); if(gb) gb.innerHTML=gemEffectLines(id,m); }catch(err){} }
+        // Clearing an enchant (or retyping/re-picking a fresh one) invalidates any exalt steps that
+        // were baked into its old number - the row has a new, never-exalted roll now, so its pips
+        // and the item's shared budget both need to drop back to zero for that slot.
+        if(group==='enchants' && ((m.exalts&&m.exalts[i]) || (m.exBase&&m.exBase[i]!=null))){
+          if(m.exalts) m.exalts[i]=0;
+          if(m.exBase) delete m.exBase[i];
+        }
         if(group==='gems' || group==='enchants') renderManifest();
+        if(group==='enchants' && window.cbRefreshCfgBody) window.cbRefreshCfgBody(id);
       }
     }
     document.getElementById('cbManifest').addEventListener('change',onDetailChange);
