@@ -4997,6 +4997,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-cfg-foot"><span class="cb-cfg-hint">You can reopen this any time by clicking the item in the Equipment board.</span><button type="button" class="cb-cfg-done" id="cbCfgDone">Done</button></div></div>';
       document.body.appendChild(ov);
       var body=ov.querySelector('#cbCfgBody');
+      // iOS Safari ignores overflow:hidden on the page, so pin the page in place (and restore the scroll spot after)
+      var lockY=0, locked=false;
+      function lockPage(){ if(locked) return; locked=true; lockY=window.pageYOffset||document.documentElement.scrollTop||0; var b=document.body.style; b.position='fixed'; b.top=(-lockY)+'px'; b.left='0'; b.right='0'; b.width='100%'; }
+      function unlockPage(){ if(!locked) return; locked=false; var b=document.body.style; b.position=''; b.top=''; b.left=''; b.right=''; b.width=''; window.scrollTo(0,lockY); }
       // iOS ignores overflow:hidden on the page behind a dialog: swallow touch-drags that start outside the scrolling body
       ov.addEventListener('touchmove',function(e){ if(!body.contains(e.target)) e.preventDefault(); },{passive:false});
       function sig(m){ return [m.rarity,(m.gems||[]).length,(m.enchants||[]).length,(m.runes||[]).length,enchShortfall(m).join(',')].join('|'); }
@@ -5007,9 +5011,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         ov.querySelector('#cbCfgSlot').textContent=(meta.label||'')+(meta.ord?' '+meta.ord:'');
         ov.querySelector('#cbCfgTitle').textContent=item.n;
         body.innerHTML=renderDetailPanel(id,item); lastSig=sig(m);
-        ov.hidden=false; document.body.classList.add('cb-cfg-open');
+        lockPage(); ov.hidden=false; document.body.classList.add('cb-cfg-open');
       };
-      function closeCfg(){ ov.hidden=true; try{ errEl.hidden=true; errEl.style.visibility=''; }catch(x){} cfgId=null; document.body.classList.remove('cb-cfg-open'); renderManifest(); }
+      function closeCfg(){ ov.hidden=true; try{ errEl.hidden=true; errEl.style.visibility=''; }catch(x){} cfgId=null; document.body.classList.remove('cb-cfg-open'); unlockPage(); renderManifest(); }
       body.addEventListener('change',function(e){
         if(!cfgId) return;
         var m=itemMeta[cfgId];
