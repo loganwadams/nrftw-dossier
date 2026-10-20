@@ -5430,10 +5430,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         st.scales.forEach(function(n){
           var v=attrVals[n.toLowerCase()]||10;
           attrPts+=Math.max(0,v-10);
-          // a weapon that scales with two attributes counts each at half strength (measured on another planner: Dex +40 alone = 115%, Faith +10 alone = 35% on a Dex/Faith rapier)
-          attrFrac+=dmgAttrFrac(Math.max(0,v-10)/(st.scales.length===2?2:1));
+          if(st.scales.length!==2) attrFrac+=dmgAttrFrac(Math.max(0,v-10));
           attrTxt.push(DMG_ATTR_ABBR[n]+' '+v);
         });
+        // two scaling attributes: points above 10 combine as (p1+p2)^2 / (2*max(p1,p2)) before the curve (fits 8 readings from another planner:
+        // one attribute alone counts half; equal points count in full; in between it blends)
+        if(st.scales.length===2){
+          var p1=Math.max(0,(attrVals[st.scales[0].toLowerCase()]||10)-10), p2=Math.max(0,(attrVals[st.scales[1].toLowerCase()]||10)-10), pm2=Math.max(p1,p2);
+          attrFrac=pm2>0?dmgAttrFrac((p1+p2)*(p1+p2)/(2*pm2)):0;
+        }
         var attrBonus=st.base*attrFrac;
 
         var cardLv=+item.lv||lvNow, crLv=Math.max(1,Math.min(lvNow,+(m.creation||cardLv)||cardLv));
@@ -5557,7 +5562,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(segs.length) counted.push('<li><b>'+dmgEsc(r.item.n)+'</b><br>'+segs.join('<br>')+'</li>');
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
-      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes count each attribute at half strength and add the two. That matches readings taken on another planner when one attribute is raised; with both raised that planner reads a little higher than this does, and why is not yet known. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
+      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes combine their points as (sum of the two)&sup2; &divide; (2 &times; the larger) before the curve, so one attribute alone counts at half strength and two equal ones count in full. That formula was fitted to eight readings taken on another planner (a Dex/Faith rapier), not read from the game’s data. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
       h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Click an item in the Equipment board and add some under Rarity, Gems or Facet.</p>');
       var tt=res.totals, tl=[];
       if(tt.lifesteal) tl.push('Lifesteal '+dmgFmt(tt.lifesteal)+'%');
