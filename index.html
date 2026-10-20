@@ -5416,6 +5416,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var pm=reqShort.length?REQ_PENALTY_MULT:1;
         var reqTxt=reqShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ');
 
+        // an infusion gem overrides the weapon's damage type (the game's damage-school override); only one applies at a time
+        var infEl=null; (m.gems||[]).forEach(function(g){ var n=dmgNorm(g); if(n&&GEM_INFUSE[n]) infEl=GEM_INFUSE[n].toLowerCase(); });
+        if(infEl && DMG_SCHOOL_LABEL[infEl] && infEl!==st.school){ st.school=infEl; st.schoolLabel=DMG_SCHOOL_LABEL[infEl]+' (infused)'; }
         var L=newDmgBucket();
         if(pm<1) L.parts.push('Below requirement ('+reqTxt+'): −80% damage');
         (m.gems||[]).forEach(function(g){
@@ -5425,7 +5428,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             if(gd[0]===st.school){ L.pct+=gd[1]; L.parts.push(g.trim()+': +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage'); }
             else L.notes.push(g.trim()+' adds +'+gd[1]+'% '+DMG_SCHOOL_LABEL[gd[0]]+' damage, but '+item.n+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).');
           } else if(GEM_INFUSE[n]){
-            L.notes.push(g.trim()+' grants a '+GEM_INFUSE[n]+' infusion — the amount isn’t published, so it isn’t counted.');
+            L.notes.push(g.trim()+' infuses the weapon: its hits count as '+GEM_INFUSE[n]+' damage, so '+GEM_INFUSE[n]+' bonuses apply and other elements’ bonuses don’t. The infusion’s own damage amount isn’t published, so it isn’t added.');
           } else if(GEM_POISE[n]){
             L.poiseFlat+=GEM_POISE[n]; L.parts.push(g.trim()+': +'+GEM_POISE[n]+' poise damage');
           }
@@ -5724,6 +5727,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var main=els[0], off=els.slice(1).map(function(e){ return EL[e]+' ('+byEl[e].join(', ')+')'; });
           recs.push('Stick to one element: your gear mixes '+els.map(function(e){ return EL[e]; }).join(' and ')+'. Only one infusion applies to a weapon at a time (a new one replaces the old), and element damage bonuses only boost their own element, so spread across several they each do less. Go all '+EL[main]+' on every weapon, gem and enchant, and swap out the off-element pieces: '+off.join('; ')+'.');
         }
+        // an element-damage gem only boosts hits of that element: point out when no weapon of yours deals it
+        (function(){
+          var seen={};
+          Object.keys(equipped).forEach(function(id){ var m=itemMeta[id]; if(!m) return;
+            (m.gems||[]).forEach(function(g){ var n=dmgNorm(g), gd=GEM_DMG[n]; if(!gd||gd[0]==='physical'||seen[n]) return;
+              if(rows.length && !rows.some(function(r){ return r.st.school===gd[0]; })){
+                seen[n]=1;
+                recs.push(g.trim()+' only boosts '+DMG_SCHOOL_LABEL[gd[0]]+' hits, and none of your weapons deal '+DMG_SCHOOL_LABEL[gd[0]]+' damage. A '+DMG_SCHOOL_LABEL[gd[0]]+' infusion gem on the weapon would make it count.');
+              } }); });
+        })();
         var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; });
         var eE=0,gE=0,com=0,lowLv=0;
         det.forEach(function(id){ var m=itemMeta[id]; (m.enchants||[]).forEach(function(v){ if(!v||String(v).indexOf('__')>=0) eE++; }); (m.gems||[]).forEach(function(v){ if(!v) gE++; }); if(m.rarity==='standard') com++; if((m.level||1)<16) lowLv++; });
