@@ -941,9 +941,11 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .nav-acct{position:relative;display:inline-flex;align-items:center}
 .nav-acct>button{appearance:none;background:none;border:1px solid transparent;color:#5865f2;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;cursor:pointer;white-space:nowrap}
 .nav-acct>button:hover{color:#7983f5}
+.nav-acct>button{text-shadow:0 0 8px rgba(255,255,255,.4),0 0 16px rgba(255,255,255,.18)}
 .nav-acct>button.nav-connect{color:#5865f2;display:inline-flex;align-items:center;gap:9px}
-.nav-acct>button.nav-connect svg{width:18px;height:18px;flex:none}
+.nav-acct>button.nav-connect svg{width:18px;height:18px;flex:none;filter:drop-shadow(0 0 4px rgba(255,255,255,.45)) drop-shadow(0 0 9px rgba(255,255,255,.2))}
 .nav-acct>button.nav-connect:hover{color:#7983f5}
+.nav-acct>button:hover{text-shadow:0 0 10px rgba(255,255,255,.55),0 0 20px rgba(255,255,255,.25)}
 .nav-acct-menu{position:absolute;right:0;top:100%;min-width:170px;background:#100d0b;border:1px solid var(--edge);box-shadow:0 10px 30px rgba(0,0,0,.6);padding:6px;display:none;flex-direction:column;z-index:60}
 .nav-acct.open .nav-acct-menu{display:flex}
 .nav-acct-menu button{appearance:none;background:none;border:0;text-align:left;color:var(--bone);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:10px 12px;cursor:pointer}
