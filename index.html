@@ -7116,7 +7116,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // to save room on the bar. Both targets stay ordinary same-page hash links, same as every
     // other dropdown item, so the existing hashchange/route() handling picks them up unchanged.
     gear:function(){ var ul=document.createElement('ul'); ul.className='toc-drop';
-      [['infusions','Infusions'],['enchantments','Enchantments'],['catalog','Catalog']].forEach(function(pair){
+      [['catalog','Catalog'],['infusions','Infusions'],['enchantments','Enchantments']].forEach(function(pair){
         var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
         var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
         // Catalog is its own page with a clean /catalog path, so go through the shared jump helper
