@@ -869,11 +869,13 @@ section{padding-block:48px}
 .cb-sh-attr b{font-family:var(--display);font-size:22px;font-weight:400;color:#6f675b}
 .cb-sh-attr.hi b{color:var(--gold)}
 .cb-shared-btns{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.cb-sh-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
+.cb-sh-layout{display:flex;flex-direction:column-reverse;gap:22px}
 .cb-sh-layout[hidden]{display:none}
-.cb-sh-side{position:sticky;top:96px}
-.cb-sh-side .cb-panel{margin:0}
-@media(max-width:900px){.cb-sh-layout{grid-template-columns:1fr}.cb-sh-side{position:static}.cb-sh-hero{padding:26px 20px 22px}}
+.cb-sh-side .cb-panel{margin:0;padding:18px 22px}
+.cb-sh-side .cb-panel h3{margin:0 0 10px}
+.cb-sh-side .attrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0 48px}
+.cb-sh-side #cbProfileNote{display:none}
+@media(max-width:900px){.cb-sh-hero{padding:26px 20px 22px}}
 body.cb-shared .cb-reset-wrap,body.cb-shared .cb-slot-clear,body.cb-shared .cb-slot-edit,body.cb-shared .cb-stepper button,body.cb-shared #cerim-builder .standfirst,body.cb-shared #cerim-builder .cb-notice,body.cb-shared #cerim-builder .cb-note,body.cb-shared .cb-panel:has(#cbClassDrop),body.cb-shared .coming-soon-badge{display:none!important}
 body.cb-shared .cb-wrap{display:none}
 body.cb-shared .cb-sh-side .cb-panel{display:block}
@@ -882,7 +884,7 @@ body.cb-shared #cbLevel,body.cb-shared .cb-attr-input{pointer-events:none}
 body.cb-shared .cb-dmg-cond{display:none}
 .cb-sh-head{display:flex;align-items:baseline;gap:12px;margin:0 0 14px;font-family:var(--data);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7c7265}
 .cb-sh-head:after{content:"";flex:1;height:1px;background:var(--edge)}
-.cb-sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.cb-sh-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
 .cb-sh-item{position:relative;border:1px solid var(--edge);background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(0,0,0,.25));padding:14px 16px 14px 18px;transition:border-color .15s}
 .cb-sh-item:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--edge)}
 .cb-sh-item.r-magical:before{background:#5b8ef0}.cb-sh-item.r-plagued:before{background:#7862f5}.cb-sh-item.r-unique:before{background:#e0903a}
