@@ -5331,6 +5331,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(m) return {kind:'critChance',pct:+m[1],text:t};
       m=t.match(/^Critical Damage increased by (\d+(?:\.\d+)?)\s*%$/i);
       if(m) return {kind:'critMult',pct:+m[1],text:t};
+      m=t.match(/^(?:Gain|Armor Penetration increased by) (\d+(?:\.\d+)?)\s*%(?: Armor Penetration)?$/i);
+      if(m && /Armor Penetration/i.test(t)) return {kind:'armorPen',pct:+m[1],text:t};
+      if(/^Gain \d+(?:\.\d+)?\s*%\s*[–-]\s*\d+(?:\.\d+)?\s*%\s*Armor Penetration$/i.test(t)) return {kind:'range',text:t};
       if(/^(?:Attack |Physical |Fire |Ice |Lightning |Plague )?Damage increased by \d+(?:\.\d+)?\s*[–-]\s*\d+(?:\.\d+)?\s*%\s*$/i.test(t)) return {kind:'range',text:t};
       m=t.match(/^(Attack |Physical |Fire |Ice |Lightning |Plague )?Damage increased by (\d+(?:\.\d+)?)\s*%\s*$/i);
       if(m){
@@ -5349,7 +5352,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       return null;
     }
-    function newDmgBucket(){ return {pct:0,critChance:0,critMult:0,poisePct:0,poiseFlat:0,parts:[],notes:[]}; }
+    function newDmgBucket(){ return {pct:0,critChance:0,critMult:0,poisePct:0,poiseFlat:0,armorPen:0,parts:[],notes:[]}; }
     function dmgAssumeCond(){ var c=document.getElementById('cbDmgCond'); return !!(c&&c.checked); }
     function applyDmgEnchant(p,bucket,st,src,wname){
       var tag=src+': “'+p.text+'”';
@@ -5358,6 +5361,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         bucket.pct+=p.pct; bucket.parts.push(src+': '+p.text);
       } else if(p.kind==='critChance'){ bucket.critChance+=p.pct/100; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='critMult'){ bucket.critMult+=p.pct/100; bucket.parts.push(src+': '+p.text); }
+      else if(p.kind==='armorPen'){ bucket.armorPen+=p.pct; bucket.parts.push(src+': '+p.text); }
       else if(p.kind==='range'){ bucket.notes.push(tag+' is a range — type the value you rolled to count it.'); }
       else if(p.pct && dmgAssumeCond()){
         if(p.type && p.type!==st.school){ bucket.notes.push(tag+' is '+p.type+' damage, but '+wname+' deals '+st.schoolLabel+', so it is left out of the per-hit figure (how element bonuses apply to other damage types isn’t confirmed).'); return; }
@@ -5455,7 +5459,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         res.rows.push({
           id:id,key:key,item:item,st:st,slot:(meta.label||'Weapon')+(meta.ord?' '+meta.ord:''),
           attrPts:attrPts,attrTxt:attrTxt,attrBonus:attrBonus,L:L,G:G,Lpct:Lpct,reqTxt:reqTxt,pm:pm,
-          weaponDmg:weaponDmg,attackDmg:attackDmg,cc:cc,cm:cm,
+          weaponDmg:weaponDmg,attackDmg:attackDmg,cc:cc,cm:cm,ap:L.armorPen+G.armorPen,
           avg:attackDmg*(1+cc*(cm-1)),
           poise:st.poise*(1+(L.poisePct+G.poisePct)/100)+L.poiseFlat
         });
@@ -5501,7 +5505,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             '<td class="cb-dmg-t">'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td><td>'+dash+'</td>'+
             '<td class="cb-dmg-derived">'+dash+'</td><td>'+dash+'</td><td class="cb-dmg-derived cb-dmg-final">'+dash+'</td></tr>';
         }
-        var critTxt='Crit '+dmgFmt(r.cc*100)+'% ×'+dmgFmt(r.cm)+' · Poise '+dmgFmt(r.poise);
+        var critTxt='Crit '+dmgFmt(r.cc*100)+'% ×'+dmgFmt(r.cm)+' · Poise '+dmgFmt(r.poise)+(r.ap?' · Armor pen '+dmgFmt(r.ap)+'%':'');
         var baseW=st.base/max*100, attrW=r.attrBonus/max*100, modW=Math.max(0,r.attackDmg-st.base-r.attrBonus)/max*100;
         var avgTxt='avg with crit '+dmgFmt(r.avg);
         return '<tr class="cb-dmg-row'+(r.id===topId?' cb-dmg-top':'')+'">'+
