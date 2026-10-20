@@ -5430,7 +5430,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         st.scales.forEach(function(n){
           var v=attrVals[n.toLowerCase()]||10;
           attrPts+=Math.max(0,v-10);
-          attrFrac+=dmgAttrFrac(Math.max(0,v-10));
+          // a weapon that scales with two attributes counts each at half strength (measured on another planner: Dex +40 alone = 115%, Faith +10 alone = 35% on a Dex/Faith rapier)
+          attrFrac+=dmgAttrFrac(Math.max(0,v-10)/(st.scales.length===2?2:1));
           attrTxt.push(DMG_ATTR_ABBR[n]+' '+v);
         });
         var attrBonus=st.base*attrFrac;
@@ -5556,7 +5557,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(segs.length) counted.push('<li><b>'+dmgEsc(r.item.n)+'</b><br>'+segs.join('<br>')+'</li>');
         r.L.notes.concat(r.G.notes).forEach(function(n){ if(!seen[n]){ seen[n]=1; notes.push('<li>'+dmgEsc(n)+'</li>'); } });
       });
-      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
+      var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes count each attribute at half strength and add the two. That matches readings taken on another planner when one attribute is raised; with both raised that planner reads a little higher than this does, and why is not yet known. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
       h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Click an item in the Equipment board and add some under Rarity, Gems or Facet.</p>');
       var tt=res.totals, tl=[];
       if(tt.lifesteal) tl.push('Lifesteal '+dmgFmt(tt.lifesteal)+'%');
