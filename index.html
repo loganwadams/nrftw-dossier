@@ -820,7 +820,7 @@ section{padding-block:48px}
 .cb-dmg-type.t-fire{color:#d8864a}
 .cb-dmg-type.t-ice{color:var(--c-frost)}
 .cb-dmg-type.t-lightning{color:#d8c66a}
-.cb-dmg-type.t-plague{color:var(--c-plague)}
+.cb-dmg-type.t-plague{color:#7862f5}
 .cb-dmg-type.t-bleed{color:#c0463a}
 .cb-dmg-none{color:#6f6758}
 .cb-dmg-gain{color:var(--verdigris)}
@@ -5374,11 +5374,32 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       return (+pa[1]-+pb[1])||(+pa[2]-+pb[2]);
     }
     function computeDamage(){
-      var res={rows:[],shields:0,shieldRows:[]};
+      var res={rows:[],shields:0,shieldRows:[],totals:{lifesteal:0,thorns:0,armorPen:0},powerNotes:[]};
       var armorEnch=[];
-      armorSlotEntries().concat(slotEntriesOfCat(['ring'])).forEach(function(e){
+      var armorEntries=armorSlotEntries();
+      armorEntries.concat(slotEntriesOfCat(['ring'])).forEach(function(e){
         var m=itemMeta[e.id]; if(!m) return;
-        (m.enchants||[]).forEach(function(t){ var p=parseDmgEnchant(t); if(p) armorEnch.push({p:p,src:e.item.n}); });
+        // an armor piece with exactly one elemental gem (a Mottled one) gets +25% Enchantment Power
+        var isArmor=armorEntries.indexOf(e)>-1, power=1;
+        if(isArmor){
+          var els=(m.gems||[]).map(dmgNorm).filter(function(n){ return n && (GEM_DMG[n]&&GEM_DMG[n][0]!=='physical' || GEM_INFUSE[n]&&GEM_INFUSE[n]!=='Bleed'); });
+          if(els.length===1 && GEM_DMG[els[0]]){ power=1.25; res.powerNotes.push(e.item.n+': '+(m.gems||[]).filter(function(g){ return dmgNorm(g)===els[0]; })[0].trim()+' is its only elemental gem, so its enchantments are 25% stronger.'); }
+        }
+        (m.enchants||[]).forEach(function(t){
+          var p=parseDmgEnchant(t);
+          if(p){
+            if(power!==1 && p.pct){ p=Object.assign({},p,{pct:Math.round(p.pct*power*100)/100,text:t+' ×1.25 (Enchantment Power)'}); }
+            armorEnch.push({p:p,src:e.item.n});
+          }
+        });
+      });
+      // build-wide totals from plain, unconditional "Gain __%" lines on every equipped item
+      Object.keys(equipped).forEach(function(id){
+        var m=itemMeta[id]; if(!m) return;
+        (m.enchants||[]).forEach(function(t){
+          var mm=String(t).replace(/\s+/g,' ').trim().match(/^Gain (\d+(?:\.\d+)?)\s*% (Lifesteal|Thorns)$/i);
+          if(mm) res.totals[mm[2].toLowerCase()]+=+mm[1];
+        });
       });
       Object.keys(equipped).filter(function(id){
         var meta=slotEls[id]; return meta && (meta.cat==='weapon'||meta.cat==='offhand');
@@ -5537,7 +5558,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       });
       var h='<h4>Formula</h4><p><b>Listed</b> is the damage printed on the weapon’s own card. <b>Stat Scaling</b> is Listed damage times the game’s own scaling curve, applied to the points you have above 10 (+65% of Listed at 10 points, +115% at 20, +143% at 27, +355% at 80). Checked against an in-game readout for a Strength weapon; weapons that scale with two attributes add the two curves, which is not yet checked. <b>Listed</b> follows the item level you set (levels 1&ndash;16). <b>Weapon bonuses</b> include a 80% cut when you are under any of the weapon’s attribute requirements, and otherwise come from that weapon’s own gems, facet and enchantments; <b>Build bonuses</b> come from armor enchantments and apply to every weapon.</p>';
       h+='<h4>Counted</h4>'+(counted.length?'<ul>'+counted.join('')+'</ul>':'<p>No gems, facets or enchantments that change damage yet. Click an item in the Equipment board and add some under Rarity, Gems or Facet.</p>');
-      h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from armor gems.</li></ul>';
+      var tt=res.totals, tl=[];
+      if(tt.lifesteal) tl.push('Lifesteal '+dmgFmt(tt.lifesteal)+'%');
+      if(tt.thorns) tl.push('Thorns '+dmgFmt(tt.thorns)+'%');
+      if(tl.length || res.powerNotes.length) h+='<h4>Build totals</h4><ul>'+(tl.length?'<li>'+tl.join(' · ')+' &mdash; plain enchantment lines only; conditional ones (for example “while Tainted”) and unrolled ranges are not added.</li>':'')+res.powerNotes.map(function(n){ return '<li>'+dmgEsc(n)+'</li>'; }).join('')+'</ul>';
+      h+='<h4>Not counted</h4><ul>'+notes.join('')+'<li>Class traits, rings and rune attacks.</li><li>Enemy armor and resistances, combo and charge multipliers, and any “Enchantment Power” from gems other than a lone Mottled elemental gem on armor.</li></ul>';
       document.getElementById('cbDmgNotesBody').innerHTML=h;
       notesEl.hidden=false;
     }
