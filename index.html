@@ -7222,10 +7222,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   bar.appendChild(burger); bar.appendChild(panel);
   function closeMenu(){ bar.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false');
     panel.querySelectorAll('.pgbar-item.open').forEach(function(w){ w.classList.remove('open'); var t=w.querySelector('.pgbar-plus'); if(t){ t.textContent='+'; t.setAttribute('aria-expanded','false'); } }); }
-  // Mobile only: a small mark of the logo, far left of the bar, that jumps back to the top of the page.
-  var navLogo=document.createElement('a'); navLogo.href='#'; navLogo.className='pgbar-logo'; navLogo.setAttribute('aria-label','Back to top');
+  // Mobile only: a small mark of the logo, far left of the bar, that goes to the homepage.
+  var navLogo=document.createElement('a'); navLogo.href='#'; navLogo.className='pgbar-logo'; navLogo.setAttribute('aria-label','Wicked Dossier - go to the homepage');
   navLogo.innerHTML='<img src="img/logo.webp" alt="" draggable="false">';
-  navLogo.addEventListener('click',function(e){ e.preventDefault(); closeMenu(); window.scrollTo({top:0,behavior:'smooth'}); });
+  navLogo.addEventListener('click',function(e){ e.preventDefault(); closeMenu(); var hb=bar.querySelector('button[data-chap="home"], a[data-chap="home"]'); if(hb){ hb.click(); } else if(window.__pgGoto&&window.__pgGoto('top')){} else window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ window.scrollTo({top:0,behavior:'smooth'}); },80); });
   bar.insertBefore(navLogo, bar.firstChild);
   function toggleMenu(){ var open=bar.classList.toggle('menu-open'); burger.setAttribute('aria-expanded',open?'true':'false'); }
   burger.addEventListener('click',function(e){ e.stopPropagation(); toggleMenu(); });
