@@ -6258,9 +6258,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(hasTok||back0) client().catch(function(){});
         if(back0){
           // returning from Discord: if no session appears, say so instead of silently showing "Connect with"
-          var failed=/[?&]error/.test(location.search);
+          var failed=/[?&]error/.test(location.search); var why=''; try{ why=new URLSearchParams(location.search).get('error_description')||new URLSearchParams(location.search).get('error')||''; }catch(e){}
           setTimeout(function(){
-            if(!user){ openModal('Sign-in didn\u2019t finish','<p>Discord sent you back, but the sign-in couldn\u2019t be completed. This usually happens when the Discord app opens the link in a different browser than the one you started in, or when the browser blocks site storage.</p><p>Please open wickeddossier.com in one browser (not inside another app), tap <strong>Connect with Discord</strong>, and approve it there. If Discord asks, choose to continue in the browser rather than the app.</p>'); }
+            if(!user){ openModal('Sign-in didn\u2019t finish','<p>Discord sent you back, but the sign-in couldn\u2019t be completed. This usually happens when the Discord app opens the link in a different browser than the one you started in, or when the browser blocks site storage.</p><p>Please open wickeddossier.com in one browser (not inside another app), tap <strong>Connect with Discord</strong>, and approve it there. If Discord asks, choose to continue in the browser rather than the app.</p>'+(why?'<p>Details: <em>'+escH(why)+'</em></p>':'<p>Details: no error came back from Discord, so the browser most likely lost the sign-in session on the way (a private tab or blocked site data does this).</p>')); }
             try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
           }, failed?300:4500);
         }
