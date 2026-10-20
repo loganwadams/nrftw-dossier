@@ -31,6 +31,7 @@
 .pgbar .pg-num{color:#6f6758;margin-right:6px}
 .pgbar-item{position:relative;display:flex}
 .pgbar-item.pg-hide-wrap{display:none!important}
+@media (max-width:760px){.pgbar-item.pg-home-wrap{display:none!important}}
 .pgbar button.has-drop{display:inline-flex;align-items:center;gap:5px}
 .pgbar button.has-drop .toc-caret{margin-left:0}
 /* Cerim Builder: sits in the normal tab flow, same spacing as every other tab - just marked out
@@ -6978,7 +6979,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'cerim', ids:['cerim-builder']}
   ];
   var CHAPS=[
-    {id:'home',         num:'',   label:'Home',          group:'home',  target:'intro',  tag:['hero','intro','lore'], cls:'pg-hide'},
+    {id:'home',         num:'',   label:'Home',          group:'home',  target:'intro',  tag:['hero','intro','lore'], cls:'pg-home'},
     {id:'brief',        num:'',   label:'',                  group:'home',  target:'brief',  tag:['brief'], hidden:true},
     {id:'factions',     num:'02', label:'Factions',          group:'world', target:'factions', tag:['factions'], cls:'pg-hide'},
     {id:'classes',      num:'03', label:'Classes',           group:'world', target:'classes', tag:['classes'], cls:'pg-hide'},
@@ -7110,6 +7111,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       } else { li.appendChild(row); }
       ul.appendChild(li); });
     return ul; }
+  // Dropdown links jump through the shared helper so the address bar always gets the right clean
+  // URL (e.g. /#enchantments), instead of a bare #hash tacked onto whatever page you were on (/catalog#enchantments).
+  function navLink(a,id){ a.addEventListener('click',function(e){ if(window.__pgGoto && window.__pgGoto(id)){ e.preventDefault(); if(bar.classList.contains('menu-open')) closeMenu(); } }); }
   var DROP_BUILDERS={
     // Gear's dropdown isn't built from headings in one section like the others - it's a plain
     // two-link menu between Infusions and Enchantments, the two chapters merged under this tab
@@ -7119,14 +7123,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       [['catalog','Trove'],['infusions','Infusions'],['enchantments','Enchantments']].forEach(function(pair){
         var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
         var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
-        // Catalog is its own page with a clean /catalog path, so go through the shared jump helper
-        if(pair[0]==='catalog') a.addEventListener('click',function(e){ if(window.__pgGoto && window.__pgGoto('catalog')){ e.preventDefault(); if(bar.classList.contains('menu-open')) closeMenu(); } });
+        navLink(a,pair[0]);
         row.appendChild(a); li.appendChild(row); ul.appendChild(li); });
       return ul; },
     lore:function(){ var ul=document.createElement('ul'); ul.className='toc-drop';
       [['factions','Factions'],['classes','Classes'],['systems','Systems']].forEach(function(pair){
         var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
         var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
+        navLink(a,pair[0]);
         row.appendChild(a); li.appendChild(row); ul.appendChild(li); });
       return ul; },
     classes:function(){ var src=document.querySelector('nav.contents .toc-drop'); return src?src.cloneNode(true):null; },
