@@ -4317,6 +4317,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var parts=String(name||'').trim().split(/\s+/); if(parts.length<2) return parts[0]||'';
       return parts.slice(1).join(' ').toLowerCase();
     }
+    // Tier word -> rank, so the picker can list a family's lower tier right above its higher one
+    // (Chipped/Tiny/Small are always tier 1, Mottled/Medium are tier 2).
+    var GEM_TIER_RANK={chipped:1,tiny:1,small:1,mottled:2,medium:2};
+    function gemTierRank(name){
+      var w=String(name||'').trim().split(/\s+/)[0]||'';
+      return GEM_TIER_RANK[w.toLowerCase()]||9;
+    }
     (function gemPicker(){
       if(document.getElementById('cbGemPop')) return;
       var pop=document.createElement('div'); pop.id='cbGemPop'; pop.className='cb-ench-pop cb-gem-pop'; pop.hidden=true; document.body.appendChild(pop);
@@ -4340,7 +4347,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var n=g.n.toLowerCase(), fx=Object.keys(g.fx||{}).map(function(k){ return String(g.fx[k]||'').replace(/<[^>]+>/g,' '); }).join(' ').toLowerCase();
             g._nm=q.every(function(w){ return n.indexOf(w)>-1; });
             return g._nm || q.every(function(w){ return (n+' '+fx).indexOf(w)>-1; }); })
-          .sort(function(a,b){ if(a._nm!==b._nm) return a._nm?-1:1; return a.n<b.n?-1:1; });
+          .sort(function(a,b){
+            if(a._nm!==b._nm) return a._nm?-1:1;
+            var fa=gemFamily(a.n), fb=gemFamily(b.n);
+            if(fa!==fb) return fa<fb?-1:1;
+            return gemTierRank(a.n)-gemTierRank(b.n);
+          });
         pop.innerHTML=rows.length?rows.map(function(g,i){
           var t=g.fx[lab], bl=blocked(g);
           var ic=g.p?'<span class="m-ic" style="background-position:-'+(g.p[0]*48)+'px -'+(g.p[1]*48)+'px"></span>':'';
