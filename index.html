@@ -900,6 +900,30 @@ body.cb-shared .cb-dmg-cond{display:none}
 .cb-reset-wrap{text-align:center;margin:0 0 22px}
 .cb-reset-btn{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#1b140c;background:linear-gradient(180deg,#e0b863,var(--gold));border:1px solid #efc877;padding:10px 26px;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:filter .15s,transform .15s}
 .cb-share-btn{margin-left:10px;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border-color:#6fa3bd;color:#e9f1f7}
+.cb-acct{display:inline}
+.cb-acct-btn{margin-left:10px;background:linear-gradient(180deg,#5b4a8f,#43366e);border-color:#8a78c9;color:#ece8fa}
+.cb-acct-out{margin-left:12px;background:none;border:0;color:var(--muted);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.cb-acct-hint{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+.cb-acct-link{background:none;border:0;padding:0;color:#8ecbe8;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
+.cb-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,4,3,.78);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow:auto}
+.cb-modal[hidden]{display:none}
+.cb-modal-card{position:relative;width:100%;max-width:640px;background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--edge);padding:26px 26px 22px}
+.cb-modal-card h3{margin:0 0 16px}
+.cb-modal-x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--muted);font-size:26px;cursor:pointer;line-height:1}
+.cb-modal input[type=text]{width:100%;box-sizing:border-box;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);padding:10px 12px;font:inherit;margin:0 0 14px}
+.cb-modal p{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 12px}
+.cb-bl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.cb-bl li{border:1px solid var(--edge);background:rgba(0,0,0,.22);padding:12px 14px}
+.cb-bl-name{font-family:var(--display);font-size:17px}
+.cb-bl-date{font-size:11.5px;color:var(--muted);margin:2px 0 10px}
+.cb-bl-act{display:flex;flex-wrap:wrap;gap:6px}
+.cb-bl-act button,.cb-modal .cb-mbtn{font-family:var(--data);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);background:rgba(255,255,255,.04);border:1px solid var(--edge);padding:7px 12px;cursor:pointer}
+.cb-bl-act button:hover,.cb-modal .cb-mbtn:hover{border-color:var(--gold)}
+.cb-bl-act .danger,.cb-modal .danger{color:#e07a6a}
+.cb-modal .cb-mmsg{min-height:18px;font-size:12.5px;color:var(--verdigris);margin:6px 0 0}
+.cb-modal .cb-mmsg.err{color:#e07a6a}
+.cb-modal-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--edge);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .cb-share-msg{display:inline-block;margin-left:12px;font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--verdigris);vertical-align:middle}
 .cb-reset-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .cb-reset-btn:active{filter:brightness(.95);transform:translateY(0)}
@@ -3579,7 +3603,7 @@ footer li{color:#6f665b}
     <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The attribute points in this builder reflect the current early-access system.</p>
     <p class="cb-note">Early preview &mdash; damage, attribute scaling, armor, weight and the enchantment and facet lists use the game&rsquo;s own numbers. A few effects (gem amounts, some conditional bonuses) aren&rsquo;t counted in the totals yet and are listed as such.</p>
 
-    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
+    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button> <span id="cbAcct" class="cb-acct"><button type="button" class="cb-reset-btn cb-acct-btn" id="cbAcctIn">Sign in with Discord</button><span id="cbAcctIn2" hidden><button type="button" class="cb-reset-btn cb-acct-btn" id="cbAcctSave">Save Build</button> <button type="button" class="cb-reset-btn cb-acct-btn" id="cbAcctList">My Builds</button> <button type="button" class="cb-acct-out" id="cbAcctOut" title="Sign out"></button></span></span><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
 
     <div class="cb-sh-hero" id="cbSharedBar" hidden></div>
 
@@ -3622,6 +3646,9 @@ footer li{color:#6f665b}
     </div>
 
     <div class="cb-sh-layout" id="cbShLayout" hidden><div class="cb-shared-list" id="cbSharedList"></div><aside class="cb-sh-side" id="cbShSide"></aside></div>
+
+    <p class="cb-acct-hint" id="cbAcctHint">Signing in is optional &mdash; it only lets you save builds to your account. <button type="button" class="cb-acct-link" id="cbAcctPriv">Privacy</button></p>
+    <div class="cb-modal" id="cbModal" hidden role="dialog" aria-modal="true" aria-labelledby="cbModalT"><div class="cb-modal-card"><button type="button" class="cb-modal-x" id="cbModalX" aria-label="Close">&times;</button><h3 id="cbModalT"></h3><div id="cbModalB"></div></div></div>
 
     <div id="cbManifest" hidden></div><!-- the old manifest list; kept as an inert hook for the editing code -->
 
@@ -6083,6 +6110,172 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       });
       var sec=document.getElementById('cerim-builder');
       if(sec){ ['click','input','change'].forEach(function(ev){ sec.addEventListener(ev,saveBuildSoon,true); }); }
+    })();
+
+
+    // ---- Optional sign-in (Supabase + Discord) for saving builds to an account.
+    // Everything below is additive: the builder, autosave and share links work without it.
+    (function cloudSaves(){
+      var SB_URL='https://cwwuxeatwevnzizztisy.supabase.co';
+      var SB_KEY='sb_publishable_hBo38oGdjwI8Falq0bQYqw_R3lvLyle';
+      var SB_LIB='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js';
+      var $=function(i){ return document.getElementById(i); };
+      if(!$('cbAcctIn')) return;
+      var sb=null, user=null, libP=null, MAXB=50;
+      function loadLib(){
+        if(window.supabase&&window.supabase.createClient) return Promise.resolve();
+        if(libP) return libP;
+        libP=new Promise(function(res,rej){
+          var sc=document.createElement('script'); sc.src=SB_LIB; sc.onload=res;
+          sc.onerror=function(){ libP=null; rej(new Error('Could not load the sign-in library.')); };
+          document.head.appendChild(sc);
+        });
+        return libP;
+      }
+      function client(){
+        return loadLib().then(function(){
+          if(!sb){
+            sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{flowType:'pkce',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+            sb.auth.onAuthStateChange(function(ev,sess){ setUser(sess&&sess.user||null); });
+          }
+          return sb;
+        });
+      }
+      function niceName(u){
+        var m=(u&&u.user_metadata)||{};
+        return m.full_name||m.name||m.user_name||((u&&u.email)||'').split('@')[0]||'Signed in';
+      }
+      function setUser(u){
+        user=u;
+        $('cbAcctIn').hidden=!!u; $('cbAcctIn2').hidden=!u; $('cbAcctHint').hidden=!!u;
+        if(u){ $('cbAcctOut').textContent='Sign out ('+niceName(u)+')'; }
+        if(u && sessionStorage.getItem('cbAfterAuth')){
+          sessionStorage.removeItem('cbAfterAuth');
+          if(location.hash!=='#cerim-builder') location.hash='#cerim-builder';
+        }
+      }
+      // Restore a previous session (or finish a sign-in redirect) without loading the library for everyone.
+      try{
+        var hasTok=false; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0) hasTok=true; }
+        if(hasTok||(/[?&]code=/.test(location.search)&&sessionStorage.getItem('cbAfterAuth'))) client().catch(function(){});
+      }catch(e){}
+
+      // ---- modal helpers
+      var modal=$('cbModal'), mT=$('cbModalT'), mB=$('cbModalB');
+      function openModal(title,html){ mT.textContent=title; mB.innerHTML=html; modal.hidden=false; }
+      function closeModal(){ modal.hidden=true; mB.innerHTML=''; }
+      $('cbModalX').addEventListener('click',closeModal);
+      modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!modal.hidden) closeModal(); });
+      function msg(t,err){ var m=mB.querySelector('.cb-mmsg'); if(m){ m.textContent=t||''; m.className='cb-mmsg'+(err?' err':''); } }
+      function cleanErr(e){
+        var t=(e&&e.message)||String(e||'Something went wrong');
+        if(/Build limit/i.test(t)) return 'You have reached the limit of '+MAXB+' saved builds. Delete one to save another.';
+        return t;
+      }
+
+      // ---- sign in / out
+      $('cbAcctIn').addEventListener('click',function(){
+        var b=$('cbAcctIn'); b.disabled=true;
+        client().then(function(c){
+          try{ sessionStorage.setItem('cbAfterAuth','1'); }catch(e){}
+          return c.auth.signInWithOAuth({provider:'discord',options:{redirectTo:location.origin+'/'}});
+        }).catch(function(e){ b.disabled=false; openModal('Sign in',"<p>Sign-in isn't available right now. "+escH(cleanErr(e))+'</p>'); });
+      });
+      $('cbAcctOut').addEventListener('click',function(){
+        client().then(function(c){ return c.auth.signOut(); }).then(function(){ setUser(null); }).catch(function(){});
+      });
+
+      // ---- save
+      function defaultName(){
+        var b=serializeBuild(), ids=Object.keys(b.e).sort(slotOrder), it=ids.length&&cards&&cards[b.e[ids[0]]];
+        return it?(it.n+' build'):'My build';
+      }
+      $('cbAcctSave').addEventListener('click',function(){
+        var b=serializeBuild();
+        if(isDefaultBuild(b)){ openModal('Save build','<p>There is nothing to save yet &mdash; equip some gear or spend attribute points first.</p>'); return; }
+        openModal('Save build','<input type="text" id="cbSaveName" maxlength="60" aria-label="Build name" value="'+escH(defaultName())+'"><button type="button" class="cb-mbtn" id="cbSaveGo">Save</button><div class="cb-mmsg" role="status"></div>');
+        var inp=$('cbSaveName'); inp.focus(); inp.select();
+        function go(){
+          var name=inp.value.trim(); if(!name){ msg('Give the build a name.',1); return; }
+          msg('Saving…');
+          client().then(function(c){ return c.from('builds').insert({name:name,code:encodeBuild(b)}); })
+            .then(function(r){ if(r.error) throw r.error; msg('Saved to your account.'); setTimeout(closeModal,900); })
+            .catch(function(e){ msg(cleanErr(e),1); });
+        }
+        $('cbSaveGo').addEventListener('click',go);
+        inp.addEventListener('keydown',function(e){ if(e.key==='Enter') go(); });
+      });
+
+      // ---- my builds
+      function fmtDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return ''; } }
+      function listBuilds(){
+        openModal('My builds','<p>Loading…</p>');
+        client().then(function(c){ return c.from('builds').select('id,name,code,updated_at').order('updated_at',{ascending:false}); })
+          .then(function(r){ if(r.error) throw r.error; paint(r.data||[]); })
+          .catch(function(e){ mB.innerHTML='<p>'+escH(cleanErr(e))+'</p>'; });
+      }
+      function paint(rows){
+        var h='';
+        if(!rows.length) h+='<p>No saved builds yet. Build something, then use <strong>Save Build</strong>.</p>';
+        else{
+          h+='<ul class="cb-bl">';
+          rows.forEach(function(r,i){
+            h+='<li data-i="'+i+'"><div class="cb-bl-name">'+escH(r.name)+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+'</div><div class="cb-bl-act">'+
+              '<button type="button" data-a="load">Load</button><button type="button" data-a="over">Overwrite with current</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="link">Copy share link</button><button type="button" data-a="del" class="danger">Delete</button></div></li>';
+          });
+          h+='</ul>';
+        }
+        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
+        mB.innerHTML=h;
+        mB.querySelector('.cb-bl')&&mB.querySelector('.cb-bl').addEventListener('click',function(e){
+          var b=e.target.closest('button[data-a]'); if(!b) return;
+          var li=b.closest('li'), r=rows[+li.getAttribute('data-i')], a=b.getAttribute('data-a'), c;
+          if(a==='load'){
+            var o=decodeBuild(r.code); if(!o){ msg('That saved build could not be read.',1); return; }
+            applyBuild(o); saveBuildSoon(); closeModal();
+          }else if(a==='link'){
+            var url=location.href.split('#')[0].split('?')[0]+'?s='+r.code;
+            (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(url):Promise.reject()).then(function(){ msg('Share link copied.'); },function(){ msg('Copy failed.',1); });
+          }else if(a==='over'){
+            if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again to overwrite'; return; }
+            var cur=serializeBuild(); if(isDefaultBuild(cur)){ msg('The builder is empty — nothing to overwrite with.',1); return; }
+            client().then(function(c){ return c.from('builds').update({code:encodeBuild(cur),updated_at:new Date().toISOString()}).eq('id',r.id); })
+              .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
+          }else if(a==='ren'){
+            var nm=li.querySelector('.cb-bl-name');
+            nm.innerHTML='<input type="text" maxlength="60" value="'+escH(r.name)+'" aria-label="New name">';
+            var inp=nm.querySelector('input'); inp.focus(); inp.select();
+            var done=false;
+            function commit(){
+              if(done) return; done=true; var v=inp.value.trim(); if(!v||v===r.name){ paint(rows); return; }
+              client().then(function(c){ return c.from('builds').update({name:v,updated_at:new Date().toISOString()}).eq('id',r.id); })
+                .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
+            }
+            inp.addEventListener('keydown',function(ev){ if(ev.key==='Enter') commit(); if(ev.key==='Escape'){ ev.stopPropagation(); done=true; paint(rows); } });
+            inp.addEventListener('blur',commit);
+          }else if(a==='del'){
+            if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again to delete'; return; }
+            client().then(function(c){ return c.from('builds').delete().eq('id',r.id); })
+              .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
+          }
+        });
+        $('cbDelAcct').addEventListener('click',function(){
+          var b=this;
+          if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again — deletes your account and all saved builds'; return; }
+          client().then(function(c){ return c.rpc('delete_my_account').then(function(x){ if(x.error) throw x.error; return c.auth.signOut(); }); })
+            .then(function(){ setUser(null); openModal('Account deleted','<p>Your account and all your saved builds have been deleted.</p>'); })
+            .catch(function(e){ msg(cleanErr(e),1); });
+        });
+      }
+      $('cbAcctList').addEventListener('click',listBuilds);
+
+      // ---- privacy
+      $('cbAcctPriv').addEventListener('click',function(){
+        openModal('Privacy','<p>Signing in is optional. The builder, autosave and share links all work without an account.</p>'+
+          '<p>If you sign in with Discord, this site stores your Discord user ID, display name and email address (provided by Discord) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
+          '<p>Sign-in is handled by Supabase and Discord. This site never sees or stores a password. You can delete your account and every saved build at any time from <strong>My Builds</strong> &rarr; <strong>Delete my account</strong>. Share links contain the build itself in the link, so anyone you send one to can see that build; they do not reveal your account.</p>');
+      });
     })();
 
     loadCards().then(restoreBuild);
