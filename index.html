@@ -83,6 +83,8 @@ body.paged .contents{display:none}
      since the burger is what people expect to reach for on the side they open menus from */
   .pgbar-right{order:-1;margin-left:0;margin-right:auto}
   .pgbar-burger{margin-left:auto}
+  .pgbar>.pgbar-search{margin-left:auto;padding:9px 12px}
+  .pgbar>.pgbar-search+.pgbar-burger{margin-left:4px}
 }
 </style><!-- /PG:css -->
 <!-- SR:css --><style>
@@ -7331,6 +7333,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     pgBtn.addEventListener('click',function(){ if(window.matchMedia('(max-width:760px)').matches){ window.__openSearch&&window.__openSearch(); return; } window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ input.focus(); },260); });
     var pgRight=pgbar.querySelector('.pgbar-right'); if(!pgRight){ pgRight=document.createElement('span'); pgRight.className='pgbar-right'; pgbar.appendChild(pgRight); }
     pgRight.appendChild(pgBtn);
+    var burger=pgbar.querySelector('.pgbar-burger'), mq=window.matchMedia('(max-width:760px)');
+    function placeBtn(){ if(mq.matches&&burger){ pgbar.insertBefore(pgBtn,burger); } else pgRight.appendChild(pgBtn); }
+    placeBtn(); (mq.addEventListener?mq.addEventListener('change',placeBtn):mq.addListener(placeBtn));
     if('IntersectionObserver' in window){
       new IntersectionObserver(function(entries){ pgbar.classList.toggle('show-search', !entries[0].isIntersecting); },{threshold:0}).observe(form);
       // mobile nav logo: only once the real logo at the top has scrolled out of view
@@ -7380,7 +7385,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       d.className='sr-item'+(r.ic?' has-ic':''); d.innerHTML=(r.ic?'<i class="sr-ic">'+r.ic+'</i>':'')+'<b>'+esc(r.label).replace(re,'<mark>$1</mark>')+'</b><span>'+esc(r.kind)+'</span>'+(r.snip?'<em class="sr-snip">'+esc(r.snip).replace(re,'<mark>$1</mark>')+'</em>':'');
       d.addEventListener('mousedown',function(e){ e.preventDefault(); go(r); }); list.appendChild(d); });
     list.classList.add('on'); }
-  function search(){ var q=curInput.value.trim(); if(q.length<2){ if(curList===list) list.classList.remove('on'); else { curList.innerHTML='<div class="sr-hint">Search items, gems, enchantments, infusions, vendors and more by name or by what they do — try “lifesteal”.</div>'; } return; } if(!index) build(); loadCards();
+  function search(){ var q=curInput.value.trim(); if(q.length<2){ if(curList===list) list.classList.remove('on'); else { curList.innerHTML='<div class="sr-hint">Search items, gems, enchantments, infusions, vendors and more by name or by what they do — try “stagger”.</div>'; } return; } if(!index) build(); loadCards();
     var words=q.toLowerCase().split(/\s+/).filter(Boolean); var A=[],B=[],C=[];
     index.forEach(function(r){ var body=(r.desc||(r.ck&&cardText&&cardText[r.ck])||'').toLowerCase();
       var hay=r.key+' '+body, ok=true; for(var i=0;i<words.length;i++){ if(hay.indexOf(words[i])<0){ ok=false; break; } }
