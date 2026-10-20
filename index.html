@@ -960,6 +960,8 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .cb-modal-x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--muted);font-size:26px;cursor:pointer;line-height:1}
 .cb-modal input[type=text]{width:100%;box-sizing:border-box;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);padding:10px 12px;font:inherit;margin:0 0 14px}
 .cb-modal p{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 12px}
+.cb-empty-link{color:#8ecbe8;text-decoration:none;border-bottom:1px solid rgba(142,203,232,.4)}
+.cb-empty-link:hover{color:#b8e2f5}
 .cb-bl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .cb-bl li{border:1px solid var(--edge);background:rgba(0,0,0,.22);padding:12px 14px}
 .cb-bl-name{font-family:var(--display);font-size:17px}
@@ -6318,7 +6320,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       function paint(rows){
         var h='';
-        if(!rows.length) h+='<p>No saved builds yet. Build something, then use <strong>Save Build</strong>.</p>';
+        if(!rows.length) h+='<p>No saved builds yet. Head to the <a href="/cerim-builder" class="cb-empty-link">Cerim Builder</a> to put a build together, then use <strong>Save Build</strong>.</p>';
         else{
           h+='<ul class="cb-bl">';
           rows.forEach(function(r,i){
@@ -6329,6 +6331,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         }
         h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
         mB.innerHTML=h;
+        var el=mB.querySelector('.cb-empty-link');
+        if(el) el.addEventListener('click',function(e){ e.preventDefault(); closeModal(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
         mB.querySelector('.cb-bl')&&mB.querySelector('.cb-bl').addEventListener('click',function(e){
           var b=e.target.closest('button[data-a]'); if(!b) return;
           var li=b.closest('li'), r=rows[+li.getAttribute('data-i')], a=b.getAttribute('data-a'), c;
