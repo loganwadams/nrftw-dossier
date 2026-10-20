@@ -111,6 +111,8 @@ body.paged .contents{display:none}
 .sr-item b{font-weight:500;color:var(--bone);font-size:14px}
 .sr-item b mark{background:none;color:var(--gold);font-weight:600}
 .sr-item span{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b8174;white-space:nowrap}
+.sr-snip mark{background:none;color:var(--gold);font-weight:600}
+.sr-snip{grid-column:1/-1;font-style:normal;font-size:.78rem;color:var(--muted);line-height:1.35;margin-top:2px}
 .sr-empty{padding:12px;font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6f6758}
 .sr-hit{animation:srhit 1.6s ease-out}
 @keyframes srhit{0%,60%{box-shadow:0 0 0 2px var(--gold)}100%{box-shadow:0 0 0 2px transparent}}
@@ -7315,31 +7317,51 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function idFor(el){ if(!el.id) el.id='sr-'+(++uid); return el.id; }
   function txt(el){ return (el.textContent||'').replace(/\s+/g,' ').trim(); }
   function build(){ index=[];
-    function add(label,kind,el,extra){ if(!label||!el) return; index.push({label:label,kind:kind,el:el,key:(label+' '+(extra||'')).toLowerCase()}); }
+    function add(label,kind,el,extra,desc){ if(!label||!el) return; index.push({label:label,kind:kind,el:el,key:(label+' '+(extra||'')).toLowerCase(),desc:desc||null,ck:null}); }
     document.querySelectorAll('section > .sect-head').forEach(function(h){ var s=h.closest('section'); add(txt(h.querySelector('h2')),'Chapter',s); });
     document.querySelectorAll('article.klass').forEach(function(a){ var n=a.querySelector('.plate, h2, h3'); add(n?txt(n).replace(/\s*·.*$/,''):a.id,'Class',a); });
     document.querySelectorAll('#factions h3, #brief h3, #systems h3, #intro h3').forEach(function(h){ add(txt(h),'Section',h); });
-    document.querySelectorAll('.inf-card').forEach(function(c){ var f=c.querySelector('.inf-family'), r=c.querySelector('.inf-role'); add(txt(f),'Infusion',c,r?txt(r):''); });
+    document.querySelectorAll('.inf-card').forEach(function(c){ var f=c.querySelector('.inf-family'), r=c.querySelector('.inf-role'); add(txt(f),'Infusion',c,r?txt(r):'',txt(c)); });
     document.querySelectorAll('.ench-item').forEach(function(c){ var h=c.querySelector('h3'); add(txt(h)+' enchantments','Enchantments',c); });
     document.querySelectorAll('.ench-item li').forEach(function(li){ var it=li.closest('.ench-item'); var h=it&&it.querySelector('h3'); add(txt(li),'Enchantment · '+(h?txt(h):''),li); });
     document.querySelectorAll('article.merchant').forEach(function(m){ if(m.id&&m.id.indexOf('vendor-')===0){ var n=m.querySelector('.m-name'); var r=m.querySelector('.m-role'); add(txt(n).replace(/\s*continued$/,''),'Vendor · '+(r?txt(r):''),m); } });
     document.querySelectorAll('.m-pool h5').forEach(function(h){ var m=h.closest('article.merchant'); var n=m&&m.querySelector('.m-name'); add(txt(h).replace(/\s*\d+ items.*$/,'')+' pool','Pool · '+(n?txt(n):''),h); });
     document.querySelectorAll('.m-cat-head').forEach(function(h){ add(txt(h.querySelector('h3'))+' catalog trove','Trove',h); });
-    document.querySelectorAll('.m-card[data-k]').forEach(function(c){ var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,c.getAttribute('data-k')); });
+    document.querySelectorAll('.m-card[data-k]').forEach(function(c){ var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,''); index[index.length-1].ck=c.getAttribute('data-k'); });
   }
   var results=[], sel=-1;
   function esc(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
-  function render(q){ list.innerHTML=''; sel=-1;
+  // Full-text: every item's tooltip text (data/cards.json) is searchable, so a keyword
+  // like "lifesteal" finds every item, gem, rune or enchantment that mentions it.
+  var cardText=null, cardsLoading=false;
+  function plain(h){ var d=document.createElement('div'); d.innerHTML=h||''; return (d.textContent||'').replace(/\s+/g,' ').trim(); }
+  function loadCards(){ if(cardText||cardsLoading) return; cardsLoading=true;
+    fetch('data/cards.json').then(function(r){ return r.json(); }).then(function(j){
+      cardText={}; Object.keys(j).forEach(function(k){ var c=j[k]; cardText[k]=plain(c.h); });
+      if(input.value.trim().length>=2) search();
+    }).catch(function(){ cardText={}; }); }
+  var results=[], sel=-1, total=0, MAX=100;
+  function esc(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
+  function rx(words){ return new RegExp('('+words.map(function(w){ return w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }).join('|')+')','ig'); }
+  function snippet(text,words){ var l=text.toLowerCase(), p=-1; for(var i=0;i<words.length;i++){ var k=l.indexOf(words[i]); if(k>=0&&(p<0||k<p)) p=k; }
+    if(p<0) return ''; var st=Math.max(0,p-40); var en=Math.min(text.length,p+90);
+    return (st?'… ':'')+text.slice(st,en).trim()+(en<text.length?' …':''); }
+  function render(q,words){ list.innerHTML=''; sel=-1;
     if(!results.length){ list.innerHTML='<div class="sr-empty">Nothing matches</div>'; list.classList.add('on'); return; }
-    var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+    var re=rx(words);
+    if(total>results.length){ var hd=document.createElement('div'); hd.className='sr-empty'; hd.textContent='Showing '+results.length+' of '+total+' matches — keep typing to narrow'; list.appendChild(hd); }
     results.forEach(function(r,i){ var d=document.createElement('div'); d.className='sr-item'; d.setAttribute('role','option');
-      d.innerHTML='<b>'+esc(r.label).replace(re,'<mark>$1</mark>')+'</b><span>'+esc(r.kind)+'</span>';
+      d.innerHTML='<b>'+esc(r.label).replace(re,'<mark>$1</mark>')+'</b><span>'+esc(r.kind)+'</span>'+(r.snip?'<em class="sr-snip">'+esc(r.snip).replace(re,'<mark>$1</mark>')+'</em>':'');
       d.addEventListener('mousedown',function(e){ e.preventDefault(); go(r); }); list.appendChild(d); });
     list.classList.add('on'); }
-  function search(){ var q=input.value.trim(); if(q.length<2){ list.classList.remove('on'); return; } if(!index) build();
-    var ql=q.toLowerCase(); var starts=[], within=[];
-    index.forEach(function(r){ var i=r.key.indexOf(ql); if(i<0) return; (r.label.toLowerCase().indexOf(ql)===0?starts:within).push(r); });
-    results=starts.concat(within).slice(0,40); render(q); }
+  function search(){ var q=input.value.trim(); if(q.length<2){ list.classList.remove('on'); return; } if(!index) build(); loadCards();
+    var words=q.toLowerCase().split(/\s+/).filter(Boolean); var A=[],B=[],C=[];
+    index.forEach(function(r){ var body=(r.desc||(r.ck&&cardText&&cardText[r.ck])||'').toLowerCase();
+      var hay=r.key+' '+body, ok=true; for(var i=0;i<words.length;i++){ if(hay.indexOf(words[i])<0){ ok=false; break; } }
+      if(!ok) return; var name=r.label.toLowerCase(), inName=words.every(function(w){ return r.key.indexOf(w)>=0; });
+      if(inName){ (name.indexOf(words[0])===0?A:B).push(r); } else { C.push(r); } });
+    C.forEach(function(r){ var t=r.desc||(cardText&&cardText[r.ck])||''; var raw=r.desc||''; r.snip=snippet(t,words); });
+    var all=A.concat(B,C); total=all.length; results=all.slice(0,MAX); render(q,words); }
   function go(r){ list.classList.remove('on'); input.blur();
     var id=idFor(r.el);
     // __pgGoto (set up by the PG module above) knows about Vendors/Catalog/Media's clean paths,
