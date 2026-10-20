@@ -864,7 +864,11 @@ section{padding-block:48px}
 .cb-sh-title{font-family:var(--display);font-size:clamp(28px,4.6vw,46px);line-height:1.08;margin:0 0 6px;font-weight:400}
 .cb-sh-sub{font-size:14px;color:var(--muted);letter-spacing:.04em}
 .cb-sh-attrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:1px;margin:24px 0 20px;background:var(--edge);border:1px solid var(--edge)}
-.cb-sh-attr{background:rgba(10,8,6,.72);padding:10px 12px;text-align:left}
+.cb-sh-attr{background:rgba(10,8,6,.72);padding:10px 12px;text-align:left;display:flex;align-items:center;gap:10px}
+.cb-sh-attr img{width:30px;height:30px;object-fit:contain;flex:none;opacity:.45;filter:grayscale(.6)}
+.cb-sh-attr.hi img{opacity:1;filter:none}
+.cb-sh-titlerow{display:flex;align-items:center;gap:18px}
+.cb-sh-wic{flex:none;transform:scale(1.25);margin:0 6px}
 .cb-sh-attr span{display:block;font-family:var(--data);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#7c7265;margin-bottom:3px}
 .cb-sh-attr b{font-family:var(--display);font-size:22px;font-weight:400;color:#6f675b}
 .cb-sh-attr.hi b{color:var(--gold)}
@@ -6110,10 +6114,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var item=mainId?cards[equipped[mainId]]:null, m=mainId?itemMeta[mainId]:null;
       var rar=m?m.rarity:'standard';
       var lvl=+o.lv||1;
-      var at=ATTRS.map(function(a){ var v=attrVals[a.id]; return '<div class="cb-sh-attr'+(v>10?' hi':'')+'"><span>'+escH(a.name)+'</span><b>'+v+'</b></div>'; }).join('');
+      var at=ATTRS.map(function(a){ var v=attrVals[a.id]; return '<div class="cb-sh-attr'+(v>10?' hi':'')+'"><img src="'+a.icon+'" alt="" loading="lazy"><div><span>'+escH(a.name)+'</span><b>'+v+'</b></div></div>'; }).join('');
       hero.innerHTML='<div class="cb-sh-eyebrow">Shared Cerim Build</div>'+
-        '<h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
-        '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div>'+
+        '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
+        '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
         '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Open an editable copy</button><button type="button" class="cb-tool share" id="cbSharedCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
       hero.hidden=false;
