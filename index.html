@@ -35,10 +35,9 @@
 /* Cerim Builder: sits in the normal tab flow, same spacing as every other tab - just marked out
    with a light blue glow on its text, since it's a different kind of page (an interactive tool,
    not a reference chapter) rather than one more entry in the reading order. */
-.pgbar button.pg-cerim{color:#8ecbe8;text-shadow:0 0 8px rgba(142,203,232,.85),0 0 16px rgba(142,203,232,.55);animation:cerim-glow 2.6s ease-in-out infinite}
-.pgbar button.pg-cerim:hover{color:#b8e2f5;text-shadow:0 0 10px rgba(184,226,245,.95),0 0 20px rgba(184,226,245,.7)}
-.pgbar button.pg-cerim[aria-current="page"]{color:#8ecbe8;text-shadow:0 0 10px rgba(142,203,232,.95),0 0 20px rgba(142,203,232,.7)}
-@keyframes cerim-glow{0%,100%{text-shadow:0 0 6px rgba(142,203,232,.6),0 0 12px rgba(142,203,232,.35)}50%{text-shadow:0 0 10px rgba(142,203,232,.95),0 0 22px rgba(142,203,232,.65)}}
+.pgbar button.pg-cerim{color:#8ecbe8}
+.pgbar button.pg-cerim:hover{color:#b8e2f5}
+.pgbar button.pg-cerim[aria-current="page"]{color:#8ecbe8}
 body.paged [data-page]:not(.pg-on){display:none!important}
 body.paged .contents{display:none}
 [data-page]{scroll-margin-top:96px}
