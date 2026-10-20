@@ -858,6 +858,25 @@ section{padding-block:48px}
 .cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
 .cb-optional{font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#7c7265;font-weight:400;border:1px solid var(--edge);border-radius:2px;padding:2px 6px;margin-left:8px;vertical-align:middle}
 .cb-panel h3 .coming-soon-badge{display:inline-block;vertical-align:middle;margin-left:10px;line-height:1.2;position:relative;top:-2px}
+.cb-shared-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;margin:0 0 22px;padding:14px 18px;border:1px solid rgba(142,203,232,.35);border-left:2px solid #8ecbe8;background:linear-gradient(180deg,var(--panel-2),var(--panel));font-size:14px;color:var(--bone)}
+.cb-shared-bar strong{color:#8ecbe8;letter-spacing:.04em}
+.cb-shared-btns{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+body.cb-shared .cb-reset-wrap,body.cb-shared .cb-slot-clear,body.cb-shared .cb-slot-edit,body.cb-shared .cb-stepper button,body.cb-shared #cerim-builder .standfirst,body.cb-shared #cerim-builder .cb-notice,body.cb-shared #cerim-builder .cb-note,body.cb-shared .cb-panel:has(#cbClassDrop),body.cb-shared .coming-soon-badge{display:none!important}
+body.cb-shared .cb-slot{cursor:default}
+body.cb-shared #cbLevel,body.cb-shared .cb-attr-input{pointer-events:none}
+body.cb-shared .cb-dmg-cond{display:none}
+.cb-shared-list{margin:26px 0 0}
+.cb-shared-list h3{margin:0 0 14px}
+.cb-sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.cb-sh-item{border:1px solid var(--edge);background:rgba(0,0,0,.22);padding:12px 14px}
+.cb-sh-top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.cb-sh-top .m-ic{flex:none}
+.cb-sh-slot{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7c7265}
+.cb-sh-name{font-family:var(--display);font-size:18px;line-height:1.2}
+.cb-sh-meta{font-size:12px;color:var(--muted)}
+.cb-sh-item dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13px}
+.cb-sh-item dt{font-family:var(--data);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#7c7265;padding-top:3px}
+.cb-sh-item dd{margin:0;color:var(--bone)}
 .cb-reset-wrap{text-align:center;margin:0 0 22px}
 .cb-reset-btn{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#1b140c;background:linear-gradient(180deg,#e0b863,var(--gold));border:1px solid #efc877;padding:10px 26px;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:filter .15s,transform .15s}
 .cb-share-btn{margin-left:10px;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border-color:#6fa3bd;color:#e9f1f7}
@@ -3541,7 +3560,12 @@ footer li{color:#6f665b}
     <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The attribute points in this builder reflect the current early-access system.</p>
     <p class="cb-note">Early preview &mdash; damage, attribute scaling, armor, weight and the enchantment and facet lists use the game&rsquo;s own numbers. A few effects (gem amounts, some conditional bonuses) aren&rsquo;t counted in the totals yet and are listed as such.</p>
 
-    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
+    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareView">Copy Shared Page Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
+
+    <div class="cb-shared-bar" id="cbSharedBar" hidden>
+      <div><strong>Shared build</strong> &mdash; view only. Nothing here can be changed from this link.</div>
+      <div class="cb-shared-btns"><button type="button" class="cb-reset-btn" id="cbSharedOpen">Open an editable copy</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbSharedCopy">Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>
+    </div>
 
     <div class="cb-wrap">
       <div class="cb-col">
@@ -3580,6 +3604,8 @@ footer li{color:#6f665b}
         </div>
       </div>
     </div>
+
+    <div class="panel cb-shared-list" id="cbSharedList" hidden></div>
 
     <div id="cbManifest" hidden></div><!-- the old manifest list; kept as an inert hook for the editing code -->
 
@@ -5922,8 +5948,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }catch(e){ return null; }
     }
     var cbSaveTimer=null, cbRestoring=false;
+    var CB_SHARED=false;
     function saveBuildSoon(){
-      if(cbRestoring) return;
+      if(cbRestoring||CB_SHARED) return;
       clearTimeout(cbSaveTimer);
       cbSaveTimer=setTimeout(function(){
         try{
@@ -5956,7 +5983,54 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         renderManifest(); refreshPoints();
       } finally { cbRestoring=false; }
     }
+    var CB_RARITY_NAME={standard:'Common',magical:'Magical',plagued:'Plagued',unique:'Unique'};
+    function renderSharedList(){
+      var box=document.getElementById('cbSharedList'); if(!box) return;
+      var ids=Object.keys(equipped).filter(function(id){ return cards&&cards[equipped[id]]&&slotEls[id]; }).sort(slotOrder);
+      if(!ids.length){ box.hidden=true; return; }
+      var html='<h3>Loadout</h3><div class="cb-sh-grid">';
+      ids.forEach(function(id){
+        var item=cards[equipped[id]], m=itemMeta[id], meta=slotEls[id];
+        var rar=m?m.rarity:(item.r||'standard');
+        var rows='';
+        function row(k,v){ if(v) rows+='<dt>'+k+'</dt><dd>'+v+'</dd>'; }
+        if(m){
+          row('Facet',m.facet?escH(m.facet):'');
+          row('Runes',(m.runes||[]).filter(Boolean).map(escH).join('<br>'));
+          row('Gems',(m.gems||[]).filter(Boolean).map(escH).join('<br>'));
+          row('Enchants',(m.enchants||[]).filter(Boolean).map(escH).join('<br>'));
+        }
+        html+='<div class="cb-sh-item"><div class="cb-sh-top"><span class="m-ic" data-k="'+equipped[id]+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span><div>'+
+          '<div class="cb-sh-slot">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</div>'+
+          '<div class="cb-sh-name r-'+rar+'">'+escH(item.n)+'</div>'+
+          '<div class="cb-sh-meta">'+escH(item.t||'')+(m?' &middot; '+CB_RARITY_NAME[rar]+' &middot; Upgrade '+m.level:'')+'</div></div></div>'+(rows?'<dl>'+rows+'</dl>':'')+'</div>';
+      });
+      box.innerHTML=html+'</div>'; box.hidden=false;
+    }
+    function enterSharedMode(code,o){
+      CB_SHARED=true;
+      document.body.classList.add('cb-shared');
+      try{ document.title='Shared Cerim Build \u2014 Wicked Dossier'; }catch(e){}
+      var h=document.querySelector('#cerim-builder .sect-head h2'); if(h) h.textContent='Shared Build';
+      var bar=document.getElementById('cbSharedBar'); if(bar) bar.hidden=false;
+      Array.prototype.forEach.call(document.querySelectorAll('.cb-attr-input'),function(i){ i.readOnly=true; i.tabIndex=-1; });
+      var lv=document.getElementById('cbLevel'); if(lv) lv.disabled=true;
+      applyBuild(o); renderSharedList();
+      var base=location.href.split('#')[0].split('?')[0];
+      var cp=document.getElementById('cbSharedCopy'), msg=document.getElementById('cbSharedMsg');
+      function say(t){ msg.textContent=t; setTimeout(function(){ msg.textContent=''; },3500); }
+      cp.addEventListener('click',function(){
+        var url=base+'?s='+code;
+        if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ say('Link copied'); },function(){ say('Copy failed'); }); else say('Copy failed');
+      });
+      document.getElementById('cbSharedOpen').addEventListener('click',function(){ location.href=base+'?b='+code+'#cerim-builder'; });
+      if(!document.getElementById('cerim-builder').offsetParent) location.hash='#cerim-builder';
+    }
     function restoreBuild(){
+      try{
+        var sc=new URLSearchParams(location.search).get('s'), so=sc&&decodeBuild(sc);
+        if(so){ enterSharedMode(sc,so); return; }
+      }catch(e){}
       var o=null, fromLink=false;
       try{ var q=new URLSearchParams(location.search).get('b'); if(q){ o=decodeBuild(q); fromLink=!!o; } }catch(e){}
       if(!o){ try{ var t=localStorage.getItem(CB_STORE_KEY); if(t) o=decodeBuild(t); }catch(e){} }
@@ -5976,6 +6050,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           done(ok?'Link copied':'Copy failed');
         };
         if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ done('Link copied'); },fallback); else fallback();
+      });
+      var vb=document.getElementById('cbShareView');
+      if(vb) vb.addEventListener('click',function(){
+        var b=serializeBuild();
+        var base=location.href.split('#')[0].split('?')[0];
+        var url=isDefaultBuild(b)?base:(base+'?s='+encodeBuild(b));
+        var done=function(t){ msg.textContent=t; setTimeout(function(){ msg.textContent=''; },3500); };
+        if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ done('Shared page link copied'); },function(){ done('Copy failed'); }); else done('Copy failed');
       });
       var sec=document.getElementById('cerim-builder');
       if(sec){ ['click','input','change'].forEach(function(ev){ sec.addEventListener(ev,saveBuildSoon,true); }); }
@@ -6066,6 +6148,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     });
 
     function onSlotsClick(e){
+      if(CB_SHARED){ e.preventDefault(); return; }
       var clear=e.target.closest('.cb-slot-clear');
       var slotEl=e.target.closest('.cb-slot'); if(!slotEl) return;
       var id=slotEl.dataset.slot; var meta=slotEls[id]; if(!meta) return;
@@ -6362,7 +6445,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     </button>
     <ul class="srcs collapsed" id="srcList">
       <li>Moon Studios &mdash; <a href="https://norestforthewicked.com/news/class-armors-sneak-peek">Class Armors Sneak Peek</a>, <a href="https://forum.norestforthewicked.com/t/no-rest-for-the-wicked-class-system-sneak-peek/27094">Class System Sneak Peek</a>, <a href="https://norestforthewicked.com/news/no-rest-for-the-wicked-1-0-delay-announcement">1.0 Delay Announcement</a>, and the <a href="https://www.youtube.com/@moongamestudios">official YouTube channel</a> (all videos on the Media page)</li>
-      <li><a href="https://www.norestforthewicked.gg/">norestforthewicked.gg</a> &mdash; community item database, vendors and icons, cross-checked against the live build</li>
       <li><a href="https://nrftw.wiki.gg/">nrftw.wiki.gg</a> &mdash; gems, enchantments, facets and equipment modification</li>
       <li><a href="https://norestforthewicked.wiki.fextralife.com/">Fextralife wiki</a> &mdash; combat, stats, armor and merchant pages</li>
       <li><a href="https://allthings.how/no-rest-for-the-wicked-class-system-24-classes-and-6-factions/">allthings.how</a> &mdash; class and faction overview</li>
