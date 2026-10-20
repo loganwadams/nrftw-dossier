@@ -980,7 +980,7 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .nav-acct.open .nav-acct-menu{display:flex}
 .nav-acct-menu button{appearance:none;background:none;border:0;text-align:left;color:var(--bone);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:10px 12px;cursor:pointer}
 .nav-acct-menu button:hover{background:rgba(255,255,255,.05);color:var(--gold)}
-@media (max-width:760px){.masthead form.search{display:none!important}.nav-acct.in-panel{margin-top:6px;padding-top:6px;border-top:1px solid var(--edge)}.nav-acct{width:100%;flex-direction:column;align-items:stretch}.nav-acct>button{text-align:left}.nav-acct-menu{position:static;box-shadow:none;border:0;padding:0 0 0 10px}}
+@media (max-width:760px){.pgbar-burger,.pgbar-burger:hover,.pgbar-burger:focus-visible{border-color:transparent!important;background:none}.pgbar.menu-open .pgbar-burger{background:rgba(201,169,110,.14);color:var(--gold)}.masthead form.search{display:none!important}.nav-acct.in-panel{margin:0 0 6px;padding:0 0 6px;border-bottom:1px solid var(--edge)}.nav-acct{width:100%;flex-direction:column;align-items:stretch}.nav-acct>button{text-align:left}.nav-acct-menu{position:static;box-shadow:none;border:0;padding:0 0 0 10px}}
 .cb-share-msg{display:inline-block;margin-left:12px;font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--verdigris);vertical-align:middle}
 .cb-reset-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .cb-reset-btn:active{filter:brightness(.95);transform:translateY(0)}
@@ -7543,7 +7543,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   item('Sign out',function(){ window.__cbAcct.signOut(); });
   box.appendChild(main); box.appendChild(menu);
   var panel=bar.querySelector('.pgbar-panel'), amq=window.matchMedia('(max-width:760px)');
-  function placeAcct(){ if(amq.matches&&panel){ box.classList.add('in-panel'); panel.appendChild(box); } else { box.classList.remove('in-panel'); right.insertBefore(box,right.firstChild); } }
+  function placeAcct(){ if(amq.matches&&panel){ box.classList.add('in-panel'); panel.insertBefore(box,panel.firstChild); } else { box.classList.remove('in-panel'); right.insertBefore(box,right.firstChild); } }
   placeAcct(); (amq.addEventListener?amq.addEventListener('change',placeAcct):amq.addListener(placeAcct));
   var u=null;
   main.addEventListener('click',function(e){ e.stopPropagation(); if(!u) window.__cbAcct.signIn(); else box.classList.toggle('open'); });
