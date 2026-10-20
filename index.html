@@ -8,6 +8,8 @@
   var m = location.search.match(/[?&]p=([^&]*)/);
   if(m){
     var path = decodeURIComponent(m[1]);
+    // the Catalog page was renamed Trove; keep old /catalog links working
+    path = path.replace(/^\/catalog(?=$|[#?])/,'/trove');
     var rest = location.search.replace(/[?&]p=[^&]*/,'').replace(/^&/,'?').replace(/^\?$/,'');
     try{ history.replaceState(null,'',path+rest); }catch(e){}
   }
@@ -6997,7 +6999,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // else sharing the group) so they get a real clean path instead of a #hash. Factions/Classes
   // share one page ("world"), and Infusions/Enchantments share one page ("gear"), so those stay
   // on hash-based chapter anchors within their shared page.
-  var CLEAN_PATHS={vend:'/vendors', cat:'/catalog', vid:'/media', cerim:'/cerim-builder'};
+  var CLEAN_PATHS={vend:'/vendors', cat:'/trove', vid:'/media', cerim:'/cerim-builder'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the
