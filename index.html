@@ -1071,6 +1071,9 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .cb-hold button{appearance:none;background:none;border:0;text-align:left;color:var(--bone);font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:13px 14px;cursor:pointer}
 .cb-hold button:active{background:rgba(201,169,110,.12)}
 .cb-hold button.rm{color:#e0705f}
+.cb-hold-hint{display:none;margin:-4px 0 14px;font-size:13px;font-style:italic;color:#8b8174;line-height:1.45}
+@media (hover:none){.cb-hold-hint{display:block}}
+body.cb-shared .cb-hold-hint{display:none!important}
 .cb-slot.cb-held{outline:1px solid var(--gold);outline-offset:2px;animation:cbShake .42s ease-in-out}
 @keyframes cbShake{0%,100%{transform:translateX(0) rotate(0)}15%{transform:translateX(-3px) rotate(-3deg)}30%{transform:translateX(3px) rotate(3deg)}45%{transform:translateX(-3px) rotate(-2deg)}60%{transform:translateX(3px) rotate(2deg)}80%{transform:translateX(-1px) rotate(-1deg)}}
 }
@@ -3710,6 +3713,7 @@ footer li{color:#6f665b}
         </div>
         <div class="cb-panel">
           <h3>Utility Runes</h3>
+          <p class="cb-hold-hint">Tap a slot to add a rune. Press and hold a rune to change or remove it.</p>
           <div class="cb-cells" id="cbRuneCells"></div>
         </div>
       </div>
@@ -3717,6 +3721,7 @@ footer li{color:#6f665b}
       <div class="cb-col">
         <div class="cb-panel">
           <h3>Equipment</h3>
+          <p class="cb-hold-hint">Tap an item for its details. Press and hold it to edit, change or remove it.</p>
           <div class="cb-rows" id="cbRows"></div>
         </div>
         <div class="cb-panel">
