@@ -6536,7 +6536,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         close(); held=slotEl; slotEl.classList.add('cb-held'); window.__holdActive=true; try{ var tt=document.querySelector('.tt.on'); if(tt) tt.classList.remove('on'); }catch(x){} suppress=true; clearTimeout(supT); supT=setTimeout(function(){ suppress=false; },20000);
         try{ if(navigator.vibrate) navigator.vibrate(12); }catch(x){}
         menu=document.createElement('div'); menu.className='cb-hold';
-        menu.innerHTML='<button type="button" data-a="edit">Edit</button><button type="button" data-a="swap">Change item</button><button type="button" data-a="rm" class="rm">Remove</button>';
+        var isRune=!!slotEl.closest('#cbRuneCells')||!(itemMeta[id]&&window.openCfg);
+        menu.innerHTML=(isRune?'':'<button type="button" data-a="edit">Edit</button>')+'<button type="button" data-a="swap">Change item</button><button type="button" data-a="rm" class="rm">Remove</button>';
         document.body.appendChild(menu);
         var r=slotEl.getBoundingClientRect(), mw=menu.offsetWidth, mh=menu.offsetHeight;
         var left=Math.max(8,Math.min(innerWidth-mw-8,r.left+r.width/2-mw/2));
