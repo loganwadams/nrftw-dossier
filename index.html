@@ -1063,6 +1063,13 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .cb-slot-lv{position:absolute;right:2px;bottom:1px;font-family:var(--data);font-size:9px;color:var(--gold);background:rgba(10,8,7,.75);padding:0 3px;line-height:1.5}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
+@media (hover:none){
+  .cb-slot-clear{opacity:1;top:-9px;right:-9px;width:26px;height:26px;font-size:17px;background:rgba(10,8,7,.92);color:var(--gold);border-color:var(--gold-dim);z-index:2}
+  .cb-slot-clear::after{content:'';position:absolute;inset:-6px}
+  .cb-slot-clear.sure{width:auto;min-width:26px;padding:0 9px;border-radius:13px;background:#6a2218;border-color:#d0604f;color:#fff;font-size:11px;font-family:var(--data);letter-spacing:.08em;text-transform:uppercase}
+  .cb-slot-clear.sure::before{content:'Remove?'}
+  .cb-slot-clear.sure{font-size:0}.cb-slot-clear.sure::before{font-size:10px}
+}
 .cb-cfg-err{margin:0;padding:10px 22px;background:rgba(208,96,79,.12);border-top:1px solid rgba(208,96,79,.5);color:#e08a7b;font-size:13px;line-height:1.45}
 .cb-cfg-tools{display:flex;gap:8px;margin:0 36px 0 auto;align-self:center}.cb-cfg-tool{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);border-radius:3px;padding:6px 10px;cursor:pointer}.cb-cfg-tool:hover{border-color:var(--gold)}.cb-cfg-tool.cb-cfg-danger{color:#d0604f;border-color:rgba(208,96,79,.5)}.cb-cfg-tool.cb-cfg-danger:hover{border-color:#d0604f}
 .cb-slot-edit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:3px 8px;border-radius:3px;text-align:center;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(10,8,6,.72);opacity:0;pointer-events:none;transition:opacity .15s}
@@ -6508,7 +6515,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var clear=e.target.closest('.cb-slot-clear');
       var slotEl=e.target.closest('.cb-slot'); if(!slotEl) return;
       var id=slotEl.dataset.slot; var meta=slotEls[id]; if(!meta) return;
-      if(clear){ e.preventDefault(); e.stopPropagation(); setSlotEmpty(id); renderManifest(); return; }
+      if(clear){ e.preventDefault(); e.stopPropagation();
+        // on touch screens the x needs a second tap, so a stray touch cannot wipe a fully built item
+        if(window.matchMedia('(hover:none)').matches && clear.dataset.sure!=='1'){ clear.dataset.sure='1'; clear.classList.add('sure'); setTimeout(function(){ try{ delete clear.dataset.sure; clear.classList.remove('sure'); }catch(x){} },3000); return; }
+        setSlotEmpty(id); renderManifest(); return; }
       if(!equipped[id]){ e.preventDefault(); openPicker(id); }
       else if(itemMeta[id] && window.openCfg){ e.preventDefault(); window.openCfg(id); }
     }
