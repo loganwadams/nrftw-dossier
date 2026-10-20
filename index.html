@@ -78,7 +78,7 @@ body.paged .contents{display:none}
   .pgbar.menu-open .toc-has-drop .toc-drop{display:none;position:static;opacity:1;visibility:visible;transform:none;transition:none;box-shadow:none;border:none;background:rgba(0,0,0,.28);margin:0 0 2px;max-height:none;width:auto}
   .pgbar.menu-open .pgbar-item.open .toc-drop{display:block}
   .pgbar-panel .search{position:relative;top:auto;right:auto;transform:none;width:auto;margin:4px 4px 14px}
-  .pgbar-search{display:none!important}
+  .pgbar-search{display:inline-flex!important}
   /* mobile: toggle sits far left, burger (Menu) far right - the reverse of the desktop order,
      since the burger is what people expect to reach for on the side they open menus from */
   .pgbar-right{order:-1;margin-left:0;margin-right:auto}
@@ -111,6 +111,31 @@ body.paged .contents{display:none}
 .sr-item b{font-weight:500;color:var(--bone);font-size:14px}
 .sr-item b mark{background:none;color:var(--gold);font-weight:600}
 .sr-item span{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b8174;white-space:nowrap}
+
+/* mobile full-screen search */
+.sro{display:none}
+@media (max-width:760px){
+.sro.on{display:flex;flex-direction:column;position:fixed;inset:0;z-index:9999;background:#0c0a08}
+:root:not([data-theme="night"]) .sro.on{background:#0c0a08}
+.sro-bar{display:flex;gap:10px;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 12px 8px}
+.sro-field{flex:1;display:flex;align-items:center;gap:8px;border:1px solid var(--edge);background:#16120f;padding:0 12px}
+.sro-field svg{width:18px;height:18px;flex:none;color:var(--gold)}
+.sro-field input{flex:1;min-width:0;height:46px;background:none;border:0;outline:0;color:var(--bone);font-size:16px}
+.sro-x{background:none;border:0;color:var(--gold);font-size:15px;padding:10px 4px;cursor:pointer}
+.sro-chips{display:flex;gap:8px;overflow-x:auto;padding:4px 12px 10px;scrollbar-width:none}
+.sro-chips::-webkit-scrollbar{display:none}
+.sro-chips button{flex:none;appearance:none;background:#16120f;border:1px solid var(--edge);color:var(--muted);font-family:var(--data);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;border-radius:999px;cursor:pointer}
+.sro-chips button.on{color:#0c0a08;background:var(--gold);border-color:var(--gold)}
+.sro-list{position:static!important;flex:1;max-height:none!important;overflow-y:auto;margin:0!important;border:0!important;box-shadow:none!important;background:none!important;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom)}
+.sro-list .sr-item{padding:12px 14px}
+.sr-snip{margin-top:0!important}
+html.sro-open,html.sro-open body{overflow:hidden}
+}
+.sr-hint{padding:22px 18px;color:var(--muted);font-size:14px;line-height:1.5}
+.sr-item.has-ic{grid-template-columns:44px 1fr auto;align-items:center}
+.sr-item.has-ic .sr-snip{grid-column:2/-1}
+.sr-ic{display:block;width:44px;height:44px;position:relative;overflow:hidden;font-style:normal}
+.sr-ic .m-ic{display:block;transform:scale(.917);transform-origin:0 0}
 .sr-snip mark{background:none;color:var(--gold);font-weight:600}
 .sr-snip{grid-column:1/-1;font-style:normal;font-size:.78rem;color:var(--muted);line-height:1.35;margin-top:2px}
 .sr-empty{padding:12px;font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6f6758}
@@ -7303,7 +7328,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   if(pgbar){
     var pgBtn=document.createElement('button'); pgBtn.type='button'; pgBtn.className='pgbar-search'; pgBtn.setAttribute('aria-label','Search the dossier');
     pgBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
-    pgBtn.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ input.focus(); },260); });
+    pgBtn.addEventListener('click',function(){ if(window.matchMedia('(max-width:760px)').matches){ window.__openSearch&&window.__openSearch(); return; } window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ input.focus(); },260); });
     var pgRight=pgbar.querySelector('.pgbar-right'); if(!pgRight){ pgRight=document.createElement('span'); pgRight.className='pgbar-right'; pgbar.appendChild(pgRight); }
     pgRight.appendChild(pgBtn);
     if('IntersectionObserver' in window){
@@ -7327,42 +7352,43 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     document.querySelectorAll('article.merchant').forEach(function(m){ if(m.id&&m.id.indexOf('vendor-')===0){ var n=m.querySelector('.m-name'); var r=m.querySelector('.m-role'); add(txt(n).replace(/\s*continued$/,''),'Vendor · '+(r?txt(r):''),m); } });
     document.querySelectorAll('.m-pool h5').forEach(function(h){ var m=h.closest('article.merchant'); var n=m&&m.querySelector('.m-name'); add(txt(h).replace(/\s*\d+ items.*$/,'')+' pool','Pool · '+(n?txt(n):''),h); });
     document.querySelectorAll('.m-cat-head').forEach(function(h){ add(txt(h.querySelector('h3'))+' catalog trove','Trove',h); });
-    document.querySelectorAll('.m-card[data-k]').forEach(function(c){ var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,''); index[index.length-1].ck=c.getAttribute('data-k'); });
+    document.querySelectorAll('.m-card[data-k]').forEach(function(c){ var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,''); index[index.length-1].ck=c.getAttribute('data-k'); var ic=c.firstElementChild; if(ic&&!ic.classList.contains('m-card-name')) index[index.length-1].ic=ic.outerHTML; });
   }
   var results=[], sel=-1;
   function esc(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
   // Full-text: every item's tooltip text (data/cards.json) is searchable, so a keyword
   // like "lifesteal" finds every item, gem, rune or enchantment that mentions it.
   var cardText=null, cardsLoading=false;
-  function plain(h){ var d=document.createElement('div'); d.innerHTML=h||''; return (d.textContent||'').replace(/\s+/g,' ').trim(); }
+  function plain(h){ var d=document.createElement('div'); d.innerHTML=(h||'').replace(/<(?!\/?(?:b|i|em|strong|span)\b)/g,' <').replace(/<\/(div|p|li|h\d|tr|td)>/g,'</$1> '); return (d.textContent||'').replace(/\s+/g,' ').trim(); }
   function loadCards(){ if(cardText||cardsLoading) return; cardsLoading=true;
     fetch('data/cards.json').then(function(r){ return r.json(); }).then(function(j){
       cardText={}; Object.keys(j).forEach(function(k){ var c=j[k]; cardText[k]=plain(c.h); });
-      if(input.value.trim().length>=2) search();
+      if(curInput.value.trim().length>=2) search();
     }).catch(function(){ cardText={}; }); }
-  var results=[], sel=-1, total=0, MAX=100;
+  var results=[], sel=-1, total=0, MAX=100, filt='all', curInput=input, curList=list;
+  function kindOf(r){ var k=r.kind; if(/^Item/.test(k)) return 'item'; if(/Enchant/.test(k)) return 'ench'; if(/^Infusion/.test(k)) return 'inf'; if(/^(Vendor|Pool)/.test(k)) return 'vend'; return 'page'; }
   function esc(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
   function rx(words){ return new RegExp('('+words.map(function(w){ return w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }).join('|')+')','ig'); }
   function snippet(text,words){ var l=text.toLowerCase(), p=-1; for(var i=0;i<words.length;i++){ var k=l.indexOf(words[i]); if(k>=0&&(p<0||k<p)) p=k; }
     if(p<0) return ''; var st=Math.max(0,p-40); var en=Math.min(text.length,p+90);
     return (st?'… ':'')+text.slice(st,en).trim()+(en<text.length?' …':''); }
-  function render(q,words){ list.innerHTML=''; sel=-1;
+  function render(q,words){ var list=curList; list.innerHTML=''; sel=-1;
     if(!results.length){ list.innerHTML='<div class="sr-empty">Nothing matches</div>'; list.classList.add('on'); return; }
     var re=rx(words);
     if(total>results.length){ var hd=document.createElement('div'); hd.className='sr-empty'; hd.textContent='Showing '+results.length+' of '+total+' matches — keep typing to narrow'; list.appendChild(hd); }
     results.forEach(function(r,i){ var d=document.createElement('div'); d.className='sr-item'; d.setAttribute('role','option');
-      d.innerHTML='<b>'+esc(r.label).replace(re,'<mark>$1</mark>')+'</b><span>'+esc(r.kind)+'</span>'+(r.snip?'<em class="sr-snip">'+esc(r.snip).replace(re,'<mark>$1</mark>')+'</em>':'');
+      d.className='sr-item'+(r.ic?' has-ic':''); d.innerHTML=(r.ic?'<i class="sr-ic">'+r.ic+'</i>':'')+'<b>'+esc(r.label).replace(re,'<mark>$1</mark>')+'</b><span>'+esc(r.kind)+'</span>'+(r.snip?'<em class="sr-snip">'+esc(r.snip).replace(re,'<mark>$1</mark>')+'</em>':'');
       d.addEventListener('mousedown',function(e){ e.preventDefault(); go(r); }); list.appendChild(d); });
     list.classList.add('on'); }
-  function search(){ var q=input.value.trim(); if(q.length<2){ list.classList.remove('on'); return; } if(!index) build(); loadCards();
+  function search(){ var q=curInput.value.trim(); if(q.length<2){ if(curList===list) list.classList.remove('on'); else { curList.innerHTML='<div class="sr-hint">Search items, gems, enchantments, infusions, vendors and more by name or by what they do — try “lifesteal”.</div>'; } return; } if(!index) build(); loadCards();
     var words=q.toLowerCase().split(/\s+/).filter(Boolean); var A=[],B=[],C=[];
     index.forEach(function(r){ var body=(r.desc||(r.ck&&cardText&&cardText[r.ck])||'').toLowerCase();
       var hay=r.key+' '+body, ok=true; for(var i=0;i<words.length;i++){ if(hay.indexOf(words[i])<0){ ok=false; break; } }
       if(!ok) return; var name=r.label.toLowerCase(), inName=words.every(function(w){ return r.key.indexOf(w)>=0; });
       if(inName){ (name.indexOf(words[0])===0?A:B).push(r); } else { C.push(r); } });
     C.forEach(function(r){ var t=r.desc||(cardText&&cardText[r.ck])||''; var raw=r.desc||''; r.snip=snippet(t,words); });
-    var all=A.concat(B,C); total=all.length; results=all.slice(0,MAX); render(q,words); }
-  function go(r){ list.classList.remove('on'); input.blur();
+    var all=A.concat(B,C); if(filt!=='all') all=all.filter(function(r){ return kindOf(r)===filt; }); total=all.length; results=all.slice(0,MAX); render(q,words); }
+  function go(r){ list.classList.remove('on'); input.blur(); closeOv();
     var id=idFor(r.el);
     // __pgGoto (set up by the PG module above) knows about Vendors/Catalog/Media's clean paths,
     // so a search hit on one of those pages lands on e.g. /vendors#id instead of a bare "#id"
@@ -7371,7 +7397,22 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(!(window.__pgGoto && window.__pgGoto(id))) location.hash='#'+id;
     setTimeout(function(){ r.el.scrollIntoView({block:'center'}); r.el.classList.remove('sr-hit'); void r.el.offsetWidth; r.el.classList.add('sr-hit');
       if(r.el.classList.contains('m-card')) r.el.click(); },60); }
-  input.addEventListener('input',search);
+  // ---- mobile full-screen search ----
+  var ov=document.createElement('div'); ov.className='sro'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Search');
+  ov.innerHTML='<div class="sro-bar"><div class="sro-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Search the dossier" aria-label="Search" autocomplete="off" autocapitalize="off" enterkeyhint="search"></div><button type="button" class="sro-x">Cancel</button></div>'+
+    '<div class="sro-chips"><button data-f="all" class="on">All</button><button data-f="item">Items</button><button data-f="ench">Enchantments</button><button data-f="inf">Infusions</button><button data-f="vend">Vendors</button><button data-f="page">Pages</button></div><div class="sro-list sr-list on"></div>';
+  document.body.appendChild(ov);
+  var ovIn=ov.querySelector('input'), ovList=ov.querySelector('.sro-list');
+  function openOv(){ curInput=ovIn; curList=ovList; filt='all'; ov.querySelectorAll('.sro-chips button').forEach(function(b){ b.classList.toggle('on',b.dataset.f==='all'); });
+    document.documentElement.classList.add('sro-open'); ov.classList.add('on'); search(); setTimeout(function(){ ovIn.focus(); },30); }
+  function closeOv(){ if(!ov.classList.contains('on')) return; ov.classList.remove('on'); document.documentElement.classList.remove('sro-open'); ovIn.blur(); curInput=input; curList=list; }
+  ov.querySelector('.sro-x').addEventListener('click',closeOv);
+  ovIn.addEventListener('input',function(){ search(); ovList.scrollTop=0; });
+  ovIn.addEventListener('keydown',function(e){ if(e.key==='Escape') closeOv(); else if(e.key==='Enter'){ e.preventDefault(); if(results.length) go(results[0]); } });
+  ov.querySelector('.sro-chips').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; filt=b.dataset.f; ov.querySelectorAll('.sro-chips button').forEach(function(x){ x.classList.toggle('on',x===b); }); search(); ovList.scrollTop=0; });
+  ovList.addEventListener('scroll',function(){ if(document.activeElement===ovIn) ovIn.blur(); },{passive:true});
+  window.__openSearch=function(){ if(window.matchMedia('(max-width:760px)').matches) openOv(); };
+  input.addEventListener('input',function(){ if(curInput===input) search(); });
   input.addEventListener('focus',function(){ if(results.length&&input.value.trim().length>=2) list.classList.add('on'); });
   input.addEventListener('blur',function(){ setTimeout(function(){ list.classList.remove('on'); },150); });
   input.addEventListener('keydown',function(e){ var items=list.querySelectorAll('.sr-item'); if(!items.length) return;
