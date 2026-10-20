@@ -6255,14 +6255,23 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       try{
         var hasTok=false; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0) hasTok=true; }
         var back0=/[?&](code|error|error_description)=/.test(location.search);
-        if(hasTok||back0) client().catch(function(){});
+        if(hasTok&&!back0) client().catch(function(){});
         if(back0){
-          // returning from Discord: if no session appears, say so instead of silently showing "Connect with"
-          var failed=/[?&]error/.test(location.search); var why=''; try{ why=new URLSearchParams(location.search).get('error_description')||new URLSearchParams(location.search).get('error')||''; }catch(e){}
-          setTimeout(function(){
-            if(!user){ openModal('Sign-in didn\u2019t finish','<p>Discord sent you back, but the sign-in couldn\u2019t be completed. This usually happens when the Discord app opens the link in a different browser than the one you started in, or when the browser blocks site storage.</p><p>Please open wickeddossier.com in one browser (not inside another app), tap <strong>Connect with Discord</strong>, and approve it there. If Discord asks, choose to continue in the browser rather than the app.</p>'+(why?'<p>Details: <em>'+escH(why)+'</em></p>':'<p>Details: no error came back from Discord, so the browser most likely lost the sign-in session on the way (a private tab or blocked site data does this).</p>')); }
+          // returning from Discord: finish the exchange and, if it fails, say exactly why instead of silently showing "Connect with"
+          var qs=new URLSearchParams(location.search), why=qs.get('error_description')||qs.get('error')||'';
+          var hadVerifier=false; try{ for(var q=0;q<localStorage.length;q++){ var kk=localStorage.key(q); if(kk&&/code-verifier/.test(kk)) hadVerifier=true; } }catch(e){ why=why||'browser storage is blocked ('+e.message+')'; }
+          function fail(detail){
+            if(user) return;
+            openModal('Sign-in didn’t finish','<p>Discord sent you back, but the sign-in couldn’t be completed. Please try once more from a normal (non-private) browser tab on wickeddossier.com.</p><p>Details for support: <em>'+escH(detail||'unknown')+'</em></p>');
             try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
-          }, failed?300:4500);
+          }
+          if(why){ setTimeout(function(){ fail(why); },300); }
+          else client().then(function(c){ return c.auth.initialize(); }).then(function(r){
+              if(r&&r.error) throw r.error;
+              return c0().auth.getSession();
+            }).then(function(r){ if(!(r&&r.data&&r.data.session)) fail('no session came back'+(hadVerifier?'':' (the sign-in verifier was missing from browser storage)')); })
+            .catch(function(e){ fail((e&&e.message)||String(e)); });
+          function c0(){ return sb; }
         }
       }catch(e){}
 
