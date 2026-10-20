@@ -6254,7 +6254,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // Restore a previous session (or finish a sign-in redirect) without loading the library for everyone.
       try{
         var hasTok=false; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0) hasTok=true; }
-        if(hasTok||(/[?&]code=/.test(location.search)&&sessionStorage.getItem('cbAfterAuth'))) client().catch(function(){});
+        var back0=/[?&](code|error|error_description)=/.test(location.search);
+        if(hasTok||back0) client().catch(function(){});
+        if(back0){
+          // returning from Discord: if no session appears, say so instead of silently showing "Connect with"
+          var failed=/[?&]error/.test(location.search);
+          setTimeout(function(){
+            if(!user){ openModal('Sign-in didn\u2019t finish','<p>Discord sent you back, but the sign-in couldn\u2019t be completed. This usually happens when the Discord app opens the link in a different browser than the one you started in, or when the browser blocks site storage.</p><p>Please open wickeddossier.com in one browser (not inside another app), tap <strong>Connect with Discord</strong>, and approve it there. If Discord asks, choose to continue in the browser rather than the app.</p>'); }
+            try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
+          }, failed?300:4500);
+        }
       }catch(e){}
 
       // ---- modal helpers
