@@ -1064,11 +1064,14 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .cb-slot-clear{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--ink);border:1px solid var(--edge-hot);color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,color .15s,border-color .15s}
 .cb-slot:hover .cb-slot-clear,.cb-slot-clear:focus-visible{opacity:1}
 @media (hover:none){
-  .cb-slot-clear{opacity:1;top:-9px;right:-9px;width:26px;height:26px;font-size:17px;background:rgba(10,8,7,.92);color:var(--gold);border-color:var(--gold-dim);z-index:2}
-  .cb-slot-clear::after{content:'';position:absolute;inset:-6px}
-  .cb-slot-clear.sure{width:auto;min-width:26px;padding:0 9px;border-radius:13px;background:#6a2218;border-color:#d0604f;color:#fff;font-size:11px;font-family:var(--data);letter-spacing:.08em;text-transform:uppercase}
-  .cb-slot-clear.sure::before{content:'Remove?'}
-  .cb-slot-clear.sure{font-size:0}.cb-slot-clear.sure::before{font-size:10px}
+  .cb-slot-clear{display:none}
+  .cb-slot{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+}
+.cb-hold{position:fixed;z-index:400;min-width:150px;background:#100d0b;border:1px solid var(--gold-dim);box-shadow:0 12px 34px rgba(0,0,0,.75);padding:5px;display:flex;flex-direction:column}
+.cb-hold button{appearance:none;background:none;border:0;text-align:left;color:var(--bone);font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:13px 14px;cursor:pointer}
+.cb-hold button:active{background:rgba(201,169,110,.12)}
+.cb-hold button.rm{color:#e0705f}
+.cb-slot.cb-held{outline:1px solid var(--gold);outline-offset:2px}
 }
 .cb-cfg-err{margin:0;padding:10px 22px;background:rgba(208,96,79,.12);border-top:1px solid rgba(208,96,79,.5);color:#e08a7b;font-size:13px;line-height:1.45}
 .cb-cfg-tools{display:flex;gap:8px;margin:0 36px 0 auto;align-self:center}.cb-cfg-tool{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);border-radius:3px;padding:6px 10px;cursor:pointer}.cb-cfg-tool:hover{border-color:var(--gold)}.cb-cfg-tool.cb-cfg-danger{color:#d0604f;border-color:rgba(208,96,79,.5)}.cb-cfg-tool.cb-cfg-danger:hover{border-color:#d0604f}
@@ -6522,6 +6525,44 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(!equipped[id]){ e.preventDefault(); openPicker(id); }
       else if(itemMeta[id] && window.openCfg){ e.preventDefault(); window.openCfg(id); }
     }
+    // Touch: press and hold an equipped slot for Edit / Change item / Remove; a plain tap still opens the item details
+    (function holdMenu(){
+      if(CB_SHARED) return;
+      var menu=null, timer=null, sx=0, sy=0, held=null, suppress=false;
+      function close(){ if(menu){ menu.remove(); menu=null; } if(held){ held.classList.remove('cb-held'); held=null; } }
+      function open(slotEl){
+        var id=slotEl.dataset.slot; if(!equipped[id]) return;
+        close(); held=slotEl; slotEl.classList.add('cb-held'); suppress=true; setTimeout(function(){ suppress=false; },700);
+        try{ if(navigator.vibrate) navigator.vibrate(12); }catch(x){}
+        menu=document.createElement('div'); menu.className='cb-hold';
+        menu.innerHTML='<button type="button" data-a="edit">Edit</button><button type="button" data-a="swap">Change item</button><button type="button" data-a="rm" class="rm">Remove</button>';
+        document.body.appendChild(menu);
+        var r=slotEl.getBoundingClientRect(), mw=menu.offsetWidth, mh=menu.offsetHeight;
+        var left=Math.max(8,Math.min(innerWidth-mw-8,r.left+r.width/2-mw/2));
+        var top=r.bottom+8; if(top+mh>innerHeight-8) top=Math.max(8,r.top-mh-8);
+        menu.style.left=left+'px'; menu.style.top=top+'px';
+        menu.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; e.stopPropagation(); var a=b.dataset.a; close();
+          if(a==='edit'&&window.openCfg) window.openCfg(id);
+          else if(a==='swap') openPicker(id);
+          else if(a==='rm'){ setSlotEmpty(id); renderManifest(); } });
+      }
+      function bind(root){
+        root.addEventListener('touchstart',function(e){
+          var sl=e.target.closest&&e.target.closest('.cb-slot'); if(!sl||!equipped[sl.dataset.slot]||!window.matchMedia('(hover:none)').matches) return;
+          if(menu&&menu.contains(e.target)) return;
+          var t=e.touches[0]; sx=t.clientX; sy=t.clientY; clearTimeout(timer); timer=setTimeout(function(){ open(sl); },450);
+        },{passive:true});
+        root.addEventListener('touchmove',function(e){ var t=e.touches[0]; if(Math.abs(t.clientX-sx)>10||Math.abs(t.clientY-sy)>10) clearTimeout(timer); },{passive:true});
+        ['touchend','touchcancel'].forEach(function(n){ root.addEventListener(n,function(){ clearTimeout(timer); },{passive:true}); });
+        root.addEventListener('contextmenu',function(e){ if(e.target.closest('.cb-slot')) e.preventDefault(); });
+        // swallow the click that follows a long press so it does not also open the details
+        root.addEventListener('click',function(e){ if(suppress){ e.preventDefault(); e.stopImmediatePropagation(); } },true);
+      }
+      bind(document.getElementById('cbRows')); bind(document.getElementById('cbRuneCells'));
+      document.addEventListener('touchstart',function(e){ if(menu&&!menu.contains(e.target)) close(); },{passive:true});
+      document.addEventListener('click',function(e){ if(menu&&!menu.contains(e.target)&&!suppress) close(); });
+      window.addEventListener('scroll',close,{passive:true});
+    })();
     document.getElementById('cbRows').addEventListener('click',onSlotsClick);
     document.getElementById('cbRuneCells').addEventListener('click',onSlotsClick);
 
