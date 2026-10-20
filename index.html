@@ -3559,7 +3559,7 @@ footer li{color:#6f665b}
     <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The attribute points in this builder reflect the current early-access system.</p>
     <p class="cb-note">Early preview &mdash; damage, attribute scaling, armor, weight and the enchantment and facet lists use the game&rsquo;s own numbers. A few effects (gem amounts, some conditional bonuses) aren&rsquo;t counted in the totals yet and are listed as such.</p>
 
-    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareView">Copy Shared Page Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
+    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
 
     <div class="cb-shared-bar" id="cbSharedBar" hidden>
       <div><strong>Shared build</strong> &mdash; view only. Nothing here can be changed from this link.</div>
@@ -6041,7 +6041,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       btn.addEventListener('click',function(){
         var b=serializeBuild();
         var base=location.href.split('#')[0].split('?')[0];
-        var url=isDefaultBuild(b)?base:(base+'?b='+encodeBuild(b));
+        var url=isDefaultBuild(b)?base:(base+'?s='+encodeBuild(b));
         var done=function(t){ msg.textContent=t; setTimeout(function(){ msg.textContent=''; },3500); };
         var fallback=function(){
           var ta=document.createElement('textarea'); ta.value=url; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
@@ -6049,14 +6049,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           done(ok?'Link copied':'Copy failed');
         };
         if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ done('Link copied'); },fallback); else fallback();
-      });
-      var vb=document.getElementById('cbShareView');
-      if(vb) vb.addEventListener('click',function(){
-        var b=serializeBuild();
-        var base=location.href.split('#')[0].split('?')[0];
-        var url=isDefaultBuild(b)?base:(base+'?s='+encodeBuild(b));
-        var done=function(t){ msg.textContent=t; setTimeout(function(){ msg.textContent=''; },3500); };
-        if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ done('Shared page link copied'); },function(){ done('Copy failed'); }); else done('Copy failed');
       });
       var sec=document.getElementById('cerim-builder');
       if(sec){ ['click','input','change'].forEach(function(ev){ sec.addEventListener(ev,saveBuildSoon,true); }); }
