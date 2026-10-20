@@ -6528,11 +6528,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Touch: press and hold an equipped slot for Edit / Change item / Remove; a plain tap still opens the item details
     (function holdMenu(){
       if(CB_SHARED) return;
-      var menu=null, timer=null, sx=0, sy=0, held=null, suppress=false;
+      var menu=null, timer=null, sx=0, sy=0, held=null, suppress=false, supT=null;
       function close(){ if(menu){ menu.remove(); menu=null; } if(held){ held.classList.remove('cb-held'); held=null; } }
       function open(slotEl){
         var id=slotEl.dataset.slot; if(!equipped[id]) return;
-        close(); held=slotEl; slotEl.classList.add('cb-held'); suppress=true; setTimeout(function(){ suppress=false; },700);
+        close(); held=slotEl; slotEl.classList.add('cb-held'); suppress=true; clearTimeout(supT); supT=setTimeout(function(){ suppress=false; },20000);
         try{ if(navigator.vibrate) navigator.vibrate(12); }catch(x){}
         menu=document.createElement('div'); menu.className='cb-hold';
         menu.innerHTML='<button type="button" data-a="edit">Edit</button><button type="button" data-a="swap">Change item</button><button type="button" data-a="rm" class="rm">Remove</button>';
@@ -6553,7 +6553,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var t=e.touches[0]; sx=t.clientX; sy=t.clientY; clearTimeout(timer); timer=setTimeout(function(){ open(sl); },450);
         },{passive:true});
         root.addEventListener('touchmove',function(e){ var t=e.touches[0]; if(Math.abs(t.clientX-sx)>10||Math.abs(t.clientY-sy)>10) clearTimeout(timer); },{passive:true});
-        ['touchend','touchcancel'].forEach(function(n){ root.addEventListener(n,function(){ clearTimeout(timer); },{passive:true}); });
+        ['touchend','touchcancel'].forEach(function(n){ root.addEventListener(n,function(){ clearTimeout(timer); if(suppress){ clearTimeout(supT); supT=setTimeout(function(){ suppress=false; },500); } },{passive:true}); });
         root.addEventListener('contextmenu',function(e){ if(e.target.closest('.cb-slot')) e.preventDefault(); });
         // swallow the click that follows a long press so it does not also open the details
         root.addEventListener('click',function(e){ if(suppress){ e.preventDefault(); e.stopImmediatePropagation(); } },true);
