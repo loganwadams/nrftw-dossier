@@ -2068,7 +2068,7 @@ footer li{color:#6f665b}
 <li><a href="#infusions"><span class="toc-n">05</span><span class="toc-t">Infusions</span></a></li>
 <li><a href="#enchantments"><span class="toc-n">06</span><span class="toc-t">Enchantments</span></a></li>
 <li><a href="#vendors"><span class="toc-n">07</span><span class="toc-t">Vendors</span></a></li>
-<li><a href="#catalog"><span class="toc-n">08</span><span class="toc-t">Catalog</span></a></li>
+<li><a href="#catalog"><span class="toc-n">08</span><span class="toc-t">Trove</span></a></li>
   </ul></nav>
 <!-- /GEN:toc -->
 
@@ -3574,7 +3574,7 @@ footer li{color:#6f665b}
     </div>
   </section>
   <section id="catalog">
-    <div class="sect-head"><h2>Catalog</h2></div>
+    <div class="sect-head"><h2>Trove</h2></div>
     <p class="m-cat-intro" data-m="intro:catalog">Hover or tap a card for the item&rsquo;s full panel.</p>
     <!-- SRCKEY -->
     <div class="src-key" data-m="srckey:catalog">
@@ -3624,7 +3624,7 @@ footer li{color:#6f665b}
     <!-- Remove this badge once the planner is fully built out - it's a placeholder marker, not a
          permanent part of the page header. -->
     <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Early Preview</span></div>
-    <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Catalog.</p>
+    <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Trove.</p>
     <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The attribute points in this builder reflect the current early-access system.</p>
     <p class="cb-note">Early preview &mdash; damage, attribute scaling, armor, weight and the enchantment and facet lists use the game&rsquo;s own numbers. A few effects (gem amounts, some conditional bonuses) aren&rsquo;t counted in the totals yet and are listed as such.</p>
 
@@ -6988,7 +6988,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'enchantments', num:'06', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments'], hidden:true},
     {id:'gear',         num:'05', label:'Gear',              group:'gear',  target:'infusions', tag:[], drop:true},
     {id:'vendors',      num:'07', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors'], drop:true},
-    {id:'catalog',    num:'08', label:'Catalog',    group:'cat',   target:'catalog', tag:['catalog'], cls:'pg-hide'},
+    {id:'catalog',    num:'08', label:'Trove',    group:'cat',   target:'catalog', tag:['catalog'], cls:'pg-hide'},
     {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
     {id:'cerim-builder', num:'10', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'}
   ];
@@ -7116,7 +7116,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // to save room on the bar. Both targets stay ordinary same-page hash links, same as every
     // other dropdown item, so the existing hashchange/route() handling picks them up unchanged.
     gear:function(){ var ul=document.createElement('ul'); ul.className='toc-drop';
-      [['catalog','Catalog'],['infusions','Infusions'],['enchantments','Enchantments']].forEach(function(pair){
+      [['catalog','Trove'],['infusions','Infusions'],['enchantments','Enchantments']].forEach(function(pair){
         var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
         var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
         // Catalog is its own page with a clean /catalog path, so go through the shared jump helper
@@ -7318,7 +7318,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     document.querySelectorAll('.ench-item li').forEach(function(li){ var it=li.closest('.ench-item'); var h=it&&it.querySelector('h3'); add(txt(li),'Enchantment · '+(h?txt(h):''),li); });
     document.querySelectorAll('article.merchant').forEach(function(m){ if(m.id&&m.id.indexOf('vendor-')===0){ var n=m.querySelector('.m-name'); var r=m.querySelector('.m-role'); add(txt(n).replace(/\s*continued$/,''),'Vendor · '+(r?txt(r):''),m); } });
     document.querySelectorAll('.m-pool h5').forEach(function(h){ var m=h.closest('article.merchant'); var n=m&&m.querySelector('.m-name'); add(txt(h).replace(/\s*\d+ items.*$/,'')+' pool','Pool · '+(n?txt(n):''),h); });
-    document.querySelectorAll('.m-cat-head').forEach(function(h){ add(txt(h.querySelector('h3'))+' catalog','Catalog',h); });
+    document.querySelectorAll('.m-cat-head').forEach(function(h){ add(txt(h.querySelector('h3'))+' catalog trove','Trove',h); });
     document.querySelectorAll('.m-card[data-k]').forEach(function(c){ var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,c.getAttribute('data-k')); });
   }
   var results=[], sel=-1;
