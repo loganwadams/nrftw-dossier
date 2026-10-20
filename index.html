@@ -897,10 +897,21 @@ body.cb-shared .cb-dmg-cond{display:none}
 .cb-sh-mods{list-style:none;margin:12px 0 0;padding:10px 0 0;border-top:1px solid var(--edge);display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--bone)}
 .cb-sh-mods li{display:flex;gap:8px;line-height:1.35}
 .cb-sh-mods i{flex:none;min-width:52px;font-style:normal;font-family:var(--data);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#7c7265;padding-top:3px}
-.cb-reset-wrap{text-align:center;margin:0 0 22px}
+.cb-reset-wrap{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:0 0 22px}
+.cb-acct{display:contents}
+.cb-tool{display:inline-flex;align-items:center;gap:9px;font-family:var(--data);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding:12px 22px;cursor:pointer;border:1px solid var(--edge);color:var(--bone);background:rgba(255,255,255,.035);transition:background .15s,border-color .15s,color .15s,transform .15s,box-shadow .15s}
+.cb-tool svg{width:15px;height:15px;flex:none}
+.cb-tool:hover{transform:translateY(-1px)}
+.cb-tool:active{transform:translateY(0)}
+.cb-tool.primary{color:#1b140c;background:linear-gradient(180deg,#e6bf6b,var(--gold));border-color:#efc877;box-shadow:0 2px 12px rgba(201,162,74,.28)}
+.cb-tool.primary:hover{filter:brightness(1.08);box-shadow:0 4px 18px rgba(201,162,74,.4)}
+.cb-tool.share{color:#bfe3f5;border-color:rgba(142,203,232,.45);background:rgba(142,203,232,.07)}
+.cb-tool.share:hover{background:rgba(142,203,232,.15);border-color:#8ecbe8;color:#e6f5fc}
+.cb-tool.ghost{color:var(--muted);background:transparent}
+.cb-tool.ghost:hover{color:#e07a6a;border-color:rgba(224,122,106,.55);background:rgba(224,122,106,.07)}
+.cb-sh-hero .cb-shared-btns{gap:10px}
 .cb-reset-btn{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#1b140c;background:linear-gradient(180deg,#e0b863,var(--gold));border:1px solid #efc877;padding:10px 26px;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:filter .15s,transform .15s}
 .cb-share-btn{margin-left:10px;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border-color:#6fa3bd;color:#e9f1f7}
-.cb-acct{display:inline}
 .cb-acct-btn{margin-left:10px;background:linear-gradient(180deg,#5b4a8f,#43366e);border-color:#8a78c9;color:#ece8fa}
 .cb-acct-out{margin-left:12px;background:none;border:0;color:var(--muted);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .cb-acct-hint{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
@@ -3611,7 +3622,7 @@ footer li{color:#6f665b}
     <p class="cb-notice"><strong>Heads up:</strong> attribute distribution will be disbanded at the 1.0 launch and replaced with Cerim Cores. The attribute points in this builder reflect the current early-access system.</p>
     <p class="cb-note">Early preview &mdash; damage, attribute scaling, armor, weight and the enchantment and facet lists use the game&rsquo;s own numbers. A few effects (gem amounts, some conditional bonuses) aren&rsquo;t counted in the totals yet and are listed as such.</p>
 
-    <div class="cb-reset-wrap"><button type="button" class="cb-reset-btn" id="cbResetBuild">Reset Build</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbShareBuild">Copy Build Link</button> <span id="cbAcct" class="cb-acct"><span id="cbAcctIn2" hidden><button type="button" class="cb-reset-btn cb-acct-btn" id="cbAcctSave">Save Build</button> <button type="button" class="cb-reset-btn cb-acct-btn" id="cbAcctList">My Builds</button></span></span><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
+    <div class="cb-reset-wrap"><span id="cbAcct" class="cb-acct"><span id="cbAcctIn2" hidden><button type="button" class="cb-tool primary" id="cbAcctSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg>Save Build</button></span></span><button type="button" class="cb-tool share" id="cbShareBuild"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy Build Link</button><button type="button" class="cb-tool ghost" id="cbResetBuild"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset Build</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
 
     <div class="cb-sh-hero" id="cbSharedBar" hidden></div>
 
@@ -6104,7 +6115,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
-        '<div class="cb-shared-btns"><button type="button" class="cb-reset-btn" id="cbSharedOpen">Open an editable copy</button> <button type="button" class="cb-reset-btn cb-share-btn" id="cbSharedCopy">Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
+        '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Open an editable copy</button><button type="button" class="cb-tool share" id="cbSharedCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
       hero.hidden=false;
     }
     function enterSharedMode(code,o){
@@ -6320,7 +6331,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             .catch(function(e){ msg(cleanErr(e),1); });
         });
       }
-      $('cbAcctList').addEventListener('click',listBuilds);
 
       // ---- privacy
       $('cbAcctPriv').addEventListener('click',function(){
