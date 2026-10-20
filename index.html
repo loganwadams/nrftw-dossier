@@ -6262,6 +6262,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var hadVerifier=false; try{ for(var q=0;q<localStorage.length;q++){ var kk=localStorage.key(q); if(kk&&/code-verifier/.test(kk)) hadVerifier=true; } }catch(e){ why=why||'browser storage is blocked ('+e.message+')'; }
           function fail(detail){
             if(user) return;
+            if(/user email/i.test(detail||'')){ openModal('Discord needs a verified email','<p>Discord didn\u2019t share an email address for this account, and the dossier needs one to create your sign-in. Your Discord account probably has no email on it, or it isn\u2019t verified yet.</p><p>In Discord, open <strong>User Settings \u2192 My Account</strong>, add or verify your email, then come back and tap <strong>Connect with Discord</strong> again.</p>'); try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} return; }
             openModal('Sign-in didn’t finish','<p>Discord sent you back, but the sign-in couldn’t be completed. Please try once more from a normal (non-private) browser tab on wickeddossier.com.</p><p>Details for support: <em>'+escH(detail||'unknown')+'</em></p>');
             try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
           }
