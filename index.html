@@ -5861,6 +5861,40 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       return {verdictLabel:verdictLabel,verdictClass:verdictClass,sub:sub,pros:pros,cons:cons,recs:recs,grade:grade};
     }
 
+
+    // The analysis is written to the builder's owner ("your gear", "fill your slots"). On a shared
+    // page the viewer is looking at someone else's build, so rewrite those lines in a neutral voice.
+    var SHARED_VOICE=[
+      [/Costing you most:/,'Weakest areas:'],
+      [/^Fill your empty armor slots \((.*?)\): armor and resistances are missing, which is most of your Defense score\./,'Empty armor slots ($1): armor and resistances are missing, which is most of the Defense score.'],
+      [/^Add resistance to your armor: none of the four elements is covered yet\./,'No elemental resistance: none of the four elements is covered yet.'],
+      [/^Cover the remaining elements: you have resistance on (\d+) of 4\./,'Resistance covers only $1 of the 4 elements.'],
+      [/^Equip a main-hand weapon: there is no damage source at all yet\./,'No main-hand weapon: there is no damage source at all.'],
+      [/^Add a second weapon: you only have (.*) to deal damage with\./,'Only one damage weapon: $1.'],
+      [/^Fill the off-hand slot with a shield, catalyst or second weapon\./,'Off-hand slot is empty (a shield, catalyst or second weapon would fit).'],
+      [/^Equip (\d+) more rings?: rings are free stats and enchant slots\./,'Empty ring slots: $1. Rings are free stats and enchant slots.'],
+      [/^Slot (\d+) more utility runes? for the empty rune slots\./,'Empty utility rune slots: $1.'],
+      [/^(.+) is under its requirement \((.*)\): raise those attributes or its damage stays cut by 80%\./,'$1 is under its requirement ($2), so its damage is cut by 80%.'],
+      [/^None of your (\d+) points go into what /,'None of the $1 points go into what '],
+      [/^Only (\d+) of your (\d+) points go into what /,'Only $1 of the $2 points go into what '],
+      [/^Stick to one element: your gear mixes/,'Mixed elements: the gear mixes'],
+      [/Go all (.+?) on every weapon, gem and enchant, and swap out the off-element pieces:/,'Going all $1 on every weapon, gem and enchant would fix it. Off-element pieces:'],
+      [/none of your weapons deal/,'none of the weapons deal'],
+      [/^Socket gems: (\d+) gem sockets? (?:are|is) empty\./,'Empty gem sockets: $1.'],
+      [/^Fill (\d+) open enchant slots? on your gear\./,'Open enchant slots on the gear: $1.'],
+      [/^Upgrade (\d+) Common items? to a higher rarity for more enchant and gem slots\./,'Common items that could be a higher rarity: $1 (more enchant and gem slots).'],
+      [/^Upgrade your items? toward level 16: (\d+) still below max\./,'Items still below the level 16 maximum: $1.']
+    ];
+    function sharedVoice(){
+      var box=document.getElementById('cbReport'); if(!box) return;
+      var w=document.createTreeWalker(box,NodeFilter.SHOW_TEXT,null), n, nodes=[];
+      while((n=w.nextNode())) nodes.push(n);
+      nodes.forEach(function(t){
+        var v=t.nodeValue; if(!/\b(?:you|your)\b|Fill |Add |Equip |Slot |Cover |Upgrade |Socket |Stick /i.test(v)) return;
+        SHARED_VOICE.forEach(function(r){ v=v.replace(r[0],r[1]); });
+        if(v!==t.nodeValue) t.nodeValue=v;
+      });
+    }
     function renderReport(){
       var box=document.getElementById('cbReport');
       var report=computeReport();
@@ -5898,6 +5932,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // of the report down with it
       try{ renderDamageBreakdown(!report.empty); }
       catch(err){ var dbox=document.getElementById('cbDmg'); if(dbox) dbox.hidden=true; if(window.console) console.error('Damage breakdown failed',err); }
+      if(CB_SHARED) sharedVoice();
     }
     // The analysis and damage table follow the build live: any click, edit or keystroke in the builder
     // (including its pickers and popups) re-runs them a moment later.
@@ -6079,6 +6114,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var h=document.querySelector('#cerim-builder .sect-head'); if(h) h.style.display='none';
       Array.prototype.forEach.call(document.querySelectorAll('.cb-attr-input'),function(i){ i.readOnly=true; i.tabIndex=-1; });
       var lv=document.getElementById('cbLevel'); if(lv) lv.disabled=true;
+      [['Your Numbers','Key Numbers'],['Needs Attention','Gaps'],['Recommended Changes','Where It Could Improve']].forEach(function(p){ Array.prototype.forEach.call(document.querySelectorAll('#cbReport h3'),function(h){ if(h.textContent.trim()===p[0]) h.textContent=p[1]; }); });
       applyBuild(o); renderSharedList(); renderSharedHero(o);
       try{ renderReport(); }catch(err){ if(window.console) console.error('Shared analysis failed',err); }
       var base=location.href.split('#')[0].split('?')[0];
