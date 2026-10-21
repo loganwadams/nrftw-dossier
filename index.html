@@ -4730,7 +4730,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }
     // Exalting: an item gets 4 exalt steps TOTAL, split however across its enchants (never 4 per row).
     // Each step adds +25% to that row's rolled value. Rings, gems/runes and a Plagued item's downside
-    // roll (etype 2) can't be exalted at all, per the wiki's Modifying Equipment page. (Rings confirmed in game.)
+    // roll (etype 2) can't be exalted at all (both confirmed in game).
     function cbExaltTotal(mm){
       var ex=mm.exalts||[], t=0; for(var k=0;k<ex.length;k++) t+=ex[k]||0; return t;
     }
@@ -6939,7 +6939,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     </button>
     <ul class="srcs collapsed" id="srcList">
       <li>Moon Studios &mdash; <a href="https://norestforthewicked.com/news/class-armors-sneak-peek">Class Armors Sneak Peek</a>, <a href="https://forum.norestforthewicked.com/t/no-rest-for-the-wicked-class-system-sneak-peek/27094">Class System Sneak Peek</a>, <a href="https://norestforthewicked.com/news/no-rest-for-the-wicked-1-0-delay-announcement">1.0 Delay Announcement</a>, and the <a href="https://www.youtube.com/@moongamestudios">official YouTube channel</a> (all videos on the Media page)</li>
-      <li><a href="https://nrftw.wiki.gg/">nrftw.wiki.gg</a> &mdash; gems, enchantments, facets and equipment modification</li>
       <li><a href="https://norestforthewicked.wiki.fextralife.com/">Fextralife wiki</a> &mdash; combat, stats, armor and merchant pages</li>
     </ul>
     <p class="legal">No Rest for the Wicked&trade; and all related names, logos, characters, artwork, item icons, screenshots and video are the property of Moon Studios GmbH and are used here for identification and commentary only, without permission. This is an unofficial, fan-made reference and is not affiliated with, sponsored by or endorsed by Moon Studios. Game data is compiled from the community sources above and may lag behind the live game. No charge is made for this site, and any material will be removed on request of its owner.</p>
