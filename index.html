@@ -4730,7 +4730,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }
     // Exalting: an item gets 4 exalt steps TOTAL, split however across its enchants (never 4 per row).
     // Each step adds +25% to that row's rolled value. Rings, gems/runes and a Plagued item's downside
-    // roll (etype 2) can't be exalted at all, per the wiki's Modifying Equipment page.
+    // roll (etype 2) can't be exalted at all, per the wiki's Modifying Equipment page. (Rings confirmed in game.)
     function cbExaltTotal(mm){
       var ex=mm.exalts||[], t=0; for(var k=0;k<ex.length;k++) t+=ex[k]||0; return t;
     }
