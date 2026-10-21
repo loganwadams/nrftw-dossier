@@ -4713,10 +4713,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }
     // Runes a weapon ships with are fixed: the game does not let you remove them.
     // A unique item always carries its own fixed enchantments; they come pre-filled and cannot be swapped.
+    // A unique item is created at its listed level at the earliest, so neither creation nor upgrade can go below it.
+    function uniqFloor(id){ var m=itemMeta[id], c=cards[equipped[id]]; return (m&&m.rarity==='unique'&&UNIQ_BY_ITEM[equipped[id]]&&c)?(Math.max(1,Math.min(16,+c.lv||1))):1; }
+    function clampUniqLv(id){ var m=itemMeta[id]; if(!m) return; var f=uniqFloor(id); if(f>1){ m.creation=Math.max(f,m.creation||0); m.level=Math.max(m.creation,m.level||f); } }
     function uniqueOwn(id){ var o=UNIQ_BY_ITEM[equipped[id]]; return o&&o.length?o:null; }
     function applyUniqueEnchants(id){
       var m=itemMeta[id]; if(!m) return;
-      m.rarity='unique'; m.gems=[]; m.uniqN=UNIQ_COUNT[equipped[id]]||0; normalizeItemMeta(m);
+      m.rarity='unique'; m.gems=[]; m.uniqN=UNIQ_COUNT[equipped[id]]||0; clampUniqLv(id); normalizeItemMeta(m);
       var own=uniqueOwn(id)||[]; m.enchants=m.enchants.map(function(v,i){ return i<own.length?own[i]:''; });
     }
     function stockRuneCount(id){
@@ -4802,8 +4805,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var html='<div class="cb-mf-detail" data-id="'+id+'">';
       if(uniqOk&&m.rarity==='unique') rarityOpts='<option value="unique" selected>Unique</option>'; // a unique item is always unique
       html+=detailFieldRow('Rarity','<select class="cb-detail-rarity" data-id="'+id+'"'+(uniqOk&&m.rarity==='unique'?' disabled title="Unique items are always Unique"':'')+'>'+rarityOpts+'</select>');
-      html+=detailFieldRow('Creation Level (1&ndash;16)','<input type="number" class="cb-detail-creation" data-id="'+id+'" min="1" max="16" value="'+Math.min(m.creation||m.level,m.level)+'"><small class="cb-detail-hint cb-rule">Upgrade level can\u2019t be lower than creation level, so raising creation raises upgrade too.</small>');
-      html+=detailFieldRow('Upgrade Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="1" max="16" value="'+m.level+'">');
+      html+=detailFieldRow('Creation Level (1&ndash;16)','<input type="number" class="cb-detail-creation" data-id="'+id+'" min="'+uniqFloor(id)+'" max="16" value="'+Math.min(m.creation||m.level,m.level)+'"><small class="cb-detail-hint cb-rule">Upgrade level can\u2019t be lower than creation level, so raising creation raises upgrade too.</small>');
+      html+=detailFieldRow('Upgrade Level (1&ndash;16)','<input type="number" class="cb-detail-level" data-id="'+id+'" min="'+uniqFloor(id)+'" max="16" value="'+m.level+'">');
       if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
         html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
       }
@@ -4991,7 +4994,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       if(e.target.classList.contains('cb-detail-creation')){
         // Upgrade level can never sit below creation level, so raising creation pulls upgrade up with it.
-        var cv=Math.max(1,Math.min(16,+e.target.value||1));
+        var cv=Math.max(uniqFloor(e.target.getAttribute('data-id')),Math.min(16,+e.target.value||1));
         m.creation=cv; e.target.value=cv;
         if((m.level||1)<cv){
           m.level=cv;
@@ -5004,7 +5007,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return;
       }
       if(e.target.classList.contains('cb-detail-level')){
-        var v=Math.max(1,Math.min(16,+e.target.value||1));
+        var v=Math.max(uniqFloor(e.target.getAttribute('data-id')),Math.min(16,+e.target.value||1));
         m.level=v; e.target.value=v;
         if((m.creation||v)>v){ m.creation=v; var ce=e.target.closest('.cb-mf-detail'); ce=ce&&ce.querySelector('.cb-detail-creation'); if(ce) ce.value=v; }
         
@@ -5478,7 +5481,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var slot=anchor.closest&&anchor.closest('.cb-slot'); if(!slot) return c;
       var id=slot.dataset.slot, m=itemMeta[id], key=equipped[id]; if(!m||!key) return c;
       var out=Object.assign({},c), lv=Math.max(1,Math.min(16,+m.level||+c.lv||1));
-      out.lv=lv; out.r=m.rarity||c.r; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); if(/^(unique|legendary)$/.test(out.r)) out.cr=Math.min(lv,9);
+      out.lv=lv; out.r=m.rarity||c.r; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); if(/^(unique|legendary)$/.test(out.r)) out.cr=Math.max(out.cr,Math.min(lv,+c.lv||1));
       try{
         var doc=new DOMParser().parseFromString(c.h||'','text/html'), cardLv=+c.lv||lv;
         var folder=key.split('/')[3]||'', isShield=(key.split('/')[2]||'')==='shields';
@@ -6211,7 +6214,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var cur=itemMeta[id], sv=o.m[id]; if(!cur||!equipped[id]) return;
           cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.creation=Math.max(1,Math.min(cur.level,+sv.c||+sv.l||1)); cur.facet=sv.f||'';
           cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=(sv.u||[]).slice();
-          normalizeItemMeta(cur);
+          clampUniqLv(id); normalizeItemMeta(cur);
           var lb=slotEls[id].el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=cur.level;
         });
         renderManifest(); refreshPoints();
