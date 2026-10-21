@@ -7483,10 +7483,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   }
   // Called by the Trove's click handler, and by route() on a direct/refreshed item-hash load.
   // Level diamond fill: the number is an "upgrade level" (game balance curve Level->Upgrade Level);
-  // the blue fill is how far the number is through its tier's range: 1-3, 4-8, 9-16, 17-30.
+  // the blue fill is how far the number is through its tier range: 1-3, 4-8, 9-16 (17+ is not live yet).
   window.lvFill=function(lv){
     var n=parseInt(lv,10); if(!n) return '';
-    var R=[[1,3],[4,8],[9,16],[17,30]], r=null;
+    var R=[[1,3],[4,8],[9,16]], r=null;
     for(var i=0;i<R.length;i++) if(n>=R[i][0]&&n<=R[i][1]){ r=R[i]; break; }
     if(!r) return '';
     var f=(n-r[0])/(r[1]-r[0]);
