@@ -7062,7 +7062,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var t=el();
       t.className='tt r-'+(c.r||'standard');
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h;
+      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv">'+lvFill(c.lv)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h;
       t.classList.add('on'); place(x,y); }); }
   function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   // hover-follow is for a real mouse only: touch devices synthesize a mouseover+mousemove right
@@ -7475,13 +7475,23 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(document.getElementById('ipBody')!==body) return; // navigated away while this was loading
       if(!c){ body.innerHTML='<p class="ip-error">That item could not be found.</p>'; return; }
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div><div id="ipMats"></div>';
+      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv">'+lvFill(c.lv)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div><div id="ipMats"></div>';
       loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
       if(h2) h2.textContent=c.n||'Item';
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
   }
   // Called by the Trove's click handler, and by route() on a direct/refreshed item-hash load.
+  // Level diamond fill: the number is an "upgrade level" (game balance curve Level->Upgrade Level);
+  // the blue fill is how far the number is through its tier's range: 1-3, 4-8, 9-16, 17-30.
+  window.lvFill=function(lv){
+    var n=parseInt(lv,10); if(!n) return '';
+    var R=[[1,3],[4,8],[9,16],[17,30]], r=null;
+    for(var i=0;i<R.length;i++) if(n>=R[i][0]&&n<=R[i][1]){ r=R[i]; break; }
+    if(!r) return '';
+    var f=(n-r[0])/(r[1]-r[0]);
+    return f>0?'<i class="lvf" style="--f:'+f.toFixed(3)+'"></i>':'';
+  };
   window.__gotoItem=function(key){
     show('itempage','item-page');
     try{
