@@ -7833,6 +7833,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var c=C[host.getAttribute('data-k')]; if(!c) return;
     var r=c.r||'standard', pos=el.style.backgroundPosition||'0px 0px';
     el.setAttribute('data-slot',r);
+    var cardEl=el.closest&&el.closest('.m-card'); if(cardEl&&!cardEl.getAttribute('data-rar')) cardEl.setAttribute('data-rar',r);
     el.style.backgroundImage=SHEET+', url(img/card/bd-'+r+'.webp)';
     el.style.backgroundSize='1536px auto, 100% 100%';
     el.style.backgroundPosition=pos+', 0 0';
