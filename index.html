@@ -5432,7 +5432,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(lv>=c[c.length-1][0]) return c[c.length-1][1];
       for(var i=1;i<c.length;i++) if(lv<=c[i][0]) return Math.round(c[i-1][1]+(c[i][1]-c[i-1][1])*(lv-c[i-1][0])/(c[i][0]-c[i-1][0]));
     }
-    // Being under any requirement costs 80% of the weapon's damage (checked against the other planner at
+    // Being under any requirement takes 80% of the weapon type's LEVEL-1 base damage off its Attribute Bonus - a flat amount,
+    // whatever the item level or how far short you are (the game's penalty curve is flat at -0.8 from one point short;
+    // confirmed on in-game readings: Lacquered Bow -8, All Is Known -8, Spliced Hammer -24). Old note: (was checked against the other planner at
     // 1, 2, 5 and 9 points short on a single requirement and 5 short on each of two).
     var REQ_PENALTY_MULT=0.2;
     var DMG_ATTR_ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FTH'};
@@ -5675,14 +5677,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var cardLv=+item.lv||lvNow, crLv=Math.max(1,Math.min(lvNow,+(m.creation||cardLv)||cardLv));
         var reqList=(st.req||[]).map(function(r){ return {attr:r.attr,n:crLv!==cardLv?reqAtLevel(st.req.length,crLv):r.n}; });
         var reqShort=reqList.filter(function(r){ return (attrVals[r.attr.toLowerCase()]||10)<r.n; });
-        var pm=reqShort.length?REQ_PENALTY_MULT:1;
+        var pm=1, reqPen=reqShort.length?0.8*(DMG_BASE_AT_L1[st.folder]||0):0;
+        attrBonus-=reqPen;
         var reqTxt=reqShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ');
 
         // an infusion gem overrides the weapon's damage type (the game's damage-school override); only one applies at a time
         var infEl=null; (m.gems||[]).forEach(function(g){ var n=dmgNorm(g); if(n&&GEM_INFUSE[n]) infEl=GEM_INFUSE[n].toLowerCase(); });
         if(infEl && DMG_SCHOOL_LABEL[infEl] && infEl!==st.school){ st.school=infEl; st.schoolLabel=DMG_SCHOOL_LABEL[infEl]+' (infused)'; }
         var L=newDmgBucket();
-        if(pm<1) L.parts.push('Below requirement ('+reqTxt+'): −80% damage');
+        if(reqPen>0) L.parts.push('Below requirement ('+reqTxt+'): −'+dmgFmt(reqPen)+' damage');
         (m.gems||[]).forEach(function(g){
           var n=dmgNorm(g); if(!n) return;
           if(GEM_DMG[n]){
@@ -5709,14 +5712,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 
         // weapon-local bonuses add to the upgrade bonus (+20% per upgrade level) instead of multiplying it
         var upPct=(lvNow-1)*20, locMul=(1+(upPct+L.pct)/100)/(1+upPct/100);
-        var weaponDmg=(st.base+attrBonus)*locMul*pm;
+        var weaponDmg=Math.max(0,st.base+attrBonus)*locMul*pm;
         var Lpct=(locMul*pm-1)*100;
         var attackDmg=weaponDmg*(1+G.pct/100);
         var cc=Math.max(0,Math.min(1,st.critChance+L.critChance+G.critChance));
         var cm=st.critMult+L.critMult+G.critMult;
         res.rows.push({
           id:id,key:key,item:item,st:st,slot:(meta.label||'Weapon')+(meta.ord?' '+meta.ord:''),
-          attrPts:attrPts,attrTxt:attrTxt,attrBonus:attrBonus,L:L,G:G,Lpct:Lpct,reqTxt:reqTxt,pm:pm,
+          attrPts:attrPts,attrTxt:attrTxt,attrBonus:attrBonus,reqPen:reqPen,L:L,G:G,Lpct:Lpct,reqTxt:reqTxt,pm:pm,
           weaponDmg:weaponDmg,attackDmg:attackDmg,cc:cc,cm:cm,ap:L.armorPen+G.armorPen,
           avg:attackDmg*(1+cc*(cm-1)),
           poise:st.poise*(1+(L.poisePct+G.poisePct)/100)+L.poiseFlat
@@ -5764,16 +5767,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             '<td class="cb-dmg-derived">'+dash+'</td><td>'+dash+'</td><td class="cb-dmg-derived cb-dmg-final">'+dash+'</td></tr>';
         }
         var critTxt='Crit '+dmgFmt(r.cc*100)+'% ×'+dmgFmt(r.cm)+' · Poise '+dmgFmt(r.poise)+(r.ap?' · Armor pen '+dmgFmt(r.ap)+'%':'');
-        var baseW=st.base/max*100, attrW=r.attrBonus/max*100, modW=Math.max(0,r.attackDmg-st.base-r.attrBonus)/max*100;
+        var baseW=st.base/max*100, attrW=Math.max(0,r.attrBonus)/max*100, modW=Math.max(0,r.attackDmg-st.base-r.attrBonus)/max*100;
         var avgTxt='avg with crit '+dmgFmt(r.avg);
         return '<tr class="cb-dmg-row'+(r.id===topId?' cb-dmg-top':'')+'">'+
           '<td class="cb-dmg-w"><div class="cb-dmg-wrap">'+icon+'<div class="cb-dmg-wtxt">'+
             '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
             '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Upgrade '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
-            '<small>'+critTxt+'</small>'+(r.reqTxt?'<small class="cb-dmg-warn">Under its requirement ('+dmgEsc(r.reqTxt)+') &mdash; damage cut by 80%</small>':'')+'</div></div></td>'+
+            '<small>'+critTxt+'</small>'+(r.reqTxt?'<small class="cb-dmg-warn">Under its requirement ('+dmgEsc(r.reqTxt)+') &mdash; damage reduced by a flat '+dmgFmt(r.reqPen||0)+'</small>':'')+'</div></div></td>'+
           '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'">'+dmgEsc(st.schoolLabel)+'</span></td>'+
           '<td>'+dmgFmt(st.base)+'</td>'+
-          '<td>'+(r.attrBonus>0?'<span class="cb-dmg-gain">+'+dmgFmt(r.attrBonus)+'</span>':'<span class="cb-dmg-none">&mdash;</span>')+
+          '<td>'+(r.attrBonus>0?'<span class="cb-dmg-gain">+'+dmgFmt(r.attrBonus)+'</span>':r.attrBonus<0?'<span class="cb-dmg-loss">&minus;'+dmgFmt(-r.attrBonus)+'</span>':'<span class="cb-dmg-none">&mdash;</span>')+
             (r.attrTxt.length?'<small>'+dmgEsc(r.attrTxt.join(' · '))+'</small>':'<small>no scaling</small>')+'</td>'+
           '<td title="'+dmgEsc(r.L.parts.join('; '))+'">'+dmgPctCell(r.Lpct)+'</td>'+
           '<td class="cb-dmg-derived"><span class="cb-dmg-big">'+dmgFmt(r.weaponDmg)+'</span></td>'+
@@ -5825,7 +5828,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var inv=spent>0?Math.min(1,pts/Math.max(1,spent*.5)):0;
         var mod=Math.min(1,Math.max(0,(best.L&&best.L.pct)||0)/30); // percentage points added by enchants, gems and facet
         off=(reqOk?4:0)+3*inv+2*mod+(rows.length>1?1:0);
-        if(!reqOk) bits.push('a weapon is under its requirement (damage cut 80%)');
+        if(!reqOk) bits.push('a weapon is under its requirement (a flat damage penalty)');
         if(inv<.6) bits.push(scaleN.length?'few points in '+scaleN.join('/')+' for '+best.item.n:'weapon has no attribute scaling');
         if(mod<.5) bits.push('little bonus damage from enchants, gems or facet');
         if(rows.length<2) bits.push('only one damage weapon');
