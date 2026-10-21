@@ -977,6 +977,14 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .nav-acct>button{appearance:none;background:none;border:1px solid transparent;color:var(--muted);font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;cursor:pointer;white-space:nowrap}
 .nav-acct>button:hover{color:var(--bone)}
 .nav-acct>button.nav-connect{display:inline-flex;align-items:center;gap:9px}
+.nav-provs{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.nav-provs-l{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:0 6px 0 14px}
+.nav-prov{appearance:none;background:none;border:1px solid transparent;color:var(--muted);padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;margin:-4px 0}
+.nav-prov:hover{color:var(--bone)}
+.nav-prov svg{width:18px;height:18px;display:block}
+.cb-prov{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.cb-prov .cb-mbtn{padding:13px 14px;font-size:11px;text-align:left}
+@media (max-width:760px){.nav-provs{padding:6px 0}.nav-provs-l{padding-left:10px}.nav-prov{padding:6px 12px}}
 .nav-acct>button.nav-connect svg{width:18px;height:18px;flex:none;margin:-4px 0}
 .nav-acct-menu{position:absolute;right:0;top:100%;min-width:170px;background:#100d0b;border:1px solid var(--edge);box-shadow:0 10px 30px rgba(0,0,0,.6);padding:6px;display:none;flex-direction:column;z-index:60}
 .nav-acct.open .nav-acct-menu{display:flex}
@@ -6327,18 +6335,23 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
 
       // ---- sign in / out (the buttons live in the site menu bar; see the nav module at the end of the page)
-      function signIn(){
+      function signIn(provider){
+        provider=(provider==='google')?'google':'discord';
         client().then(function(c){
           try{ var sec=$('cerim-builder'); sessionStorage.setItem('cbAfterAuth',(sec&&sec.offsetParent)?'builder':'home'); }catch(e){}
-          return c.auth.signInWithOAuth({provider:'discord',options:{redirectTo:location.origin+'/'}});
+          return c.auth.signInWithOAuth({provider:provider,options:{redirectTo:location.origin+'/'}});
         }).catch(function(e){ openModal('Sign in',"<p>Sign-in isn't available right now. "+escH(cleanErr(e))+'</p>'); });
       }
       function signOut(){
         client().then(function(c){ return c.auth.signOut(); }).then(function(){ setUser(null); }).catch(function(){});
       }
-      $('cbAcctHintIn').addEventListener('click',signIn);
+      function chooseSignIn(){
+        openModal('Sign in','<p>Choose how to sign in. It is optional and only lets you save builds to your account.</p><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div>');
+        mB.querySelector('.cb-prov').addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(b){ closeModal(); signIn(b.dataset.p); } });
+      }
+      $('cbAcctHintIn').addEventListener('click',chooseSignIn);
       window.__cbAcct={
-        signIn:signIn, signOut:signOut, openList:function(){ listBuilds(); },
+        signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
         openPrivacy:function(){ $('cbAcctPriv').click(); },
         onUser:function(f){ listeners.push(f); f(user?{name:niceName(user)}:null); }
       };
@@ -6431,8 +6444,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // ---- privacy
       $('cbAcctPriv').addEventListener('click',function(){
         openModal('Privacy','<p>Signing in is optional. The builder, autosave and share links all work without an account.</p>'+
-          '<p>If you sign in with Discord, this site stores your Discord user ID, display name and email address (provided by Discord) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
-          '<p>Sign-in is handled by Supabase and Discord. This site never sees or stores a password. You can delete your account and every saved build at any time from <strong>My Builds</strong> &rarr; <strong>Delete my account</strong>. Share links contain the build itself in the link, so anyone you send one to can see that build; they do not reveal your account.</p>');
+          '<p>If you sign in with Discord or Google, this site stores your account ID, display name and email address (provided by them) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
+          '<p>Sign-in is handled by Supabase and Discord. This site never sees or stores a password. You can delete your account and every saved build at any time from <strong>My Builds</strong> &rarr; <strong>Delete my account</strong>. Share links contain the build itself in the link, so anyone you send one to can see that build; they do not reveal your account.</p><p><a href="/privacy" target="_blank" rel="noopener">Read the full privacy policy</a></p>');
       });
     })();
 
@@ -7647,13 +7660,21 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function placeAcct(){ if(amq.matches&&panel){ box.classList.add('in-panel'); panel.insertBefore(box,panel.firstChild); } else { box.classList.remove('in-panel'); right.insertBefore(box,right.firstChild); } }
   placeAcct(); (amq.addEventListener?amq.addEventListener('change',placeAcct):amq.addListener(placeAcct));
   var u=null;
-  main.addEventListener('click',function(e){ e.stopPropagation(); if(!u) window.__cbAcct.signIn(); else box.classList.toggle('open'); });
+  var provs=document.createElement('span'); provs.className='nav-provs';
+  var DISCORD_SVG='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>';
+  provs.innerHTML='<span class="nav-provs-l">Connect with</span>'+
+    '<button type="button" class="nav-prov" data-p="discord" aria-label="Connect with Discord">'+DISCORD_SVG+'</button>'+
+    '<button type="button" class="nav-prov" data-p="google" aria-label="Connect with Google"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.35 11.1H12v2.9h5.35c-.23 1.4-1.64 4.1-5.35 4.1-3.22 0-5.85-2.67-5.85-5.95S8.78 6.2 12 6.2c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.68 3.65 14.55 2.7 12 2.7 6.9 2.7 2.8 6.8 2.8 12s4.1 9.3 9.2 9.3c5.31 0 8.83-3.73 8.83-8.98 0-.6-.07-1.06-.15-1.52z"/></svg></button>';
+  box.insertBefore(provs,box.firstChild);
+  provs.addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(!b) return; e.stopPropagation(); window.__cbAcct.signIn(b.dataset.p); });
+  main.addEventListener('click',function(e){ e.stopPropagation(); if(u) box.classList.toggle('open'); });
   document.addEventListener('click',function(){ box.classList.remove('open'); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') box.classList.remove('open'); });
   window.__cbAcct.onUser(function(x){
     u=x;
-    if(x){ main.className=''; main.textContent=x.name+' \u25BE'; }
-    else { main.className='nav-connect'; main.innerHTML='<span>Connect with</span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>'; }
+    provs.style.display=x?'none':'';
+    main.style.display=x?'':'none';
+    if(x){ main.className=''; main.textContent=x.name+' ▾'; }
     main.setAttribute('aria-haspopup',x?'menu':'false');
   });
 })();
