@@ -7041,7 +7041,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var t=el();
       t.className='tt r-'+(c.r||'standard');
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'<div class="tt-foot">game data</div>';
+      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h;
       t.classList.add('on'); place(x,y); }); }
   function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   // hover-follow is for a real mouse only: touch devices synthesize a mouseover+mousemove right
