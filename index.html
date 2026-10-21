@@ -7483,14 +7483,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   }
   // Called by the Trove's click handler, and by route() on a direct/refreshed item-hash load.
   // Level diamond fill: the number is an "upgrade level" (game balance curve Level->Upgrade Level);
-  // the blue fill is how far the number is through its tier range: 1-3, 4-8, 9-16 (17+ is not live yet).
+  // each item tier spans a range of it - tier 1: 1-4, tier 2: 4-9, tier 3: 9-16 (17+ is not live yet) -
+  // and the blue fill is how far through that range the number is (9 is full for a tier-2 item,
+  // empty for a tier-3 item; the site's cards are base items, so a tier's first number is empty).
   window.lvFill=function(lv){
-    var n=parseInt(lv,10); if(!n) return '';
-    var R=[[1,3],[4,8],[9,16]], r=null;
-    for(var i=0;i<R.length;i++) if(n>=R[i][0]&&n<=R[i][1]){ r=R[i]; break; }
-    if(!r) return '';
+    var n=parseInt(lv,10); if(!n||n>16) return '';
+    var r=n>=9?[9,16]:n>=4?[4,9]:[1,4];
     var f=(n-r[0])/(r[1]-r[0]);
-    return f>0?'<i class="lvf" style="--t:'+(9+f*82).toFixed(1)+'%"></i>':'';
+    return f>0?'<i class="lvf" style="--t:'+(11+f*78).toFixed(1)+'%"></i>':'';
   };
   window.__gotoItem=function(key){
     show('itempage','item-page');
