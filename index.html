@@ -6586,7 +6586,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var pickedId=pickerOpenFor;
       equipSlot(pickedId,card.dataset.k);
       closePicker();
-      scrollBackToPanel();
+      pickerOpenPanel=null;
+      // jump back to the item's slot in the Equipment section (instantly, so it is in place behind the details window)
+      try{ var tgt=(slotEls[pickedId]&&slotEls[pickedId].el)||document.getElementById('cbRows'); if(tgt) tgt.scrollIntoView({block:'center',inline:'nearest'}); }catch(err){}
       if(itemMeta[pickedId]) openCfg(pickedId);
     });
 
