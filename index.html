@@ -5486,7 +5486,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var slot=anchor.closest&&anchor.closest('.cb-slot'); if(!slot) return c;
       var id=slot.dataset.slot, m=itemMeta[id], key=equipped[id]; if(!m||!key) return c;
       var out=Object.assign({},c), lv=Math.max(1,Math.min(16,+m.level||+c.lv||1));
-      out.lv=lv; out.r=m.rarity||c.r; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); if(/^(unique|legendary)$/.test(out.r)) out.cr=Math.max(out.cr,Math.min(lv,+c.lv||1));
+      out.lv=lv; out.ex=(function(){ var t=0; (m.exalts||[]).forEach(function(n){ t+=n||0; }); return t>0; })(); out.r=m.rarity||c.r; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); if(/^(unique|legendary)$/.test(out.r)) out.cr=Math.max(out.cr,Math.min(lv,+c.lv||1));
       try{
         var doc=new DOMParser().parseFromString(c.h||'','text/html'), cardLv=+c.lv||lv;
         var folder=key.split('/')[3]||'', isShield=(key.split('/')[2]||'')==='shields';
@@ -7074,7 +7074,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var t=el();
       t.className='tt r-'+(c.r||'standard');
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h;
+      t.classList.toggle('tt-ex',!!c.ex); t.classList.toggle('tt-ex-un',!!c.ex&&c.r==='unique');
+      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>'+(c.ex?'<div class="lay ex-t"></div><div class="lay ex-b"></div><div class="lay ex-r"></div><div class="tt-exlbl">Exalted</div>':'')+'<div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h;
       t.classList.add('on'); place(x,y); }); }
   function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   // hover-follow is for a real mouse only: touch devices synthesize a mouseover+mousemove right
