@@ -187,7 +187,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-back{display:inline-flex;align-items:center;gap:6px;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);text-decoration:none;margin:0 0 22px}
 .ip-back:hover,.ip-back:focus-visible{color:var(--gold)}
 .ip-body{max-width:460px}
-.ip-tt{position:static;opacity:1;pointer-events:auto;width:100%;max-width:460px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.ip-tt{position:relative;opacity:1;pointer-events:auto;width:100%;max-width:460px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
 .ip-loading,.ip-error{color:var(--muted);font-size:14.5px}
 .ip-craft{max-width:460px;margin:18px 0 0;padding:14px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
 .ip-craft h3{margin:0 0 8px;font-family:var(--display);font-size:16px;font-weight:400;color:#efe3c8;letter-spacing:.02em}
@@ -196,6 +196,15 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-craft-mats{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--bone)}
 .ip-craft-mats li{padding-left:14px;position:relative}
 .ip-craft-mats li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;background:var(--gold-dim);transform:rotate(45deg)}
+.ip-upg{max-width:760px}
+.ip-mats{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 14px}
+.ip-mat{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--bone)}
+.ip-mat b{font-weight:500;color:#efe3c8}
+.ip-mic{zoom:.5;flex:none;margin:0}
+.ip-upt{width:100%;border-collapse:collapse;font-size:13px;color:var(--bone)}
+.ip-upt th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:4px 8px;border-bottom:1px solid var(--edge)}
+.ip-upt td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+.ip-upt td:first-child,.ip-upt td:nth-child(2){white-space:nowrap}
 .ip-craft-unknown{margin:0;font-size:13px;font-style:italic;color:var(--muted)}
 </style><!-- /IP:css -->
 <!-- SRCKEY:css --><style>
@@ -7415,6 +7424,26 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     });
     return RECIPE_BY_NAME;
   }
+  // Crafting + upgrade materials straight from the game data (data/craft.json): per item the
+  // recipe (station + materials) and its upgrade template (gold + materials for each level).
+  var CRAFT_P=null;
+  function loadCraft(){ if(!CRAFT_P) CRAFT_P=fetch('data/craft.json').then(function(r){ if(!r.ok) throw 0; return r.json(); }); return CRAFT_P; }
+  function matChip(D,pair){
+    var m=D.ing[pair[0]]; if(!m) return '';
+    var ic=m[1]!=null?'<span class="tt-ic ip-mic" style="background-position:-'+(m[1]*64)+'px -'+(m[2]*64)+'px"></span>':'';
+    return '<li class="ip-mat">'+ic+'<span class="ip-mn">'+m[0]+'</span><b>&times;'+pair[1]+'</b></li>';
+  }
+  function matsBlock(D,key){
+    var e=D&&D.it[key]; if(!e) return '';
+    var h='';
+    if(e.c) h+='<div class="ip-craft"><h3>How It’s Crafted</h3><p class="ip-craft-station">Station: <b>'+e.c.s+'</b>'+(e.c.q?' &middot; makes '+e.c.q:'')+'</p><ul class="ip-mats">'+e.c.m.map(function(p){ return matChip(D,p); }).join('')+'</ul></div>';
+    var lv=e.u&&D.tpl[e.u];
+    if(lv){
+      h+='<div class="ip-craft ip-upg"><h3>Upgrading</h3><p class="ip-craft-station">Each upgrade level costs:</p><table class="ip-upt"><thead><tr><th>Level</th><th>Gold</th><th>Materials</th></tr></thead><tbody>'+
+        lv.map(function(L,i){ return '<tr><td>'+(i+1)+'</td><td>'+L[0]+'</td><td><ul class="ip-mats">'+L[1].map(function(p){ return matChip(D,p); }).join('')+'</ul></td></tr>'; }).join('')+'</tbody></table></div>';
+    }
+    return h;
+  }
   function craftBlock(c){
     if(!/\bitem-source-1\b/.test(c.h||'')) return '';   // not flagged as a Crafting-sourced item at all
     var r=recipeIndex()[c.n];
@@ -7434,7 +7463,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(document.getElementById('ipBody')!==body) return; // navigated away while this was loading
       if(!c){ body.innerHTML='<p class="ip-error">That item could not be found.</p>'; return; }
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div>'+craftBlock(c);
+      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div><div id="ipMats"></div>';
+      loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
       if(h2) h2.textContent=c.n||'Item';
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
