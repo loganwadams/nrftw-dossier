@@ -6129,7 +6129,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         (item.lv?'<span class="cb-slot-lv">'+item.lv+'</span>':'')+
         (itemMeta[id]?'<span class="cb-slot-edit">Edit</span>':'')+
         '<button type="button" class="cb-slot-clear" aria-label="Remove">&times;</button>';
-      if(itemMeta[id]) meta.el.setAttribute('title','Click to edit rarity, gems, facet and enchantments'); else meta.el.removeAttribute('title');
+      meta.el.removeAttribute('title');
       renderManifest();
     }
 
