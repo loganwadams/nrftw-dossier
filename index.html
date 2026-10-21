@@ -5477,7 +5477,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var slot=anchor.closest&&anchor.closest('.cb-slot'); if(!slot) return c;
       var id=slot.dataset.slot, m=itemMeta[id], key=equipped[id]; if(!m||!key) return c;
       var out=Object.assign({},c), lv=Math.max(1,Math.min(16,+m.level||+c.lv||1));
-      out.lv=lv; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); out.r=m.rarity||c.r;
+      out.lv=lv; out.r=m.rarity||c.r; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); if(/^(unique|legendary)$/.test(out.r)) out.cr=Math.min(lv,9);
       try{
         var doc=new DOMParser().parseFromString(c.h||'','text/html'), cardLv=+c.lv||lv;
         var folder=key.split('/')[3]||'', isShield=(key.split('/')[2]||'')==='shields';
@@ -7489,7 +7489,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.lvFill=function(lv,cr){
     var n=parseInt(lv,10); if(!n||n>16) return '';
     var c=parseInt(cr,10)||n; if(c>n) c=n;
-    // the range comes from the item's creation level (a level-9 item can never be upgraded below 9);
+    // the range comes from the item's creation level (unique/legendary items are always created at 9, so they start empty at 9);
     // an upgrade past the end of that range simply shows a full diamond
     var r=c>=9?[9,16]:c>=4?[4,9]:[1,4];
     var f=Math.max(0,Math.min(1,(n-r[0])/(r[1]-r[0])));
