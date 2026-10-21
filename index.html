@@ -5121,7 +5121,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           errEl.hidden=false; errEl.style.visibility=''; var tgt=bad[0].closest('.cb-clrw'), nbx=tgt&&(Array.prototype.filter.call(tgt.querySelectorAll('.cb-ench-num'),function(x){ return x.value===''; })[0]||tgt.querySelector('.cb-ench-num'));
           if(nbx){ nbx.scrollIntoView({block:'center'}); nbx.focus(); } else { bad[0].scrollIntoView({block:'center'}); bad[0].focus(); var bj=bad[0].value.indexOf('__'); try{ bad[0].setSelectionRange(bj,bj+2); }catch(err){} } return;
         }
-        clearErr(); closeCfg();
+        clearErr(); var doneId=cfgId; closeCfg();
+        // land back on the item's slot in the Equipment section (after the page unlocks and the board re-renders)
+        var goBack=function(){ try{ var sl=slotEls[doneId], t=(sl&&sl.el)||document.getElementById('cbRows'); if(t) t.scrollIntoView({block:'center',inline:'nearest'}); }catch(err){} };
+        goBack(); requestAnimationFrame(goBack); setTimeout(goBack,120);
       });
       body.addEventListener('change',clearErr);
       ov.querySelector('#cbCfgX').addEventListener('click',closeCfg);
