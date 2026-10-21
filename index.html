@@ -216,7 +216,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-upt{width:100%;border-collapse:collapse;font-size:13px;color:var(--bone)}
 .ip-upt th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:4px 8px;border-bottom:1px solid var(--edge)}
 .ip-upt td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
-.ip-upt td:first-child,.ip-upt td:nth-child(2){white-space:nowrap}
+.ip-upt td:first-child{white-space:nowrap}
 .ip-craft-unknown{margin:0;font-size:13px;font-style:italic;color:var(--muted)}
 </style><!-- /IP:css -->
 <!-- SRCKEY:css --><style>
@@ -7451,8 +7451,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(e.c) h+='<div class="ip-craft"><h3>How It’s Crafted</h3><p class="ip-craft-station">Station: <b>'+e.c.s+'</b>'+(e.c.q?' &middot; makes '+e.c.q:'')+'</p><ul class="ip-mats">'+e.c.m.map(function(p){ return matChip(D,p); }).join('')+'</ul></div>';
     var lv=e.u&&D.tpl[e.u];
     if(lv){
-      h+='<div class="ip-craft ip-upg"><h3>Upgrading</h3><p class="ip-craft-station">Each upgrade level costs:</p><table class="ip-upt"><thead><tr><th>Level</th><th>Cost</th><th>Materials</th></tr></thead><tbody>'+
-        lv.map(function(L,i){ return '<tr><td>'+(i+1)+'</td><td><img class="ip-coin" src="img/coin.png" alt="">'+L[0]+'</td><td><ul class="ip-mats">'+L[1].map(function(p){ return matChip(D,p); }).join('')+'</ul></td></tr>'; }).join('')+'</tbody></table></div>';
+      h+='<div class="ip-craft ip-upg"><h3>Upgrading</h3><p class="ip-craft-station">Materials needed for each upgrade level:</p><table class="ip-upt"><thead><tr><th>Level</th><th>Materials</th></tr></thead><tbody>'+
+        lv.map(function(L,i){ return '<tr><td>'+(i+1)+'</td><td><ul class="ip-mats">'+L[1].map(function(p){ return matChip(D,p); }).join('')+'</ul></td></tr>'; }).join('')+'</tbody></table></div>';
     }
     return h;
   }
