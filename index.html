@@ -3562,7 +3562,7 @@ footer li{color:#6f665b}
       <div class="rule"><h3>Commit to one element</h3><p>An elemental gem grants no enchantment power if another elemental gem is already equipped anywhere on your gear. Mixing plague, lightning, fire and ice does not diversify a build, it disables most of it. Pick the element the class is named after and run it alone.</p></div>
       <div class="rule"><h3>Sockets follow rarity</h3><p>Common gear carries four gem slots; magical, plagued and unique carry one each. Plagued items add four upside slots and one mandatory downside. A fully socketed common piece is often stronger than a rare one.</p></div>
       <div class="rule"><h3>One enchantment per group</h3><p>Magical and plagued enchantments belong to groups, and an item cannot carry two from the same group. Miscellaneous is the exception. Plan an item's rolls as a set, not a wishlist.</p></div>
-      <div class="rule"><h3>Exalting caps at four</h3><p>Each exalt lifts a roll by 25% and can push past the normal maximum. Four is the ceiling per item, and the Watcher's material cost climbs steeply &mdash; the fourth needs two each of Torn Sinew, Marrow and Husk.</p></div>
+      <div class="rule"><h3>Exalting caps at four</h3><p>Each exalt lifts one roll by 25% and can push past the normal maximum. In the game the Watcher picks which enchantment gets it at random; the builder lets you choose, so you can plan a result. Four is the ceiling per item, and the Watcher's material cost climbs steeply &mdash; the fourth needs two each of Torn Sinew, Marrow and Husk.</p></div>
       <div class="rule"><h3>Runes are category-locked</h3><p>Every weapon has four rune slots, and a rune only fits weapons in its own category. Extracting a rune to move it destroys the weapon it came from. Unique weapons cannot be changed at all.</p></div>
       <div class="rule"><h3>Facets are always a trade</h3><p>A facet is one roll per item, fixed at the drop, and every one of them gives with one hand and takes with the other &mdash; <em>Heavy</em> is +20% damage for +25% stamina cost, <em>Mystic</em> is Focus Gain for stamina regen. Pick the facet whose cost lands on a stat the class does not use. <span class="tag t-rep">Reported</span></p></div>
       <div class="rule"><h3>Resistance facets scale with armor</h3><p><em>Fireproof</em>, <em>Frostwoven</em>, <em>Insulated</em> and <em>Purified</em> add an armor value toward one element rather than a flat percentage, and the value grows with your total armor &mdash; roughly 70&ndash;80 at 125 armor, far less below it. On a light-armor class they do little. <span class="tag t-rep">Reported</span></p></div>
@@ -4737,7 +4737,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function exaltBudgetHtml(mm){
       if(mm.cat==='ring') return '';
       var t=cbExaltTotal(mm);
-      return '<span class="cb-exalt-budget'+(t>=4?' full':'')+'"><b>'+t+'</b> / 4 exalted</span>';
+      return '<span class="cb-exalt-budget'+(t>=4?' full':'')+'" title="In the game each exalt lands on a random enchantment. Here you choose where they go, to plan a result."><b>'+t+'</b> / 4 exalted</span>';
     }
     function exaltCtrlHtml(id,mm,i,pl,eligible){
       if(!eligible) return '';
