@@ -7490,7 +7490,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     for(var i=0;i<R.length;i++) if(n>=R[i][0]&&n<=R[i][1]){ r=R[i]; break; }
     if(!r) return '';
     var f=(n-r[0])/(r[1]-r[0]);
-    return f>0?'<i class="lvf" style="--f:'+f.toFixed(3)+'"></i>':'';
+    return f>0?'<i class="lvf" style="--t:'+(9+f*82).toFixed(1)+'%"></i>':'';
   };
   window.__gotoItem=function(key){
     show('itempage','item-page');
