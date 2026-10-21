@@ -5432,10 +5432,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(lv>=c[c.length-1][0]) return c[c.length-1][1];
       for(var i=1;i<c.length;i++) if(lv<=c[i][0]) return Math.round(c[i-1][1]+(c[i][1]-c[i-1][1])*(lv-c[i-1][0])/(c[i][0]-c[i-1][0]));
     }
-    // Being under any requirement takes 80% of the weapon type's LEVEL-1 base damage off its Attribute Bonus - a flat amount,
-    // whatever the item level or how far short you are (the game's penalty curve is flat at -0.8 from one point short;
-    // confirmed on in-game readings: Lacquered Bow -8, All Is Known -8, Spliced Hammer -24). Old note: (was checked against the other planner at
-    // 1, 2, 5 and 9 points short on a single requirement and 5 short on each of two).
+    // Being under any requirement takes 0.8 x the weapon type's LEVEL-1 base damage off, scaled by how much the weapon is
+    // otherwise worth: penalty = 0.8 x L1 base x (base + attribute bonus) / base, once however many requirements are short or by how much
+    // (the game's penalty curve is flat at -0.8 from one point short). In-game readings at item level 9: Lacquered Bow -8, All Is Known -8,
+    // Spliced Hammer -24 (all with no attribute bonus), and Demon's Key (STR 45, Faith 10 of 23): 84 without the penalty, 58 with it
+    // (-26 = twice the flat figure, because the 84 carries a +42 bonus).
     // Shield armor under a requirement keeps 20% of its value (confirmed in game: Serpentguard base 640 -> 128 with Faith short).
     var REQ_PENALTY_MULT=0.2;
     var DMG_ATTR_ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FTH'};
@@ -5678,7 +5679,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var cardLv=+item.lv||lvNow, crLv=Math.max(1,Math.min(lvNow,+(m.creation||cardLv)||cardLv));
         var reqList=(st.req||[]).map(function(r){ return {attr:r.attr,n:crLv!==cardLv?reqAtLevel(st.req.length,crLv):r.n}; });
         var reqShort=reqList.filter(function(r){ return (attrVals[r.attr.toLowerCase()]||10)<r.n; });
-        var pm=1, reqPen=reqShort.length?0.8*(DMG_BASE_AT_L1[st.folder]||0):0;
+        var pm=1, reqPen=reqShort.length&&st.base>0?0.8*(DMG_BASE_AT_L1[st.folder]||0)*(st.base+attrBonus)/st.base:0;
         attrBonus-=reqPen;
         var reqTxt=reqShort.map(function(r){ return DMG_ATTR_ABBR[r.attr]+' '+(attrVals[r.attr.toLowerCase()]||10)+'/'+r.n; }).join(', ');
 
