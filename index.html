@@ -189,6 +189,14 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-body{max-width:460px}
 .ip-tt{position:static;opacity:1;pointer-events:auto;width:100%;max-width:460px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
 .ip-loading,.ip-error{color:var(--muted);font-size:14.5px}
+.ip-craft{max-width:460px;margin:18px 0 0;padding:14px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.ip-craft h3{margin:0 0 8px;font-family:var(--display);font-size:16px;font-weight:400;color:#efe3c8;letter-spacing:.02em}
+.ip-craft-station{margin:0 0 8px;font-size:13px;color:var(--muted)}
+.ip-craft-station b{color:var(--bone);font-weight:500}
+.ip-craft-mats{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--bone)}
+.ip-craft-mats li{padding-left:14px;position:relative}
+.ip-craft-mats li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;background:var(--gold-dim);transform:rotate(45deg)}
+.ip-craft-unknown{margin:0;font-size:13px;font-style:italic;color:var(--muted)}
 </style><!-- /IP:css -->
 <!-- SRCKEY:css --><style>
 .src-key{margin-top:14px;margin-bottom:28px;padding:12px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:flex;flex-wrap:wrap;align-items:center;gap:9px 20px}
@@ -7391,6 +7399,32 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function itemHash(key){ return ITEM_HASH_PREFIX+encodeURIComponent(key); }
   function itemKeyFromHash(raw){ var s=raw.slice(ITEM_HASH_PREFIX.length); try{ return decodeURIComponent(s); }catch(e){ return s; } }
   function itemFullUrl(key){ var h=itemHash(key); return (CAN_USE_CLEAN_URLS?CLEAN_PATHS.cat:'')+'#'+h; }
+  // Crafting materials: the Trove's own "Crafting Recipes" table (#pool-crafting-recipes,
+  // already on the page - no extra fetch) keyed by result item name, so an item's detail page
+  // can show what it takes to craft, reusing that same confirmed data rather than a second copy
+  // of it. An item counts as craftable when its own data (c.h, the same markup the hover
+  // tooltip already renders) carries the game's own "Crafting" source icon (item-source-1, per
+  // the Source icon legend above the Trove) - that's the game telling us, not a guess.
+  var RECIPE_BY_NAME=null;
+  function recipeIndex(){
+    if(RECIPE_BY_NAME) return RECIPE_BY_NAME;
+    RECIPE_BY_NAME={};
+    var head=document.getElementById('pool-crafting-recipes');
+    var tbl=head&&head.nextElementSibling&&head.nextElementSibling.querySelector('table.m-recipes');
+    if(tbl) tbl.querySelectorAll('tbody tr').forEach(function(tr){
+      var tds=tr.querySelectorAll('td'); if(tds.length<4) return;
+      RECIPE_BY_NAME[tds[0].textContent.trim()]={mats:tds[1].textContent.trim(), station:tds[3].textContent.trim()};
+    });
+    return RECIPE_BY_NAME;
+  }
+  function craftBlock(c){
+    if(!/\bitem-source-1\b/.test(c.h||'')) return '';   // not flagged as a Crafting-sourced item at all
+    var r=recipeIndex()[c.n];
+    var inner=r
+      ? '<p class="ip-craft-station">Station: <b>'+r.station+'</b></p><ul class="ip-craft-mats">'+r.mats.split(/,\s*/).map(function(m){ return '<li>'+m+'</li>'; }).join('')+'</ul>'
+      : '<p class="ip-craft-unknown">Craftable, but the exact materials aren’t confirmed yet.</p>';
+    return '<div class="ip-craft"><h3>How It’s Crafted</h3>'+inner+'</div>';
+  }
   function ipRender(key){
     var body=document.getElementById('ipBody'); if(!body) return;
     var h2=document.querySelector('#item-page .sect-head h2');
@@ -7402,7 +7436,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(document.getElementById('ipBody')!==body) return; // navigated away while this was loading
       if(!c){ body.innerHTML='<p class="ip-error">That item could not be found.</p>'; return; }
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div>';
+      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv"><span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div>'+craftBlock(c);
       if(h2) h2.textContent=c.n||'Item';
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
