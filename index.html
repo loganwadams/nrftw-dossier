@@ -7030,7 +7030,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // lazily-loaded item database instead of fetching data/cards.json a second time.
   window.__ttLoad=load;
   function el(){ if(!tip){ tip=document.createElement('div'); tip.className='tt'; document.body.appendChild(tip);} return tip; }
-  function place(x,y){ var t=el(), r=t.getBoundingClientRect(), W=innerWidth, H=innerHeight, left=x+18, top=y+18;
+  function place(x,y){ var t=el(), W=innerWidth, H=innerHeight, left=x+18, top=y+18; t.style.zoom=''; var r=t.getBoundingClientRect(); if(r.height>H-24){ t.style.zoom=((H-24)/r.height).toFixed(3); r=t.getBoundingClientRect(); }
     if(left+r.width>W-12) left=Math.max(12,x-r.width-18); if(top+r.height>H-12) top=Math.max(12,H-12-r.height); t.style.left=left+'px'; t.style.top=top+'px'; }
   var tipAnchor=null;
   ['pointerover','click','touchstart'].forEach(function(n){ document.addEventListener(n,function(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(a) tipAnchor=a; },true); });
