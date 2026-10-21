@@ -3678,7 +3678,6 @@ footer li{color:#6f665b}
       <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-1"></span></span>Crafting</span>
       <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-2"></span></span>Refinery</span>
       <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-3"></span></span>Quest Related</span>
-      <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-5"></span></span>Starter Equipment</span>
       <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-10"></span></span>Bounty</span>
       <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-11"></span></span>Challenge</span>
       <span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-13"></span></span>Pestilence Extra Loot</span>
@@ -7822,6 +7821,30 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(x){ main.className=''; main.textContent=x.name+' ▾'; }
     main.setAttribute('aria-haspopup',x?'menu':'false');
   });
+})();
+</script>
+<script>
+/* rarity icon boxes: put the item's rarity slot tile (the game's own art) behind every item icon that maps to a card */
+(function(){
+  var C=null, SHEET='url(img/items-sheet.webp)';
+  function paint(el){
+    if(el.getAttribute('data-slot')) return;
+    var host=el.hasAttribute('data-k')?el:(el.closest&&el.closest('[data-k]'));
+    if(!host||!C) return;
+    var c=C[host.getAttribute('data-k')]; if(!c) return;
+    var r=c.r||'standard', pos=el.style.backgroundPosition||'0px 0px';
+    el.setAttribute('data-slot',r);
+    el.style.backgroundImage=SHEET+', url(img/card/bd-'+r+'.webp)';
+    el.style.backgroundSize='1536px auto, 100% 100%';
+    el.style.backgroundPosition=pos+', 0 0';
+    el.style.backgroundRepeat='no-repeat';
+    el.style.backgroundColor='transparent';
+  }
+  function sweep(root){ var n=(root.querySelectorAll?root.querySelectorAll('.m-ic:not([data-slot])'):[]); for(var i=0;i<n.length;i++) paint(n[i]); if(root.matches&&root.matches('.m-ic')) paint(root); }
+  fetch('data/cards.json').then(function(r){return r.json()}).then(function(j){
+    C=j; sweep(document);
+    new MutationObserver(function(ms){ ms.forEach(function(m){ m.addedNodes.forEach(function(nd){ if(nd.nodeType===1) sweep(nd); }); }); }).observe(document.body,{childList:true,subtree:true});
+  }).catch(function(){});
 })();
 </script>
 </body></html>
