@@ -1,0 +1,5 @@
+# built at deploy time by tools/build-pages.py (section pages for clean URLs)
+/trove.html
+/vendors.html
+/cerim-builder.html
+/media.html
