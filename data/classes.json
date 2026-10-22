@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Cleric",
+    "tagline": "",
+    "description": "Support-focused holy warriors who heal allies and smite foes with divine magic.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.clericName",
+      "description": "classes.clericDescription"
+    }
+  },
+  {
+    "name": "Crusader",
+    "tagline": "",
+    "description": "A divine warrior wielding massive greathammers to smite evil.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.crusaderName",
+      "description": "classes.crusaderDescription"
+    }
+  },
+  {
+    "name": "Monk",
+    "tagline": "",
+    "description": "Martial artist mixing stamina and focus for powerful spiritual strikes.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.monkName",
+      "description": "classes.monkDescription"
+    }
+  },
+  {
+    "name": "Paladin",
+    "tagline": "",
+    "description": "Holy hammer fighter/guardian.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.paladinName",
+      "description": "classes.paladinDescription"
+    }
+  },
+  {
+    "name": "Archer",
+    "tagline": "",
+    "description": "",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.archerName",
+      "description": "classes.archerDescription"
+    }
+  },
+  {
+    "name": "Barbarian",
+    "tagline": "",
+    "description": "Ferocious warriors with raw physicality, wielding huge clubs to smash through enemy lines.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.barbarianName",
+      "description": "classes.barbarianDescription"
+    }
+  },
+  {
+    "name": "Berserker",
+    "tagline": "",
+    "description": "Dominant warriors wielding massive greataxes for devastating sweeps. Wades directly into combat and stays there. Benefits from staying in combat and trading blows with enemies.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.berserkerName",
+      "description": "classes.berserkerDescription"
+    }
+  },
+  {
+    "name": "Marauder",
+    "tagline": "",
+    "description": "A warrior type class that focuses on in-your-face combos. Trading blows is a plus as it increases damage capabilities. No nonsense axe combos.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.marauderName",
+      "description": "classes.marauderDescription"
+    }
+  },
+  {
+    "name": "Dragoon",
+    "tagline": "",
+    "description": "Lithe spearmen harnessing faith-based leaps to pierce defenses.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.dragoonName",
+      "description": "classes.dragoonDescription"
+    }
+  },
+  {
+    "name": "Guardian",
+    "tagline": "",
+    "description": "Balanced fighters wielding straight swords, equally adept with Strength and Dexterity.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.guardianName",
+      "description": "classes.guardianDescription"
+    }
+  },
+  {
+    "name": "Knight",
+    "tagline": "",
+    "description": "A stalwart champion swinging massive two-handed greatswords.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.knightName",
+      "description": "classes.knightDescription"
+    }
+  },
+  {
+    "name": "Sentinel",
+    "tagline": "",
+    "description": "Polearm specialists who combine extended reach with dexterous sweeps to control the battlefield.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.sentinelName",
+      "description": "classes.sentinelDescription"
+    }
+  },
+  {
+    "name": "Brute",
+    "tagline": "",
+    "description": "A brawler that thrives on dodges and aggressive stamina use. Best suited for 1H clubs.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.bruteName",
+      "description": "classes.bruteDescription"
+    }
+  },
+  {
+    "name": "Cutthroat",
+    "tagline": "",
+    "description": "Agile and flamboyant swordsmen relying on speed and precision.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.cutthroatName",
+      "description": "classes.cutthroatDescription"
+    }
+  },
+  {
+    "name": "Fencer",
+    "tagline": "",
+    "description": "Elegant duelists adept at swift, precise thrusts and agile footwork.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.fencerName",
+      "description": "classes.fencerDescription"
+    }
+  },
+  {
+    "name": "Warlord",
+    "tagline": "",
+    "description": "An honorable warrior wielding two-handed katanas with disciplined technique and mild arcane flair.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.warlordName",
+      "description": "classes.warlordDescription"
+    }
+  },
+  {
+    "name": "Assassin",
+    "tagline": "",
+    "description": "Stealth, backstabs, off-hand empty.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.assassinName",
+      "description": "classes.assassinDescription"
+    }
+  },
+  {
+    "name": "Harbinger",
+    "tagline": "",
+    "description": "A dark harbinger wielding scythes, merging necrotic spells with unholy fervor.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.harbingerName",
+      "description": "classes.harbingerDescription"
+    }
+  },
+  {
+    "name": "Rogue",
+    "tagline": "",
+    "description": "Fast, stamina-heavy dual-wielder that thrives on hit-and-run tactics.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.rogueName",
+      "description": "classes.rogueDescription"
+    }
+  },
+  {
+    "name": "Wraith",
+    "tagline": "",
+    "description": "Swift shinobi using ninjutsu illusions and quick slashes.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.wraithName",
+      "description": "classes.wraithDescription"
+    }
+  },
+  {
+    "name": "Frost Mage",
+    "tagline": "",
+    "description": "A cold-themed mage who freezes, chills, and shatters enemies.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.frostMageName",
+      "description": "classes.frostMageDescription"
+    }
+  },
+  {
+    "name": "Plaguebearer",
+    "tagline": "",
+    "description": "A diseased spellcaster spreading rot and plague across the battlefield.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.plaguebearerName",
+      "description": "classes.plaguebearerDescription"
+    }
+  },
+  {
+    "name": "Pyromancer",
+    "tagline": "",
+    "description": "A mage class centered on fire—setting enemies ablaze, stacking burns, and causing explosions.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.pyromancerName",
+      "description": "classes.pyromancerDescription"
+    }
+  },
+  {
+    "name": "Storm Bringer",
+    "tagline": "",
+    "description": "Lightning-focused mage—fast, volatile combat with chaining effects.",
+    "faction": "",
+    "source_keys": {
+      "name": "classes.stormBringerName",
+      "description": "classes.stormBringerDescription"
+    }
+  }
+]
