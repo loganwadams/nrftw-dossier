@@ -231,7 +231,9 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-craft-mats li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;background:var(--gold-dim);transform:rotate(45deg)}
 #ipBody{width:100%;display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:0 28px;align-items:start}
 #ipBody>.ip-loading,#ipBody>.ip-error{grid-column:1/-1}
-#ipMats{min-width:0}
+#ipMats{min-width:0;grid-column:2;grid-row:1/span 2}
+.ip-srckey{grid-column:1;grid-row:2;margin:14px 0 0;padding:10px 14px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.ip-srckey .src-key-label{flex:0 0 100%}
 #ipMats .ip-craft{max-width:none;margin:0 0 14px}
 #ipMats .ip-craft:last-child{margin-bottom:0}
 .ip-upg{max-width:none}
@@ -7516,6 +7518,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       : '<p class="ip-craft-unknown">Craftable, but the exact materials aren’t confirmed yet.</p>';
     return '<div class="ip-craft"><h3>How It’s Crafted</h3>'+inner+'</div>';
   }
+  // Source icons on an item's own page: the Trove has the legend above its grid, but someone who
+  // lands on an item page straight from a link or search never sees it. Name each icon (hover /
+  // screen-reader title) and list this item's own sources in words under the card. Same legend as
+  // the Trove's .src-key block - keep the two in step.
+  var SRC_NAMES={0:'Vendor',1:'Crafting',2:'Refinery',3:'Quest Related',10:'Bounty',11:'Challenge',13:'Pestilence Extra Loot',20:'Enemy',21:'Boss',30:'Chest',31:'Shiny',33:'Pickup',40:'Fishing',41:'Wood Cutting',42:'Ore Mining',43:'Digging'};
+  function ipSourceKey(box){
+    var ids=[]; box.querySelectorAll('.item-source').forEach(function(el){
+      var m=/\bitem-source-(\d+)\b/.exec(el.className); if(!m) return;
+      var nm=SRC_NAMES[m[1]]; if(nm){ el.setAttribute('title',nm); el.setAttribute('aria-label',nm); el.setAttribute('role','img'); }
+      if(nm&&ids.indexOf(m[1])<0) ids.push(m[1]);
+    });
+    if(!ids.length) return '';
+    return '<div class="ip-srckey"><span class="src-key-label">Where it comes from</span>'+ids.map(function(i){ return '<span class="src-item"><span class="src-ic-wrap"><span class="item-source item-source-'+i+'" title="'+SRC_NAMES[i]+'"></span></span>'+SRC_NAMES[i]+'</span>'; }).join('')+'</div>';
+  }
   function ipRender(key){
     var body=document.getElementById('ipBody'); if(!body) return;
     var h2=document.querySelector('#item-page .sect-head h2');
@@ -7529,6 +7545,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
       body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+c.h+'</div><div id="ipMats"></div>';
       loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
+      var ipCard=body.querySelector('.ip-tt'); if(ipCard){ var sk=ipSourceKey(ipCard); if(sk) ipCard.insertAdjacentHTML('afterend',sk); }
       if(h2) h2.textContent=c.n||'Item';
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
