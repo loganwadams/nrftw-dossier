@@ -200,6 +200,10 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .pgf-meta b{color:var(--gold)}
 .pgf-meta a{color:var(--gold);cursor:pointer;text-decoration:underline}
 .pgf-hide{display:none!important}
+.cb-res-box{display:flex;flex-direction:column;gap:6px;width:100%}
+.cb-res-row{display:flex;align-items:center;gap:8px}
+.cb-res-row select{flex:1;min-width:0;background:var(--panel);border:1px solid var(--edge);color:var(--bone);padding:7px 8px;font-family:var(--body);font-size:13px}
+.cb-res-row input{width:72px;background:rgba(201,169,110,.10);border:1px solid rgba(201,169,110,.5);color:#ffe9a8;padding:6px;font-family:var(--data);font-size:12px}
 .pgf-field input::-webkit-search-cancel-button{display:none}
 .m-cats.pgf-on .m-cat-collapse{visibility:hidden}
 .m-cats.pgf-on .m-cat-hidden:not(.pgf-hide){display:block!important}
@@ -2898,7 +2902,8 @@ footer li{color:#6f665b}
     // that an item carrying any gem is limited to a single enchantment.
     function normalizeItemMeta(m){
       if(m.cat==='ring'){ // rings carry up to 3 enchantments and no gems, facet or rarity tiers
-        m.gems=[]; while(m.enchants.length<3) m.enchants.push(''); m.enchants=m.enchants.slice(0,3); return m;
+        m.gems=[]; var rn=m.uniqN||m.ringN||3; while(m.enchants.length<rn) m.enchants.push(''); m.enchants=m.enchants.slice(0,rn);
+        if(!m.resists) m.resists=[{k:'',v:''},{k:'',v:''}]; return m;
       }
       var gemSlots=gemSlotsForRarity(m.rarity);
       while(m.gems.length<gemSlots) m.gems.push('');
@@ -3524,8 +3529,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Rings (magical and plagued) carry fixed enchantments of their own, listed on the card with a value range: the enchantment itself is
     // locked, only its rolled number is editable. Any slots left over (a ring holds three) stay free.
     function applyRingOwn(id){
-      var m=itemMeta[id]; if(!m) return; normalizeItemMeta(m);
-      var own=uniqueOwn(id)||[]; m.enchants=m.enchants.map(function(v,i){ return i<own.length?own[i]:''; });
+      var m=itemMeta[id]; if(!m) return; var own=uniqueOwn(id)||[]; m.ringN=own.length||3; normalizeItemMeta(m);
+      m.enchants=m.enchants.map(function(v,i){ return i<own.length?own[i]:''; });
     }
     // A saved build may hold an older enchantment list for the same item: keep the saved numbers where the enchantment still matches, else restore the game's own line.
     function reconcileOwn(id){
@@ -3619,7 +3624,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var rarityOpts=RARITIES.filter(function(r){ return r.id!=='unique'||uniqOk||m.rarity==='unique'; }).map(function(r){ return '<option value="'+r.id+'"'+(r.id===m.rarity?' selected':'')+'>'+r.name+'</option>'; }).join('');
       if(m.cat==='ring'){
         return '<div class="cb-mf-detail" data-id="'+id+'">'+
-          detailFieldRow('Enchants ('+m.enchants.length+')','<span class="cb-detail-slots cb-ench-col">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span>'+(uniqueOwn(id)?'<small class="cb-detail-hint cb-rule">The first '+uniqueOwn(id).length+' come with the ring and can\u2019t be changed; set the number each one rolled (its range is shown in the box).</small>':''))+'</div>';
+          detailFieldRow('Enchants ('+m.enchants.length+')','<span class="cb-detail-slots cb-ench-col">'+detailSlotInputs(id,'enchants',m.enchants,'Enchant')+'</span>'+(uniqueOwn(id)?'<small class="cb-detail-hint cb-rule">These come with the ring and can\u2019t be changed; set the number each one rolled (its range is shown in the box).</small>':''))+
+          detailFieldRow('Resistances (2 roll)',ringResistHtml(id,m))+'</div>';
         // Rings can't be exalted (Sublime Ember / the Watcher won't take them), so no budget readout here.
       }
       var html='<div class="cb-mf-detail" data-id="'+id+'">';
@@ -3706,6 +3712,23 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         expandedDetails[id]=!expandedDetails[id];
         renderManifest();
       }
+    });
+    // Every ring rolls 2 of its 4 resistances (game config: Trinket.RandomCoreStatsCount = 2), each 4%-10% on the card.
+    var RING_RES=[['fire','Fire'],['cold','Ice'],['lightning','Lightning'],['plague','Plague']];
+    function ringResistHtml(id,m){
+      var rs=m.resists||[{k:'',v:''},{k:'',v:''}];
+      return '<span class="cb-res-box">'+[0,1].map(function(i){ var r=rs[i]||{k:'',v:''};
+        return '<span class="cb-res-row"><select class="cb-res-k" data-id="'+id+'" data-i="'+i+'" aria-label="Resistance '+(i+1)+'"><option value="">None</option>'+RING_RES.map(function(x){ return '<option value="'+x[0]+'"'+(r.k===x[0]?' selected':'')+'>'+x[1]+' Resistance</option>'; }).join('')+'</select>'+
+          '<input type="number" class="cb-res-v" data-id="'+id+'" data-i="'+i+'" min="4" max="10" step="any" placeholder="4\u201310" value="'+escH(r.v||'')+'" aria-label="Value"> %</span>'; }).join('')+
+        '<small class="cb-detail-hint cb-rule">A ring rolls two different resistances, 4\u201310% each. Which two is random in the game; set the ones yours rolled.</small></span>';
+    }
+    document.addEventListener('change',function(e){
+      var t=e.target; if(!t.classList||(!t.classList.contains('cb-res-k')&&!t.classList.contains('cb-res-v'))) return;
+      var id=t.dataset.id, i=+t.dataset.i, m=itemMeta[id]; if(!m) return; if(!m.resists) m.resists=[{k:'',v:''},{k:'',v:''}];
+      var r=m.resists[i]||(m.resists[i]={k:'',v:''});
+      if(t.classList.contains('cb-res-k')){ r.k=t.value; var o=m.resists[1-i]; if(o&&o.k&&o.k===r.k){ o.k=''; o.v=''; } if(!r.k) r.v=''; }
+      else { var v=parseFloat(t.value); r.v=isNaN(v)?'':String(Math.max(4,Math.min(10,v))); }
+      renderManifest(); if(window.cbRefreshCfgBody) window.cbRefreshCfgBody(id);
     });
     // ---- inline number boxes: an enchantment with a blank shows its wording with a small box where each __ was ----
     function escH(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
@@ -4183,6 +4206,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var ff=facetByName(m.facet,enchPoolFor(id));
         if(ff) ff.m.forEach(function(x){ if(x[0]>=104&&x[0]<=107){ var rk={104:'fire',105:'cold',106:'lightning',107:'plague'}[x[0]]; out.res[rk]=(out.res[rk]||0)+Math.round(-x[2]*100); } });
         out.weight+=w;
+        (m.resists||[]).forEach(function(r){ var rv=parseFloat(r&&r.v); if(r&&r.k&&rv>0) out.res[r.k]=(out.res[r.k]||0)+rv; });
         (m.enchants||[]).forEach(function(e){
           var t=String(e||''), mm;
           if((mm=/Equip Load increased by (\d+(?:\.\d+)?)%/i.exec(t))) out.loadBonus=(out.loadBonus||0)+parseFloat(mm[1]);
@@ -5007,7 +5031,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var a={}; ATTRS.forEach(function(x){ if(attrVals[x.id]!==10) a[x.id]=attrVals[x.id]; });
       var m={}; Object.keys(itemMeta).forEach(function(id){
         if(!equipped[id]) return; var v=itemMeta[id];
-        m[id]={r:v.rarity,l:v.level,c:v.creation,f:v.facet||'',g:v.gems||[],e:v.enchants||[],u:v.runes||[]};
+        m[id]={r:v.rarity,l:v.level,c:v.creation,f:v.facet||'',g:v.gems||[],e:v.enchants||[],u:v.runes||[],x:v.resists||null};
       });
       return {v:1,lv:+document.getElementById('cbLevel').value,a:a,e:Object.assign({},equipped),m:m};
     }
@@ -5052,7 +5076,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         Object.keys(o.m||{}).forEach(function(id){
           var cur=itemMeta[id], sv=o.m[id]; if(!cur||!equipped[id]) return;
           cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.creation=Math.max(1,Math.min(cur.level,+sv.c||+sv.l||1)); cur.facet=sv.f||'';
-          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=(sv.u||[]).slice();
+          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=(sv.u||[]).slice(); if(cur.cat==='ring'&&sv.x) cur.resists=sv.x.slice(0,2).map(function(r){ return {k:r&&r.k||'',v:r&&r.v||''}; });
           clampUniqLv(id); normalizeItemMeta(cur); reconcileOwn(id);
           var lb=slotEls[id].el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=cur.level;
         });
