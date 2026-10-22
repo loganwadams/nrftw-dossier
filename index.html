@@ -5668,7 +5668,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(st.scales.length!==2) attrFrac+=dmgAttrFrac(Math.max(0,v-10));
           attrTxt.push(DMG_ATTR_ABBR[n]+' '+v);
         });
-        // two scaling attributes: points above 10 combine as (p1+p2)^2 / (2*max(p1,p2)) before the curve (fits 8 readings from another planner:
+        // two scaling attributes: points above 10 combine as (p1+p2)^2 / (2*max(p1,p2)) before the curve (confirmed in game on Demon's Key, STR 45: Faith 10 -> 85 before the penalty, Faith 13 -> 92 and 64 after it; also fits 8 readings from another planner:
         // one attribute alone counts half; equal points count in full; in between it blends)
         if(st.scales.length===2){
           var p1=Math.max(0,(attrVals[st.scales[0].toLowerCase()]||10)-10), p2=Math.max(0,(attrVals[st.scales[1].toLowerCase()]||10)-10), pm2=Math.max(p1,p2);
