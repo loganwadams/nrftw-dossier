@@ -1437,6 +1437,7 @@ a:hover{color:#dcb561}
 .cls-card.has-art{position:relative;padding-left:168px;min-height:150px;grid-template-columns:1fr;overflow:hidden}
 .cls-card.has-art .cls-art{position:absolute;left:0;top:0;bottom:0;width:150px;background-repeat:no-repeat;background-size:cover;background-position:center top;-webkit-mask-image:linear-gradient(90deg,#000 70%,transparent);mask-image:linear-gradient(90deg,#000 70%,transparent)}
 .cls-card.has-art h3{grid-column:1}.cls-card.has-art p{grid-column:1;grid-row:2}
+.fac .cls-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}@media (max-width:760px){.fac .cls-grid{grid-template-columns:1fr}}
 .cls-none{color:var(--muted);font-style:italic}
 
 /* --- class spread ------------------------------------------------------- */
@@ -2214,13 +2215,12 @@ footer li{color:#6f665b}
 <!-- GEN:toc -->
   <nav class="contents" aria-label="Chapters"><h3>Chapters</h3><ul>
 <li><a href="#brief"><span class="toc-n">01</span><span class="toc-t">What We Know</span></a></li>
-<li><a href="#factions"><span class="toc-n">02</span><span class="toc-t">Factions</span></a></li>
-<li class="toc-has-drop"><a href="#classes"><span class="toc-n">03</span><span class="toc-t">Classes</span><span class="toc-caret"></span></a><ul class="toc-drop"><li><a href="#class-cleric"><img src="img/icon/cleric.png" alt="">Cleric</a></li><li><a href="#class-crusader"><img src="img/icon/crusader.png" alt="">Crusader</a></li><li><a href="#class-monk"><img src="img/icon/monk.png" alt="">Monk</a></li><li><a href="#class-paladin"><img src="img/icon/paladin.png" alt="">Paladin</a></li><li><a href="#class-archer"><img src="img/icon/archer.png" alt="">Archer</a></li><li><a href="#class-barbarian"><img src="img/icon/barbarian.png" alt="">Barbarian</a></li><li><a href="#class-berserker"><img src="img/icon/berserker.png" alt="">Berserker</a></li><li><a href="#class-marauder"><img src="img/icon/marauder.png" alt="">Marauder</a></li><li><a href="#class-dragoon"><img src="img/icon/dragoon.png" alt="">Dragoon</a></li><li><a href="#class-guardian"><img src="img/icon/guardian.png" alt="">Guardian</a></li><li><a href="#class-knight"><img src="img/icon/knight.png" alt="">Knight</a></li><li><a href="#class-sentinel"><img src="img/icon/sentinel.png" alt="">Sentinel</a></li><li><a href="#class-brute"><img src="img/icon/brute.png" alt="">Brute</a></li><li><a href="#class-cutthroat"><img src="img/icon/cutthroat.png" alt="">Cutthroat</a></li><li><a href="#class-fencer"><img src="img/icon/fencer.png" alt="">Fencer</a></li><li><a href="#class-warlord"><img src="img/icon/warlord.png" alt="">Warlord</a></li><li><a href="#class-assassin"><img src="img/icon/assassin.png" alt="">Assassin</a></li><li><a href="#class-harbinger"><img src="img/icon/harbinger.png" alt="">Harbinger</a></li><li><a href="#class-rogue"><img src="img/icon/rogue.png" alt="">Rogue</a></li><li><a href="#class-wraith"><img src="img/icon/wraith.png" alt="">Wraith</a></li><li><a href="#class-frost-mage"><img src="img/icon/frost-mage.png" alt="">Frost Mage</a></li><li><a href="#class-plaguebearer"><img src="img/icon/plaguebearer.png" alt="">Plaguebearer</a></li><li><a href="#class-pyromancer"><img src="img/icon/pyromancer.png" alt="">Pyromancer</a></li><li><a href="#class-stormbringer"><img src="img/icon/stormbringer.png" alt="">Stormbringer</a></li></ul></li>
-<li><a href="#systems"><span class="toc-n">04</span><span class="toc-t">Rules That Govern</span></a></li>
-<li><a href="#infusions"><span class="toc-n">05</span><span class="toc-t">Infusions</span></a></li>
-<li><a href="#enchantments"><span class="toc-n">06</span><span class="toc-t">Enchantments</span></a></li>
-<li><a href="#vendors"><span class="toc-n">07</span><span class="toc-t">Vendors</span></a></li>
-<li><a href="#catalog"><span class="toc-n">08</span><span class="toc-t">Trove</span></a></li>
+<li><a href="#factions"><span class="toc-n">02</span><span class="toc-t">Factions &amp; Classes</span></a></li>
+<li><a href="#systems"><span class="toc-n">03</span><span class="toc-t">Rules That Govern</span></a></li>
+<li><a href="#infusions"><span class="toc-n">04</span><span class="toc-t">Infusions</span></a></li>
+<li><a href="#enchantments"><span class="toc-n">05</span><span class="toc-t">Enchantments</span></a></li>
+<li><a href="#vendors"><span class="toc-n">06</span><span class="toc-t">Vendors</span></a></li>
+<li><a href="#catalog"><span class="toc-n">07</span><span class="toc-t">Trove</span></a></li>
   </ul></nav>
 <!-- /GEN:toc -->
 
@@ -2296,136 +2296,63 @@ footer li{color:#6f665b}
   </section>
 
   <section id="factions">
-    <div class="sect-head"><h2>Factions</h2></div>
-
-    <div class="cols2" style="margin-bottom:28px">
-      <div>
-        <p>Moon published a screenshot of the class selection screen, and the whole roster is legible in it: six factions, four classes each, twenty-four in total. Every name and every faction placement below is read directly off that screen. <span class="tag t-conf">Confirmed</span></p>
-        <p>The screen carries its own warning across the bottom &mdash; subject to change. Names and groupings can still move before March.</p>
-        <p>The factions are more than a way of sorting the roster. Each one has its own quest line, and you are not confined to a single faction &mdash; choosing a class from one does not lock you out of the others&rsquo; stories.</p>
-      </div>
-      <div>
-        <p>What the screen does not give is what the classes do. Only Rogue's description was visible. The mechanics below come from an earlier experimental build documented by the community wiki, which covered nineteen of these names, and from coverage of the class reveal.</p>
-        <p>Two classes, Cutthroat and Harbinger, appear on the screen and nowhere else. Nothing is known about either beyond the faction they sit in and their weapon icon.</p>
-      </div>
-    </div>
-
+    <div class="sect-head"><h2>Factions &amp; Classes</h2></div>
+    <p class="standfirst">Moon&rsquo;s class selection screen sorts the twenty-four classes into six factions. Each class below carries the game&rsquo;s own description.</p>
     <div class="factions">
-
-      <div class="fac">
-        <div class="fac-head"><img class="fflag" src="img/flag/born-god.png" alt=""><span class="fac-name">House of the Born God</span><span class="fac-meta">Faith, focus and auras</span></div>
-        <div class="classlist">
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/cleric.png" alt=""><div class="cls-id"><h4>Cleric</h4></div></div>
-            <p>Focus-driven support that drops focus orbs for the party. Its cards name the Cleric's Mace and Radiant Star. The only archetype shown that is defined by what it does for other players.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/crusader.png" alt=""><div class="cls-id"><h4>Crusader</h4></div></div>
-            <p>Described as a slow, heavy anti-Paladin built on plague and on banking focus for supers. The faction's dark mirror.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/monk.png" alt=""><div class="cls-id"><h4>Monk</h4></div></div>
-            <p>A stamina engine built to keep attacking with no downtime. Where the rest of the game asks you to manage the bar, this one asks you to never stop spending it.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/paladin.png" alt=""><div class="cls-id"><h4>Paladin</h4></div></div>
-            <p>Charged attacks with Smite, Retribution and auras. The most conventional holy-warrior kit on the board.</p></div>
-        </div>
-      </div>
-
-      <div class="fac">
-        <div class="fac-head"><img class="fflag" src="img/flag/hunters-guild.png" alt=""><span class="fac-name">The Hunter's Guild</span><span class="fac-meta">Raw force and the kill</span></div>
-        <div class="classlist">
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/archer.png" alt=""><div class="cls-id"><h4>Archer</h4></div></div>
-            <p>Dodges first and answers with arrows. The only pure ranged class in the roster, and the one Moon singled out for attention in a past combat pass.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/barbarian.png" alt=""><div class="cls-id"><h4>Barbarian</h4></div></div>
-            <p>Smashing attacks with the heaviest blunt weapons, building Fury from kills and staggers and spending it on a charged attack. Profiled in full further down.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/berserker.png" alt=""><div class="cls-id"><h4>Berserker</h4></div></div>
-            <p>Turns damage taken into recoverable health and rewards fatalities with a rage state. A class that wants to be hurt and then finish something.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/marauder.png" alt=""><div class="cls-id"><h4>Marauder</h4></div></div>
-            <p>Close-range axe combo chains that meet enemies head-on, with bonuses for taking hits rather than avoiding them.</p></div>
-        </div>
-      </div>
-
-      <div class="fac">
-        <div class="fac-head"><img class="fflag" src="img/flag/sacrament-guard.png" alt=""><span class="fac-name">The Sacrament Guard</span><span class="fac-meta">Discipline, reach and the line</span></div>
-        <div class="classlist">
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/dragoon.png" alt=""><div class="cls-id"><h4>Dragoon</h4></div></div>
-            <p>Deals more damage the farther it is from its target. An unusual rule in a melee game, and the one class on the board whose positioning is its damage stat.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/guardian.png" alt=""><div class="cls-id"><h4>Guardian</h4></div></div>
-            <p>A straightforward all-rounder that empowers its next attack after a block. The clearest entry point in the roster.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/knight.png" alt=""><div class="cls-id"><h4>Knight</h4></div></div>
-            <p>A comeback class: less damage taken at low health, more damage dealt the more it has already absorbed. It wants the fight to go badly before it goes well.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/sentinel.png" alt=""><div class="cls-id"><h4>Sentinel</h4></div></div>
-            <p>Reach and wide sweeping attacks. The faction's answer to being outnumbered: keep everything at the end of a long weapon.</p></div>
-        </div>
-      </div>
-
-      <div class="fac">
-        <div class="fac-head"><img class="fflag" src="img/flag/scuttlers.png" alt=""><span class="fac-name">Scuttlers</span><span class="fac-meta">Dirty, opportunistic fighting</span></div>
-        <div class="classlist">
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/brute.png" alt=""><div class="cls-id"><h4>Brute</h4></div></div>
-            <p>Interrupts and staggers while dodging through attacks. Stagger pressure without the armor weight the Barbarian pays for it.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/cutthroat.png" alt=""><div class="cls-id"><h4>Cutthroat</h4></div></div>
-            <p>Appears on the class screen and nowhere else. No description has been published. <span class="tag t-proj">No data</span></p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/fencer.png" alt=""><div class="cls-id"><h4>Fencer</h4></div></div>
-            <p>Rewards parries and perfect dodges, and punishes enemies during their wind-up. The highest-execution defensive class, and the one that turns the game's hardest mechanic into a damage source.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/warlord.png" alt=""><div class="cls-id"><h4>Warlord</h4></div></div>
-            <p>Builds bleed toward a bloodlust state and restores health from the blood enemies leave behind. Sustain earned by cutting rather than by blocking.</p></div>
-        </div>
-      </div>
-
-      <div class="fac">
-        <div class="fac-head"><img class="fflag" src="img/flag/severed-hand.png" alt=""><span class="fac-name">The Severed Hand</span><span class="fac-meta">Speed, stealth and misdirection</span></div>
-        <div class="classlist">
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/assassin.png" alt=""><div class="cls-id"><h4>Assassin</h4></div></div>
-            <p>Breaks away from combat to set up sneak attacks. The only class built around leaving a fight in order to win it.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/harbinger.png" alt=""><div class="cls-id"><h4>Harbinger</h4></div></div>
-            <p>Appears on the class screen and nowhere else. No description has been published. <span class="tag t-proj">No data</span></p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/rogue.png" alt=""><div class="cls-id"><h4>Rogue</h4></div></div>
-            <p>&ldquo;Fast, stamina-heavy dual-wielder that thrives on hit-and-run tactics.&rdquo; The one class whose own description is visible on the selection screen, with a combo meter that scales as a string is kept alive. <span class="tag t-conf">Confirmed</span></p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/wraith.png" alt=""><div class="cls-id"><h4>Wraith</h4></div></div>
-            <p>A fast shinobi working through illusions and quick slashes. Profiled in full further down.</p></div>
-        </div>
-      </div>
-
-      <div class="fac">
-        <div class="fac-head"><img class="fflag" src="img/flag/unspoken.png" alt=""><span class="fac-name">Unspoken</span><span class="fac-meta">The four elements</span></div>
-        <div class="classlist">
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/frost-mage.png" alt=""><div class="cls-id"><h4>Frost Mage</h4></div></div>
-            <p>Slows and freezes with runes, then shatters what it has frozen. Profiled in full further down.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/plaguebearer.png" alt=""><div class="cls-id"><h4>Plaguebearer</h4></div></div>
-            <p>Infects itself along with everything near it, then collects on the bonus damage against plagued targets. Profiled in full further down.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/pyromancer.png" alt=""><div class="cls-id"><h4>Pyromancer</h4></div></div>
-            <p>Burn and damage over time that scales as it spreads between enemies, finishing in explosions.</p></div>
-          <div class="cls"><div class="cls-head"><img class="cicon" src="img/icon/stormbringer.png" alt=""><div class="cls-id"><h4>Stormbringer</h4></div></div>
-            <p>A critical-hit class whose shock chains between enemies. Profiled in full further down, </p></div>
-        </div>
-      </div>
-    </div>
-
-  </section>
-
-  <section id="classes" style="padding-bottom:0">
-    <div class="sect-head"><h2>Classes</h2></div>
-    <div class="cls-grid">
+    <div class="fac">
+      <div class="fac-head"><img class="fflag" src="img/flag/born-god.png" alt=""><span class="fac-name">House of the Born God</span></div>
+      <div class="cls-grid">
     <article id="class-cleric" class="cls-card"><img class="cls-sigil" src="img/icon/cleric.png" alt=""><h3>Cleric</h3><p>Support-focused holy warriors who heal allies and smite foes with divine magic.</p></article>
     <article id="class-crusader" class="cls-card"><img class="cls-sigil" src="img/icon/crusader.png" alt=""><h3>Crusader</h3><p>A divine warrior wielding massive greathammers to smite evil.</p></article>
     <article id="class-monk" class="cls-card"><img class="cls-sigil" src="img/icon/monk.png" alt=""><h3>Monk</h3><p>Martial artist mixing stamina and focus for powerful spiritual strikes.</p></article>
     <article id="class-paladin" class="cls-card"><img class="cls-sigil" src="img/icon/paladin.png" alt=""><h3>Paladin</h3><p>Holy hammer fighter/guardian.</p></article>
+      </div>
+    </div>
+    <div class="fac">
+      <div class="fac-head"><img class="fflag" src="img/flag/hunters-guild.png" alt=""><span class="fac-name">The Hunter's Guild</span></div>
+      <div class="cls-grid">
     <article id="class-archer" class="cls-card"><img class="cls-sigil" src="img/icon/archer.png" alt=""><h3>Archer</h3><p><span class="cls-none">The game has no description text for this class yet.</span></p></article>
     <article id="class-barbarian" class="cls-card has-art"><div class="cls-art" role="img" aria-label="Barbarian class armor: an enormous figure encased head to toe in pitted stone-grey plate with a conical helm" style="background-image:url(img/head-barbarian.webp)"></div><h3>Barbarian</h3><p>Ferocious warriors with raw physicality, wielding huge clubs to smash through enemy lines.</p></article>
     <article id="class-berserker" class="cls-card"><img class="cls-sigil" src="img/icon/berserker.png" alt=""><h3>Berserker</h3><p>Dominant warriors wielding massive greataxes for devastating sweeps. Wades directly into combat and stays there. Benefits from staying in combat and trading blows with enemies.</p></article>
     <article id="class-marauder" class="cls-card"><img class="cls-sigil" src="img/icon/marauder.png" alt=""><h3>Marauder</h3><p>A warrior type class that focuses on in-your-face combos. Trading blows is a plus as it increases damage capabilities. No nonsense axe combos.</p></article>
+      </div>
+    </div>
+    <div class="fac">
+      <div class="fac-head"><img class="fflag" src="img/flag/sacrament-guard.png" alt=""><span class="fac-name">The Sacrament Guard</span></div>
+      <div class="cls-grid">
     <article id="class-dragoon" class="cls-card"><img class="cls-sigil" src="img/icon/dragoon.png" alt=""><h3>Dragoon</h3><p>Lithe spearmen harnessing faith-based leaps to pierce defenses.</p></article>
     <article id="class-guardian" class="cls-card"><img class="cls-sigil" src="img/icon/guardian.png" alt=""><h3>Guardian</h3><p>Balanced fighters wielding straight swords, equally adept with Strength and Dexterity.</p></article>
     <article id="class-knight" class="cls-card"><img class="cls-sigil" src="img/icon/knight.png" alt=""><h3>Knight</h3><p>A stalwart champion swinging massive two-handed greatswords.</p></article>
     <article id="class-sentinel" class="cls-card"><img class="cls-sigil" src="img/icon/sentinel.png" alt=""><h3>Sentinel</h3><p>Polearm specialists who combine extended reach with dexterous sweeps to control the battlefield.</p></article>
+      </div>
+    </div>
+    <div class="fac">
+      <div class="fac-head"><img class="fflag" src="img/flag/scuttlers.png" alt=""><span class="fac-name">Scuttlers</span></div>
+      <div class="cls-grid">
     <article id="class-brute" class="cls-card"><img class="cls-sigil" src="img/icon/brute.png" alt=""><h3>Brute</h3><p>A brawler that thrives on dodges and aggressive stamina use. Best suited for 1H clubs.</p></article>
     <article id="class-cutthroat" class="cls-card"><img class="cls-sigil" src="img/icon/cutthroat.png" alt=""><h3>Cutthroat</h3><p>Agile and flamboyant swordsmen relying on speed and precision.</p></article>
     <article id="class-fencer" class="cls-card"><img class="cls-sigil" src="img/icon/fencer.png" alt=""><h3>Fencer</h3><p>Elegant duelists adept at swift, precise thrusts and agile footwork.</p></article>
     <article id="class-warlord" class="cls-card"><img class="cls-sigil" src="img/icon/warlord.png" alt=""><h3>Warlord</h3><p>An honorable warrior wielding two-handed katanas with disciplined technique and mild arcane flair.</p></article>
+      </div>
+    </div>
+    <div class="fac">
+      <div class="fac-head"><img class="fflag" src="img/flag/severed-hand.png" alt=""><span class="fac-name">The Severed Hand</span></div>
+      <div class="cls-grid">
     <article id="class-assassin" class="cls-card"><img class="cls-sigil" src="img/icon/assassin.png" alt=""><h3>Assassin</h3><p>Stealth, backstabs, off-hand empty.</p></article>
     <article id="class-harbinger" class="cls-card"><img class="cls-sigil" src="img/icon/harbinger.png" alt=""><h3>Harbinger</h3><p>A dark harbinger wielding scythes, merging necrotic spells with unholy fervor.</p></article>
     <article id="class-rogue" class="cls-card"><img class="cls-sigil" src="img/icon/rogue.png" alt=""><h3>Rogue</h3><p>Fast, stamina-heavy dual-wielder that thrives on hit-and-run tactics.</p></article>
     <article id="class-wraith" class="cls-card has-art"><div class="cls-art" role="img" aria-label="Wraith class armor: a dark lacquered figure with gold filigree, a horned helm, a long cape and a glowing red blade" style="background-image:url(img/head-wraith.webp)"></div><h3>Wraith</h3><p>Swift shinobi using ninjutsu illusions and quick slashes.</p></article>
+      </div>
+    </div>
+    <div class="fac">
+      <div class="fac-head"><img class="fflag" src="img/flag/unspoken.png" alt=""><span class="fac-name">Unspoken</span></div>
+      <div class="cls-grid">
     <article id="class-frost-mage" class="cls-card has-art"><div class="cls-art" role="img" aria-label="Frost Mage class armor: a pale figure clad in jagged accreted ice shards, holding a staff topped with a frozen skull" style="background-image:url(img/head-frostmage.webp)"></div><h3>Frost Mage</h3><p>A cold-themed mage who freezes, chills, and shatters enemies.</p></article>
     <article id="class-plaguebearer" class="cls-card has-art"><div class="cls-art" role="img" aria-label="Plaguebearer class armor: a figure in a riveted diving-bell helm with portholes, verdigris wrappings and red straps, holding a polearm" style="background-image:url(img/head-plaguebearer.webp)"></div><h3>Plaguebearer</h3><p>A diseased spellcaster spreading rot and plague across the battlefield.</p></article>
     <article id="class-pyromancer" class="cls-card"><img class="cls-sigil" src="img/icon/pyromancer.png" alt=""><h3>Pyromancer</h3><p>A mage class centered on fire—setting enemies ablaze, stacking burns, and causing explosions.</p></article>
     <article id="class-stormbringer" class="cls-card has-art"><div class="cls-art" role="img" aria-label="Stormbringer class armor: a slim figure in dark leather and plate wearing a tall crown of iron spikes" style="background-image:url(img/head-stormbringer.webp)"></div><h3>Stormbringer</h3><p>Lightning-focused mage—fast, volatile combat with chaining effects.</p></article>
+      </div>
+    </div>
     </div>
   </section>
 
@@ -6038,7 +5965,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // CHAPS: one bar entry per actual chapter, mirroring the Chapters list on the Overview page.
   var GROUPS=[
     {id:'home',  ids:['hero','intro','lore','brief']},
-    {id:'world', ids:['factions','classes','systems']},
+    {id:'world', ids:['factions','systems']},
     {id:'gear',  ids:['infusions','enchantments']},
     {id:'vend',  ids:['vendors']},
     {id:'cat',   ids:['catalog']},
@@ -6049,17 +5976,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var CHAPS=[
     {id:'home',         num:'',   label:'Home',          group:'home',  target:'intro',  tag:['hero','intro','lore'], cls:'pg-home'},
     {id:'brief',        num:'',   label:'',                  group:'home',  target:'brief',  tag:['brief'], hidden:true},
-    {id:'factions',     num:'02', label:'Factions',          group:'world', target:'factions', tag:['factions'], cls:'pg-hide'},
-    {id:'classes',      num:'03', label:'Classes',           group:'world', target:'classes', tag:['classes'], cls:'pg-hide'},
-    {id:'systems',      num:'04', label:'Systems',            group:'world', target:'systems', tag:['systems'], cls:'pg-hide'},
+    {id:'factions',     num:'02', label:'Factions & Classes',          group:'world', target:'factions', tag:['factions'], cls:'pg-hide'},
+    {id:'systems',      num:'03', label:'Systems',            group:'world', target:'systems', tag:['systems'], cls:'pg-hide'},
     {id:'lore',         num:'',   label:'Codex',              group:'world', target:'factions', tag:[], drop:true},
-    {id:'infusions',    num:'05', label:'Infusions',         group:'gear',  target:'infusions', tag:['infusions'], hidden:true},
-    {id:'enchantments', num:'06', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments'], hidden:true},
-    {id:'gear',         num:'05', label:'Items',             group:'gear',  target:'infusions', tag:[], drop:true},
-    {id:'vendors',      num:'07', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors'], drop:true},
-    {id:'catalog',    num:'08', label:'Trove',    group:'cat',   target:'catalog', tag:['catalog'], cls:'pg-hide'},
-    {id:'videos',       num:'09', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
-    {id:'cerim-builder', num:'10', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'},
+    {id:'infusions',    num:'04', label:'Infusions',         group:'gear',  target:'infusions', tag:['infusions'], hidden:true},
+    {id:'enchantments', num:'05', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments'], hidden:true},
+    {id:'gear',         num:'04', label:'Items',             group:'gear',  target:'infusions', tag:[], drop:true},
+    {id:'vendors',      num:'06', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors'], drop:true},
+    {id:'catalog',    num:'07', label:'Trove',    group:'cat',   target:'catalog', tag:['catalog'], cls:'pg-hide'},
+    {id:'videos',       num:'08', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
+    {id:'cerim-builder', num:'09', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'},
     // No bar button of its own (hidden:true) - reached only by clicking an item card in the
     // Trove, never from the chapter bar, so it isn't offered as a destination there.
     {id:'item-page',     num:'',   label:'Item',          group:'itempage', target:'item-page', tag:['item-page'], hidden:true}
@@ -6103,7 +6029,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // read as "Infusions" in the title (not the generic "Gear"), and viewing either one by its
   // dropdown link or a direct #hash should still light up the Gear tab as the active button.
   CHAP_TITLE['gear']=CHAP_TITLE['infusions'];
-  var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',factions:'lore',classes:'lore',systems:'lore'};
+  var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',factions:'lore',systems:'lore'};
   function show(group,chap){ current=group; currentChap=chap;
     document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); });
     var navId=CHAP_NAV_ALIAS[chap]||chap;
@@ -6202,13 +6128,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         row.appendChild(a); li.appendChild(row); ul.appendChild(li); });
       return ul; },
     lore:function(){ var ul=document.createElement('ul'); ul.className='toc-drop';
-      [['factions','Factions'],['classes','Classes'],['systems','Systems']].forEach(function(pair){
+      [['factions','Factions & Classes'],['systems','Systems']].forEach(function(pair){
         var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
         var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
         navLink(a,pair[0]);
         row.appendChild(a); li.appendChild(row); ul.appendChild(li); });
       return ul; },
-    classes:function(){ var src=document.querySelector('nav.contents .toc-drop'); return src?src.cloneNode(true):null; },
     factions:function(){ var items=[]; document.querySelectorAll('#factions .fac').forEach(function(f){
         var img=f.querySelector('.fflag'), name=f.querySelector('.fac-name'); if(!img||!name) return;
         if(!f.id){ var slug=(img.getAttribute('src')||'').split('/').pop().replace(/\.[a-z0-9]+$/i,''); f.id='fac-'+slug; }
