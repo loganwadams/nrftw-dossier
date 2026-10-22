@@ -174,6 +174,38 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .sr-snip mark{background:none;color:var(--gold);font-weight:600}
 .sr-snip{grid-column:1/-1;font-style:normal;font-size:.78rem;color:var(--muted);line-height:1.35;margin-top:2px}
 .sr-empty{padding:12px;font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6f6758}
+.sr-chips{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px;border-bottom:1px solid rgba(201,169,110,.1);position:sticky;top:0;background:#100d0b;z-index:2}
+.sr-chips button,.sr-ex-chip{appearance:none;background:#16120f;border:1px solid var(--edge);color:var(--muted);font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px;cursor:pointer}
+.sr-chips button:hover,.sr-ex-chip:hover{color:var(--bone);border-color:var(--gold-dim)}
+.sr-chips button.on{color:#0c0a08;background:var(--gold);border-color:var(--gold)}
+.sr-sugg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(201,169,110,.08)}
+.sr-sugg>span{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b8174}
+.sr-filters{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px 2px}
+.sr-filters span{font-family:var(--data);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);padding:3px 7px}
+.sr-help{padding:12px 12px 14px;color:var(--muted);font-size:13px;line-height:1.5}
+.sr-help p{margin:0 0 8px}
+.sr-help-sm{font-size:11.5px;color:#8b8174;margin-top:10px!important}
+.sr-help code{font-family:var(--data);font-size:11px;color:var(--gold)}
+.sr-ex{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;appearance:none;background:none;border:0;border-bottom:1px solid rgba(201,169,110,.07);padding:7px 2px;cursor:pointer;color:var(--muted);font-family:inherit;font-size:12.5px}
+.sr-ex:hover{background:rgba(201,169,110,.07)}
+.sr-ex code{flex:none;min-width:158px;color:var(--gold)}
+.sr-item .sr-snip{font-family:var(--data);font-size:10px;letter-spacing:.04em}
+.pg-filter{margin:0 0 18px}
+.pgf-field{position:relative;display:flex;align-items:center;gap:8px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.35);padding:0 10px;max-width:640px}
+.pgf-field svg{width:16px;height:16px;flex:none;color:var(--gold);opacity:.7}
+.pgf-field input{flex:1;min-width:0;height:42px;background:none;border:0;outline:0;color:var(--bone);font-family:var(--body);font-size:14px}
+.pgf-field input::placeholder{color:#6f6758;font-size:12px}
+.pgf-x{appearance:none;background:none;border:0;color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:0 4px}
+.pgf-meta{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174;padding:8px 2px 0;min-height:14px}
+.pgf-meta b{color:var(--gold)}
+.pgf-meta a{color:var(--gold);cursor:pointer;text-decoration:underline}
+.pgf-hide{display:none!important}
+.pgf-field input::-webkit-search-cancel-button{display:none}
+.m-cats.pgf-on .m-cat-collapse{visibility:hidden}
+.m-cats.pgf-on .m-cat-hidden:not(.pgf-hide){display:block!important}
+.pgf-note{margin:8px 0 12px;padding:8px 12px;border-left:2px solid var(--gold-dim);background:rgba(201,169,110,.06);font-size:12.5px;color:var(--muted);line-height:1.5}
+.pgf-note b{color:var(--gold);font-weight:500}
+:root[data-theme="night"] .sr-chips,:root[data-theme="night"] .sr-chips button{background:#14101f}
 .sr-hit{animation:srhit 1.6s ease-out}
 @keyframes srhit{0%,60%{box-shadow:0 0 0 2px var(--gold)}100%{box-shadow:0 0 0 2px transparent}}
 .pgbar-search{display:none;align-items:center;appearance:none;background:none;border:1px solid transparent;color:var(--muted);padding:9px 14px;cursor:pointer;transition:color .15s}
@@ -6424,7 +6456,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var form=document.createElement('form'); form.className='search'; form.setAttribute('role','search'); form.autocomplete='off';
   var input,list;
   form.innerHTML='<input type="search" placeholder="Search the dossier" aria-label="Search the dossier"><svg class="sr-ico" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><div class="sr-list" role="listbox"></div>';
-  head.appendChild(form); input=form.querySelector('input'); list=form.querySelector('.sr-list');
+  head.appendChild(form); input=form.querySelector('input'); list=form.querySelector('.sr-list'); window.__srList=list;
   var logo=head.querySelector('img.logo');
   var kicker=head.querySelector('.kicker');
   // clicking the logo goes Home
@@ -6474,43 +6506,189 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     document.querySelectorAll('article.merchant').forEach(function(m){ if(m.id&&m.id.indexOf('vendor-')===0){ var n=m.querySelector('.m-name'); var r=m.querySelector('.m-role'); add(txt(n).replace(/\s*continued$/,''),'Vendor · '+(r?txt(r):''),m); } });
     document.querySelectorAll('.m-pool h5').forEach(function(h){ var m=h.closest('article.merchant'); var n=m&&m.querySelector('.m-name'); add(txt(h).replace(/\s*\d+ items.*$/,'')+' pool','Pool · '+(n?txt(n):''),h); });
     document.querySelectorAll('.m-cat-head').forEach(function(h){ add(txt(h.querySelector('h3'))+' catalog trove','Trove',h); });
-    document.querySelectorAll('.m-card[data-k]').forEach(function(c){ var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,''); index[index.length-1].ck=c.getAttribute('data-k'); var ic=c.firstElementChild; if(ic&&!ic.classList.contains('m-card-name')) index[index.length-1].ic=ic.outerHTML; });
+    var trKeys={}; document.querySelectorAll('#catalog .m-card[data-k]').forEach(function(c){ trKeys[c.getAttribute('data-k')]=1; });
+    document.querySelectorAll('.m-card[data-k]').forEach(function(c){ if(!c.closest('#catalog')&&trKeys[c.getAttribute('data-k')]) return; var n=c.querySelector('.m-card-name'); var t=c.closest('.m-cat'); var h=t&&t.querySelector('h5'); add(txt(n),'Item · '+(h?txt(h).replace(/\s*\d+$/,'').replace(/\s*continued/,''):''),c,''); index[index.length-1].ck=c.getAttribute('data-k'); var ic=c.firstElementChild; if(ic&&!ic.classList.contains('m-card-name')) index[index.length-1].ic=ic.outerHTML; });
   }
   var results=[], sel=-1;
   function esc(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
-  // Full-text: every item's tooltip text (data/cards.json) is searchable, so a keyword
-  // like "lifesteal" finds every item, gem, rune or enchantment that mentions it.
-  var cardText=null, cardsLoading=false;
+  // Full-text + structured search. Every item's tooltip (data/cards.json) is searchable as text, and is also
+  // parsed once into fields (attribute requirements, scaling, damage, poise, armor, weight, level, rarity,
+  // damage type) so queries like  req:dex  scales:int  type:bow  lv>=5  dmg>40  rarity:unique  work.
+  var cardText=null, cardNorm=null, cardsLoading=false, info=null, typeWords=null, cardWaiters=[];
   function plain(h){ var d=document.createElement('div'); d.innerHTML=(h||'').replace(/<(?!\/?(?:b|i|em|strong|span)\b)/g,' <').replace(/<\/(div|p|li|h\d|tr|td)>/g,'</$1> '); return (d.textContent||'').replace(/\s+/g,' ').trim(); }
-  function loadCards(){ if(cardText||cardsLoading) return; cardsLoading=true;
+  function norm(s){ return (s||'').toLowerCase().replace(/[’'`]/g,'').replace(/[–—]/g,'-').replace(/\s+/g,' '); }
+  function flat(s){ return norm(s).replace(/[\s_\-]/g,''); }
+  var ATTRS={str:'Strength',strength:'Strength',dex:'Dexterity',dexterity:'Dexterity',int:'Intelligence',intelligence:'Intelligence',fai:'Faith',faith:'Faith'};
+  var ABBR={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FAI'};
+  var STATKEY={'fi-StatDamage':'dmg','fi-PoiseDamage':'poise','fi-StatArmor':'armor','iconItemShieldArmor':'armor','fi-StatPoiseDefense':'poisedef','fi-StatFireArmor':'fire','fi-StatColdArmor':'cold','fi-StatLightningArmor':'lightning','fi-StatPlagueArmor':'plague'};
+  function parseInfo(k,c){
+    var h=c.h||'', o={req:{},scales:[],lv:parseInt(c.lv,10),rar:(c.r||'').toLowerCase(),type:norm(c.t),cat:k.split('/')[2]||'',folder:(k.split('/')[3]||'').replace(/_/g,' ')};
+    var i=h.indexOf('>Requirements<'), m, re;
+    if(i>=0){ var seg=h.slice(i,i+1500), j=seg.indexOf('class="divider'); if(j>0) seg=seg.slice(0,j);
+      re=/o-icons-fi-(Strength|Dexterity|Intelligence|Faith)[^"]*"><\/div><\/div><div class="pl-1">(\d+)/g; while((m=re.exec(seg))) o.req[m[1]]=+m[2]; }
+    i=h.indexOf('Scales with:');
+    if(i>=0){ var s2=h.slice(i,i+900), j2=s2.indexOf('Damage Type'); if(j2>0) s2=s2.slice(0,j2);
+      re=/o-icons-fi-(Strength|Dexterity|Intelligence|Faith)/g; while((m=re.exec(s2))){ if(o.scales.indexOf(m[1])<0) o.scales.push(m[1]); } }
+    h.split('top-icon-line').slice(1).forEach(function(p){ var ic=/o-icons-([\w-]+)"/.exec(p); if(!ic||!STATKEY[ic[1]]) return;
+      var n=/-?\d+(?:\.\d+)?/.exec(p.replace(/<[^>]+>/g,' ').replace(/,/g,'')); if(n&&o[STATKEY[ic[1]]]==null) o[STATKEY[ic[1]]]=parseFloat(n[0]); });
+    m=/mod-value">(\d+)%<\/span> Chance to Deal <span class="mod-value">(\d+)%/.exec(h); if(m){ o.crit=+m[1]; o.critdmg=+m[2]; }
+    m=/damage-school (\w+)/.exec(h); if(m) o.school=m[1];
+    m=/Required Level:\W*(\d+)/.exec(h.replace(/<[^>]+>/g,'|')); if(m) o.rl=+m[1];
+    m=/fi-StatWeight"><\/div><\/div><div class="pl-2">(?:<span class="mod-value">)?([\d.]+)/.exec(h); if(m) o.weight=parseFloat(m[1]);
+    m=/fi-StatDurability"><\/div><\/div><div class="pl-2">(\d+)/.exec(h); if(m) o.dur=+m[1];
+    return o; }
+  function loadCards(cb){ if(cb){ if(cardText) cb(); else cardWaiters.push(cb); }
+    if(cardText||cardsLoading) return; cardsLoading=true;
     fetch('data/cards.json').then(function(r){ return r.json(); }).then(function(j){
-      cardText={}; Object.keys(j).forEach(function(k){ var c=j[k]; cardText[k]=plain(c.h); });
-      if(curInput.value.trim().length>=2) search();
-    }).catch(function(){ cardText={}; }); }
-  var results=[], sel=-1, total=0, MAX=100, filt='all', curInput=input, curList=list;
+      cardText={}; cardNorm={}; info={}; typeWords={};
+      Object.keys(j).forEach(function(k){ var c=j[k]; cardText[k]=plain(c.h); cardNorm[k]=norm(cardText[k]); try{ info[k]=parseInfo(k,c); }catch(e){}
+        (norm(c.t).split(/[\s-]+/)).forEach(function(w){ if(w.length>2) typeWords[w]=1; }); });
+      var w=cardWaiters; cardWaiters=[]; w.forEach(function(f){ try{ f(); }catch(e){} });
+      if(curInput.value.trim().length>=1) search();
+    }).catch(function(){ cardText={}; cardNorm={}; info={}; typeWords={}; }); }
+  var results=[], sel=-1, total=0, MAX=250, filt='all', curInput=input, curList=list, lastP=null;
   function kindOf(r){ var k=r.kind; if(/^Item/.test(k)) return 'item'; if(/Enchant/.test(k)) return 'ench'; if(/^Infusion/.test(k)) return 'inf'; if(/^(Vendor|Pool)/.test(k)) return 'vend'; return 'page'; }
-  function esc(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
-  function rx(words){ return new RegExp('('+words.map(function(w){ return w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }).join('|')+')','ig'); }
-  function snippet(text,words){ var l=text.toLowerCase(), p=-1; for(var i=0;i<words.length;i++){ var k=l.indexOf(words[i]); if(k>=0&&(p<0||k<p)) p=k; }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
+  function rx(words){ return new RegExp('('+words.map(function(w){ return w.split('').map(function(ch){ return ch.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }).join("['’]?"); }).join('|')+')','ig'); }
+  function snippet(text,words){ var l=norm(text), p=-1; for(var i=0;i<words.length;i++){ var k=l.indexOf(words[i]); if(k>=0&&(p<0||k<p)) p=k; }
     if(p<0) return ''; var st=Math.max(0,p-40); var en=Math.min(text.length,p+90);
-    return (st?'… ':'')+text.slice(st,en).trim()+(en<text.length?' …':''); }
-  function render(q,words){ var list=curList; list.innerHTML=''; sel=-1;
-    if(!results.length){ list.innerHTML='<div class="sr-empty">Nothing matches</div>'; list.classList.add('on'); return; }
-    var re=rx(words);
-    if(total>results.length){ var hd=document.createElement('div'); hd.className='sr-empty'; hd.textContent='Showing '+results.length+' of '+total+' matches — keep typing to narrow'; list.appendChild(hd); }
-    results.forEach(function(r,i){ var d=document.createElement('div'); d.className='sr-item'; d.setAttribute('role','option');
-      d.className='sr-item'+(r.ic?' has-ic':''); d.innerHTML=(r.ic?'<i class="sr-ic">'+r.ic+'</i>':'')+'<b>'+esc(r.label).replace(re,'<mark>$1</mark>')+'</b><span>'+esc(r.kind)+'</span>'+(r.snip?'<em class="sr-snip">'+esc(r.snip).replace(re,'<mark>$1</mark>')+'</em>':'');
+    return (st?'\u2026 ':'')+text.slice(st,en).trim()+(en<text.length?' \u2026':''); }
+
+  // ---- query language ----
+  // req:dex  req:dex>=20  req:dex,str (both)  req:dex|int (either)  req:none  |  scales:int  |  type:bow  |  rarity:unique
+  // school:fire  |  lv>=5  dmg>40  poise:10-20  armor>=300  weight<10  crit>=30  |  dex>=20 (shorthand for req)
+  // sort:dmg  sort:-weight  |  "exact phrase"  -word  -req:str
+  var NUMF={dmg:'dmg',damage:'dmg',poise:'poise',armor:'armor',armour:'armor',poisedef:'poisedef',crit:'crit',critdmg:'critdmg',weight:'weight',wt:'weight',dur:'dur',durability:'dur',lv:'lv',lvl:'lv',level:'lv',reqlvl:'rl',reqlevel:'rl',fire:'fire',cold:'cold',lightning:'lightning',plague:'plague'};
+  var NUMLBL={dmg:'Damage',poise:'Poise dmg',armor:'Armor',poisedef:'Poise',crit:'Crit',critdmg:'Crit dmg',weight:'Weight',dur:'Durability',lv:'Level',rl:'Required level',fire:'Fire armor',cold:'Cold armor',lightning:'Lightning armor',plague:'Plague armor'};
+  var DESC_FIRST={dmg:1,poise:1,armor:1,poisedef:1,crit:1,critdmg:1,dur:1,fire:1,cold:1,lightning:1,plague:1};
+  var STOP={that:1,with:1,the:1,and:1,for:1,all:1,show:1,me:1,which:1,have:1,has:1,of:1,a:1,an:1,to:1,in:1,are:1,is:1,any:1,find:1,list:1,items:1,item:1,gear:1};
+  var ARX='(strength|dexterity|intelligence|faith|str|dex|int|fai)';
+  function prep(q){ var s=q.toLowerCase();
+    return s.replace(new RegExp('(^|\\s)'+ARX+'\\s+(?:requirements?|reqs?)\\b(?!:)','g'),'$1req:$2')
+      .replace(new RegExp('(^|\\s)(?:requires?|requiring|needs?|reqs?|requirements?)\\s*:?\\s*'+ARX+'\\b','g'),'$1req:$2')
+      .replace(new RegExp('(^|\\s)scal(?:es|ing|e)?\\s+(?:with\\s+)?'+ARX+'\\b','g'),'$1scales:$2')
+      .replace(new RegExp('(^|\\s)'+ARX+'\\s+scal(?:es|ing|e)\\b(?!:)','g'),'$1scales:$2'); }
+  function numSpec(s){ var m=/^(>=|<=|>|<|=)?\s*(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?)|(\+))?$/.exec((s||'').trim()); if(!m) return null;
+    var op=m[1]||'=', a=parseFloat(m[2]); if(m[3]!=null) return {op:'range',a:a,b:parseFloat(m[3])}; if(m[4]) return {op:'>=',a:a}; return {op:op,a:a}; }
+  function numOk(v,sp){ if(v==null||isNaN(v)) return false; switch(sp.op){ case '>=': return v>=sp.a; case '<=': return v<=sp.a; case '>': return v>sp.a; case '<': return v<sp.a; case 'range': return v>=sp.a&&v<=sp.b; default: return v===sp.a; } }
+  function specTxt(sp){ return sp.op==='range'?(sp.a+'–'+sp.b):(sp.op==='='?'':sp.op.replace('>=','≥').replace('<=','≤'))+sp.a; }
+  function tok(q){ var out=[], re=/(-?)(?:([a-z]+)(>=|<=|!=|>|<|=|:))?("[^"]*"|\S+)/g, m;
+    while((m=re.exec(q))){ var v=m[4]; if(v==='-') continue; out.push({neg:!!m[1],field:m[2]||'',op:m[3]||'',val:v}); } return out; }
+  function attrOf(w){ return ATTRS[w]||null; }
+  function parseQuery(raw){
+    var P={words:[],phrases:[],neg:[],filters:[],chips:[],sort:null,autoSort:null,raw:raw,structured:false};
+    var toks=tok(prep(raw));
+    function addF(fn,label,neg,sortField){ P.filters.push(neg?function(o,r){ return !fn(o,r); }:fn); P.chips.push((neg?'not ':'')+label); P.structured=true; if(sortField&&!P.autoSort) P.autoSort=sortField; }
+    toks.forEach(function(t){ var f=t.field, op=t.op, v=t.val.replace(/^"|"$/g,'').trim(), neg=t.neg;
+      // dex>=20  ->  requirement shorthand
+      if(f&&attrOf(f)&&op&&op!==':'){ t.val=f+op+v; v=t.val; op=':'; f='req'; }
+      if(f==='req'||f==='requires'||f==='requirement'||f==='requirements'||f==='needs'){
+        var alt=(op?t.val:v).replace(/^"|"$/g,'').split('|').map(function(grp){ return grp.split(',').map(function(p){ p=p.trim(); return p; }).filter(Boolean); });
+        var preds=alt.map(function(grp){ return grp.map(function(p){
+          if(p==='none'||p==='no') return {fn:function(o){ return !Object.keys(o.req).length&&isNaN(o.rl); },lbl:'no requirements'};
+          if(p==='any'||p==='yes') return {fn:function(o){ return Object.keys(o.req).length>0; },lbl:'has requirements'};
+          var m=/^([a-z]+)\s*(.*)$/.exec(p); var a=m&&attrOf(m[1]); if(!a) return null; var sp=m[2]?numSpec(m[2]):null; if(m[2]&&!sp) return null;
+          return {fn:function(o){ return a in o.req&&(!sp||numOk(o.req[a],sp)); },lbl:ABBR[a]+(sp?' '+specTxt(sp):'')}; }); });
+        if(preds.some(function(g){ return g.some(function(x){ return !x; }); })){ P.words.push(norm(t.val)); return; }
+        var fn=function(o){ return preds.some(function(g){ return g.every(function(x){ return x.fn(o); }); }); };
+        addF(fn,'requires '+preds.map(function(g){ return g.map(function(x){ return x.lbl; }).join(' + '); }).join(' or '),neg,'req'); return; }
+      if(f==='scales'||f==='scaling'||f==='scale'){
+        var alt2=v.split('|').map(function(g){ return g.split(',').map(function(p){ return attrOf(p.trim()); }); });
+        if(alt2.some(function(g){ return g.some(function(a){ return !a; }); })){ P.words.push(norm(t.val)); return; }
+        addF(function(o){ return alt2.some(function(g){ return g.every(function(a){ return o.scales.indexOf(a)>=0; }); }); },'scales with '+alt2.map(function(g){ return g.map(function(a){ return ABBR[a]; }).join(' + '); }).join(' or '),neg); return; }
+      if(f==='type'||f==='slot'||f==='kind'||f==='cat'){
+        var want=v.split('|').map(function(x){ return flat(x.replace(/\b1h\b/g,'one-handed').replace(/\b2h\b/g,'two-handed')); }).filter(Boolean); if(!want.length) return;
+        addF(function(o){ var hay=flat(o.type+' '+o.cat+' '+o.folder); return want.some(function(w){ return hay.indexOf(w)>=0||hay.indexOf(w.replace(/s$/,''))>=0; }); },'type '+v,neg); return; }
+      if(f==='rarity'||f==='rar'||f==='is'||f==='has'){
+        var rs=v.toLowerCase().split('|');
+        if(f==='has'||(f==='is'&&rs.every(function(x){ return !/^(unique|magical|magic|plagued|standard|common)$/.test(x); }))){
+          addF(function(o){ return rs.some(function(x){ if(/^(req|reqs|requirement|requirements)$/.test(x)) return Object.keys(o.req).length>0; if(/^(scaling|scales)$/.test(x)) return o.scales.length>0; if(x==='crit') return o.crit!=null;
+            var h=flat(o.type+' '+o.cat+' '+o.folder); return h.indexOf(flat(x))>=0||h.indexOf(flat(x).replace(/s$/,''))>=0; }); },(f==='has'?'has ':'')+v,neg); return; }
+        addF(function(o){ return rs.some(function(x){ x=x.replace('magic','magical').replace('magicalal','magical').replace('common','standard'); return o.rar.indexOf(x)===0; }); },v+' rarity',neg); return; }
+      if(f==='school'||f==='element'||f==='dmgtype'||f==='damagetype'){
+        var sc=v.toLowerCase().split('|').map(function(x){ return x==='cold'?'ice':x==='poison'?'plague':x; });
+        addF(function(o){ return !!o.school&&sc.indexOf(o.school)>=0; },v+' damage',neg); return; }
+      if(f==='name'){ var nm=norm(v); P.filters.push(function(o,r){ var has=norm(r.label).indexOf(nm)>=0; return neg?!has:has; }); P.chips.push((neg?'not ':'')+'name "'+v+'"'); P.structured=true; return; }
+      if(f==='text'||f==='desc'||f==='description'){ var tx=norm(v); P.filters.push(function(o,r){ var has=((cardNorm&&cardNorm[r.ck])||'').indexOf(tx)>=0; return neg?!has:has; }); P.chips.push((neg?'not ':'')+'text "'+v+'"'); P.structured=true; return; }
+      if(f==='sort'||f==='order'){ var d2=/^-/.test(v)?-1:1, sf=NUMF[v.replace(/^[-+]/,'')]||(/^(req|requirement)/.test(v.replace(/^[-+]/,''))?'req':(/^name/.test(v.replace(/^[-+]/,''))?'name':null)); if(sf){ P.sort={f:sf,dir:d2,explicit:true}; P.structured=true; P.chips.push('sorted by '+sf); } return; }
+      if(f&&NUMF[f]&&op){ var sp2=numSpec(op===':'?v:op+v); if(sp2){ var nf=NUMF[f];
+        addF(function(o){ var x=nf==='lv'?(isNaN(o.lv)?o.rl:o.lv):o[nf]; return numOk(x,sp2); },NUMLBL[nf].toLowerCase()+' '+specTxt(sp2),neg,nf); return; } }
+      if(f&&op===':'&&!NUMF[f]){ P.words.push(norm(t.field+':'+v)); return; }
+      // plain text
+      if(f){ P.words.push(norm(t.field+op+v)); return; }
+      if(/^"/.test(t.val)){ var ph=norm(v); if(ph) (neg?P.neg:P.phrases).push(ph); return; }
+      var w=norm(v); if(!w) return; if(neg) P.neg.push(w); else P.words.push(w); });
+    // loose words alongside filters: "weapons that require dex" -> drop filler, turn type words into a type filter
+    if(P.filters.length&&typeWords){ var keep=[]; P.words.forEach(function(w){ if(STOP[w]) return; var sg=w.replace(/(es|s)$/,''), sg2=w.replace(/s$/,'');
+        if(w==='weapons'||w==='weapon'){ addF(function(o){ return o.cat==='weapons'; },'weapons',false); return; }
+        if(w==='armor'||w==='armors'||w==='armour'){ addF(function(o){ return o.cat==='armor'; },'armor',false); return; }
+        if(typeWords[w]||typeWords[sg]||typeWords[sg2]){ var fw=flat(typeWords[w]?w:(typeWords[sg2]?sg2:sg)); addF(function(o){ return flat(o.type).indexOf(fw)>=0; },'type '+w,false); return; }
+        keep.push(w); }); P.words=keep; }
+    else if(P.filters.length) P.words=P.words.filter(function(w){ return !STOP[w]; });
+    return P; }
+
+  function lev(a,b){ if(Math.abs(a.length-b.length)>2) return 9; var p=[],i,j; for(j=0;j<=b.length;j++) p[j]=j;
+    for(i=1;i<=a.length;i++){ var c=[i]; for(j=1;j<=b.length;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a.charAt(i-1)===b.charAt(j-1)?0:1)); p=c; } return p[b.length]; }
+  function textOk(r,P,fuzzy){ var hay=r.nk+' '+(r.desc?(r.nb||(r.nb=norm(r.desc))):((r.ck&&cardNorm&&cardNorm[r.ck])||''));
+    for(var i=0;i<P.phrases.length;i++) if(hay.indexOf(P.phrases[i])<0) return false;
+    for(i=0;i<P.neg.length;i++) if(hay.indexOf(P.neg[i])>=0) return false;
+    for(i=0;i<P.words.length;i++){ if(hay.indexOf(P.words[i])<0) return false; }
+    return true; }
+  function fuzzyOk(r,P){ if(!P.words.length) return false; var nt=r.nk.split(/[^a-z0-9]+/).filter(Boolean);
+    return P.words.every(function(w){ if(r.nk.indexOf(w)>=0) return true; if(w.length<4) return false; var lim=w.length>6?2:1;
+      return nt.some(function(t){ return lev(w,t.slice(0,w.length+1))<=lim||lev(w,t)<=lim; }); }); }
+  function scoreOf(r,P){ if(!P.words.length) return 50; var name=norm(r.label), q=P.words.join(' ');
+    if(name===q) return 100; if(name.indexOf(q)===0) return 85;
+    if(P.words.every(function(w){ return name.indexOf(w)===0||name.indexOf(' '+w)>=0; })) return 70;
+    if(P.words.every(function(w){ return name.indexOf(w)>=0; })) return 55;
+    if(P.words.every(function(w){ return r.nk.indexOf(w)>=0; })) return 40; return 10; }
+  function sortVal(o,f){ if(!o) return null; if(f==='req'){ var v=Object.keys(o.req).map(function(k){ return o.req[k]; }); return v.length?Math.max.apply(null,v):null; } if(f==='lv') return isNaN(o.lv)?(isNaN(o.rl)?null:o.rl):o.lv; var x=o[f]; return x==null||isNaN(x)?null:x; }
+  function statLine(o){ if(!o) return ''; var b=[];
+    if(!isNaN(o.lv)) b.push('Lv '+o.lv); else if(!isNaN(o.rl)) b.push('Req. Lv '+o.rl);
+    var rq=Object.keys(o.req).map(function(k){ return ABBR[k]+' '+o.req[k]; }); if(rq.length) b.push('Requires '+rq.join(' · '));
+    if(o.scales.length) b.push('Scales '+o.scales.map(function(a){ return ABBR[a]; }).join(' · '));
+    if(o.dmg!=null) b.push('Dmg '+o.dmg+(o.school&&o.school!=='physical'?' '+o.school:'')); if(o.poise!=null&&o.dmg!=null) b.push('Poise '+o.poise);
+    if(o.crit!=null) b.push('Crit '+o.crit+'%'); if(o.armor!=null) b.push('Armor '+o.armor); if(o.weight!=null) b.push(o.weight+' wt');
+    return b.join('  ·  '); }
+  var EXAMPLES=[['req:dex','Weapons that require Dexterity'],['req:dex>=20','… with at least 20 Dex'],['req:str<=15 type:sword','Light-requirement swords'],['scales:int','Scale with Intelligence'],['scales:str,dex','Scale with Strength and Dexterity'],['type:bow lv>=5 sort:-dmg','Bows, best damage first'],['rarity:unique','Unique gear'],['school:fire','Fire damage weapons'],['armor>=300','Heavy armor'],['"stagger"','Exact phrase']];
+  function helpHTML(){ return '<div class="sr-help"><p>Search by name or by what an item does &mdash; or filter by its stats. Click a line to try it:</p>'+
+    EXAMPLES.map(function(e){ return '<button type="button" class="sr-ex" data-q="'+esc(e[0])+'"><code>'+esc(e[0])+'</code><span>'+esc(e[1])+'</span></button>'; }).join('')+
+    '<p class="sr-help-sm"><b>Fields</b> req &middot; scales &middot; type &middot; rarity &middot; school &middot; lv &middot; dmg &middot; poise &middot; armor &middot; weight &middot; crit &middot; sort &nbsp;&bull;&nbsp; <b>Operators</b> &gt; &lt; &gt;= &lt;= 10-20 &nbsp;&bull;&nbsp; <code>a,b</code> both &nbsp;<code>a|b</code> either &nbsp;<code>-x</code> exclude &nbsp;<code>"phrase"</code> exact</p></div>'; }
+  function setQuery(q){ curInput.value=q; search(); curInput.focus(); }
+  function render(q,words,P){ var list=curList; list.innerHTML=''; sel=-1;
+    if(list===window.__srList){ var ch=document.createElement('div'); ch.className='sr-chips';
+      [['all','All'],['item','Items'],['ench','Enchants'],['inf','Infusions'],['vend','Vendors'],['page','Sections']].forEach(function(f){ var b=document.createElement('button'); b.type='button'; b.dataset.f=f[0]; b.textContent=f[1]; if(filt===f[0]) b.className='on'; ch.appendChild(b); });
+      list.appendChild(ch); }
+    var lone=P&&!P.structured&&P.words.length===1&&attrOf(P.words[0]);
+    if(lone){ var a=attrOf(P.words[0]), sg=document.createElement('div'); sg.className='sr-sugg'; sg.innerHTML='<span>Did you mean</span><button type="button" class="sr-ex-chip" data-q="req:'+P.words[0]+'">Requires '+ABBR[a]+'</button><button type="button" class="sr-ex-chip" data-q="scales:'+P.words[0]+'">Scales with '+ABBR[a]+'</button>'; list.appendChild(sg); }
+    if(P&&P.chips.length){ var fl=document.createElement('div'); fl.className='sr-filters'; fl.innerHTML=P.chips.map(function(c){ return '<span>'+esc(c)+'</span>'; }).join(''); list.appendChild(fl); }
+    if(P&&P.structured&&!info){ list.insertAdjacentHTML('beforeend','<div class="sr-empty">Loading item data…</div>'); list.classList.add('on'); return; }
+    if(!results.length){ var did=P&&P.fuzzyNone; list.insertAdjacentHTML('beforeend','<div class="sr-empty">Nothing matches'+(P&&P.structured?' &mdash; loosen a filter or remove one':'')+'</div>'+helpHTML()); list.classList.add('on'); return; }
+    var re=words.length?rx(words):null;
+    if(P&&P.fuzzy){ var hd0=document.createElement('div'); hd0.className='sr-empty'; hd0.textContent='No exact match — showing close spellings'; list.appendChild(hd0); }
+    var hd=document.createElement('div'); hd.className='sr-empty'; hd.textContent=total>results.length?('Showing '+results.length+' of '+total+' matches — keep typing to narrow'):(total+' match'+(total===1?'':'es')); list.appendChild(hd);
+    results.forEach(function(r,i){ var d=document.createElement('div'); d.setAttribute('role','option');
+      var o=r.ck&&info?info[r.ck]:null, line=(P&&P.structured&&o)?statLine(o):'';
+      var snip=line||r.snip; var nm=esc(r.label); if(re) nm=nm.replace(re,'<mark>$1</mark>');
+      d.className='sr-item'+(r.ic?' has-ic':''); d.innerHTML=(r.ic?'<i class="sr-ic">'+r.ic+'</i>':'')+'<b>'+nm+'</b><span>'+esc(r.kind)+'</span>'+(snip?'<em class="sr-snip">'+(line?esc(snip):(re?esc(snip).replace(re,'<mark>$1</mark>'):esc(snip)))+'</em>':'');
       d.addEventListener('mousedown',function(e){ e.preventDefault(); go(r); }); list.appendChild(d); });
     list.classList.add('on'); }
-  function search(){ var q=curInput.value.trim(); if(q.length<2){ if(curList===list) list.classList.remove('on'); else { curList.innerHTML='<div class="sr-hint">Search items, gems, enchantments, infusions, vendors and more by name or by what they do — try “stagger”.</div>'; } return; } if(!index) build(); loadCards();
-    var words=q.toLowerCase().split(/\s+/).filter(Boolean); var A=[],B=[],C=[];
-    index.forEach(function(r){ var body=(r.desc||(r.ck&&cardText&&cardText[r.ck])||'').toLowerCase();
-      var hay=r.key+' '+body, ok=true; for(var i=0;i<words.length;i++){ if(hay.indexOf(words[i])<0){ ok=false; break; } }
-      if(!ok) return; var name=r.label.toLowerCase(), inName=words.every(function(w){ return r.key.indexOf(w)>=0; });
-      if(inName){ (name.indexOf(words[0])===0?A:B).push(r); } else { C.push(r); } });
-    C.forEach(function(r){ var t=r.desc||(cardText&&cardText[r.ck])||''; var raw=r.desc||''; r.snip=snippet(t,words); });
-    var all=A.concat(B,C); if(filt!=='all') all=all.filter(function(r){ return kindOf(r)===filt; }); total=all.length; results=all.slice(0,MAX); render(q,words); }
-  function go(r){ list.classList.remove('on'); input.blur(); closeOv();
+  function search(){ var q=curInput.value.trim();
+    if(q.length<2){ results=[]; total=0; curList.innerHTML=helpHTML(); if(curList===list) list.classList.toggle('on',document.activeElement===input); return; }
+    if(!index) build(); loadCards();
+    var P=parseQuery(q); lastP=P; var words=P.words.concat(P.phrases);
+    var pool=index; var seenK={};
+    var all=[]; index.forEach(function(r){ if(!r.nk) r.nk=norm(r.key);
+      if(P.filters.length){ if(!r.ck||!info) return; var o=info[r.ck]; if(!o) return; for(var i=0;i<P.filters.length;i++) if(!P.filters[i](o,r)) return; }
+      if(!textOk(r,P)) return; if(r.ck){ if(seenK[r.ck]) return; seenK[r.ck]=1; } r._s=scoreOf(r,P); all.push(r); });
+    if(!all.length&&!P.filters.length&&P.words.length&&!P.neg.length&&!P.phrases.length){ index.forEach(function(r){ if(!r.nk) r.nk=norm(r.key); if(fuzzyOk(r,P)){ r._s=20; all.push(r); } }); if(all.length) P.fuzzy=true; }
+    all.forEach(function(r){ r.snip=''; if(!P.structured&&P.words.length&&r._s<=10){ var t=r.desc||(cardText&&cardText[r.ck])||''; r.snip=snippet(t,P.words); } });
+    var sf=P.sort||(P.autoSort&&P.words.length===0?{f:P.autoSort,dir:(DESC_FIRST[P.autoSort]?-1:1)}:null);
+    if(sf&&info){ all.forEach(function(r,i){ r._i=i; }); all.sort(function(a,b){ var va=sortVal(info[a.ck],sf.f), vb=sortVal(info[b.ck],sf.f);
+        if(sf.f==='name') return sf.dir*a.label.localeCompare(b.label); if(va==null&&vb==null) return a._i-b._i; if(va==null) return 1; if(vb==null) return -1; return (va-vb)*sf.dir||(a._i-b._i); }); }
+    else { all.forEach(function(r,i){ r._i=i; }); all.sort(function(a,b){ return (b._s-a._s)||(a._i-b._i); }); }
+    if(filt!=='all') all=all.filter(function(r){ return kindOf(r)===filt; }); total=all.length; results=all.slice(0,MAX); render(q,words,P); }
+  function go(r){ list.classList.remove('on'); input.blur(); closeOv(); if(window.__pgfClear) window.__pgfClear();
     var id=idFor(r.el);
     // __pgGoto (set up by the PG module above) knows about Vendors/Catalog/Media's clean paths,
     // so a search hit on one of those pages lands on e.g. /vendors#id instead of a bare "#id"
@@ -6519,6 +6697,72 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(!(window.__pgGoto && window.__pgGoto(id))) location.hash='#'+id;
     setTimeout(function(){ r.el.scrollIntoView({block:'center'}); r.el.classList.remove('sr-hit'); void r.el.offsetWidth; r.el.classList.add('sr-hit');
       if(r.el.classList.contains('m-card')) r.el.click(); },60); }
+  // ---- in-page filter bars: Trove, Vendors, Infusions, Enchantments (same query language as the main search) ----
+  var bars=[];
+  function mkBar(sec,ph,apply){
+    if(!sec) return; var host=sec.querySelector('.sect-head'); if(!host) return;
+    var bar=document.createElement('div'); bar.className='pg-filter';
+    bar.innerHTML='<div class="pgf-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'" autocomplete="off"><button type="button" class="pgf-x" aria-label="Clear filter" hidden>&times;</button></div><div class="pgf-meta"></div>';
+    host.insertAdjacentElement('afterend',bar);
+    var fi=bar.querySelector('input'), meta=bar.querySelector('.pgf-meta'), x=bar.querySelector('.pgf-x'), t=null;
+    var api={input:fi,clear:function(){ fi.value=''; run(); }};
+    function run(){ var q=fi.value.trim(); x.hidden=!q;
+      if(!q){ apply(null,meta); meta.textContent=''; return; }
+      var P=parseQuery(q); var need=P.structured&&!info;
+      if(P.structured){ loadCards(function(){ if(fi.value.trim()===q) apply(P,meta); }); if(need){ meta.textContent='Loading item data…'; return; } }
+      apply(P,meta); }
+    fi.addEventListener('input',function(){ clearTimeout(t); t=setTimeout(run,120); });
+    x.addEventListener('click',function(){ api.clear(); fi.focus(); });
+    meta.addEventListener('click',function(e){ var b=e.target.closest('[data-q]'); if(b){ fi.value=b.getAttribute('data-q'); run(); fi.focus(); } });
+    bars.push(api); return api; }
+  window.__pgfClear=function(){ bars.forEach(function(b){ if(b.input.value) b.clear(); }); };
+  function cardPass(P,el){ var k=el.getAttribute('data-k'), o=info&&info[k]; var r=el._rec||(el._rec={ck:k,label:txt(el.querySelector('.m-card-name')||el),nk:null,desc:null});
+    if(!r.nk) r.nk=norm(r.label+' '+(el._kind||''));
+    if(P.filters.length){ if(!o) return false; for(var i=0;i<P.filters.length;i++) if(!P.filters[i](o,r)) return false; }
+    return textOk(r,P); }
+  // Trove
+  (function(){ var cat=document.getElementById('catalog'); var cats=cat&&cat.querySelector('.m-cats'); if(!cats) return;
+    var cards=[].slice.call(cats.querySelectorAll('.m-card[data-k]'));
+    cards.forEach(function(c){ var h=c.closest('.m-cat'); h=h&&h.querySelector('h5'); c._kind=h?txt(h).replace(/\s*\d+$/,''):''; });
+    var kids=[].slice.call(cats.children);
+    mkBar(cat,'Filter the Trove — name, effect, or stats: req:dex  scales:int  type:bow  lv>=5',function(P,meta){
+      if(!P){ cats.classList.remove('pgf-on'); cards.forEach(function(c){ c.classList.remove('pgf-hide'); }); kids.forEach(function(k){ k.classList.remove('pgf-hide'); if(k.classList.contains('m-cat-head')&&k._orig) k.querySelector('span').textContent=k._orig; }); return; }
+      cats.classList.add('pgf-on'); var n=0; cards.forEach(function(c){ var ok=cardPass(P,c); c.classList.toggle('pgf-hide',!ok); if(ok) n++; });
+      var head=null, headVis=0, hv=[];
+      kids.forEach(function(k){ if(k.classList.contains('m-cat-head')){ head=k; k._vis=0; hv.push(k); if(!k._orig) k._orig=k.querySelector('span').textContent; }
+        else if(k.classList.contains('m-cat')){ var v=k.querySelectorAll('.m-card[data-k]:not(.pgf-hide)').length; k.classList.toggle('pgf-hide',!v); if(head) head._vis+=v; } });
+      hv.forEach(function(h){ h.classList.toggle('pgf-hide',!h._vis); h.querySelector('span').textContent=h._vis+' of '+h._orig.replace(/\s*items?/,'')+' items'; });
+      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No items match — loosen a filter, or try <a data-q="req:dex">req:dex</a> / <a data-q="scales:int">scales:int</a>'; }); })();
+  // Vendors
+  (function(){ var sec=document.getElementById('vendors'); if(!sec) return; var vs=[].slice.call(sec.querySelectorAll('article.merchant')), nameKeys=null;
+    function names(){ if(nameKeys) return nameKeys; nameKeys={}; document.querySelectorAll('#catalog .m-card[data-k]').forEach(function(c){ var n=norm(txt(c.querySelector('.m-card-name')||c)); (nameKeys[n]=nameKeys[n]||[]).push(c); }); return nameKeys; }
+    function sold(v){ if(v._sold) return v._sold; var out=[], seen={}; var add=function(t){ t=norm(t.replace(/^\s*(?:lv|level)[\s\u00a0]*\d+\s*/i,'').trim()); if(t&&!seen[t]){ seen[t]=1; out.push(t); } };
+      v.querySelectorAll('.m-pool p').forEach(function(p){ (p.textContent||'').replace(/Lv[\s\u00a0]*\d+/g,',').split(/[,\u00b7]/).forEach(add); });
+      v.querySelectorAll('td,li').forEach(function(e){ add(e.textContent||''); });
+      return (v._sold=out); }
+    mkBar(sec,'Filter vendors \u2014 by name, role, or what they sell (try req:dex)',function(P,meta){
+      vs.forEach(function(v){ var o=v.querySelector('.pgf-note'); if(o) o.remove(); });
+      if(!P){ vs.forEach(function(v){ v.classList.remove('pgf-hide'); }); return; }
+      var n=0, nk=P.filters.length?names():null; vs.forEach(function(v){ var ok;
+        if(P.filters.length){ var hits=[]; sold(v).forEach(function(nm){ var cs=nk[nm]; if(cs&&cs.some(function(c){ return cardPass(P,c); })) hits.push(cs[0].querySelector('.m-card-name')?txt(cs[0].querySelector('.m-card-name')):nm); });
+          ok=hits.length>0; if(ok){ var note=document.createElement('div'); note.className='pgf-note'; note.innerHTML='<b>'+hits.length+' matching item'+(hits.length===1?'':'s')+' sold:</b> '+hits.slice(0,16).map(esc).join(', ')+(hits.length>16?' \u2026 +'+(hits.length-16)+' more':''); var hd=v.querySelector('.m-head'); (hd||v).insertAdjacentElement(hd?'afterend':'afterbegin',note); } }
+        else { var r=v._rec||(v._rec={nk:norm(v.textContent),desc:null,ck:null}); ok=textOk(r,P); }
+        v.classList.toggle('pgf-hide',!ok); if(ok) n++; });
+      meta.innerHTML=n?('<b>'+n+'</b> vendor'+(n===1?'':'s')+' match'):'No vendors match'; }); })();
+  // Infusions
+  (function(){ var sec=document.getElementById('infusions'); if(!sec) return; var cs=[].slice.call(sec.querySelectorAll('.inf-card'));
+    mkBar(sec,'Filter infusions by name or effect',function(P,meta){
+      if(!P){ cs.forEach(function(c){ c.classList.remove('pgf-hide'); }); return; }
+      var n=0; cs.forEach(function(c){ var r=c._rec||(c._rec={nk:norm(c.textContent),desc:null,ck:null}); var ok=!P.filters.length&&textOk(r,P); c.classList.toggle('pgf-hide',!ok); if(ok) n++; });
+      meta.innerHTML=n?('<b>'+n+'</b> match'+(n===1?'':'es')):'No infusions match'; }); })();
+  // Enchantments
+  (function(){ var sec=document.getElementById('enchantments'); if(!sec) return; var es=[].slice.call(sec.querySelectorAll('.ench-item'));
+    mkBar(sec,'Filter enchantments by item or effect',function(P,meta){
+      if(!P){ es.forEach(function(e){ e.classList.remove('pgf-hide'); e.querySelectorAll('li').forEach(function(l){ l.classList.remove('pgf-hide'); }); }); return; }
+      var n=0; es.forEach(function(e){ var h=e.querySelector('h3'), r={nk:norm(h?h.textContent:''),desc:null,ck:null}, nameOk=!P.filters.length&&textOk(r,P), lis=[].slice.call(e.querySelectorAll('li')), any=false;
+        lis.forEach(function(l){ var ok=!P.filters.length&&(nameOk&&!P.words.length?true:textOk({nk:norm((h?h.textContent:'')+' '+l.textContent),desc:null,ck:null},P)); l.classList.toggle('pgf-hide',!ok); if(ok) any=true; });
+        e.classList.toggle('pgf-hide',!(any||nameOk)); if(any||nameOk) n++; });
+      meta.innerHTML=n?('<b>'+n+'</b> item type'+(n===1?'':'s')+' match'):'No enchantments match'; }); })();
   // ---- mobile full-screen search ----
   var ov=document.createElement('div'); ov.className='sro'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Search');
   ov.innerHTML='<div class="sro-bar"><div class="sro-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Search the dossier" aria-label="Search" autocomplete="off" autocapitalize="off" enterkeyhint="search"></div><button type="button" class="sro-x">Cancel</button></div>'+
@@ -6528,6 +6772,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function openOv(){ curInput=ovIn; curList=ovList; filt='all'; ov.querySelectorAll('.sro-chips button').forEach(function(b){ b.classList.toggle('on',b.dataset.f==='all'); });
     document.documentElement.classList.add('sro-open'); ov.classList.add('on'); search(); setTimeout(function(){ ovIn.focus(); },30); }
   function closeOv(){ if(!ov.classList.contains('on')) return; ov.classList.remove('on'); document.documentElement.classList.remove('sro-open'); ovIn.blur(); curInput=input; curList=list; }
+  ovList.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('button[data-q]'); if(b){ setQuery(b.getAttribute('data-q')); } });
   ov.querySelector('.sro-x').addEventListener('click',closeOv);
   ovIn.addEventListener('input',function(){ search(); ovList.scrollTop=0; });
   ovIn.addEventListener('keydown',function(e){ if(e.key==='Escape') closeOv(); else if(e.key==='Enter'){ e.preventDefault(); if(results.length) go(results[0]); } });
@@ -6535,7 +6780,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   ovList.addEventListener('scroll',function(){ if(document.activeElement===ovIn) ovIn.blur(); },{passive:true});
   window.__openSearch=function(){ if(window.matchMedia('(max-width:760px)').matches) openOv(); };
   input.addEventListener('input',function(){ if(curInput===input) search(); });
-  input.addEventListener('focus',function(){ if(results.length&&input.value.trim().length>=2) list.classList.add('on'); });
+  input.addEventListener('focus',function(){ if(input.value.trim().length<2){ search(); } else if(results.length) list.classList.add('on'); });
+  function listClick(e){ var b=e.target.closest&&e.target.closest('button'); if(!b) return; if(b.closest('.sr-chips')){ e.preventDefault(); filt=b.dataset.f; search(); return; } var q=b.getAttribute('data-q'); if(q){ e.preventDefault(); setQuery(q); } }
+  list.addEventListener('mousedown',listClick);
   input.addEventListener('blur',function(){ setTimeout(function(){ list.classList.remove('on'); },150); });
   input.addEventListener('keydown',function(e){ var items=list.querySelectorAll('.sr-item'); if(!items.length) return;
     if(e.key==='ArrowDown'){ e.preventDefault(); sel=Math.min(sel+1,items.length-1); } else if(e.key==='ArrowUp'){ e.preventDefault(); sel=Math.max(sel-1,0); }
