@@ -6305,10 +6305,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var ic=m[1]!=null?'<span class="tt-ic ip-mic" style="background-position:-'+(m[1]*64)+'px -'+(m[2]*64)+'px"></span>':'';
     return '<li class="ip-mat">'+ic+'<span class="ip-mn">'+m[0]+'</span><b>&times;'+pair[1]+'</b></li>';
   }
+  function fmtMin(m){ if(m<1) return Math.round(m*60)+' sec'; return (m%1?String(+m.toFixed(2)):m)+' min'; }
   function matsBlock(D,key){
-    var e=D&&D.it[key]; if(!e) return '';
+    if(!D) return ''; var e=D.it[key]||{};
     var h='';
     if(e.c) h+='<div class="ip-craft"><h3>How It’s Crafted</h3><p class="ip-craft-station">Station: <b>'+e.c.s+'</b>'+(e.c.q?' &middot; makes '+e.c.q:'')+'</p><ul class="ip-mats">'+e.c.m.map(function(p){ return matChip(D,p); }).join('')+'</ul></div>';
+    var rf=D.rf&&D.rf[key];
+    if(rf) h+='<div class="ip-craft"><h3>How It’s Refined</h3><p class="ip-craft-station">One input is refined into one of this item, at a refinery in your house:</p><table class="ip-upt"><thead><tr><th>Refinery</th><th>Input</th><th>Time</th></tr></thead><tbody>'+rf.map(function(r){ return '<tr><td>'+r[1]+'</td><td>'+r[0]+'</td><td>'+fmtMin(r[2])+'</td></tr>'; }).join('')+'</tbody></table></div>';
+    var mc=D.mach&&D.mach[key];
+    if(mc) h+='<div class="ip-craft"><h3>What It Refines</h3><table class="ip-upt"><thead><tr><th>Input</th><th>Output</th><th>Time</th></tr></thead><tbody>'+mc.map(function(r){ return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+fmtMin(r[2])+'</td></tr>'; }).join('')+'</tbody></table></div>';
     var lv=e.u&&D.tpl[e.u];
     if(lv){
       h+='<div class="ip-craft ip-upg"><h3>Upgrading</h3><p class="ip-craft-station">Materials needed for each upgrade level:</p><table class="ip-upt"><thead><tr><th>Level</th><th>Materials</th></tr></thead><tbody>'+
