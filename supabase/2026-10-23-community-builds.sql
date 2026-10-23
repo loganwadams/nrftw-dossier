@@ -78,3 +78,6 @@ grant select on public.community_builds to anon, authenticated;
 grant select, insert, delete on public.build_likes to authenticated;
 grant select on public.build_likes to anon;
 grant insert on public.build_reports to authenticated;
+-- Anonymous visitors need table-level SELECT for the security_invoker view to work;
+-- the "public builds are readable by anyone" policy still limits them to is_public rows.
+grant select on public.builds to anon;
