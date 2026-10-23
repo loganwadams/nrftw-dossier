@@ -5415,7 +5415,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       };
       window.__cbAcct={
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
-        openPrivacy:function(){ $('cbAcctPriv').click(); },
+        openPrivacy:function(){ $('cbAcctPriv').click(); }, editProfile:function(){ editProfile(); },
         onUser:function(f){ listeners.push(f); f(user?{name:niceName(user)}:null); }
       };
 
@@ -5466,9 +5466,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           });
           h+='</ul>';
         }
-        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn" id="cbPfEdit">Edit public profile</button><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
+        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
         mB.innerHTML=h;
-        $('cbPfEdit').addEventListener('click',editProfile);
         var el=mB.querySelector('.cb-empty-link');
         if(el) el.addEventListener('click',function(e){ e.preventDefault(); closeModal(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
         mB.querySelector('.cb-bl')&&mB.querySelector('.cb-bl').addEventListener('click',function(e){
@@ -5535,7 +5534,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             if(!nm){ msg('Enter a display name.',1); return; }
             msg('Saving…');
             client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,is_public:pub,updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
-              .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub}; if(window.__cmRefresh) window.__cmRefresh(); msg('Profile saved.'); setTimeout(listBuilds,800); })
+              .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub}; if(window.__cmRefresh) window.__cmRefresh(); msg('Profile saved.'); setTimeout(closeModal,800); })
               .catch(function(e){ msg(cleanErr(e),1); });
           });
         });
@@ -7326,6 +7325,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var menu=document.createElement('span'); menu.className='nav-acct-menu';
   function item(t,f){ var b=document.createElement('button'); b.type='button'; b.textContent=t; b.addEventListener('click',function(){ box.classList.remove('open'); f(); }); menu.appendChild(b); }
   item('My builds',function(){ window.__cbAcct.openList(); });
+  item('Public profile',function(){ window.__cbAcct.editProfile(); });
   item('Privacy',function(){ window.__cbAcct.openPrivacy(); });
   item('Sign out',function(){ window.__cbAcct.signOut(); });
   box.appendChild(main); box.appendChild(menu);
