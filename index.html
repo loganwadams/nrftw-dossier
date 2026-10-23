@@ -302,7 +302,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 /* lore timeline (artifact): the beat cards become nodes on a line; hover or tap for the story */
 body.lt-on #lore .lore-beats{display:none}
 .lt{position:relative;margin:22px 0 0;padding:0}
-.lt-track{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:0;min-height:400px}
+.lt-track{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;min-height:400px} /* one equal column per beat, however many there are */
 .lt-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,rgba(201,169,110,0),var(--gold-dim) 6%,var(--gold-dim) 94%,rgba(201,169,110,0));transform:translateY(-1px)}
 .lt-node{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;outline:none}
 .lt-ic{cursor:pointer}
@@ -339,7 +339,7 @@ body.lt-on #lore .lore-beats{display:none}
 .lt-pop.below::before{top:-7px;border-bottom:none;border-right:none}
 .lt-hint{margin:6px 0 0;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#6f6758;text-align:center}
 @media (max-width:860px){
-  .lt-track{grid-template-columns:1fr;min-height:0;gap:0;padding-left:30px;max-width:100%}
+  .lt-track{grid-auto-flow:row;grid-template-columns:1fr;min-height:0;gap:0;padding-left:30px;max-width:100%}
   .lt-track::before{left:30px;right:auto;top:0;bottom:0;width:2px;height:auto;background:linear-gradient(180deg,rgba(201,169,110,0),var(--gold-dim) 5%,var(--gold-dim) 95%,rgba(201,169,110,0));transform:translateX(-1px)}
   .lt-node{flex-direction:row;justify-content:flex-start;align-items:center;gap:16px;padding:14px 20px 14px 28px;min-width:0;max-width:100%}
   .lt-node .lt-stem{display:none}
