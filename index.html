@@ -351,13 +351,15 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-actions a.cb-tool{text-decoration:none}
 .cm-pf-discord{margin-top:8px;font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
 .cm-pf-discord b{color:#8ecbe8;font-weight:500;text-transform:none;letter-spacing:0;font-size:13px}
-.cm-pf-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);box-shadow:0 4px 14px rgba(0,0,0,.5);margin-bottom:4px}
+.cm-pf-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);box-shadow:0 4px 14px rgba(0,0,0,.5);flex:none;align-self:center}
+#community-builds .sect-head.has-avatar{align-items:center}
 .ep-id{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
 .ep-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);flex:none}
 .ep-id .cb-pub-l{margin:0;flex:1}
-.cm-pf-head{margin:0 0 18px;padding:14px 18px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.cm-pf-head{margin:-8px 0 22px;padding:0;display:flex;flex-direction:column;gap:8px}
 .cm-pf-name{display:none}
-.cm-pf-bio{margin-top:0;font-size:14px;color:var(--bone);line-height:1.5;max-width:70ch}
+.cm-pf-bio{margin-top:0;font-size:15px;color:var(--bone);line-height:1.6;max-width:70ch}
+.cm-pf-bio:empty{display:none}
 .cm-pf-count{margin-top:0;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8b8174}
 .cm-pf-count b{color:var(--gold)}
 .cb-pf-row{margin:0 0 14px;padding:10px 12px;border:1px solid var(--edge);background:rgba(0,0,0,.18);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted)}
@@ -2694,7 +2696,7 @@ footer li{color:#6f665b}
 <!-- /GEN:merchants -->
 <!-- COMMUNITY BUILDS -->
   <section id="community-builds">
-    <div class="sect-head"><h2>Community Builds</h2></div>
+    <div class="sect-head"><img id="cmPfAvatar" class="cm-pf-avatar" alt="" hidden><h2>Community Builds</h2></div>
     <p class="standfirst">Cerim builds published by other players. Open one to see the full loadout and the builder&rsquo;s analysis, or copy it straight into your own builder.</p>
     <div class="cm-tools">
       <div class="pgf-field cm-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="cmQ" placeholder="Search builds by name, author or weapon" aria-label="Search builds" autocomplete="off"></div>
@@ -2703,7 +2705,7 @@ footer li{color:#6f665b}
     <p class="cm-meta" id="cmMeta"></p>
     <div id="cmList" class="cm-grid"><p class="ip-loading">Loading builds&hellip;</p></div>
     <div id="cmProfile" class="cm-profile" hidden>
-      <div class="cm-pf-head"><img id="cmPfAvatar" class="cm-pf-avatar" alt="" hidden><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-discord" id="cmPfDiscord" hidden>Discord &nbsp;<b></b></div><div class="cm-pf-count" id="cmPfCount"></div></div>
+      <div class="cm-pf-head"><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-discord" id="cmPfDiscord" hidden>Discord &nbsp;<b></b></div><div class="cm-pf-count" id="cmPfCount"></div></div>
       <div id="cmPfList" class="cm-grid"></div>
     </div>
     <p class="cm-foot">Have a build worth sharing? Put it together in the <a href="/cerim-builder" id="cmGoBuilder">Cerim Builder</a>, save it, then choose <strong>Publish to Community</strong> in My Builds.</p>
@@ -5746,13 +5748,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           curProfile=name||null; curUid=null;
           listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
           pf.hidden=!curProfile;
-          if(!curProfile){ setHeading('Community Builds'); return; }
-          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true; var pfA=$('cmPfAvatar'); pfA.hidden=true; pfA.removeAttribute('src');
+          var pfA=$('cmPfAvatar'), sh=sec.querySelector('.sect-head');
+          if(!curProfile){ setHeading('Community Builds'); pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar'); return; }
+          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true; pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar');
           document.title=name+' - Community Builds - Wicked Dossier';
           var key=name.toLowerCase();
           var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name,avatar_url').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
           p.then(function(prof){ if(curProfile!==name) return;
-            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
+            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; if(sh) sh.classList.add('has-avatar'); } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
             if(rows) renderProfileList(); });
           if(rows) renderProfileList(); else load(false);
         }
