@@ -5317,7 +5317,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var $=function(i){ return document.getElementById(i); };
       if(!$('cbAcctSave')) return;
       var listeners=[];
-      var sb=null, user=null, libP=null, MAXB=50;
+      var sb=null, user=null, libP=null, MAXB=100;
       function loadLib(){
         if(window.supabase&&window.supabase.createClient) return Promise.resolve();
         if(libP) return libP;
