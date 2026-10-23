@@ -291,6 +291,37 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-upt td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
 .ip-upt td:first-child{white-space:nowrap}
 .ip-craft-unknown{margin:0;font-size:13px;font-style:italic;color:var(--muted)}
+/* Community Builds page */
+.cm-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+.cm-tools .cm-q{flex:1 1 260px;max-width:420px}
+.cm-tools select{height:42px;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:0 10px;cursor:pointer}
+.cm-meta{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174;margin:0 0 16px;min-height:14px}
+.cm-meta b{color:var(--gold)}
+.cm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.cm-card{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));cursor:pointer;transition:border-color .15s,transform .15s}
+.cm-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.cm-top{display:flex;gap:12px;align-items:center}
+.cm-top .m-ic{width:48px;height:48px;flex:none;border:1px solid var(--edge)}
+.cm-name{font-family:var(--display);font-size:18px;line-height:1.2;color:#efe3c8}
+.cm-by{font-size:12px;color:var(--muted);margin-top:2px}
+.cm-by b{color:var(--bone);font-weight:500}
+.cm-sum{font-size:12.5px;color:#bdac8b;line-height:1.5}
+.cm-sum i{font-style:normal;color:var(--gold-dim)}
+.cm-desc{font-size:13.5px;color:var(--bone);line-height:1.5;font-style:italic}
+.cm-attrs{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
+.cm-attrs b{color:var(--bone);font-weight:600}
+.cm-foot-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:8px;border-top:1px solid rgba(201,169,110,.12)}
+.cm-date{font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
+.cm-acts{display:flex;gap:6px;align-items:center}
+.cm-like,.cm-report{appearance:none;background:none;border:1px solid var(--edge);color:var(--muted);font-family:var(--data);font-size:10px;letter-spacing:.1em;cursor:pointer;padding:5px 9px;display:inline-flex;align-items:center;gap:6px}
+.cm-like:hover,.cm-report:hover{border-color:var(--gold);color:var(--bone)}
+.cm-like.on{color:#e0a05a;border-color:rgba(224,160,90,.6)}
+.cm-like svg{width:12px;height:12px}
+.cm-report{font-size:9px;text-transform:uppercase}
+.cm-empty{grid-column:1/-1;color:var(--muted);font-size:14.5px;padding:24px 0}
+.cm-foot{margin:26px 0 0;font-size:13.5px;color:var(--muted)}
+.cm-foot a{color:var(--gold)}
+@media (max-width:600px){.cm-grid{grid-template-columns:1fr}.cm-tools select{flex:1 1 45%}}
 </style><!-- /IP:css -->
 <!-- SRCKEY:css --><style>
 .src-key{margin-top:14px;margin-bottom:28px;padding:12px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:flex;flex-wrap:wrap;align-items:center;gap:9px 20px}
@@ -1069,6 +1100,11 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .cb-bl-name{font-family:var(--display);font-size:17px}
 .cb-bl-date{font-size:11.5px;color:var(--muted);margin:2px 0 10px}
 .cb-bl-act{display:flex;flex-wrap:wrap;gap:6px}
+.cb-bl-pub{display:inline-block;vertical-align:middle;margin-left:8px;font-family:var(--data);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--verdigris);border:1px solid rgba(94,170,150,.45);padding:2px 7px}
+.cb-pub-l{display:block;margin:12px 0 0;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.cb-pub-l small{text-transform:none;letter-spacing:0;font-size:11px}
+.cb-pub-l input{display:block;width:100%;margin-top:6px;box-sizing:border-box;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);font-family:var(--body);font-size:14px;padding:9px 10px}
+.cb-pub-l+.cb-mbtn{margin-top:14px}
 .cb-bl-act button,.cb-modal .cb-mbtn{font-family:var(--data);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);background:rgba(255,255,255,.04);border:1px solid var(--edge);padding:7px 12px;cursor:pointer}
 .cb-bl-act button:hover,.cb-modal .cb-mbtn:hover{border-color:var(--gold)}
 .cb-bl-act .danger,.cb-modal .danger{color:#e07a6a}
@@ -2605,6 +2641,21 @@ footer li{color:#6f665b}
     <div class="m-cat rc-group" data-m="mcat:recipes:structures:3"><h5>Other <span>36</span></h5><table class="m-table m-recipes"><thead><tr data-m="rph"><th scope="col">Result</th><th scope="col">Lv</th><th scope="col">Materials</th><th scope="col">Station</th></tr></thead><tbody><tr data-m="recipe:705"><td class="rc-res" data-k="/db/house/450998633319327013" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1344px -704px"></span><span>Basic Candle Holder</span></td><td>1</td><td class="m-mats">2&times; Copper Ingot, 2&times; Chipped Coal</td><td>Basic Workbench</td></tr><tr data-m="recipe:706"><td class="rc-res" data-k="/db/house/4336524654675468637" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-768px -704px"></span><span>Crimson Tulip Vase</span></td><td>1</td><td class="m-mats">3&times; Clay</td><td>Basic Workbench</td></tr><tr data-m="recipe:707"><td class="rc-res" data-k="/db/house/11907613624199298" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1088px -704px"></span><span>Flimsy Jute Carpet</span></td><td>1</td><td class="m-mats">3&times; Jute Garment</td><td>Apprentice Sewing Table</td></tr><tr data-m="recipe:708"><td class="rc-res" data-k="/db/house/2544873698861811938" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-896px -704px"></span><span>Gray Clay Vase</span></td><td>1</td><td class="m-mats">4&times; Clay</td><td>Basic Workbench</td></tr><tr data-m="recipe:709"><td class="rc-res" data-k="/db/house/337160074025078322" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1408px -704px"></span><span>Homestead Luchina</span></td><td>1</td><td class="m-mats">5&times; Pine Planks, 2&times; Chipped Coal</td><td>Basic Workbench</td></tr><tr data-m="recipe:710"><td class="rc-res" data-k="/db/house/2270920679074191938" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-128px -768px"></span><span>Simple Chair</span></td><td>1</td><td class="m-mats">3&times; Pine Planks, 1&times; Copper Ingot</td><td>Basic Workbench</td></tr><tr data-m="recipe:711"><td class="rc-res" data-k="/db/house/267448254516847163" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1600px -704px"></span><span>Simple Table</span></td><td>1</td><td class="m-mats">3&times; Pine Planks, 2&times; Copper Ingot</td><td>Basic Workbench</td></tr><tr data-m="recipe:712"><td class="rc-res" data-k="/db/house/3477089093460689165" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-384px -768px"></span><span>Simplistic Plank Bench</span></td><td>1</td><td class="m-mats">5&times; Pine Planks, 2&times; Copper Ingot</td><td>Basic Workbench</td></tr><tr data-m="recipe:713"><td class="rc-res" data-k="/db/house/51244280167383221" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-576px -768px"></span><span>Wayfarer&#x27;s Rest Bed</span></td><td>1</td><td class="m-mats">20&times; Pine Planks, 10&times; Copper Ingot</td><td>Basic Workbench</td></tr><tr data-m="recipe:714"><td class="rc-res" data-k="/db/house/3675781484366994755" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-704px -768px"></span><span>Acanthus Carved Pedestal</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:715"><td class="rc-res" data-k="/db/house/1936507980394300156" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-448px -768px"></span><span>Adventurer&#x27;s Respite Bed</span></td><td>4</td><td class="m-mats">20&times; Spruce Planks, 10&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:716"><td class="rc-res" data-k="/db/house/2191874678912386503" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-640px -768px"></span><span>Carved Lectern Stand</span></td><td>4</td><td class="m-mats">3&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:717"><td class="rc-res" data-k="/db/house/151802198599504368" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1920px -704px"></span><span>Carved Sentinel Stool</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:718"><td class="rc-res" data-k="/db/house/1847345052329505220" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1984px -704px"></span><span>Carved Throne Stool</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:719"><td class="rc-res" data-k="/db/house/2024359013351461340" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-192px -768px"></span><span>Charred Solitude Chair</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:720"><td class="rc-res" data-k="/db/house/1111441800982414712" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-512px -704px"></span><span>Chimney</span></td><td>4</td><td class="m-mats">2&times; Chipped Coal, 3&times; Saltstone</td><td>Workbench</td></tr><tr data-m="recipe:721"><td class="rc-res" data-k="/db/house/3725051814176954175" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1280px -704px"></span><span>Iron Brazier</span></td><td>4</td><td class="m-mats">6&times; Iron Ingot, 3&times; Chipped Coal</td><td>Anvil</td></tr><tr data-m="recipe:722"><td class="rc-res" data-k="/db/house/2332576526977302854" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1792px -704px"></span><span>Jade-Woven Stool</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Linen Garment</td><td>Workbench</td></tr><tr data-m="recipe:723"><td class="rc-res" data-k="/db/house/1355602639540263847" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-832px -704px"></span><span>Lavender Vase</span></td><td>4</td><td class="m-mats">3&times; Saltstone</td><td>Workbench</td></tr><tr data-m="recipe:724"><td class="rc-res" data-k="/db/house/523149377079173025" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-960px -704px"></span><span>Minstrel&#x27;s Timeless Lute</span></td><td>4</td><td class="m-mats">3&times; Spruce Planks</td><td>Workbench</td></tr><tr data-m="recipe:725"><td class="rc-res" data-k="/db/house/2174928812118900504" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-256px -768px"></span><span>Natural Contour Bench</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:726"><td class="rc-res" data-k="/db/house/1197980821303387485" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1152px -704px"></span><span>Refined Candle Holder</span></td><td>4</td><td class="m-mats">2&times; Iron Ingot, 2&times; Chipped Coal</td><td>Workbench</td></tr><tr data-m="recipe:727"><td class="rc-res" data-k="/db/house/1174300472395727549" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-64px -768px"></span><span>Sculpted Elegance Chair</span></td><td>4</td><td class="m-mats">3&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:728"><td class="rc-res" data-k="/db/house/2162258787963818058" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1536px -704px"></span><span>Simple Dinner Table</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 3&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:729"><td class="rc-res" data-k="/db/house/906235703496480437" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1664px -704px"></span><span>Simple Round Table</span></td><td>4</td><td class="m-mats">3&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:730"><td class="rc-res" data-k="/db/house/2484861770904849254" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-960px -768px"></span><span>Simple Wine Cabinet</span></td><td>4</td><td class="m-mats">10&times; Spruce Planks</td><td>Workbench</td></tr><tr data-m="recipe:731"><td class="rc-res" data-k="/db/house/1761818798743318918" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-576px -704px"></span><span>Stack of Tomes</span></td><td>4</td><td class="m-mats">4&times; Spruce Planks</td><td>Workbench</td></tr><tr data-m="recipe:732"><td class="rc-res" data-k="/db/house/2316594434485249346" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-704px -704px"></span><span>Sunfire Vase</span></td><td>4</td><td class="m-mats">3&times; Saltstone</td><td>Workbench</td></tr><tr data-m="recipe:733"><td class="rc-res" data-k="/db/house/3529318849845303792" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-640px -704px"></span><span>Verdant Bloom Vase</span></td><td>4</td><td class="m-mats">3&times; Saltstone</td><td>Workbench</td></tr><tr data-m="recipe:734"><td class="rc-res" data-k="/db/house/1384038319642223970" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1856px -704px"></span><span>Whittled Nest Stool</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:735"><td class="rc-res" data-k="/db/house/1525804058456819571" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1728px -704px"></span><span>Whittled Rocking Horse</span></td><td>4</td><td class="m-mats">3&times; Spruce Planks, 3&times; Spruce Planks</td><td>Workbench</td></tr><tr data-m="recipe:736"><td class="rc-res" data-k="/db/house/3060260645070458956" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-320px -768px"></span><span>Whittled Short Bench</span></td><td>4</td><td class="m-mats">5&times; Spruce Planks, 2&times; Iron Ingot</td><td>Workbench</td></tr><tr data-m="recipe:737"><td class="rc-res" data-k="/db/house/3853629788300457786" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-0px -768px"></span><span>Engraved Hearthguard Chair</span></td><td>9</td><td class="m-mats">8&times; Birch Planks, 2&times; Silver Ingot</td><td>Builder’s Workbench</td></tr><tr data-m="recipe:738"><td class="rc-res" data-k="/db/house/61036129732148469" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1216px -704px"></span><span>Noble Candle Holder</span></td><td>9</td><td class="m-mats">4&times; Silver Ingot, 2&times; High-Density Coal</td><td>Builder’s Workbench</td></tr><tr data-m="recipe:739"><td class="rc-res" data-k="/db/house/1622161584553401465" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-1024px -704px"></span><span>Red Cotton Carpet</span></td><td>9</td><td class="m-mats">4&times; Wool Garment</td><td>Spinner’s Sewing Table</td></tr><tr data-m="recipe:740"><td class="rc-res" data-k="/db/house/2378184833835003187" tabindex="0"><span class="tt-ic rc-ic" style="background-position:-512px -768px"></span><span>Voyager&#x27;s Rejuvenation Bed</span></td><td>9</td><td class="m-mats">20&times; Birch Planks, 10&times; Silver Ingot</td><td>Builder’s Workbench</td></tr></tbody></table></div>
       </section>
 <!-- /GEN:merchants -->
+<!-- COMMUNITY BUILDS -->
+  <section id="community-builds">
+    <div class="sect-head"><h2>Community Builds</h2></div>
+    <p class="standfirst">Cerim builds published by other players. Open one to see the full loadout and the builder&rsquo;s analysis, or copy it straight into your own builder.</p>
+    <div class="cm-tools">
+      <div class="pgf-field cm-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="cmQ" placeholder="Search builds by name, author or weapon" aria-label="Search builds" autocomplete="off"></div>
+      <select id="cmType" aria-label="Weapon type"><option value="">All weapons</option></select>
+      <select id="cmLv" aria-label="Level"><option value="">Any level</option><option value="1-9">Level 1&ndash;9</option><option value="10-19">Level 10&ndash;19</option><option value="20-30">Level 20&ndash;30</option></select>
+      <select id="cmSort" aria-label="Sort"><option value="new">Newest</option><option value="likes">Most liked</option><option value="lv">Highest level</option></select>
+    </div>
+    <p class="cm-meta" id="cmMeta"></p>
+    <div id="cmList" class="cm-grid"><p class="ip-loading">Loading builds&hellip;</p></div>
+    <p class="cm-foot">Have a build worth sharing? Put it together in the <a href="/cerim-builder" id="cmGoBuilder">Cerim Builder</a>, save it, then choose <strong>Publish to Community</strong> in My Builds.</p>
+  </section>
+<!-- /COMMUNITY BUILDS -->
 <!-- ITEM PAGE -->
   <section id="item-page">
     <div class="sect-head"><h2>Item</h2></div>
@@ -5354,7 +5405,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       function fmtDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return ''; } }
       function listBuilds(){
         openModal('My builds','<p>Loading…</p>');
-        client().then(function(c){ return c.from('builds').select('id,name,code,updated_at').order('updated_at',{ascending:false}); })
+        client().then(function(c){ return c.from('builds').select('id,name,code,updated_at,is_public,description,author_name,published_at').order('updated_at',{ascending:false}); })
           .then(function(r){ if(r.error) throw r.error; paint(r.data||[]); })
           .catch(function(e){ mB.innerHTML='<p>'+escH(cleanErr(e))+'</p>'; });
       }
@@ -5364,8 +5415,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         else{
           h+='<ul class="cb-bl">';
           rows.forEach(function(r,i){
-            h+='<li data-i="'+i+'"><div class="cb-bl-name">'+escH(r.name)+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+'</div><div class="cb-bl-act">'+
-              '<button type="button" data-a="load">Load</button><button type="button" data-a="over">Overwrite with current</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="link">Copy share link</button><button type="button" data-a="del" class="danger">Delete</button></div></li>';
+            h+='<li data-i="'+i+'"><div class="cb-bl-name">'+escH(r.name)+(r.is_public?' <span class="cb-bl-pub" title="Listed on the Community Builds page">Public</span>':'')+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+(r.is_public&&r.description?' &middot; &ldquo;'+escH(r.description)+'&rdquo;':'')+'</div><div class="cb-bl-act">'+
+              '<button type="button" data-a="load">Load</button><button type="button" data-a="over">Overwrite with current</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button></div></li>';
           });
           h+='</ul>';
         }
@@ -5399,6 +5450,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             }
             inp.addEventListener('keydown',function(ev){ if(ev.key==='Enter') commit(); if(ev.key==='Escape'){ ev.stopPropagation(); done=true; paint(rows); } });
             inp.addEventListener('blur',commit);
+          }else if(a==='pub'){
+            publishBuild(r);
+          }else if(a==='unpub'){
+            client().then(function(c){ return c.from('builds').update({is_public:false}).eq('id',r.id); })
+              .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
           }else if(a==='del'){
             if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again to delete'; return; }
             client().then(function(c){ return c.from('builds').delete().eq('id',r.id); })
@@ -5414,12 +5470,140 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         });
       }
 
+      // ---- publish to the Community Builds page (opt-in; shows the build, its name, a blurb and the author name to everyone)
+      function publishBuild(r){
+        openModal('Publish &ldquo;'+escH(r.name)+'&rdquo;',
+          '<p>Publishing lists this build on the <strong>Community Builds</strong> page for anyone to open and copy. Your display name is shown with it. You can unpublish at any time from My Builds.</p>'+
+          '<label class="cb-pub-l">Shown as<input type="text" id="cbPubAuthor" maxlength="40" value="'+escH(r.author_name||niceName(user))+'"></label>'+
+          '<label class="cb-pub-l">One line about the build <small>(optional, 160 characters)</small><input type="text" id="cbPubDesc" maxlength="160" placeholder="e.g. Fast dagger bleed build for NG+ bosses" value="'+escH(r.description||'')+'"></label>'+
+          '<button type="button" class="cb-mbtn" id="cbPubGo">Publish</button><div class="cb-mmsg" role="status"></div>');
+        $('cbPubGo').addEventListener('click',function(){
+          var an=$('cbPubAuthor').value.trim(), ds=$('cbPubDesc').value.trim();
+          if(!an){ msg('Enter the name to show with the build.',1); return; }
+          msg('Publishing…');
+          client().then(function(c){ return c.from('builds').update({is_public:true,author_name:an,description:ds||null,published_at:new Date().toISOString()}).eq('id',r.id); })
+            .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); listBuilds(); })
+            .catch(function(e){ msg(cleanErr(e),1); });
+        });
+      }
+
       // ---- privacy
       $('cbAcctPriv').addEventListener('click',function(){
         openModal('Privacy','<p>Signing in is optional. The builder, autosave and share links all work without an account.</p>'+
-          '<p>If you sign in with Discord or Google, this site stores your account ID, display name and email address (provided by them) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
+          '<p>If you sign in with Discord or Google, this site stores your account ID, display name and email address (provided by them) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. If you choose to publish a build to the Community Builds page, that build, its description and the display name you enter are shown publicly until you unpublish it. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
           '<p>Sign-in is handled by Supabase and Discord. This site never sees or stores a password. You can delete your account and every saved build at any time from <strong>My Builds</strong> &rarr; <strong>Delete my account</strong>. Share links contain the build itself in the link, so anyone you send one to can see that build; they do not reveal your account.</p><p><a href="/privacy" target="_blank" rel="noopener">Read the full privacy policy</a></p>');
       });
+
+      // ---- Community Builds page: reads the community_builds view (public builds + like counts).
+      // Anyone can browse; liking and reporting need a sign-in. Opening a build uses the existing
+      // shared view (?s=code), so there's one way to look at a build whoever it came from.
+      (function community(){
+        var sec=$('community-builds'), list=$('cmList'); if(!sec||!list) return;
+        var rows=null, liked={}, loadedFor=null, loading=false;
+        var qEl=$('cmQ'), typeEl=$('cmType'), lvEl=$('cmLv'), sortEl=$('cmSort'), metaEl=$('cmMeta');
+        var gb=$('cmGoBuilder'); if(gb) gb.addEventListener('click',function(e){ e.preventDefault(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
+        function summarize(r){
+          if(r._sum) return r._sum;
+          var o=decodeBuild(r.code), sum={lv:0,main:null,type:'',types:[],attrs:[],slots:0};
+          if(o){
+            sum.lv=+o.lv||0;
+            var ids=Object.keys(o.e||{}).filter(function(id){ return cards&&cards[o.e[id]]; }).sort(slotOrder);
+            sum.slots=ids.length;
+            var wid=null; ids.forEach(function(id){ var it=cards[o.e[id]]; if(slotEls[id]&&slotEls[id].cat==='weapon'){ if(!wid) wid=id; if(sum.types.indexOf(it.t)<0) sum.types.push(it.t); } });
+            var mainId=wid||ids[0]; sum.main=cards[o.e[mainId]]; sum.type=wid?(sum.main.t||''):'';
+            ATTRS.forEach(function(a){ var v=+(o.a&&o.a[a.id])||10; if(v>10) sum.attrs.push({n:a.name,v:v}); });
+            sum.attrs.sort(function(a,b){ return b.v-a.v; });
+          }
+          return (r._sum=sum);
+        }
+        function fillTypes(){
+          var seen={}, ts=[]; (rows||[]).forEach(function(r){ var t=summarize(r).type; if(t&&!seen[t]){ seen[t]=1; ts.push(t); } });
+          ts.sort(); var cur=typeEl.value;
+          typeEl.innerHTML='<option value="">All weapons</option>'+ts.map(function(t){ return '<option value="'+escH(t)+'">'+escH(t)+'</option>'; }).join('');
+          typeEl.value=cur;
+        }
+        function norm(t){ return (t||'').toLowerCase(); }
+        function render(){
+          if(!rows){ return; }
+          var q=norm(qEl.value.trim()), ty=typeEl.value, lv=lvEl.value, srt=sortEl.value;
+          var out=rows.filter(function(r){
+            var sm=summarize(r);
+            if(ty&&sm.type!==ty) return false;
+            if(lv){ var p=lv.split('-'); if(sm.lv<+p[0]||sm.lv>+p[1]) return false; }
+            if(q){ var hay=norm(r.name+' '+(r.author_name||'')+' '+(r.description||'')+' '+(sm.main?sm.main.n:'')+' '+sm.type); if(hay.indexOf(q)<0) return false; }
+            return true;
+          });
+          out.sort(function(a,b){
+            if(srt==='likes'&&(b.likes-a.likes)) return b.likes-a.likes;
+            if(srt==='lv'&&(summarize(b).lv-summarize(a).lv)) return summarize(b).lv-summarize(a).lv;
+            return (new Date(b.published_at||b.updated_at))-(new Date(a.published_at||a.updated_at));
+          });
+          metaEl.innerHTML=rows.length?('<b>'+out.length+'</b> of '+rows.length+' build'+(rows.length===1?'':'s')):'';
+          if(!rows.length){ list.innerHTML='<p class="cm-empty">No builds have been published yet. Be the first: save a build in the Cerim Builder, then publish it from My Builds.</p>'; return; }
+          if(!out.length){ list.innerHTML='<p class="cm-empty">No builds match those filters.</p>'; return; }
+          list.innerHTML=out.map(function(r){
+            var sm=summarize(r), it=sm.main;
+            var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
+            var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
+            return '<article class="cm-card" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
+              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+escH(r.author_name||'Anonymous')+'</b></div></div></div>'+
+              (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
+              '<div class="cm-sum"><i>Level '+sm.lv+'</i>'+(it?' &middot; '+escH(it.n)+(sm.type?' <i>('+escH(sm.type)+')</i>':''):'')+' &middot; '+sm.slots+' item'+(sm.slots===1?'':'s')+' equipped</div>'+
+              (attrs?'<div class="cm-attrs">'+attrs+'</div>':'')+
+              '<div class="cm-foot-row"><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span><span class="cm-acts">'+
+                '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-8.6C.9 9.2 2.4 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.6 0 5.1 3.7 3.3 6.9C19 16.4 12 21 12 21z"/></svg><span>'+r.likes+'</span></button>'+
+                '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></span></div>'+
+              '</article>';
+          }).join('');
+        }
+        function loadLiked(){
+          liked={};
+          if(!user) return Promise.resolve();
+          return client().then(function(c){ return c.from('build_likes').select('build_id').eq('user_id',user.id); })
+            .then(function(r){ (r.data||[]).forEach(function(x){ liked[x.build_id]=1; }); }).catch(function(){});
+        }
+        function load(force){
+          if(loading) return; if(rows&&!force) return;
+          loading=true; if(!rows) list.innerHTML='<p class="ip-loading">Loading builds&hellip;</p>';
+          Promise.all([loadCards(), client().then(function(c){ return c.from('community_builds').select('id,name,code,description,author_name,published_at,updated_at,likes'); }), loadLiked()])
+            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); fillTypes(); render(); })
+            .catch(function(e){ list.innerHTML='<p class="cm-empty">Couldn&rsquo;t load the community builds. '+escH(cleanErr(e))+'</p>'; })
+            .then(function(){ loading=false; });
+        }
+        window.__cmRefresh=function(){ rows=null; if(sec.classList.contains('pg-on')) load(true); };
+        [qEl,typeEl,lvEl,sortEl].forEach(function(el){ el.addEventListener('input',render); el.addEventListener('change',render); });
+        function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code; }
+        list.addEventListener('click',function(e){
+          var card=e.target.closest('.cm-card'); if(!card) return;
+          var r=null; for(var i=0;i<(rows||[]).length;i++) if(String(rows[i].id)===card.getAttribute('data-id')) r=rows[i];
+          if(!r) return;
+          var b=e.target.closest('button[data-a]');
+          if(!b){ open(r); return; }
+          e.stopPropagation();
+          if(!user){ chooseSignIn(); return; }
+          if(b.dataset.a==='like'){
+            var on=!!liked[r.id];
+            client().then(function(c){ return on?c.from('build_likes').delete().eq('build_id',r.id).eq('user_id',user.id):c.from('build_likes').insert({build_id:r.id,user_id:user.id}); })
+              .then(function(x){ if(x.error) throw x.error; if(on){ delete liked[r.id]; r.likes=Math.max(0,r.likes-1); } else { liked[r.id]=1; r.likes++; } render(); })
+              .catch(function(err){ openModal('Like',"<p>Couldn't save that. "+escH(cleanErr(err))+'</p>'); });
+          } else if(b.dataset.a==='report'){
+            openModal('Report &ldquo;'+escH(r.name)+'&rdquo;','<p>Tell us what&rsquo;s wrong with this build listing (an offensive name or description, say). Reports go only to the site owner.</p><label class="cb-pub-l">Reason<input type="text" id="cmRepReason" maxlength="200" placeholder="What is the problem?"></label><button type="button" class="cb-mbtn" id="cmRepGo">Send report</button><div class="cb-mmsg" role="status"></div>');
+            $('cmRepGo').addEventListener('click',function(){
+              var why=$('cmRepReason').value.trim(); if(!why){ msg('Add a reason.',1); return; }
+              msg('Sending…');
+              client().then(function(c){ return c.from('build_reports').insert({build_id:r.id,reason:why}); })
+                .then(function(x){ if(x.error) throw x.error; msg('Thanks — reported.'); setTimeout(closeModal,900); })
+                .catch(function(err){ msg(cleanErr(err),1); });
+            });
+          }
+        });
+        list.addEventListener('keydown',function(e){ if(e.key!=='Enter') return; var card=e.target.closest('.cm-card'); if(card&&e.target===card) card.click(); });
+        // Load when the page is shown (the router toggles .pg-on on the section), and again if the
+        // signed-in user changes so the like states are theirs.
+        new MutationObserver(function(){ if(sec.classList.contains('pg-on')) load(false); }).observe(sec,{attributes:true,attributeFilter:['class']});
+        if(sec.classList.contains('pg-on')) load(false);
+        listeners.push(function(){ if(rows){ loadLiked().then(render); } });
+      })();
     })();
 
     loadCards().then(restoreBuild);
@@ -6100,6 +6284,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'recipes', ids:['recipes']},
     {id:'vid',   ids:['videos']},
     {id:'cerim', ids:['cerim-builder']},
+    {id:'builds', ids:['community-builds']},
     {id:'itempage', ids:['item-page']}
   ];
   var CHAPS=[
@@ -6116,6 +6301,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'recipes',    num:'',   label:'Crafting Recipes', group:'recipes', target:'recipes', tag:['recipes'], hidden:true},
     {id:'videos',       num:'08', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
     {id:'cerim-builder', num:'09', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'},
+    {id:'community-builds', num:'10', label:'Builds', group:'builds', target:'community-builds', tag:['community-builds'], cls:'pg-cerim', aria:'Community Builds'},
     // No bar button of its own (hidden:true) - reached only by clicking an item card in the
     // Trove, never from the chapter bar, so it isn't offered as a destination there.
     {id:'item-page',     num:'',   label:'Item',          group:'itempage', target:'item-page', tag:['item-page'], hidden:true}
@@ -6124,7 +6310,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // else sharing the group) so they get a real clean path instead of a #hash. Factions/Classes
   // share one page ("world"), and Infusions/Enchantments share one page ("gear"), so those stay
   // on hash-based chapter anchors within their shared page.
-  var CLEAN_PATHS={vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', vid:'/media', cerim:'/cerim-builder'};
+  var CLEAN_PATHS={vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the

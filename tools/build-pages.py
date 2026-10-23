@@ -22,6 +22,10 @@ PAGES = {
                 'Every vendor in No Rest for the Wicked, what they sell, their prices and where to find them in Sacrament and Marin Village.'),
     'cerim-builder': ('Cerim Builder — No Rest for the Wicked Build Planner | Wicked Dossier',
                       'Plan a No Rest for the Wicked build: pick weapons, armor, runes, gems and enchantments, see your stats and requirements, rate the build and share it with a link.'),
+    'builds': ('Community Builds \u2014 No Rest for the Wicked Player Builds | Wicked Dossier',
+               'Browse No Rest for the Wicked builds published by other players, open the full loadout and analysis, and copy any build into your own Cerim Builder.'),
+    'crafting-recipes': ('Crafting Recipes \u2014 No Rest for the Wicked | Wicked Dossier',
+                         'Every crafting and refinery recipe in No Rest for the Wicked: what each item takes to make, at which station, straight from the game files.'),
     'media': ('Media — No Rest for the Wicked Trailers & Videos | Wicked Dossier',
               'Official No Rest for the Wicked trailers, gameplay reveals and developer videos from Moon Studios.'),
 }
