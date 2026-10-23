@@ -350,6 +350,11 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-social{display:grid!important;grid-template-columns:72px 1fr;align-items:center;gap:10px;margin:6px 0 0!important}
 .ep-social span{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .ep-social input{margin:0!important}
+.ep-url{display:flex;align-items:center;background:rgba(0,0,0,.35);border:1px solid var(--edge)}
+.ep-social .ep-url{text-transform:none;letter-spacing:0}
+.ep-url i{font-style:normal;font-family:var(--body);font-size:13.5px;color:#8b8174;padding:0 0 0 10px;white-space:nowrap;user-select:none;text-transform:none;letter-spacing:0}
+.ep-url input{border:0!important;background:none!important;flex:1;min-width:0;padding-left:2px!important}
+.ep-url:focus-within{border-color:var(--gold-dim)}
 .ep-note{margin:-8px 0 16px;font-size:12px;color:#8b8174;font-style:italic}
 .ep-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
 .ep-actions .cb-mmsg{margin:0}
@@ -2732,11 +2737,11 @@ footer li{color:#6f665b}
         <label class="cb-pub-l cb-pub-chk" id="epDiscordRow"><input type="checkbox" id="epDiscord"> <span>Share my Discord profile <small>Adds a Discord icon next to your name that links to <b id="epDiscordName"></b></small></span></label>
         <p class="ep-note" id="epDiscordNote" hidden>Sign in with Discord to be able to share your Discord profile.</p>
         <div class="ep-socials">
-          <div class="cb-pub-l ep-social-l">Links on your profile <small>(optional &mdash; paste the channel name or URL)</small></div>
-          <label class="cb-pub-l ep-social"><span>Twitch</span><input type="text" id="epTwitch" maxlength="60" placeholder="twitch.tv/yourname" autocomplete="off"></label>
-          <label class="cb-pub-l ep-social"><span>YouTube</span><input type="text" id="epYoutube" maxlength="80" placeholder="youtube.com/@yourchannel" autocomplete="off"></label>
-          <label class="cb-pub-l ep-social"><span>Kick</span><input type="text" id="epKick" maxlength="60" placeholder="kick.com/yourname" autocomplete="off"></label>
-          <label class="cb-pub-l ep-social"><span>Steam</span><input type="text" id="epSteam" maxlength="80" placeholder="steamcommunity.com/id/yourname" autocomplete="off"></label>
+          <div class="cb-pub-l ep-social-l">Links on your profile <small>(optional &mdash; just your name on each site)</small></div>
+          <label class="cb-pub-l ep-social"><span>Twitch</span><span class="ep-url"><i>twitch.tv/</i><input type="text" id="epTwitch" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
+          <label class="cb-pub-l ep-social"><span>YouTube</span><span class="ep-url"><i>youtube.com/@</i><input type="text" id="epYoutube" maxlength="40" placeholder="yourchannel" autocomplete="off" spellcheck="false"></span></label>
+          <label class="cb-pub-l ep-social"><span>Kick</span><span class="ep-url"><i>kick.com/</i><input type="text" id="epKick" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
+          <label class="cb-pub-l ep-social"><span>Steam</span><span class="ep-url"><i>steamcommunity.com/id/</i><input type="text" id="epSteam" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
         </div>
         <label class="cb-pub-l cb-pub-chk"><input type="checkbox" id="epPublic" checked> <span>Show my profile page <small>(when off, your name on builds is plain text and links to nothing)</small></span></label>
         <div class="ep-actions"><button type="submit" class="cb-tool primary" id="epSave">Save profile</button><a href="#" id="epView" class="cb-tool" hidden>View my profile</a><span class="cb-mmsg" id="epMsg" role="status"></span></div>
@@ -5624,13 +5629,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return n?String(n).replace(/#0+$/,''):null;
       }
       // Social handles: accept a bare name or a pasted URL, keep just the handle.
+      // The site part of each link is fixed; the field takes only the name. A pasted URL is
+      // trimmed down to the name, and anything that still isn't a plain name is refused - so
+      // these can never point anywhere but the site they're labelled with.
       function cleanHandle(v,kind){
         v=(v||'').trim(); if(!v) return null;
-        v=v.replace(/^https?:\/\//i,'').replace(/^www\./i,'');
-        v=v.replace(/^(m\.|www\.)?(twitch\.tv|youtube\.com|youtu\.be|kick\.com|steamcommunity\.com)\//i,'');
+        v=v.replace(/^https?:\/\//i,'').replace(/^(m\.|www\.)/i,'');
+        v=v.replace(/^(twitch\.tv|youtube\.com|youtu\.be|kick\.com|steamcommunity\.com)\//i,'');
         v=v.replace(/^(c|channel|user|id|profiles)\//i,'').replace(/[?#].*$/,'').replace(/\/+$/,'');
-        if(kind==='youtube'&&v&&v[0]!=='@'&&!/^UC[\w-]{20,}$/.test(v)) v='@'+v;
-        return v.slice(0,80)||null;
+        if(kind==='youtube') v=v.replace(/^@/,'');
+        if(!/^[A-Za-z0-9_.-]{2,40}$/.test(v)) return false;
+        if(kind==='youtube') v='@'+v;
+        return v;
       }
       function socialUrl(kind,h){ if(!h) return null; if(kind==='twitch') return 'https://www.twitch.tv/'+encodeURIComponent(h); if(kind==='kick') return 'https://kick.com/'+encodeURIComponent(h); if(kind==='youtube') return /^UC[\w-]{20,}$/.test(h)?('https://www.youtube.com/channel/'+h):('https://www.youtube.com/'+(h[0]==='@'?'@'+encodeURIComponent(h.slice(1)):encodeURIComponent(h))); if(kind==='steam') return /^\d{17}$/.test(h)?('https://steamcommunity.com/profiles/'+h):('https://steamcommunity.com/id/'+encodeURIComponent(h)); return null; }
       function discordId(u){
@@ -5652,7 +5662,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; } else ai.hidden=true;
           $('epBio').value=p.bio||'';
           $('epDiscord').checked=!!p.discord_name;
-          $('epTwitch').value=p.twitch||''; $('epYoutube').value=p.youtube||''; $('epKick').value=p.kick||''; $('epSteam').value=p.steam||'';
+          $('epTwitch').value=p.twitch||''; $('epYoutube').value=(p.youtube||'').replace(/^@/,''); $('epKick').value=p.kick||''; $('epSteam').value=p.steam||'';
           $('epPublic').checked=p.is_public!==false;
           var v=$('epView'); v.hidden=p.is_public===false; v.href='/profile/'+encodeURIComponent(p.display_name||'');
         });
@@ -5663,8 +5673,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           e.preventDefault();
           var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), shareD=!!dn&&$('epDiscord').checked, m=$('epMsg');
           if(!nm){ registerUsername(fillProfilePage); return; }
+          var soc={twitch:cleanHandle($('epTwitch').value,'twitch'),youtube:cleanHandle($('epYoutube').value,'youtube'),kick:cleanHandle($('epKick').value,'kick'),steam:cleanHandle($('epSteam').value,'steam')};
+          var badK=Object.keys(soc).filter(function(k){ return soc[k]===false; })[0];
+          $('epTwitch').value=soc.twitch||$('epTwitch').value; $('epYoutube').value=soc.youtube?soc.youtube.replace(/^@/,''):$('epYoutube').value; $('epKick').value=soc.kick||$('epKick').value; $('epSteam').value=soc.steam||$('epSteam').value;
+          if(badK){ m.textContent='Enter just your '+({twitch:'Twitch',youtube:'YouTube',kick:'Kick',steam:'Steam'})[badK]+' name (letters, numbers, dots, dashes, underscores).'; m.className='cb-mmsg err'; $('ep'+badK.charAt(0).toUpperCase()+badK.slice(1)).focus(); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,discord_id:shareD?discordId(user):null,twitch:cleanHandle($('epTwitch').value,'twitch'),youtube:cleanHandle($('epYoutube').value,'youtube'),kick:cleanHandle($('epKick').value,'kick'),steam:cleanHandle($('epSteam').value,'steam'),is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,discord_id:shareD?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
             .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
