@@ -5432,8 +5432,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function go(){
           var name=inp.value.trim(); if(!name){ msg('Give the build a name.',1); return; }
           msg('Saving…');
-          client().then(function(c){ return c.from('builds').insert({name:name,code:encodeBuild(b)}); })
-            .then(function(r){ if(r.error) throw r.error; msg('Saved to your account.'); setTimeout(closeModal,900); })
+          client().then(function(c){ return c.from('builds').insert({name:name,code:encodeBuild(b)}).select('id,name,description,author_name').single(); })
+            .then(function(r){ if(r.error) throw r.error;
+              // Saved - offer to publish it straight away rather than making them find it in My Builds.
+              var row=r.data||{}; if(!row.name) row.name=name;
+              openModal('Saved','<p><strong>'+escH(row.name)+'</strong> is saved to your account.</p><p>Want to publish it to <strong>Community Builds</strong> so other players can see and copy it? You can unpublish any time from My Builds.</p>'+
+                '<div class="cb-prov"><button type="button" class="cb-mbtn" id="cbSavePub">Publish to Community</button><button type="button" class="cb-mbtn" id="cbSaveNo">Not now</button></div>');
+              $('cbSaveNo').addEventListener('click',closeModal);
+              $('cbSavePub').addEventListener('click',function(){ if(row.id) publishBuild(row); else { closeModal(); listBuilds(); } });
+            })
             .catch(function(e){ msg(cleanErr(e),1); });
         }
         $('cbSaveGo').addEventListener('click',go);
@@ -5537,7 +5544,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // ---- publish to the Community Builds page (opt-in; shows the build, its name, a blurb and the author name to everyone)
       function publishBuild(r){
         if(myProfile===null&&user){ loadMyProfile().then(function(){ myProfile=myProfile||{}; publishBuild(r); }); return; }
-        openModal('Publish &ldquo;'+escH(r.name)+'&rdquo;',
+        openModal('Publish \u201c'+r.name+'\u201d',
           '<p>Publishing lists this build on the <strong>Community Builds</strong> page for anyone to open and copy. Your display name is shown with it. You can unpublish at any time from My Builds.</p>'+
           '<label class="cb-pub-l">Shown as<input type="text" id="cbPubAuthor" maxlength="40" value="'+escH(r.author_name||(myProfile&&myProfile.display_name)||niceName(user))+'"></label>'+
           '<label class="cb-pub-l">One line about the build <small>(optional, 160 characters)</small><input type="text" id="cbPubDesc" maxlength="160" placeholder="e.g. Fast dagger bleed build for NG+ bosses" value="'+escH(r.description||'')+'"></label>'+
@@ -5675,7 +5682,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
               .then(function(x){ if(x.error) throw x.error; if(on){ delete liked[r.id]; r.likes=Math.max(0,r.likes-1); } else { liked[r.id]=1; r.likes++; } render(); })
               .catch(function(err){ openModal('Like',"<p>Couldn't save that. "+escH(cleanErr(err))+'</p>'); });
           } else if(b.dataset.a==='report'){
-            openModal('Report &ldquo;'+escH(r.name)+'&rdquo;','<p>Tell us what&rsquo;s wrong with this build listing (an offensive name or description, say). Reports go only to the site owner.</p><label class="cb-pub-l">Reason<input type="text" id="cmRepReason" maxlength="200" placeholder="What is the problem?"></label><button type="button" class="cb-mbtn" id="cmRepGo">Send report</button><div class="cb-mmsg" role="status"></div>');
+            openModal('Report \u201c'+r.name+'\u201d','<p>Tell us what&rsquo;s wrong with this build listing (an offensive name or description, say). Reports go only to the site owner.</p><label class="cb-pub-l">Reason<input type="text" id="cmRepReason" maxlength="200" placeholder="What is the problem?"></label><button type="button" class="cb-mbtn" id="cmRepGo">Send report</button><div class="cb-mmsg" role="status"></div>');
             $('cmRepGo').addEventListener('click',function(){
               var why=$('cmRepReason').value.trim(); if(!why){ msg('Add a reason.',1); return; }
               msg('Sending…');
