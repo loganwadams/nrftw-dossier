@@ -351,6 +351,10 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-actions a.cb-tool{text-decoration:none}
 .cm-pf-discord{margin-top:8px;font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
 .cm-pf-discord b{color:#8ecbe8;font-weight:500;text-transform:none;letter-spacing:0;font-size:13px}
+.cm-pf-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);box-shadow:0 4px 14px rgba(0,0,0,.5);margin-bottom:4px}
+.ep-id{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.ep-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);flex:none}
+.ep-id .cb-pub-l{margin:0;flex:1}
 .cm-pf-head{margin:0 0 18px;padding:14px 18px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
 .cm-pf-name{display:none}
 .cm-pf-bio{margin-top:0;font-size:14px;color:var(--bone);line-height:1.5;max-width:70ch}
@@ -2697,7 +2701,7 @@ footer li{color:#6f665b}
     <p class="cm-meta" id="cmMeta"></p>
     <div id="cmList" class="cm-grid"><p class="ip-loading">Loading builds&hellip;</p></div>
     <div id="cmProfile" class="cm-profile" hidden>
-      <div class="cm-pf-head"><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-discord" id="cmPfDiscord" hidden>Discord &nbsp;<b></b></div><div class="cm-pf-count" id="cmPfCount"></div></div>
+      <div class="cm-pf-head"><img id="cmPfAvatar" class="cm-pf-avatar" alt="" hidden><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-discord" id="cmPfDiscord" hidden>Discord &nbsp;<b></b></div><div class="cm-pf-count" id="cmPfCount"></div></div>
       <div id="cmPfList" class="cm-grid"></div>
     </div>
     <p class="cm-foot">Have a build worth sharing? Put it together in the <a href="/cerim-builder" id="cmGoBuilder">Cerim Builder</a>, save it, then choose <strong>Publish to Community</strong> in My Builds.</p>
@@ -2710,7 +2714,7 @@ footer li{color:#6f665b}
     <div class="ep-wrap">
       <div id="epSignedOut" class="ep-box" hidden><p>Sign in to edit your profile.</p><button type="button" class="cb-mbtn" id="epSignIn">Sign in</button></div>
       <form id="epForm" class="ep-box" hidden>
-        <div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><small>Shown on every build you publish. Usernames can&rsquo;t be changed.</small></div>
+        <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><small>Shown on every build you publish. Usernames can&rsquo;t be changed. The picture is the one on the account you signed in with.</small></div></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
         <label class="cb-pub-l cb-pub-chk" id="epDiscordRow"><input type="checkbox" id="epDiscord"> <span>Show my Discord username (<b id="epDiscordName"></b>) on my profile</span></label>
         <p class="ep-note" id="epDiscordNote" hidden>Sign in with Discord to be able to share a Discord username.</p>
@@ -5391,7 +5395,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         $('cbAcctIn2').hidden=!u; $('cbAcctHint').hidden=!!u;
         notify();
         // First sign-in: every account registers a username before it can do anything public.
-        if(u&&changed) loadMyProfile().then(function(p){ if(p&&p.display_name){ notify(); return; } registerUsername(); });
+        if(u&&changed) loadMyProfile().then(function(p){
+          if(p&&p.display_name){ notify(); var av=avatarOf(u); if(av&&p.avatar_url!==av) client().then(function(c){ return c.from('profiles').update({avatar_url:av}).eq('user_id',u.id); }).catch(function(){}); return; }
+          registerUsername();
+        });
         var back=null; try{ back=sessionStorage.getItem('cbAfterAuth'); }catch(e){}
         if(u && back){
           try{ sessionStorage.removeItem('cbAfterAuth'); }catch(e){}
@@ -5566,7 +5573,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // ---- public profile: the name, bio and on/off switch for the author page that community
       // builds link to. No row = public by default, under the name used when publishing.
       var myProfile=null;
-      function loadMyProfile(){ if(!user) return Promise.resolve(null); return client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name').eq('user_id',user.id).maybeSingle(); }).then(function(r){ myProfile=(r&&r.data)||null; return myProfile; }).catch(function(){ return null; }); }
+      function loadMyProfile(){ if(!user) return Promise.resolve(null); return client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name,avatar_url').eq('user_id',user.id).maybeSingle(); }).then(function(r){ myProfile=(r&&r.data)||null; return myProfile; }).catch(function(){ return null; }); }
+      // Profile picture: whatever Google or Discord handed over at sign-in (user_metadata.avatar_url /
+      // picture). Stored on the profile row so other visitors can see it on the author page.
+      function avatarOf(u){ var m=(u&&u.user_metadata)||{}; return m.avatar_url||m.picture||null; }
       // ---- username registration: asked once, right after the first sign-in, and fixed after that.
       var USERNAME_RE=/^[A-Za-z0-9_]{3,20}$/;
       function registerUsername(then){
@@ -5578,7 +5588,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var nm=inp.value.trim();
           if(!USERNAME_RE.test(nm)){ msg('3\u201320 characters: letters, numbers and underscores only.',1); return; }
           msg('Checking\u2026');
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,is_public:true,updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,is_public:true,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
             .then(function(x){ if(x.error) throw x.error; myProfile=Object.assign(myProfile||{},{display_name:nm,is_public:(myProfile&&myProfile.is_public!==false)}); notify(); closeModal(); if(then) then(); })
             .catch(function(e){ var t=(e&&e.message)||''; msg(/23505|duplicate|unique/i.test(t)?'That username is taken \u2014 try another.':cleanErr(e),1); });
         }
@@ -5604,6 +5614,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           p=p||{};
           if(!p.display_name){ registerUsername(fillProfilePage); return; }
           $('epName').textContent=p.display_name;
+          var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.src=av; ai.hidden=false; } else ai.hidden=true;
           $('epBio').value=p.bio||'';
           $('epDiscord').checked=!!p.discord_name;
           $('epPublic').checked=p.is_public!==false;
@@ -5617,7 +5628,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), shareD=!!dn&&$('epDiscord').checked, m=$('epMsg');
           if(!nm){ registerUsername(fillProfilePage); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,is_public:pub,updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
             .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
@@ -5734,12 +5745,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
           pf.hidden=!curProfile;
           if(!curProfile){ setHeading('Community Builds'); return; }
-          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true;
+          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true; var pfA=$('cmPfAvatar'); pfA.hidden=true; pfA.removeAttribute('src');
           document.title=name+' - Community Builds - Wicked Dossier';
           var key=name.toLowerCase();
-          var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
+          var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name,avatar_url').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
           p.then(function(prof){ if(curProfile!==name) return;
-            if(prof){ curUid=prof.user_id; if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
+            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.src=prof.avatar_url; pfA.hidden=false; } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
             if(rows) renderProfileList(); });
           if(rows) renderProfileList(); else load(false);
         }
