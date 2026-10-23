@@ -2027,6 +2027,8 @@ section,article.klass{scroll-margin-top:24px}
 .m-subcat-collapse{margin-left:auto;flex:none;background:none;border:none;color:var(--gold-dim);font-family:var(--body);font-size:18px;line-height:1;cursor:pointer;padding:0 0 0 12px;transition:color .15s}
 .m-subcat-collapse:hover{color:var(--gold)}
 .m-cat.sub-collapsed .m-cards{display:none}
+#recipes.pgf-on .m-cat-hidden:not(.pgf-hide){display:block!important}#recipes.pgf-on .m-cat.sub-collapsed table{display:table!important}#recipes.pgf-on .m-cat-collapse,#recipes.pgf-on .m-subcat-collapse{visibility:hidden}
+.m-cat.sub-collapsed .m-table{display:none}
 .m-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
 .m-card{cursor:pointer;display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:6px 10px 6px 6px;border:1px solid rgba(201,169,110,.18);background:rgba(0,0,0,.22);text-decoration:none;color:inherit;min-height:60px}
 .m-card:hover,.m-card.tt-open{border-color:var(--gold)}
@@ -6865,8 +6867,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         v.classList.toggle('pgf-hide',!ok); if(ok) n++; });
       meta.innerHTML=n?('<b>'+n+'</b> vendor'+(n===1?'':'s')+' match'):'No vendors match'; }); })();
   // Crafting Recipes
-  (function(){ var sec=document.getElementById('recipes'); if(!sec) return; sec.addEventListener('click',function(e){ var a=e.target.closest('.rc-jump a'); if(!a) return; e.preventDefault(); var t=document.getElementById(a.getAttribute('data-rc')); if(t) t.scrollIntoView({block:'start'}); }); var rs=[].slice.call(sec.querySelectorAll('table.m-recipes tbody tr'));
+  (function(){ var sec=document.getElementById('recipes'); if(!sec) return;
+    // collapsible sections, same pattern as the Trove: every type starts collapsed, each sub-group too
+    var heads=[].slice.call(sec.querySelectorAll('.rc-head')), groups=[].slice.call(sec.querySelectorAll('.rc-group'));
+    function setHead(h,collapsed){ h.classList.toggle('collapsed',collapsed); var b=h.querySelector('.m-cat-collapse'); b.textContent=collapsed?'+':'\u2212'; b.setAttribute('aria-expanded',collapsed?'false':'true'); b.setAttribute('aria-label',collapsed?'Expand section':'Collapse section');
+      var e=h.nextElementSibling; while(e&&!e.classList.contains('rc-head')){ if(e.classList.contains('rc-group')) e.classList.toggle('m-cat-hidden',collapsed); e=e.nextElementSibling; } }
+    function setGroup(g,collapsed){ g.classList.toggle('sub-collapsed',collapsed); var b=g.querySelector('.m-subcat-collapse'); if(!b) return; b.textContent=collapsed?'+':'\u2212'; b.setAttribute('aria-expanded',collapsed?'false':'true'); }
+    heads.forEach(function(h){ var b=document.createElement('button'); b.type='button'; b.className='m-cat-collapse'; h.appendChild(b); b.addEventListener('click',function(){ setHead(h,!h.classList.contains('collapsed')); }); setHead(h,true); });
+    groups.forEach(function(g){ var h5=g.querySelector('h5'); if(!h5) return; h5.classList.add('m-subcat-head'); var b=document.createElement('button'); b.type='button'; b.className='m-subcat-collapse'; h5.appendChild(b); b.addEventListener('click',function(){ setGroup(g,!g.classList.contains('sub-collapsed')); }); setGroup(g,true); });
+    function reveal(el){ var g=el.closest('.rc-group'); if(!g) return; var h=g.previousElementSibling; while(h&&!h.classList.contains('rc-head')) h=h.previousElementSibling; if(h&&h.classList.contains('collapsed')) setHead(h,false); if(g.classList.contains('sub-collapsed')) setGroup(g,false); }
+    sec.addEventListener('click',function(e){ var a=e.target.closest('.rc-jump a'); if(!a) return; var t=document.getElementById(a.getAttribute('data-rc')); if(t&&t.classList.contains('collapsed')) setHead(t,false); });
+    if(window.__pgGoto){ var _g=window.__pgGoto; window.__pgGoto=function(id){ var el=document.getElementById(id); if(el&&sec.contains(el)){ if(el.classList.contains('rc-head')) setHead(el,false); else reveal(el); } return _g(id); }; }
+    window.__rcReveal=reveal; sec.addEventListener('click',function(e){ var a=e.target.closest('.rc-jump a'); if(!a) return; e.preventDefault(); var t=document.getElementById(a.getAttribute('data-rc')); if(t){ if(t.classList.contains('collapsed')) t.querySelector('.m-cat-collapse').click(); t.scrollIntoView({block:'start'}); } }); var rs=[].slice.call(sec.querySelectorAll('table.m-recipes tbody tr'));
     mkBar(sec,'Filter recipes \u2014 by result, material, type or station (try anvil, silver ingot, food)',function(P,meta){
+      sec.classList.toggle('pgf-on',!!P);
       if(!P){ rs.forEach(function(r){ r.classList.remove('pgf-hide'); }); sec.querySelectorAll('.rc-group,.rc-head').forEach(function(g){ g.classList.remove('pgf-hide'); }); return; }
       var n=0; rs.forEach(function(r){ var rec=r._rec||(r._rec={nk:norm(r.textContent),desc:null,ck:null}); var ok=!P.filters.length&&textOk(rec,P); r.classList.toggle('pgf-hide',!ok); if(ok) n++; });
       sec.querySelectorAll('.rc-group').forEach(function(g){ g.classList.toggle('pgf-hide',!g.querySelector('tbody tr:not(.pgf-hide)')); }); sec.querySelectorAll('.rc-head').forEach(function(h){ var v=0,e=h.nextElementSibling; while(e&&e.classList.contains('rc-group')){ if(!e.classList.contains('pgf-hide')) v++; e=e.nextElementSibling; } h.classList.toggle('pgf-hide',!v); });
