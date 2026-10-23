@@ -2697,7 +2697,6 @@ footer li{color:#6f665b}
     <p class="cm-meta" id="cmMeta"></p>
     <div id="cmList" class="cm-grid"><p class="ip-loading">Loading builds&hellip;</p></div>
     <div id="cmProfile" class="cm-profile" hidden>
-      <p><a href="/builds" class="ip-back cm-back">&larr; All community builds</a></p>
       <div class="cm-pf-head"><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-discord" id="cmPfDiscord" hidden>Discord &nbsp;<b></b></div><div class="cm-pf-count" id="cmPfCount"></div></div>
       <div id="cmPfList" class="cm-grid"></div>
     </div>
@@ -5799,7 +5798,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         list.addEventListener('click',onListClick); pfList.addEventListener('click',onListClick);
         function onListKey(e){ if(e.key!=='Enter') return; var card=e.target.closest('.cm-card'); if(card&&e.target===card) card.click(); }
         list.addEventListener('keydown',onListKey); pfList.addEventListener('keydown',onListKey);
-        pf.querySelector('.cm-back').addEventListener('click',function(e){ e.preventDefault(); if(history.pushState){ history.pushState(null,'','/builds'); syncHash(); } else location.href='/builds'; });
+
         // Load when the page is shown (the router toggles .pg-on on the section), and again if the
         // signed-in user changes so the like states are theirs.
         new MutationObserver(function(){ if(sec.classList.contains('pg-on')){ load(false); syncHash(); } }).observe(sec,{attributes:true,attributeFilter:['class']});
