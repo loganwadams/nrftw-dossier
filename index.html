@@ -13,6 +13,18 @@
     var rest = location.search.replace(/[?&]p=[^&]*/,'').replace(/^&/,'?').replace(/^\?$/,'');
     try{ history.replaceState(null,'',path+rest); }catch(e){}
   }
+  // Author profile pages live at /profile/<username> - two path segments, which would make every
+  // relative asset URL (data/cards.json, img/...) resolve one directory too deep. A <base> pinned to
+  // the site root keeps them right; in-page "#section" links are then routed by hash explicitly,
+  // since with a <base> they'd otherwise navigate to "/#section" (a full reload).
+  if(/^\/profile\//.test(location.pathname)){
+    var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
+  }
+  document.addEventListener('click',function(e){
+    if(!document.querySelector('base')) return;
+    var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
+    e.preventDefault(); location.hash=a.getAttribute('href');
+  });
 })();</script>
 <!-- Night mode: feature paused for now, so the site stays in day mode regardless of any
      previously saved preference. (Toggle is hidden; this just stops the saved theme from
@@ -5284,7 +5296,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var ey=hero.querySelector('.cb-sh-eyebrow'), ti=hero.querySelector('.cb-sh-title'), su=hero.querySelector('.cb-sh-sub');
         if(ey) ey.innerHTML='<a href="/builds" class="cb-sh-backcm">&larr; Community Builds</a>';
         if(ti) ti.textContent=info.name||ti.textContent;
-        var by=escH(info.author_name||'Anonymous'); if(info.user_id) by='<a href="/builds#u/'+encodeURIComponent(info.user_id)+'">'+by+'</a>';
+        var by=escH(info.author_name||'Anonymous'); if(info.user_id&&info.author_name) by='<a href="/profile/'+encodeURIComponent(info.author_name)+'">'+by+'</a>';
         if(su) su.innerHTML='by '+by+' &middot; Level '+lvl+' &middot; view only';
         if(info.description){ var d=document.createElement('p'); d.className='cb-sh-community'; d.textContent='\u201c'+info.description+'\u201d'; var row=hero.querySelector('.cb-sh-titlerow'); if(row) row.insertAdjacentElement('afterend',d); }
         try{ document.title=(info.name||'Shared Cerim Build')+' \u2014 Community Builds \u2014 Wicked Dossier'; }catch(e){}
@@ -5596,7 +5608,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           $('epBio').value=p.bio||'';
           $('epDiscord').checked=!!p.discord_name;
           $('epPublic').checked=p.is_public!==false;
-          var v=$('epView'); v.hidden=p.is_public===false; v.href='/builds#u/'+encodeURIComponent(user.id);
+          var v=$('epView'); v.hidden=p.is_public===false; v.href='/profile/'+encodeURIComponent(p.display_name||'');
         });
       }
       if(epForm){
@@ -5607,10 +5619,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(!nm){ registerUsername(fillProfilePage); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
           client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,is_public:pub,updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
-            .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/builds#u/'+encodeURIComponent(user.id); })
+            .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
-        $('epView').addEventListener('click',function(e){ e.preventDefault(); location.href=this.href; });
+        $('epView').addEventListener('click',function(e){ e.preventDefault(); var nm=(myProfile&&myProfile.display_name)||''; if(nm&&window.__cmGoProfile&&window.__pgGoto){ window.__pgGoto('community-builds'); window.__cmGoProfile(nm); } else location.href=this.href; });
         var epSec=$('edit-profile');
         new MutationObserver(function(){ if(epSec.classList.contains('pg-on')) fillProfilePage(); }).observe(epSec,{attributes:true,attributeFilter:['class']});
         if(epSec.classList.contains('pg-on')) fillProfilePage();
@@ -5653,8 +5665,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var pf=$('cmProfile'), pfList=$('cmPfList'), pfName=$('cmPfName'), pfBio=$('cmPfBio'), pfCount=$('cmPfCount'), secH2=sec.querySelector('.sect-head h2');
         function setHeading(t){ if(secH2) secH2.textContent=t; }
         var listParts=[sec.querySelector('.standfirst'),sec.querySelector('.cm-tools'),metaEl,list,sec.querySelector('.cm-foot')];
-        function authorHref(r){ return r.user_id?('/builds#u/'+encodeURIComponent(r.user_id)):null; }
-        function authorHtml(r){ var h=authorHref(r), n=escH(r.author_name||'Anonymous'); return h?'<a href="'+h+'" data-u="'+escH(r.user_id)+'" title="See all builds by '+n+'">'+n+'</a>':n; }
+        // Author pages are addressed by username (unique, fixed at registration): /builds#u/<username>
+        function authorHref(r){ return (r.user_id&&r.author_name)?('/profile/'+encodeURIComponent(r.author_name)):null; }
+        function authorHtml(r){ var h=authorHref(r), n=escH(r.author_name||'Anonymous'); return h?'<a href="'+h+'" data-u="'+escH(r.author_name)+'" title="See all builds by '+n+'">'+n+'</a>':n; }
         var gb=$('cmGoBuilder'); if(gb) gb.addEventListener('click',function(e){ e.preventDefault(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
         function summarize(r){
           if(r._sum) return r._sum;
@@ -5709,26 +5722,38 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         // here - the view blanks user_id for them, so their name is plain text, not a link.
         var curProfile=null, pfCache={};
         function renderProfileList(){
-          var mine=(rows||[]).filter(function(r){ return r.user_id===curProfile; });
+          var key=(curProfile||'').toLowerCase();
+          var mine=(rows||[]).filter(function(r){ return r.user_id&&(curUid?r.user_id===curUid:(r.author_name||'').toLowerCase()===key); });
           pfCount.innerHTML=mine.length?('<b>'+mine.length+'</b> public build'+(mine.length===1?'':'s')):'No public builds yet';
           pfList.innerHTML=mine.length?mine.map(cardHtml).join(''):'';
           if(!pfName.dataset.set){ var n=mine.length&&mine[0].author_name; if(n) pfName.textContent=n; }
           setHeading(pfName.textContent==='\u2026'?'Profile':pfName.textContent);
         }
-        function showProfile(uid){
-          curProfile=uid||null;
+        var curUid=null;
+        function showProfile(name){
+          curProfile=name||null; curUid=null;
           listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
           pf.hidden=!curProfile;
           if(!curProfile){ setHeading('Community Builds'); return; }
-          pfName.textContent='\u2026'; delete pfName.dataset.set; pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true;
-          var p=pfCache[uid]||(pfCache[uid]=client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name').eq('user_id',uid).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
-          p.then(function(prof){ if(curProfile!==uid) return; if(prof&&prof.display_name){ pfName.textContent=prof.display_name; pfName.dataset.set='1'; setHeading(prof.display_name); } if(prof&&prof.bio) pfBio.textContent=prof.bio; if(prof&&prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } if(rows) renderProfileList(); document.title=pfName.textContent+' - Community Builds - Wicked Dossier'; });
+          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true;
+          document.title=name+' - Community Builds - Wicked Dossier';
+          var key=name.toLowerCase();
+          var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
+          p.then(function(prof){ if(curProfile!==name) return;
+            if(prof){ curUid=prof.user_id; if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
+            if(rows) renderProfileList(); });
           if(rows) renderProfileList(); else load(false);
-          document.title=(pfName.textContent!=='\u2026'?pfName.textContent+' - ':'')+'Community Builds - Wicked Dossier';
         }
-        function syncHash(){ var m=/^#u\/(.+)$/.exec(location.hash); showProfile(m?decodeURIComponent(m[1]):null); }
+        function syncHash(){ var m=/^\/profile\/([^\/]+)\/?$/.exec(location.pathname)||/^#u\/(.+)$/.exec(location.hash); showProfile(m?decodeURIComponent(m[1]):null); }
         window.__cmProfile=syncHash;
         window.addEventListener('hashchange',syncHash);
+        window.addEventListener('popstate',syncHash);
+        function goProfile(name){
+          // Keep relative assets resolving from the root once the path gains a second segment.
+          if(!document.querySelector('base')){ var bb=document.createElement('base'); bb.href='/'; document.head.appendChild(bb); }
+          if(history.pushState){ history.pushState(null,'','/profile/'+encodeURIComponent(name)); syncHash(); } else location.href='/profile/'+encodeURIComponent(name);
+        }
+        window.__cmGoProfile=goProfile;
         function loadLiked(){
           liked={};
           if(!user) return Promise.resolve();
@@ -5747,7 +5772,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         [qEl,sortEl].forEach(function(el){ el.addEventListener('input',render); el.addEventListener('change',render); });
         function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code+'&cb='+encodeURIComponent(r.id); }
         function onListClick(e){
-          var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); e.stopPropagation(); location.hash='#u/'+encodeURIComponent(al.getAttribute('data-u')); return; }
+          var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); e.stopPropagation(); goProfile(al.getAttribute('data-u')); return; }
           var card=e.target.closest('.cm-card'); if(!card) return;
           var r=null; for(var i=0;i<(rows||[]).length;i++) if(String(rows[i].id)===card.getAttribute('data-id')) r=rows[i];
           if(!r) return;
@@ -5774,7 +5799,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         list.addEventListener('click',onListClick); pfList.addEventListener('click',onListClick);
         function onListKey(e){ if(e.key!=='Enter') return; var card=e.target.closest('.cm-card'); if(card&&e.target===card) card.click(); }
         list.addEventListener('keydown',onListKey); pfList.addEventListener('keydown',onListKey);
-        pf.querySelector('.cm-back').addEventListener('click',function(e){ e.preventDefault(); if(history.pushState){ history.pushState(null,'',location.pathname); syncHash(); } else location.hash=''; });
+        pf.querySelector('.cm-back').addEventListener('click',function(e){ e.preventDefault(); if(history.pushState){ history.pushState(null,'','/builds'); syncHash(); } else location.href='/builds'; });
         // Load when the page is shown (the router toggles .pg-on on the section), and again if the
         // signed-in user changes so the like states are theirs.
         new MutationObserver(function(){ if(sec.classList.contains('pg-on')){ load(false); syncHash(); } }).observe(sec,{attributes:true,attributeFilter:['class']});
@@ -6501,7 +6526,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p);
   })();
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
@@ -6819,8 +6844,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // to Home, same as any other unmatched hash.
     var rawHash=location.hash.slice(1);
     if(rawHash.indexOf(ITEM_HASH_PREFIX)===0){ show('itempage','item-page'); ipRender(itemKeyFromHash(rawHash)); window.scrollTo(0,0); return; }
-    // Author profile pages live under the Community Builds page as "#u/<user id>".
-    if(rawHash.indexOf('u/')===0){ show('builds','community-builds'); if(window.__cmProfile) window.__cmProfile(); window.scrollTo(0,0); return; }
+    // Author profile pages: /profile/<username> (and the older #u/<username> hash form).
+    var pm=/^\/profile\/([^\/]+)\/?$/.exec(location.pathname);
+    if(rawHash.indexOf('u/')===0||(pm&&!rawHash)){ show('builds','community-builds'); if(window.__cmProfile) window.__cmProfile(); window.scrollTo(0,0); return; }
     var h=decodeURIComponent(rawHash); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
     // No hash match: check whether the pathname itself names one of the clean-path pages
