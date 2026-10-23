@@ -339,10 +339,10 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-actions a.cb-tool{text-decoration:none}
 .cm-pf-discord{margin-top:8px;font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
 .cm-pf-discord b{color:#8ecbe8;font-weight:500;text-transform:none;letter-spacing:0;font-size:13px}
-.cm-pf-head{margin:0 0 18px;padding:16px 18px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
-.cm-pf-name{font-family:var(--display);font-size:28px;line-height:1.1;color:#efe3c8}
-.cm-pf-bio{margin-top:8px;font-size:14px;color:var(--bone);line-height:1.5;max-width:70ch}
-.cm-pf-count{margin-top:10px;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8b8174}
+.cm-pf-head{margin:0 0 18px;padding:14px 18px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.cm-pf-name{display:none}
+.cm-pf-bio{margin-top:0;font-size:14px;color:var(--bone);line-height:1.5;max-width:70ch}
+.cm-pf-count{margin-top:0;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8b8174}
 .cm-pf-count b{color:var(--gold)}
 .cb-pf-row{margin:0 0 14px;padding:10px 12px;border:1px solid var(--edge);background:rgba(0,0,0,.18);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted)}
 .cb-pf-row b{color:var(--bone);font-weight:500}
@@ -5650,7 +5650,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var sec=$('community-builds'), list=$('cmList'); if(!sec||!list) return;
         var rows=null, liked={}, loadedFor=null, loading=false;
         var qEl=$('cmQ'), sortEl=$('cmSort'), metaEl=$('cmMeta');
-        var pf=$('cmProfile'), pfList=$('cmPfList'), pfName=$('cmPfName'), pfBio=$('cmPfBio'), pfCount=$('cmPfCount');
+        var pf=$('cmProfile'), pfList=$('cmPfList'), pfName=$('cmPfName'), pfBio=$('cmPfBio'), pfCount=$('cmPfCount'), secH2=sec.querySelector('.sect-head h2');
+        function setHeading(t){ if(secH2) secH2.textContent=t; }
         var listParts=[sec.querySelector('.standfirst'),sec.querySelector('.cm-tools'),metaEl,list,sec.querySelector('.cm-foot')];
         function authorHref(r){ return r.user_id?('/builds#u/'+encodeURIComponent(r.user_id)):null; }
         function authorHtml(r){ var h=authorHref(r), n=escH(r.author_name||'Anonymous'); return h?'<a href="'+h+'" data-u="'+escH(r.user_id)+'" title="See all builds by '+n+'">'+n+'</a>':n; }
@@ -5712,15 +5713,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           pfCount.innerHTML=mine.length?('<b>'+mine.length+'</b> public build'+(mine.length===1?'':'s')):'No public builds yet';
           pfList.innerHTML=mine.length?mine.map(cardHtml).join(''):'';
           if(!pfName.dataset.set){ var n=mine.length&&mine[0].author_name; if(n) pfName.textContent=n; }
+          setHeading(pfName.textContent==='\u2026'?'Profile':pfName.textContent);
         }
         function showProfile(uid){
           curProfile=uid||null;
           listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
           pf.hidden=!curProfile;
-          if(!curProfile) return;
+          if(!curProfile){ setHeading('Community Builds'); return; }
           pfName.textContent='\u2026'; delete pfName.dataset.set; pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true;
           var p=pfCache[uid]||(pfCache[uid]=client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name').eq('user_id',uid).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
-          p.then(function(prof){ if(curProfile!==uid) return; if(prof&&prof.display_name){ pfName.textContent=prof.display_name; pfName.dataset.set='1'; } if(prof&&prof.bio) pfBio.textContent=prof.bio; if(prof&&prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } if(rows) renderProfileList(); document.title=pfName.textContent+' - Community Builds - Wicked Dossier'; });
+          p.then(function(prof){ if(curProfile!==uid) return; if(prof&&prof.display_name){ pfName.textContent=prof.display_name; pfName.dataset.set='1'; setHeading(prof.display_name); } if(prof&&prof.bio) pfBio.textContent=prof.bio; if(prof&&prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } if(rows) renderProfileList(); document.title=pfName.textContent+' - Community Builds - Wicked Dossier'; });
           if(rows) renderProfileList(); else load(false);
           document.title=(pfName.textContent!=='\u2026'?pfName.textContent+' - ':'')+'Community Builds - Wicked Dossier';
         }
