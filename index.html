@@ -5542,7 +5542,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           h+='<ul class="cb-bl">';
           rows.forEach(function(r,i){
             h+='<li data-i="'+i+'"><div class="cb-bl-name">'+escH(r.name)+(r.is_public?' <span class="cb-bl-pub" title="Listed on the Community Builds page">Public</span>':'')+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+(r.is_public&&r.description?' &middot; &ldquo;'+escH(r.description)+'&rdquo;':'')+'</div><div class="cb-bl-act">'+
-              '<button type="button" data-a="load">Load</button><button type="button" data-a="over">Overwrite with current</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button></div></li>';
+              '<button type="button" data-a="load">Load</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button></div></li>';
           });
           h+='</ul>';
         }
@@ -5559,11 +5559,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           }else if(a==='link'){
             var url=location.href.split('#')[0].split('?')[0]+'?s='+r.code;
             (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(url):Promise.reject()).then(function(){ msg('Share link copied.'); },function(){ msg('Copy failed.',1); });
-          }else if(a==='over'){
-            if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again to overwrite'; return; }
-            var cur=serializeBuild(); if(isDefaultBuild(cur)){ msg('The builder is empty — nothing to overwrite with.',1); return; }
-            client().then(function(c){ return c.from('builds').update({code:encodeBuild(cur),updated_at:new Date().toISOString()}).eq('id',r.id); })
-              .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
           }else if(a==='ren'){
             var nm=li.querySelector('.cb-bl-name');
             nm.innerHTML='<input type="text" maxlength="60" value="'+escH(r.name)+'" aria-label="New name">';
