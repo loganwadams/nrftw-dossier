@@ -200,6 +200,8 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .pgf-meta b{color:var(--gold)}
 .pgf-meta a{color:var(--gold);cursor:pointer;text-decoration:underline}
 .pgf-hide{display:none!important}
+.pgf-help{max-width:640px;margin:6px 0 0;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.pgf-help[hidden]{display:none}
 .cb-res-box{display:flex;flex-direction:column;gap:6px;width:100%}
 .cb-res-row{display:flex;align-items:center;gap:8px}
 .cb-res-row select{flex:1;min-width:0;background:var(--panel);border:1px solid var(--edge);color:var(--bone);padding:7px 8px;font-family:var(--body);font-size:13px}
@@ -6689,7 +6691,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(o.crit!=null) b.push('Crit '+o.crit+'%'); if(o.armor!=null) b.push('Armor '+o.armor); if(o.weight!=null) b.push(o.weight+' wt');
     return b.join('  ·  '); }
   var EXAMPLES=[['req:dex','Weapons that require Dexterity'],['req:dex>=20','… with at least 20 Dex'],['req:str<=15 type:sword','Light-requirement swords'],['scales:int','Scale with Intelligence'],['scales:str,dex','Scale with Strength and Dexterity'],['type:bow lv>=5 sort:-dmg','Bows, best damage first'],['rarity:unique','Unique gear'],['school:fire','Fire damage weapons'],['armor>=300','Heavy armor'],['"stagger"','Exact phrase']];
-  function helpHTML(){ return '<div class="sr-help"><p>Search by name or by what an item does &mdash; or filter by its stats. Click a line to try it:</p>'+
+  function helpHTML(intro){ return '<div class="sr-help"><p>'+(intro||'Search by name or by what an item does &mdash; or filter by its stats. Click a line to try it:')+'</p>'+
     EXAMPLES.map(function(e){ return '<button type="button" class="sr-ex" data-q="'+esc(e[0])+'"><code>'+esc(e[0])+'</code><span>'+esc(e[1])+'</span></button>'; }).join('')+
     '<p class="sr-help-sm"><b>Fields</b> req &middot; scales &middot; type &middot; rarity &middot; school &middot; lv &middot; dmg &middot; poise &middot; armor &middot; weight &middot; crit &middot; sort &nbsp;&bull;&nbsp; <b>Operators</b> &gt; &lt; &gt;= &lt;= 10-20 &nbsp;&bull;&nbsp; <code>a,b</code> both &nbsp;<code>a|b</code> either &nbsp;<code>-x</code> exclude &nbsp;<code>"phrase"</code> exact</p></div>'; }
   function setQuery(q){ curInput.value=q; search(); curInput.focus(); }
@@ -6737,14 +6739,29 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(r.el.classList.contains('m-card')) r.el.click(); },60); }
   // ---- in-page filter bars: Trove, Vendors, Infusions, Enchantments (same query language as the main search) ----
   var bars=[];
-  function mkBar(sec,ph,apply){
-    if(!sec) return; var host=sec.querySelector('.sect-head'); if(!host) return;
+  function mkBar(sec,ph,apply,opts){
+    opts=opts||{}; if(!sec) return; var host=sec.querySelector('.sect-head'); if(!host) return;
     var bar=document.createElement('div'); bar.className='pg-filter';
     bar.innerHTML='<div class="pgf-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'" autocomplete="off"><button type="button" class="pgf-x" aria-label="Clear filter" hidden>&times;</button></div><div class="pgf-meta"></div>';
     host.insertAdjacentElement('afterend',bar);
     var fi=bar.querySelector('input'), meta=bar.querySelector('.pgf-meta'), x=bar.querySelector('.pgf-x'), t=null;
+    // Optional key of example queries under the field (the Trove asks for one): shown while the
+    // empty field has focus, same examples and syntax notes as the main search's help panel, but
+    // it only ever filters this section's own items.
+    var help=null;
+    if(opts.help){
+      help=document.createElement('div'); help.className='pgf-help'; help.hidden=true; help.innerHTML=helpHTML(opts.help);
+      bar.insertBefore(help,meta);
+      var helpHover=false;
+      help.addEventListener('pointerdown',function(){ helpHover=true; });
+      help.addEventListener('pointerup',function(){ setTimeout(function(){ helpHover=false; },0); });
+      help.addEventListener('click',function(e){ var b=e.target.closest('.sr-ex'); if(!b) return; fi.value=b.getAttribute('data-q'); run(); fi.focus(); });
+      fi.addEventListener('focus',function(){ help.hidden=!!fi.value.trim(); });
+      fi.addEventListener('blur',function(){ setTimeout(function(){ if(!helpHover&&document.activeElement!==fi) help.hidden=true; },150); });
+      fi.addEventListener('keydown',function(e){ if(e.key==='Escape') help.hidden=true; });
+    }
     var api={input:fi,clear:function(){ fi.value=''; run(); }};
-    function run(){ var q=fi.value.trim(); x.hidden=!q;
+    function run(){ var q=fi.value.trim(); x.hidden=!q; if(help) help.hidden=!!q||document.activeElement!==fi;
       if(!q){ apply(null,meta); meta.textContent=''; return; }
       var P=parseQuery(q); var need=P.structured&&!info;
       if(P.structured){ loadCards(function(){ if(fi.value.trim()===q) apply(P,meta); }); if(need){ meta.textContent='Loading item data…'; return; } }
@@ -6770,7 +6787,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       kids.forEach(function(k){ if(k.classList.contains('m-cat-head')){ head=k; k._vis=0; hv.push(k); if(!k._orig) k._orig=k.querySelector('span').textContent; }
         else if(k.classList.contains('m-cat')){ var v=k.querySelectorAll('.m-card[data-k]:not(.pgf-hide)').length; k.classList.toggle('pgf-hide',!v); if(head) head._vis+=v; } });
       hv.forEach(function(h){ h.classList.toggle('pgf-hide',!h._vis); h.querySelector('span').textContent=h._vis+' of '+h._orig.replace(/\s*items?/,'')+' items'; });
-      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No items match — loosen a filter, or try <a data-q="req:dex">req:dex</a> / <a data-q="scales:int">scales:int</a>'; }); })();
+      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No items match — loosen a filter, or try <a data-q="req:dex">req:dex</a> / <a data-q="scales:int">scales:int</a>'; },{help:'Filter the Trove by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'}); })();
   // Vendors
   (function(){ var sec=document.getElementById('vendors'); if(!sec) return; var vs=[].slice.call(sec.querySelectorAll('article.merchant')), nameKeys=null;
     function names(){ if(nameKeys) return nameKeys; nameKeys={}; document.querySelectorAll('#catalog .m-card[data-k]').forEach(function(c){ var n=norm(txt(c.querySelector('.m-card-name')||c)); (nameKeys[n]=nameKeys[n]||[]).push(c); }); return nameKeys; }
