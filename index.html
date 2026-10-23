@@ -337,7 +337,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cb-sh-community{margin:14px 0 0;font-size:14.5px;color:var(--bone);line-height:1.5;font-style:italic;max-width:70ch}
 .cb-sh-sub a{color:var(--bone);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.35)}
 .cb-sh-sub a:hover{color:var(--gold)}
-.cb-sh-backcm{display:inline-block;margin:0 0 12px;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);text-decoration:none}
+.cb-sh-backcm{display:inline-block;margin:0;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);text-decoration:none}
 .cb-sh-backcm:hover{color:var(--gold)}
 @media (max-width:600px){.cm-grid{grid-template-columns:1fr}.cm-tools select{flex:1 1 45%}}
 </style><!-- /IP:css -->
@@ -5250,7 +5250,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(cbId&&window.__cbCommunityInfo) window.__cbCommunityInfo(cbId).then(function(info){
         if(!info||!hero.isConnected) return;
         var ey=hero.querySelector('.cb-sh-eyebrow'), ti=hero.querySelector('.cb-sh-title'), su=hero.querySelector('.cb-sh-sub');
-        if(ey) ey.innerHTML='<a href="/builds" class="cb-sh-backcm">&larr; Community Builds</a><br>Community Build';
+        if(ey) ey.innerHTML='<a href="/builds" class="cb-sh-backcm">&larr; Community Builds</a>';
         if(ti) ti.textContent=info.name||ti.textContent;
         var by=escH(info.author_name||'Anonymous'); if(info.user_id) by='<a href="/builds#u/'+encodeURIComponent(info.user_id)+'">'+by+'</a>';
         if(su) su.innerHTML='by '+by+' &middot; Level '+lvl+' &middot; view only';
