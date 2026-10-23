@@ -6637,8 +6637,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   }
   // a tab click is always deterministic: switch to its chapter and scroll to its top,
   // regardless of whether the URL hash actually changes or fires an event for it
-  function activate(c){ show(c.group,c.id);
+  function activate(c){
     var url=urlFor(c.group, c.id==='home'?null:c.target);
+    // On a read-only shared/community build (?s=...), the Cerim Builder tab means "my own
+    // builder": that view-only state is set up once at page load, so leave it with a real
+    // navigation rather than trying to unpick it in place.
+    if(c.group==='cerim' && document.body.classList.contains('cb-shared')){ location.href=url; return; }
+    show(c.group,c.id);
     try{
       if(!CAN_USE_CLEAN_URLS){ var h=url.indexOf('#'); if(h>-1) location.hash=url.slice(h); }
       else if(history.pushState) history.pushState(null,'',url);
