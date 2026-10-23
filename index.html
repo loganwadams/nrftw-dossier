@@ -349,8 +349,10 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
 .ep-actions .cb-mmsg{margin:0}
 .ep-actions a.cb-tool{text-decoration:none}
-.cm-pf-discord{margin-top:8px;font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
-.cm-pf-discord b{color:#8ecbe8;font-weight:500;text-transform:none;letter-spacing:0;font-size:13px}
+.cm-pf-discord{display:inline-flex;align-items:center;align-self:center;color:#8ecbe8;opacity:.85;transition:opacity .15s,transform .15s}
+.cm-pf-discord svg{width:26px;height:26px}
+.cm-pf-discord:hover{opacity:1;transform:scale(1.08)}
+.cm-pf-discord[hidden]{display:none}
 .cm-pf-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);box-shadow:0 4px 14px rgba(0,0,0,.5);flex:none;align-self:center}
 #community-builds .sect-head.has-avatar{align-items:center}
 .ep-id{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
@@ -2696,7 +2698,7 @@ footer li{color:#6f665b}
 <!-- /GEN:merchants -->
 <!-- COMMUNITY BUILDS -->
   <section id="community-builds">
-    <div class="sect-head"><img id="cmPfAvatar" class="cm-pf-avatar" alt="" hidden><h2>Community Builds</h2></div>
+    <div class="sect-head"><img id="cmPfAvatar" class="cm-pf-avatar" alt="" hidden><h2>Community Builds</h2><a id="cmPfDiscord" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="Discord"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.54 5.33A16.7 16.7 0 0 0 15.4 4l-.2.4a15.6 15.6 0 0 1 3.8 1.9 13.6 13.6 0 0 0-14 0 15.6 15.6 0 0 1 3.8-1.9L8.6 4a16.7 16.7 0 0 0-4.14 1.33C1.8 9.3 1.1 13.2 1.45 17a16.8 16.8 0 0 0 5.1 2.6l1.1-1.8a10.7 10.7 0 0 1-1.7-.8l.4-.3a12 12 0 0 0 11.3 0l.4.3c-.5.3-1.1.6-1.7.8l1.1 1.8a16.8 16.8 0 0 0 5.1-2.6c.4-4.4-.7-8.3-3-11.67ZM8.7 14.7c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg></a></div>
     <p class="standfirst">Cerim builds published by other players. Open one to see the full loadout and the builder&rsquo;s analysis, or copy it straight into your own builder.</p>
     <div class="cm-tools">
       <div class="pgf-field cm-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="cmQ" placeholder="Search builds by name, author or weapon" aria-label="Search builds" autocomplete="off"></div>
@@ -2705,7 +2707,7 @@ footer li{color:#6f665b}
     <p class="cm-meta" id="cmMeta"></p>
     <div id="cmList" class="cm-grid"><p class="ip-loading">Loading builds&hellip;</p></div>
     <div id="cmProfile" class="cm-profile" hidden>
-      <div class="cm-pf-head"><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-discord" id="cmPfDiscord" hidden>Discord &nbsp;<b></b></div><div class="cm-pf-count" id="cmPfCount"></div></div>
+      <div class="cm-pf-head"><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-count" id="cmPfCount"></div></div>
       <div id="cmPfList" class="cm-grid"></div>
     </div>
     <p class="cm-foot">Have a build worth sharing? Put it together in the <a href="/cerim-builder" id="cmGoBuilder">Cerim Builder</a>, save it, then choose <strong>Publish to Community</strong> in My Builds.</p>
@@ -2720,8 +2722,8 @@ footer li{color:#6f665b}
       <form id="epForm" class="ep-box" hidden>
         <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><small>Shown on every build you publish. Usernames can&rsquo;t be changed. The picture is the one on the account you signed in with.</small></div></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
-        <label class="cb-pub-l cb-pub-chk" id="epDiscordRow"><input type="checkbox" id="epDiscord"> <span>Show my Discord username (<b id="epDiscordName"></b>) on my profile</span></label>
-        <p class="ep-note" id="epDiscordNote" hidden>Sign in with Discord to be able to share a Discord username.</p>
+        <label class="cb-pub-l cb-pub-chk" id="epDiscordRow"><input type="checkbox" id="epDiscord"> <span>Share my Discord profile <small>Adds a Discord icon next to your name that links to <b id="epDiscordName"></b></small></span></label>
+        <p class="ep-note" id="epDiscordNote" hidden>Sign in with Discord to be able to share your Discord profile.</p>
         <label class="cb-pub-l cb-pub-chk"><input type="checkbox" id="epPublic" checked> <span>Show my profile page <small>(when off, your name on builds is plain text and links to nothing)</small></span></label>
         <div class="ep-actions"><button type="submit" class="cb-tool primary" id="epSave">Save profile</button><a href="#" id="epView" class="cb-tool" hidden>View my profile</a><span class="cb-mmsg" id="epMsg" role="status"></span></div>
       </form>
@@ -5577,7 +5579,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // ---- public profile: the name, bio and on/off switch for the author page that community
       // builds link to. No row = public by default, under the name used when publishing.
       var myProfile=null;
-      function loadMyProfile(){ if(!user) return Promise.resolve(null); return client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name,avatar_url').eq('user_id',user.id).maybeSingle(); }).then(function(r){ myProfile=(r&&r.data)||null; return myProfile; }).catch(function(){ return null; }); }
+      function loadMyProfile(){ if(!user) return Promise.resolve(null); return client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name,discord_id,avatar_url').eq('user_id',user.id).maybeSingle(); }).then(function(r){ myProfile=(r&&r.data)||null; return myProfile; }).catch(function(){ return null; }); }
       // Profile picture: whatever Google or Discord handed over at sign-in (user_metadata.avatar_url /
       // picture). Stored on the profile row so other visitors can see it on the author page.
       function avatarOf(u){ var m=(u&&u.user_metadata)||{}; return m.avatar_url||m.picture||null; }
@@ -5604,7 +5606,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var isDiscord=ids.some(function(i){ return i.provider==='discord'; })||((u&&u.app_metadata&&u.app_metadata.provider)==='discord');
         if(!isDiscord) return null;
         var d=ids.filter(function(i){ return i.provider==='discord'; })[0], im=(d&&d.identity_data)||{};
-        return im.user_name||im.preferred_username||im.name||im.full_name||m.user_name||m.preferred_username||m.name||m.full_name||null;
+        var n=im.user_name||im.preferred_username||im.name||im.full_name||m.user_name||m.preferred_username||m.name||m.full_name||null;
+        return n?String(n).replace(/#0+$/,''):null;
+      }
+      function discordId(u){
+        var ids=(u&&u.identities)||[]; var d=ids.filter(function(i){ return i.provider==='discord'; })[0], im=(d&&d.identity_data)||{}; var m=(u&&u.user_metadata)||{};
+        return d&&(d.id||im.provider_id||im.sub)||m.provider_id||m.sub||null;
       }
       var epForm=$('epForm'), epOut=$('epSignedOut');
       function fillProfilePage(){
@@ -5632,7 +5639,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), shareD=!!dn&&$('epDiscord').checked, m=$('epMsg');
           if(!nm){ registerUsername(fillProfilePage); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,discord_id:shareD?discordId(user):null,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
             .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
@@ -5749,13 +5756,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
           pf.hidden=!curProfile;
           var pfA=$('cmPfAvatar'), sh=sec.querySelector('.sect-head');
-          if(!curProfile){ setHeading('Community Builds'); pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar'); return; }
-          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true; pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar');
+          if(!curProfile){ setHeading('Community Builds'); pfA.hidden=true; pfA.removeAttribute('src'); $('cmPfDiscord').hidden=true; if(sh) sh.classList.remove('has-avatar'); return; }
+          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); pfD.hidden=true; pfD.removeAttribute('href'); pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar');
           document.title=name+' - Community Builds - Wicked Dossier';
           var key=name.toLowerCase();
-          var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name,avatar_url').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
+          var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name,discord_id,avatar_url').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
           p.then(function(prof){ if(curProfile!==name) return;
-            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; if(sh) sh.classList.add('has-avatar'); } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
+            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; if(sh) sh.classList.add('has-avatar'); } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.title='Discord: '+prof.discord_name; if(prof.discord_id) pfD.href='https://discord.com/users/'+encodeURIComponent(prof.discord_id); pfD.hidden=false; } }
             if(rows) renderProfileList(); });
           if(rows) renderProfileList(); else load(false);
         }
