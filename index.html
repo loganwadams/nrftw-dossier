@@ -65,6 +65,10 @@
 ]}
 </script><link rel="stylesheet" href="tt.css"><!-- TT:css -->
 <!-- PG:css --><style>
+/* Until the router (end of the file) has picked the page, keep everything below the masthead
+   out of sight - otherwise a fresh load paints Home first and the real page replaces it a
+   moment later. The router adds body.paged right before its first route(). */
+body:not(.paged) .wrap > *:not(header.masthead){visibility:hidden}
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
 .pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;padding:8px 0}
 /* the bar's dark glass background/border run edge-to-edge on both desktop and mobile, breaking
