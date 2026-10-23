@@ -1161,6 +1161,7 @@ body.cb-shared .cb-acct-hint,body.cb-shared .cb-modal{display:none!important}
 .cb-modal .cb-mmsg.err{color:#e07a6a}
 .cb-modal-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--edge);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .nav-acct{position:relative;display:inline-flex;align-items:center}
+.nav-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-dim);vertical-align:middle;margin:-3px 8px -3px 0}
 .nav-acct>button{appearance:none;background:none;border:1px solid transparent;color:var(--muted);font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;cursor:pointer;white-space:nowrap}
 .nav-acct>button:hover{color:var(--bone)}
 .nav-acct>button.nav-connect{display:inline-flex;align-items:center;gap:9px}
@@ -5388,7 +5389,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var m=(u&&u.user_metadata)||{};
         return m.full_name||m.name||m.user_name||((u&&u.email)||'').split('@')[0]||'Signed in';
       }
-      function notify(){ listeners.forEach(function(f){ try{ f(user?{name:(myProfile&&myProfile.display_name)||niceName(user)}:null); }catch(e){} }); }
+      function notify(){ listeners.forEach(function(f){ try{ f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:avatarOf(user)||(myProfile&&myProfile.avatar_url)||null}:null); }catch(e){} }); }
       function setUser(u){
         var changed=(u&&u.id)!==(user&&user.id);
         user=u; if(changed) myProfile=null;
@@ -5470,7 +5471,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       window.__cbAcct={
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
         openPrivacy:function(){ $('cbAcctPriv').click(); }, editProfile:function(){ editProfile(); },
-        onUser:function(f){ listeners.push(f); f(user?{name:niceName(user)}:null); }
+        onUser:function(f){ listeners.push(f); f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:avatarOf(user)||null}:null); }
       };
 
       // ---- save
@@ -5614,7 +5615,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           p=p||{};
           if(!p.display_name){ registerUsername(fillProfilePage); return; }
           $('epName').textContent=p.display_name;
-          var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.src=av; ai.hidden=false; } else ai.hidden=true;
+          var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; } else ai.hidden=true;
           $('epBio').value=p.bio||'';
           $('epDiscord').checked=!!p.discord_name;
           $('epPublic').checked=p.is_public!==false;
@@ -5750,7 +5751,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var key=name.toLowerCase();
           var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name,avatar_url').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
           p.then(function(prof){ if(curProfile!==name) return;
-            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.src=prof.avatar_url; pfA.hidden=false; } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
+            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.querySelector('b').textContent=prof.discord_name; pfD.hidden=false; } }
             if(rows) renderProfileList(); });
           if(rows) renderProfileList(); else load(false);
         }
@@ -7469,7 +7470,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     u=x;
     provs.style.display=x?'none':'';
     main.style.display=x?'':'none';
-    if(x){ main.className=''; main.textContent=x.name+' ▾'; }
+    if(x){ main.className=''; main.textContent=''; if(x.avatar){ var im=document.createElement('img'); im.className='nav-avatar'; im.src=x.avatar; im.alt=''; im.referrerPolicy='no-referrer'; main.appendChild(im); } main.appendChild(document.createTextNode(x.name+' ▾')); }
     main.setAttribute('aria-haspopup',x?'menu':'false');
   });
 })();
