@@ -2647,8 +2647,6 @@ footer li{color:#6f665b}
     <p class="standfirst">Cerim builds published by other players. Open one to see the full loadout and the builder&rsquo;s analysis, or copy it straight into your own builder.</p>
     <div class="cm-tools">
       <div class="pgf-field cm-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="cmQ" placeholder="Search builds by name, author or weapon" aria-label="Search builds" autocomplete="off"></div>
-      <select id="cmType" aria-label="Weapon type"><option value="">All weapons</option></select>
-      <select id="cmLv" aria-label="Level"><option value="">Any level</option><option value="1-9">Level 1&ndash;9</option><option value="10-19">Level 10&ndash;19</option><option value="20-30">Level 20&ndash;30</option></select>
       <select id="cmSort" aria-label="Sort"><option value="new">Newest</option><option value="likes">Most liked</option><option value="lv">Highest level</option></select>
     </div>
     <p class="cm-meta" id="cmMeta"></p>
@@ -5500,7 +5498,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       (function community(){
         var sec=$('community-builds'), list=$('cmList'); if(!sec||!list) return;
         var rows=null, liked={}, loadedFor=null, loading=false;
-        var qEl=$('cmQ'), typeEl=$('cmType'), lvEl=$('cmLv'), sortEl=$('cmSort'), metaEl=$('cmMeta');
+        var qEl=$('cmQ'), sortEl=$('cmSort'), metaEl=$('cmMeta');
         var gb=$('cmGoBuilder'); if(gb) gb.addEventListener('click',function(e){ e.preventDefault(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
         function summarize(r){
           if(r._sum) return r._sum;
@@ -5516,20 +5514,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           }
           return (r._sum=sum);
         }
-        function fillTypes(){
-          var seen={}, ts=[]; (rows||[]).forEach(function(r){ var t=summarize(r).type; if(t&&!seen[t]){ seen[t]=1; ts.push(t); } });
-          ts.sort(); var cur=typeEl.value;
-          typeEl.innerHTML='<option value="">All weapons</option>'+ts.map(function(t){ return '<option value="'+escH(t)+'">'+escH(t)+'</option>'; }).join('');
-          typeEl.value=cur;
-        }
         function norm(t){ return (t||'').toLowerCase(); }
         function render(){
           if(!rows){ return; }
-          var q=norm(qEl.value.trim()), ty=typeEl.value, lv=lvEl.value, srt=sortEl.value;
+          var q=norm(qEl.value.trim()), srt=sortEl.value;
           var out=rows.filter(function(r){
             var sm=summarize(r);
-            if(ty&&sm.type!==ty) return false;
-            if(lv){ var p=lv.split('-'); if(sm.lv<+p[0]||sm.lv>+p[1]) return false; }
             if(q){ var hay=norm(r.name+' '+(r.author_name||'')+' '+(r.description||'')+' '+(sm.main?sm.main.n:'')+' '+sm.type); if(hay.indexOf(q)<0) return false; }
             return true;
           });
@@ -5566,12 +5556,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(loading) return; if(rows&&!force) return;
           loading=true; if(!rows) list.innerHTML='<p class="ip-loading">Loading builds&hellip;</p>';
           Promise.all([loadCards(), client().then(function(c){ return c.from('community_builds').select('id,name,code,description,author_name,published_at,updated_at,likes'); }), loadLiked()])
-            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); fillTypes(); render(); })
+            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); render(); })
             .catch(function(e){ list.innerHTML='<p class="cm-empty">Couldn&rsquo;t load the community builds. '+escH(cleanErr(e))+'</p>'; })
             .then(function(){ loading=false; });
         }
         window.__cmRefresh=function(){ rows=null; if(sec.classList.contains('pg-on')) load(true); };
-        [qEl,typeEl,lvEl,sortEl].forEach(function(el){ el.addEventListener('input',render); el.addEventListener('change',render); });
+        [qEl,sortEl].forEach(function(el){ el.addEventListener('input',render); el.addEventListener('change',render); });
         function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code; }
         list.addEventListener('click',function(e){
           var card=e.target.closest('.cm-card'); if(!card) return;
