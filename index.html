@@ -321,6 +321,24 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cm-empty{grid-column:1/-1;color:var(--muted);font-size:14.5px;padding:24px 0}
 .cm-foot{margin:26px 0 0;font-size:13.5px;color:var(--muted)}
 .cm-foot a{color:var(--gold)}
+.cm-by a{color:var(--bone);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.35)}
+.cm-by a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.cm-profile .cm-back{margin-bottom:14px}
+.cm-pf-head{margin:0 0 18px;padding:16px 18px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.cm-pf-name{font-family:var(--display);font-size:28px;line-height:1.1;color:#efe3c8}
+.cm-pf-bio{margin-top:8px;font-size:14px;color:var(--bone);line-height:1.5;max-width:70ch}
+.cm-pf-count{margin-top:10px;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8b8174}
+.cm-pf-count b{color:var(--gold)}
+.cb-pf-row{margin:0 0 14px;padding:10px 12px;border:1px solid var(--edge);background:rgba(0,0,0,.18);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted)}
+.cb-pf-row b{color:var(--bone);font-weight:500}
+.cb-pub-l.cb-pub-chk{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13.5px;color:var(--bone)}
+.cb-pub-l.cb-pub-chk input{width:auto;margin:0}
+.cb-pub-l textarea{display:block;width:100%;margin-top:6px;box-sizing:border-box;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);font-family:var(--body);font-size:14px;padding:9px 10px;min-height:64px;resize:vertical}
+.cb-sh-community{margin:14px 0 0;font-size:14.5px;color:var(--bone);line-height:1.5;font-style:italic;max-width:70ch}
+.cb-sh-sub a{color:var(--bone);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.35)}
+.cb-sh-sub a:hover{color:var(--gold)}
+.cb-sh-backcm{display:inline-block;margin:0 0 12px;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);text-decoration:none}
+.cb-sh-backcm:hover{color:var(--gold)}
 @media (max-width:600px){.cm-grid{grid-template-columns:1fr}.cm-tools select{flex:1 1 45%}}
 </style><!-- /IP:css -->
 <!-- SRCKEY:css --><style>
@@ -2651,6 +2669,11 @@ footer li{color:#6f665b}
     </div>
     <p class="cm-meta" id="cmMeta"></p>
     <div id="cmList" class="cm-grid"><p class="ip-loading">Loading builds&hellip;</p></div>
+    <div id="cmProfile" class="cm-profile" hidden>
+      <p><a href="/builds" class="ip-back cm-back">&larr; All community builds</a></p>
+      <div class="cm-pf-head"><div class="cm-pf-name" id="cmPfName">&hellip;</div><div class="cm-pf-bio" id="cmPfBio"></div><div class="cm-pf-count" id="cmPfCount"></div></div>
+      <div id="cmPfList" class="cm-grid"></div>
+    </div>
     <p class="cm-foot">Have a build worth sharing? Put it together in the <a href="/cerim-builder" id="cmGoBuilder">Cerim Builder</a>, save it, then choose <strong>Publish to Community</strong> in My Builds.</p>
   </section>
 <!-- /COMMUNITY BUILDS -->
@@ -5222,6 +5245,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-sh-attrs">'+at+'</div>'+
         '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Open an editable copy</button><button type="button" class="cb-tool share" id="cbSharedCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
       hero.hidden=false;
+      // Opened from Community Builds: swap in the listing's own title, author and description.
+      var cbId=null; try{ cbId=new URLSearchParams(location.search).get('cb'); }catch(e){}
+      if(cbId&&window.__cbCommunityInfo) window.__cbCommunityInfo(cbId).then(function(info){
+        if(!info||!hero.isConnected) return;
+        var ey=hero.querySelector('.cb-sh-eyebrow'), ti=hero.querySelector('.cb-sh-title'), su=hero.querySelector('.cb-sh-sub');
+        if(ey) ey.innerHTML='<a href="/builds" class="cb-sh-backcm">&larr; Community Builds</a><br>Community Build';
+        if(ti) ti.textContent=info.name||ti.textContent;
+        var by=escH(info.author_name||'Anonymous'); if(info.user_id) by='<a href="/builds#u/'+encodeURIComponent(info.user_id)+'">'+by+'</a>';
+        if(su) su.innerHTML='by '+by+' &middot; Level '+lvl+' &middot; view only';
+        if(info.description){ var d=document.createElement('p'); d.className='cb-sh-community'; d.textContent='\u201c'+info.description+'\u201d'; var row=hero.querySelector('.cb-sh-titlerow'); if(row) row.insertAdjacentElement('afterend',d); }
+        try{ document.title=(info.name||'Shared Cerim Build')+' \u2014 Community Builds \u2014 Wicked Dossier'; }catch(e){}
+      });
     }
     function enterSharedMode(code,o){
       CB_SHARED=true;
@@ -5372,6 +5407,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         mB.querySelector('.cb-prov').addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(b){ closeModal(); signIn(b.dataset.p); } });
       }
       $('cbAcctHintIn').addEventListener('click',chooseSignIn);
+      // A build opened from the Community page carries its listing id (?cb=): fetch the listing so
+      // the shared view can show the published name, author and blurb instead of the generic header.
+      window.__cbCommunityInfo=function(id){
+        return client().then(function(c){ return c.from('community_builds').select('id,name,description,author_name,user_id').eq('id',id).maybeSingle(); })
+          .then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; });
+      };
       window.__cbAcct={
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
         openPrivacy:function(){ $('cbAcctPriv').click(); },
@@ -5418,8 +5459,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           });
           h+='</ul>';
         }
-        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
+        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn" id="cbPfEdit">Edit public profile</button><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
         mB.innerHTML=h;
+        $('cbPfEdit').addEventListener('click',editProfile);
         var el=mB.querySelector('.cb-empty-link');
         if(el) el.addEventListener('click',function(e){ e.preventDefault(); closeModal(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
         mB.querySelector('.cb-bl')&&mB.querySelector('.cb-bl').addEventListener('click',function(e){
@@ -5468,11 +5510,36 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         });
       }
 
+      // ---- public profile: the name, bio and on/off switch for the author page that community
+      // builds link to. No row = public by default, under the name used when publishing.
+      var myProfile=null;
+      function loadMyProfile(){ if(!user) return Promise.resolve(null); return client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public').eq('user_id',user.id).maybeSingle(); }).then(function(r){ myProfile=(r&&r.data)||null; return myProfile; }).catch(function(){ return null; }); }
+      function editProfile(){
+        openModal('Your public profile','<p>Loading…</p>');
+        loadMyProfile().then(function(p){
+          p=p||{};
+          mB.innerHTML='<p>When a build of yours is published, its author name links to a page listing all your public builds. Turn that page off here if you&rsquo;d rather your builds stay unlinked.</p>'+
+            '<label class="cb-pub-l">Display name<input type="text" id="cbPfName" maxlength="40" value="'+escH(p.display_name||niceName(user))+'"></label>'+
+            '<label class="cb-pub-l">About you <small>(optional, 200 characters)</small><textarea id="cbPfBio" maxlength="200" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds.">'+escH(p.bio||'')+'</textarea></label>'+
+            '<label class="cb-pub-l cb-pub-chk"><input type="checkbox" id="cbPfPublic"'+(p.is_public===false?'':' checked')+'> Show my profile page</label>'+
+            '<button type="button" class="cb-mbtn" id="cbPfGo">Save profile</button>'+(p.is_public!==undefined?'':'')+'<div class="cb-mmsg" role="status"></div>';
+          $('cbPfGo').addEventListener('click',function(){
+            var nm=$('cbPfName').value.trim(), bio=$('cbPfBio').value.trim(), pub=$('cbPfPublic').checked;
+            if(!nm){ msg('Enter a display name.',1); return; }
+            msg('Saving…');
+            client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,is_public:pub,updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+              .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub}; if(window.__cmRefresh) window.__cmRefresh(); msg('Profile saved.'); setTimeout(listBuilds,800); })
+              .catch(function(e){ msg(cleanErr(e),1); });
+          });
+        });
+      }
+
       // ---- publish to the Community Builds page (opt-in; shows the build, its name, a blurb and the author name to everyone)
       function publishBuild(r){
+        if(myProfile===null&&user){ loadMyProfile().then(function(){ myProfile=myProfile||{}; publishBuild(r); }); return; }
         openModal('Publish &ldquo;'+escH(r.name)+'&rdquo;',
           '<p>Publishing lists this build on the <strong>Community Builds</strong> page for anyone to open and copy. Your display name is shown with it. You can unpublish at any time from My Builds.</p>'+
-          '<label class="cb-pub-l">Shown as<input type="text" id="cbPubAuthor" maxlength="40" value="'+escH(r.author_name||niceName(user))+'"></label>'+
+          '<label class="cb-pub-l">Shown as<input type="text" id="cbPubAuthor" maxlength="40" value="'+escH(r.author_name||(myProfile&&myProfile.display_name)||niceName(user))+'"></label>'+
           '<label class="cb-pub-l">One line about the build <small>(optional, 160 characters)</small><input type="text" id="cbPubDesc" maxlength="160" placeholder="e.g. Fast dagger bleed build for NG+ bosses" value="'+escH(r.description||'')+'"></label>'+
           '<button type="button" class="cb-mbtn" id="cbPubGo">Publish</button><div class="cb-mmsg" role="status"></div>');
         $('cbPubGo').addEventListener('click',function(){
@@ -5488,7 +5555,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       // ---- privacy
       $('cbAcctPriv').addEventListener('click',function(){
         openModal('Privacy','<p>Signing in is optional. The builder, autosave and share links all work without an account.</p>'+
-          '<p>If you sign in with Discord or Google, this site stores your account ID, display name and email address (provided by them) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. If you choose to publish a build to the Community Builds page, that build, its description and the display name you enter are shown publicly until you unpublish it. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
+          '<p>If you sign in with Discord or Google, this site stores your account ID, display name and email address (provided by them) and the builds you choose to save. That is all. It is used only to let you sign in and load your saved builds. If you choose to publish a build to the Community Builds page, that build, its description and the display name you enter are shown publicly until you unpublish it; the name links to an author page listing your public builds, which you can turn off under Edit public profile. It is never sold or shared, and there are no ads or trackers tied to your account.</p>'+
           '<p>Sign-in is handled by Supabase and Discord. This site never sees or stores a password. You can delete your account and every saved build at any time from <strong>My Builds</strong> &rarr; <strong>Delete my account</strong>. Share links contain the build itself in the link, so anyone you send one to can see that build; they do not reveal your account.</p><p><a href="/privacy" target="_blank" rel="noopener">Read the full privacy policy</a></p>');
       });
 
@@ -5499,6 +5566,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var sec=$('community-builds'), list=$('cmList'); if(!sec||!list) return;
         var rows=null, liked={}, loadedFor=null, loading=false;
         var qEl=$('cmQ'), sortEl=$('cmSort'), metaEl=$('cmMeta');
+        var pf=$('cmProfile'), pfList=$('cmPfList'), pfName=$('cmPfName'), pfBio=$('cmPfBio'), pfCount=$('cmPfCount');
+        var listParts=[sec.querySelector('.standfirst'),sec.querySelector('.cm-tools'),metaEl,list,sec.querySelector('.cm-foot')];
+        function authorHref(r){ return r.user_id?('/builds#u/'+encodeURIComponent(r.user_id)):null; }
+        function authorHtml(r){ var h=authorHref(r), n=escH(r.author_name||'Anonymous'); return h?'<a href="'+h+'" data-u="'+escH(r.user_id)+'" title="See all builds by '+n+'">'+n+'</a>':n; }
         var gb=$('cmGoBuilder'); if(gb) gb.addEventListener('click',function(e){ e.preventDefault(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
         function summarize(r){
           if(r._sum) return r._sum;
@@ -5531,12 +5602,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           metaEl.innerHTML=rows.length?('<b>'+out.length+'</b> of '+rows.length+' build'+(rows.length===1?'':'s')):'';
           if(!rows.length){ list.innerHTML='<p class="cm-empty">No builds have been published yet. Be the first: save a build in the Cerim Builder, then publish it from My Builds.</p>'; return; }
           if(!out.length){ list.innerHTML='<p class="cm-empty">No builds match those filters.</p>'; return; }
-          list.innerHTML=out.map(function(r){
+          list.innerHTML=out.map(cardHtml).join('');
+          if(curProfile) renderProfileList();
+        }
+        function cardHtml(r){
             var sm=summarize(r), it=sm.main;
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
             return '<article class="cm-card" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
-              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+escH(r.author_name||'Anonymous')+'</b></div></div></div>'+
+              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+authorHtml(r)+'</b></div></div></div>'+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               '<div class="cm-sum"><i>Level '+sm.lv+'</i>'+(it?' &middot; '+escH(it.n)+(sm.type?' <i>('+escH(sm.type)+')</i>':''):'')+' &middot; '+sm.slots+' item'+(sm.slots===1?'':'s')+' equipped</div>'+
               (attrs?'<div class="cm-attrs">'+attrs+'</div>':'')+
@@ -5544,8 +5618,31 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
                 '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-8.6C.9 9.2 2.4 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.6 0 5.1 3.7 3.3 6.9C19 16.4 12 21 12 21z"/></svg><span>'+r.likes+'</span></button>'+
                 '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></span></div>'+
               '</article>';
-          }).join('');
         }
+        // ---- author profile page (hash u/<user id> on /builds): name + bio from profiles (if the
+        // author made one) and every build of theirs that's public. Private profiles never reach
+        // here - the view blanks user_id for them, so their name is plain text, not a link.
+        var curProfile=null, pfCache={};
+        function renderProfileList(){
+          var mine=(rows||[]).filter(function(r){ return r.user_id===curProfile; });
+          pfCount.innerHTML=mine.length?('<b>'+mine.length+'</b> public build'+(mine.length===1?'':'s')):'No public builds yet';
+          pfList.innerHTML=mine.length?mine.map(cardHtml).join(''):'';
+          if(!pfName.dataset.set){ var n=mine.length&&mine[0].author_name; if(n) pfName.textContent=n; }
+        }
+        function showProfile(uid){
+          curProfile=uid||null;
+          listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
+          pf.hidden=!curProfile;
+          if(!curProfile) return;
+          pfName.textContent='\u2026'; delete pfName.dataset.set; pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML='';
+          var p=pfCache[uid]||(pfCache[uid]=client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public').eq('user_id',uid).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
+          p.then(function(prof){ if(curProfile!==uid) return; if(prof&&prof.display_name){ pfName.textContent=prof.display_name; pfName.dataset.set='1'; } if(prof&&prof.bio) pfBio.textContent=prof.bio; if(rows) renderProfileList(); document.title=pfName.textContent+' - Community Builds - Wicked Dossier'; });
+          if(rows) renderProfileList(); else load(false);
+          document.title=(pfName.textContent!=='\u2026'?pfName.textContent+' - ':'')+'Community Builds - Wicked Dossier';
+        }
+        function syncHash(){ var m=/^#u\/(.+)$/.exec(location.hash); showProfile(m?decodeURIComponent(m[1]):null); }
+        window.__cmProfile=syncHash;
+        window.addEventListener('hashchange',syncHash);
         function loadLiked(){
           liked={};
           if(!user) return Promise.resolve();
@@ -5555,15 +5652,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function load(force){
           if(loading) return; if(rows&&!force) return;
           loading=true; if(!rows) list.innerHTML='<p class="ip-loading">Loading builds&hellip;</p>';
-          Promise.all([loadCards(), client().then(function(c){ return c.from('community_builds').select('id,name,code,description,author_name,published_at,updated_at,likes'); }), loadLiked()])
-            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); render(); })
+          Promise.all([loadCards(), client().then(function(c){ return c.from('community_builds').select('id,name,code,description,author_name,published_at,updated_at,likes,user_id'); }), loadLiked()])
+            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); render(); if(curProfile) renderProfileList(); })
             .catch(function(e){ list.innerHTML='<p class="cm-empty">Couldn&rsquo;t load the community builds. '+escH(cleanErr(e))+'</p>'; })
             .then(function(){ loading=false; });
         }
         window.__cmRefresh=function(){ rows=null; if(sec.classList.contains('pg-on')) load(true); };
         [qEl,sortEl].forEach(function(el){ el.addEventListener('input',render); el.addEventListener('change',render); });
-        function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code; }
-        list.addEventListener('click',function(e){
+        function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code+'&cb='+encodeURIComponent(r.id); }
+        function onListClick(e){
+          var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); e.stopPropagation(); location.hash='#u/'+encodeURIComponent(al.getAttribute('data-u')); return; }
           var card=e.target.closest('.cm-card'); if(!card) return;
           var r=null; for(var i=0;i<(rows||[]).length;i++) if(String(rows[i].id)===card.getAttribute('data-id')) r=rows[i];
           if(!r) return;
@@ -5586,12 +5684,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
                 .catch(function(err){ msg(cleanErr(err),1); });
             });
           }
-        });
-        list.addEventListener('keydown',function(e){ if(e.key!=='Enter') return; var card=e.target.closest('.cm-card'); if(card&&e.target===card) card.click(); });
+        }
+        list.addEventListener('click',onListClick); pfList.addEventListener('click',onListClick);
+        function onListKey(e){ if(e.key!=='Enter') return; var card=e.target.closest('.cm-card'); if(card&&e.target===card) card.click(); }
+        list.addEventListener('keydown',onListKey); pfList.addEventListener('keydown',onListKey);
+        pf.querySelector('.cm-back').addEventListener('click',function(e){ e.preventDefault(); if(history.pushState){ history.pushState(null,'',location.pathname); syncHash(); } else location.hash=''; });
         // Load when the page is shown (the router toggles .pg-on on the section), and again if the
         // signed-in user changes so the like states are theirs.
-        new MutationObserver(function(){ if(sec.classList.contains('pg-on')) load(false); }).observe(sec,{attributes:true,attributeFilter:['class']});
-        if(sec.classList.contains('pg-on')) load(false);
+        new MutationObserver(function(){ if(sec.classList.contains('pg-on')){ load(false); syncHash(); } }).observe(sec,{attributes:true,attributeFilter:['class']});
+        if(sec.classList.contains('pg-on')){ load(false); syncHash(); }
         listeners.push(function(){ if(rows){ loadLiked().then(render); } });
       })();
     })();
@@ -6630,6 +6731,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // to Home, same as any other unmatched hash.
     var rawHash=location.hash.slice(1);
     if(rawHash.indexOf(ITEM_HASH_PREFIX)===0){ show('itempage','item-page'); ipRender(itemKeyFromHash(rawHash)); window.scrollTo(0,0); return; }
+    // Author profile pages live under the Community Builds page as "#u/<user id>".
+    if(rawHash.indexOf('u/')===0){ show('builds','community-builds'); if(window.__cmProfile) window.__cmProfile(); window.scrollTo(0,0); return; }
     var h=decodeURIComponent(rawHash); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
     // No hash match: check whether the pathname itself names one of the clean-path pages
