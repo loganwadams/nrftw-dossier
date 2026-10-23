@@ -20,6 +20,10 @@
   if(/^\/profile\//.test(location.pathname)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
+  // A shared/community build (?s=...) is only ready once the item database has loaded; until
+  // then keep the content hidden (see the body:not(.paged) rule) rather than showing the empty
+  // builder in the meantime. restoreBuild() clears the flag if the link turns out not to be one.
+  if(/[?&]s=/.test(location.search)) document.documentElement.classList.add('cb-shared-pending');
   document.addEventListener('click',function(e){
     if(!document.querySelector('base')) return;
     var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
@@ -68,7 +72,7 @@
 /* Until the router (end of the file) has picked the page, keep everything below the masthead
    out of sight - otherwise a fresh load paints Home first and the real page replaces it a
    moment later. The router adds body.paged right before its first route(). */
-body:not(.paged) .wrap > *:not(header.masthead){visibility:hidden}
+body:not(.paged) .wrap > *:not(header.masthead),html.cb-shared-pending body:not(.cb-shared) .wrap > *:not(header.masthead){visibility:hidden}
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
 .pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;padding:8px 0}
 /* the bar's dark glass background/border run edge-to-edge on both desktop and mobile, breaking
@@ -5358,8 +5362,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function restoreBuild(){
       try{
         var sc=new URLSearchParams(location.search).get('s'), so=sc&&decodeBuild(sc);
-        if(so){ enterSharedMode(sc,so); return; }
+        if(so){ enterSharedMode(sc,so); document.documentElement.classList.remove('cb-shared-pending'); return; }
       }catch(e){}
+      document.documentElement.classList.remove('cb-shared-pending');
       var o=null, fromLink=false;
       try{ var q=new URLSearchParams(location.search).get('b'); if(q){ o=decodeBuild(q); fromLink=!!o; } }catch(e){}
       if(!o){ try{ var t=localStorage.getItem(CB_STORE_KEY); if(t) o=decodeBuild(t); }catch(e){} }
