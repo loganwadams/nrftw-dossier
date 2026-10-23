@@ -5541,16 +5541,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
 
       // ---- publish to the Community Builds page (opt-in; shows the build, its name, a blurb and the author name to everyone)
+      function authorName(){ return (myProfile&&myProfile.display_name)||niceName(user); }
       function publishBuild(r){
         if(myProfile===null&&user){ loadMyProfile().then(function(){ myProfile=myProfile||{}; publishBuild(r); }); return; }
         openModal('Publish \u201c'+r.name+'\u201d',
-          '<p>Publishing lists this build on the <strong>Community Builds</strong> page for anyone to open and copy. Your display name is shown with it. You can unpublish at any time from My Builds.</p>'+
-          '<label class="cb-pub-l">Shown as<input type="text" id="cbPubAuthor" maxlength="40" value="'+escH(r.author_name||(myProfile&&myProfile.display_name)||niceName(user))+'"></label>'+
+          '<p>Publishing lists this build on the <strong>Community Builds</strong> page for anyone to open and copy, shown as <strong>'+escH(authorName())+'</strong> (your account name; change it under Public profile in the account menu). You can unpublish at any time from My Builds.</p>'+
           '<label class="cb-pub-l">One line about the build <small>(optional, 160 characters)</small><input type="text" id="cbPubDesc" maxlength="160" placeholder="e.g. Fast dagger bleed build for NG+ bosses" value="'+escH(r.description||'')+'"></label>'+
           '<button type="button" class="cb-mbtn" id="cbPubGo">Publish</button><div class="cb-mmsg" role="status"></div>');
         $('cbPubGo').addEventListener('click',function(){
-          var an=$('cbPubAuthor').value.trim(), ds=$('cbPubDesc').value.trim();
-          if(!an){ msg('Enter the name to show with the build.',1); return; }
+          var an=authorName(), ds=$('cbPubDesc').value.trim();
           msg('Publishing…');
           client().then(function(c){ return c.from('builds').update({is_public:true,author_name:an,description:ds||null,published_at:new Date().toISOString()}).eq('id',r.id); })
             .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); listBuilds(); })
