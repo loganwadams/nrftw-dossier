@@ -2363,7 +2363,6 @@ footer li{color:#6f665b}
   <nav class="contents" aria-label="Chapters"><h3>Chapters</h3><ul>
 <li><a href="#brief"><span class="toc-n">01</span><span class="toc-t">What We Know</span></a></li>
 <li><a href="#factions"><span class="toc-n">02</span><span class="toc-t">Factions &amp; Classes</span></a></li>
-<li><a href="#systems"><span class="toc-n">03</span><span class="toc-t">Rules That Govern</span></a></li>
 <li><a href="#infusions"><span class="toc-n">04</span><span class="toc-t">Infusions</span></a></li>
 <li><a href="#enchantments"><span class="toc-n">05</span><span class="toc-t">Enchantments</span></a></li>
 <li><a href="#vendors"><span class="toc-n">06</span><span class="toc-t">Vendors</span></a></li>
@@ -2493,7 +2492,8 @@ footer li{color:#6f665b}
     </div>
   </section>
 
-  <section id="systems">
+  <!-- Hidden for now (Oct 2026): the section stays in the file so it can come back, but it's not shown or navigable. -->
+  <section id="systems" hidden style="display:none!important">
     <div class="sect-head"><h2>Rules That Govern</h2></div>
     <div class="rules two">
       <div class="rule"><h3>Commit to one element</h3><p>An elemental gem grants no enchantment power if another elemental gem is already equipped anywhere on your gear. Mixing plague, lightning, fire and ice does not diversify a build, it disables most of it. Pick the element the class is named after and run it alone.</p></div>
@@ -6552,7 +6552,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'home',         num:'',   label:'Home',          group:'home',  target:'intro',  tag:['hero','intro','lore'], cls:'pg-home'},
     {id:'brief',        num:'',   label:'',                  group:'home',  target:'brief',  tag:['brief'], hidden:true},
     {id:'factions',     num:'02', label:'Factions & Classes',          group:'world', target:'factions', tag:['factions'], cls:'pg-hide'},
-    {id:'systems',      num:'03', label:'Systems',            group:'world', target:'systems', tag:['systems'], cls:'pg-hide'},
+    {id:'systems',      num:'03', label:'Systems',            group:'world', target:'systems', tag:['systems'], cls:'pg-hide', hidden:true},
     {id:'lore',         num:'',   label:'Codex',              group:'world', target:'factions', tag:[], drop:true},
     {id:'infusions',    num:'04', label:'Infusions',         group:'gear',  target:'infusions', tag:['infusions'], hidden:true},
     {id:'enchantments', num:'05', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments'], hidden:true},
@@ -6709,7 +6709,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         row.appendChild(a); li.appendChild(row); ul.appendChild(li); });
       return ul; },
     lore:function(){ var ul=document.createElement('ul'); ul.className='toc-drop';
-      [['factions','Factions & Classes'],['systems','Systems']].forEach(function(pair){
+      [['factions','Factions & Classes']].forEach(function(pair){ // 'systems' (Rules That Govern) hidden for now
         var li=document.createElement('li'); var row=document.createElement('div'); row.className='toc-drop-row';
         var a=document.createElement('a'); a.href='#'+pair[0]; a.textContent=pair[1];
         navLink(a,pair[0]);
