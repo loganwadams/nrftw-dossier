@@ -6609,6 +6609,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       else if(history.pushState) history.pushState(null,'',url);
       else location.hash=(url.indexOf('#')>-1)?url.slice(url.indexOf('#')):'';
     }catch(e){}
+    // The Builds tab from an author page: the section is already shown and pushState fires no
+    // event, so tell the community module the path changed (it reads /profile/<name> vs /builds).
+    if(window.__cmProfile) window.__cmProfile();
     if(c.id==='home'){ window.scrollTo({top:0,left:0,behavior:'smooth'}); return; }
     // the first chapter of a group IS the top of that page - nothing else in the group is above
     // it once the other groups are hidden - so land on the actual page top, same as Home, rather
