@@ -2938,13 +2938,15 @@ footer li{color:#6f665b}
   </section>
   <section id="archive">
     <div class="sect-head"><h2>Archive</h2></div>
-    <p class="ar-wip" role="status"><span class="ar-wip-k">Under construction</span>The Archive is still being built. Collections may change or move while it takes shape.</p>
+    <p class="ar-wip" role="status"><span class="ar-wip-k">Under construction</span>The Archive is still being built. Check back soon.</p>
+    <div class="ar-private" id="arPrivate" hidden>
     <p class="ar-intro">Everything the game keeps track of, sorted by kind. Pick a collection.</p>
     <div class="ar-grid">
       <a class="ar-card" href="#catalog"><span class="ar-k">Collection</span><h3>Trove</h3><p>Every weapon, armor piece, shield, rune, gem and ingredient, with stats and where each one comes from.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#recipes"><span class="ar-k">Collection</span><h3>Crafting Recipes</h3><p>What each item takes to make, at which station, and what a refinery turns into what.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#infusions"><span class="ar-k">Collection</span><h3>Infusions</h3><p>The infusion effects you can put on gear and how they behave.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#enchantments"><span class="ar-k">Collection</span><h3>Enchantments</h3><p>Every enchantment, what it does and which gear can carry it.</p><span class="ar-go">Open</span></a>
+    </div>
     </div>
   </section>
   <section id="catalog">
@@ -8113,6 +8115,19 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   bar.addEventListener('mouseleave',rest); bar.addEventListener('focusout',function(){ setTimeout(function(){ if(!bar.contains(document.activeElement)) rest(); },0); });
   new MutationObserver(rest).observe(document.body,{attributes:true,attributeFilter:['class']});
   window.addEventListener('resize',rest); setTimeout(rest,300); setTimeout(rest,1200);
+})();
+</script>
+<script>
+(function(){
+  // The Archive cards are hidden from visitors while the page is being built. Opening the site once with
+  // ?archive-preview=1 reveals them in this browser; ?archive-preview=0 hides them again.
+  var KEY='wd-archive-preview', on=false;
+  try{
+    var m=/[?&]archive-preview=([01])/.exec(location.search);
+    if(m){ if(m[1]==='1') localStorage.setItem(KEY,'1'); else localStorage.removeItem(KEY); }
+    on=localStorage.getItem(KEY)==='1';
+  }catch(e){}
+  var p=document.getElementById('arPrivate'); if(p&&on) p.hidden=false;
 })();
 </script>
 </body></html>
