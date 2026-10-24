@@ -100,10 +100,10 @@
   };
   // Where an item comes from, derived from the game's loot tables (vendor stock, bounty/challenge rewards,
   // Pestilence cleanse rewards, enemy and boss drops, chests, shinies, foraging, fishing, trees, ore, digging spots).
-  var SRC={0:'Vendor',1:'Crafting',2:'Refinery',3:'Quest Reward',10:'Bounty',11:'Challenge',13:'Pestilence Reward',20:'Enemy Drop',21:'Boss Drop',30:'Chest',31:'Shiny',33:'Foraging',40:'Fishing',41:'Woodcutting',42:'Mining',43:'Digging'};
+  var SRC={vendor:'Vendor',crafting:'Crafting',refinery:'Refinery',quest:'Quest Reward',bounty:'Bounty',challenge:'Challenge',pestilence:'Pestilence Reward',drop:'Enemy Drop',boss:'Boss Drop',chest:'Chest',shiny:'Shiny',forage:'Foraging',fish:'Fishing',wood:'Woodcutting',mine:'Mining',dig:'Digging'};
   function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function icon(id,inl){ id=String(id).replace(/^fi-/,''); var a=ABBR[id]||[id.replace(/^(fi-|icon|Stat)/,'').slice(0,5).toUpperCase(),id]; return '<i class="wd-ic'+(inl?' inl':'')+'" data-ic="'+esc(id)+'" title="'+esc(a[1])+'"><span>'+esc(a[0])+'</span></i>'; }
-  function srcChip(n){ var nm=SRC[n]||('Source '+n); return '<span class="wd-src" data-s="'+n+'">'+(SRC[n]?'<i class="wd-ic" data-ic="src'+n+'"></i>':'')+esc(nm)+'</span>'; }
+  function srcChip(n){ var nm=SRC[n]||('Source '+n); return '<span class="wd-src" data-s="'+n+'">'+(SRC[n]?'<i class="wd-ic" data-ic="src-'+n+'"></i>':'')+esc(nm)+'</span>'; }
   function itemHref(key){ try{ if(window.__itemUrl) return window.__itemUrl(key); }catch(e){} return '#item/'+encodeURIComponent(key); }
   function linkHtml(l){
     var ic=l.pos?'<span class="wd-li-ic" style="background-position:'+l.pos[0]+'px '+l.pos[1]+'px"></span>':'<span class="wd-li-ic none"></span>';
@@ -576,7 +576,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cb-sh-backcm:hover{color:var(--gold)}
 @media (max-width:600px){.cm-grid{grid-template-columns:1fr}.cm-tools select{flex:1 1 45%}}
 </style><!-- /IP:css -->
-<script>document.addEventListener('DOMContentLoaded',function(){ document.querySelectorAll('.src-item[data-src]').forEach(function(el){ el.innerHTML=WDCARD.src(+el.getAttribute('data-src')); }); });</script>
+<script>document.addEventListener('DOMContentLoaded',function(){ document.querySelectorAll('.src-item[data-src]').forEach(function(el){ el.innerHTML=WDCARD.src(el.getAttribute('data-src')); }); });</script>
 <!-- SRCKEY:css --><style>
 .src-key{margin-top:14px;margin-bottom:28px;padding:12px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:flex;flex-wrap:wrap;align-items:center;gap:9px 20px}
 .src-key-label{flex:0 0 100%;font-family:var(--data);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
@@ -4549,7 +4549,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       return c[c.length-1][1];
     }
     function cardNum(item,icon){
-      if(!item) return null; var v=WDCARD.facts(item).stats[String(icon).replace(/^(o-icons-)?(fi-)?/,'')];
+      if(!item) return null; var v=WDCARD.facts(item).stats[String(icon).replace(/^(fi-)?/,'')];
       if(v==null||Array.isArray(v)) return null; var n=parseFloat(String(v).replace(/,/g,'')); return isNaN(n)?null:n;
     }
     // Facets / gems that move weight or armor (Bulky is read off in-game tooltips: +5 armor, +5 weight).
