@@ -2610,7 +2610,6 @@ footer li{color:#6f665b}
 <!-- /HERO -->
 <!-- GEN:toc -->
   <nav class="contents" aria-label="Chapters"><h3>Chapters</h3><ul>
-<li><a href="#brief"><span class="toc-n">01</span><span class="toc-t">What We Know</span></a></li>
 <li><a href="#factions"><span class="toc-n">02</span><span class="toc-t">Factions &amp; Classes</span></a></li>
 <li><a href="#infusions"><span class="toc-n">04</span><span class="toc-t">Infusions</span></a></li>
 <li><a href="#enchantments"><span class="toc-n">05</span><span class="toc-t">Enchantments</span></a></li>
@@ -2623,7 +2622,7 @@ footer li{color:#6f665b}
     <p class="lore-lead">A fan site for <a class="nrftw-link" href="https://norestforthewicked.com/" target="_blank" rel="noopener">No Rest for the Wicked</a>. Item numbers are read from the game files, so they change when the game does. Lore and class pages are fan notes and may be out of date.</p>
   </section>
 
-  <section id="lore">
+  <section id="lore" hidden style="display:none!important">
     <div class="sect-head"><h2>Prologue</h2></div>
     <p class="lore-lead">The setup, as Moon Studios describes it. Only what the studio&rsquo;s own announcement and the game&rsquo;s text state is listed here.</p>
     <div class="lore-beats">
@@ -2655,7 +2654,7 @@ footer li{color:#6f665b}
     </div>
   </section>
 
-  <section id="brief">
+  <section id="brief" hidden style="display:none!important">
     <div class="sect-head"><h2>What We Know</h2></div>
 
     <dl class="facts">
@@ -7527,7 +7526,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function add(label,kind,el,extra,desc){ if(!label||!el) return; index.push({label:label,kind:kind,el:el,key:(label+' '+(extra||'')).toLowerCase(),desc:desc||null,ck:null}); }
     document.querySelectorAll('section > .sect-head').forEach(function(h){ var s=h.closest('section'); add(txt(h.querySelector('h2')),'Chapter',s); });
     document.querySelectorAll('article.klass').forEach(function(a){ var n=a.querySelector('.plate, h2, h3'); add(n?txt(n).replace(/\s*·.*$/,''):a.id,'Class',a); });
-    document.querySelectorAll('#factions h3, #brief h3, #systems h3, #intro h3').forEach(function(h){ add(txt(h),'Section',h); });
+    document.querySelectorAll('#factions h3, #systems h3, #intro h3').forEach(function(h){ add(txt(h),'Section',h); });
     document.querySelectorAll('.inf-card').forEach(function(c){ var f=c.querySelector('.inf-family'), r=c.querySelector('.inf-role'); add(txt(f),'Infusion',c,r?txt(r):'',txt(c)); });
     document.querySelectorAll('.ench-item').forEach(function(c){ var h=c.querySelector('h3'); add(txt(h)+' enchantments','Enchantments',c); });
     document.querySelectorAll('.ench-item li').forEach(function(li){ var it=li.closest('.ench-item'); var h=it&&it.querySelector('h3'); add(txt(li),'Enchantment · '+(h?txt(h):''),li); });
