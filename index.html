@@ -6956,7 +6956,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       while(sib&&!sib.classList.contains('m-cat-head')){ sib.classList.toggle('m-cat-hidden',collapsed); sib=sib.nextElementSibling; }
     }
     btn.addEventListener('click',function(){ setState(!h.classList.contains('collapsed')); });
-    setState(h.id!=='pool-armor-sets');   // every section starts collapsed, except Armor Sets whose material sub-groups should show right away
+    setState(true);   // every section starts collapsed, Armor Sets included
     heads.push({head:h, setState:setState});
   });
   document.querySelectorAll('.m-cat[id^="pool-armor-sets-"]').forEach(function(cat){
