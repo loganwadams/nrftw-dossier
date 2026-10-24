@@ -1162,10 +1162,6 @@ section{padding-block:48px}
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
 }
 
-/* dividers: fade out to the right instead of one even rule everywhere; the page-level rule starts with a small ember */
-.sect-head::after{background:linear-gradient(90deg,var(--gold) 0,var(--gold-dim) 22%,rgba(201,169,110,.05) 100%)}
-.sect-head::before{content:"";position:absolute;left:0;bottom:-3px;width:7px;height:7px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 8px rgba(224,160,70,.7);z-index:1}
-.m-cat-head::after{background:linear-gradient(90deg,var(--gold-dim) 0,rgba(201,169,110,.12) 70%,transparent 100%)}
 .sect-num{
   font-family:var(--display);
   font-weight:700;
