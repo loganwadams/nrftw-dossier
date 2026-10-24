@@ -4592,13 +4592,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         (m.resists||[]).forEach(function(r){ var rv=parseFloat(r&&r.v); if(r&&r.k&&rv>0) out.res[r.k]=(out.res[r.k]||0)+rv; });
         (m.enchants||[]).forEach(function(e){
           var t=String(e||''), mm;
-          if((mm=/Equip Load increased by (\d+(?:\.\d+)?)%/i.exec(t))) out.loadBonus=(out.loadBonus||0)+parseFloat(mm[1]);
+          // Equip Load and Max Health / Stamina / Focus lines, bonuses and drawbacks alike, move the stat by their percentage
+          if((mm=/^Equip Load (increased|reduced) by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))) out.loadBonus=(out.loadBonus||0)+(/reduced/i.test(mm[1])?-1:1)*parseFloat(mm[2]);
+          if((mm=/^Armor (increased|reduced) by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))){ out.statPct=out.statPct||{}; out.statPct.armor=(out.statPct.armor||0)+(/reduced/i.test(mm[1])?-1:1)*parseFloat(mm[2]); }
+          if((mm=/^Max (Health|Stamina|Focus) (increased|reduced) by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))){ var sk=mm[1].toLowerCase(); out.statPct=out.statPct||{}; out.statPct[sk]=(out.statPct[sk]||0)+(/reduced/i.test(mm[2])?-1:1)*parseFloat(mm[3]); }
           if((mm=/(Fire|Cold|Ice|Lightning|Plague|Physical)\s+Resistance increased by (\d+(?:\.\d+)?)%/i.exec(t))){
             var k=mm[1].toLowerCase(); k=(k==='ice')?'cold':k; out.res[k]=(out.res[k]||0)+parseFloat(mm[2]);
           }
         });
       });
       out.loadBonus=out.loadBonus||0;
+      var sp=out.statPct||{};
+      ['health','stamina','focus','armor'].forEach(function(k){ if(sp[k]) out[k]=Math.round(out[k]*(1+sp[k]/100)); });
       out.capacity=(70+csCurve(CS_LOAD,a.equipload))*(1+out.loadBonus/100);
       out.ratio=out.capacity?out.weight/out.capacity:0;
       out.cls=LOAD_CLASSES.filter(function(c){ return out.ratio<c.max; })[0];
