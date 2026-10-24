@@ -98,11 +98,12 @@
     StatMaxFocus:['FOC+','Max Focus'],StatEquipLoad:['LOAD','Equip Load'],StatAttackSpeed:['ATKSPD','Attack Speed'],StatFocusCost:['FOC−','Focus Cost'],
     StatStaggerResistance:['STAG','Stagger Resistance'],StatFatality:['FATAL','Fatality']
   };
-  var SRC={0:'Vendor',1:'Crafting',2:'Refinery',3:'Quest',4:'Reward',5:'Event',10:'Bounty',11:'Challenge',12:'Trial',13:'Pestilence Loot',20:'Enemy',21:'Boss',30:'Chest',31:'Shiny',32:'Breakable',33:'Pickup',40:'Fishing',41:'Wood Cutting',42:'Ore Mining',43:'Digging',50:'Other'};
+  // Where an item comes from, derived from the game's loot tables (vendor stock, bounty/challenge rewards,
+  // Pestilence cleanse rewards, enemy and boss drops, chests, shinies, foraging, fishing, trees, ore, digging spots).
+  var SRC={0:'Vendor',1:'Crafting',2:'Refinery',3:'Quest Reward',10:'Bounty',11:'Challenge',13:'Pestilence Reward',20:'Enemy Drop',21:'Boss Drop',30:'Chest',31:'Shiny',33:'Foraging',40:'Fishing',41:'Woodcutting',42:'Mining',43:'Digging'};
   function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function icon(id,inl){ id=String(id).replace(/^fi-/,''); var a=ABBR[id]||[id.replace(/^(fi-|icon|Stat)/,'').slice(0,5).toUpperCase(),id]; return '<i class="wd-ic'+(inl?' inl':'')+'" data-ic="'+esc(id)+'" title="'+esc(a[1])+'"><span>'+esc(a[0])+'</span></i>'; }
-  var SRC_IC={0:'srcVendor',1:'srcCrafting',2:'srcCrafting',3:'srcQuest',10:'srcChallenge',11:'srcChallenge',20:'srcEnemy',21:'srcBoss',30:'srcChest',31:'srcShiny',33:'srcPlant',42:'srcOre'};
-  function srcChip(n){ var nm=SRC[n]||('Source '+n); return '<span class="wd-src" data-s="'+n+'">'+(SRC_IC[n]?'<i class="wd-ic" data-ic="'+SRC_IC[n]+'"></i>':'')+esc(nm)+'</span>'; }
+  function srcChip(n){ var nm=SRC[n]||('Source '+n); return '<span class="wd-src" data-s="'+n+'">'+(SRC[n]?'<i class="wd-ic" data-ic="src'+n+'"></i>':'')+esc(nm)+'</span>'; }
   function itemHref(key){ try{ if(window.__itemUrl) return window.__itemUrl(key); }catch(e){} return '#item/'+encodeURIComponent(key); }
   function linkHtml(l){
     var ic=l.pos?'<span class="wd-li-ic" style="background-position:'+l.pos[0]+'px '+l.pos[1]+'px"></span>':'<span class="wd-li-ic none"></span>';
@@ -2834,7 +2835,7 @@ footer li{color:#6f665b}
     <p class="m-cat-intro" data-m="intro:catalog">Hover or tap a card for the item&rsquo;s full panel.</p>
     <!-- SRCKEY -->
     <div class="src-key" data-m="srckey:catalog">
-      <span class="src-key-label">Sources, as shown on each item&rsquo;s full panel</span>
+      <span class="src-key-label">Where items come from, as shown on each item&rsquo;s full panel</span>
       <span class="src-item" data-src="0"></span>
       <span class="src-item" data-src="1"></span>
       <span class="src-item" data-src="2"></span>
@@ -7125,7 +7126,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // lands on an item page straight from a link or search never sees it. Name each icon (hover /
   // screen-reader title) and list this item's own sources in words under the card. Same legend as
   // the Trove's .src-key block - keep the two in step.
-  var SRC_NAMES={0:'Vendor',1:'Crafting',2:'Refinery',3:'Quest Related',10:'Bounty',11:'Challenge',13:'Pestilence Extra Loot',20:'Enemy',21:'Boss',30:'Chest',31:'Shiny',33:'Pickup',40:'Fishing',41:'Wood Cutting',42:'Ore Mining',43:'Digging'};
+  var SRC_NAMES=WDCARD.SRC;
   function ipSourceKey(box){
     var ids=[]; box.querySelectorAll('.wd-src[data-s]').forEach(function(el){ var i=el.getAttribute('data-s'); if(SRC_NAMES[i]&&ids.indexOf(i)<0) ids.push(i); });
     if(!ids.length) return '';
