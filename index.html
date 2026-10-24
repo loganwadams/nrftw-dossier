@@ -4588,12 +4588,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         w+=facetFlat(m.facet,enchPoolFor(id),0);
         var ff=facetByName(m.facet,enchPoolFor(id));
         if(ff) ff.m.forEach(function(x){ if(x[0]>=104&&x[0]<=107){ var rk={104:'fire',105:'cold',106:'lightning',107:'plague'}[x[0]]; out.res[rk]=(out.res[rk]||0)+Math.round(-x[2]*100); } });
+        (m.enchants||[]).forEach(function(e){ var wm=/^Weight reduced by (\d+(?:\.\d+)?)%\s*$/i.exec(String(e||'').trim()); if(wm) w*=1-parseFloat(wm[1])/100; });
         out.weight+=w;
         (m.resists||[]).forEach(function(r){ var rv=parseFloat(r&&r.v); if(r&&r.k&&rv>0) out.res[r.k]=(out.res[r.k]||0)+rv; });
         (m.enchants||[]).forEach(function(e){
           var t=String(e||''), mm;
           // Equip Load and Max Health / Stamina / Focus lines, bonuses and drawbacks alike, move the stat by their percentage
           if((mm=/^Equip Load (increased|reduced) by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))) out.loadBonus=(out.loadBonus||0)+(/reduced/i.test(mm[1])?-1:1)*parseFloat(mm[2]);
+          if((mm=/^Elemental Resistance increased by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))) ['fire','cold','lightning','plague'].forEach(function(k){ out.res[k]=(out.res[k]||0)+parseFloat(mm[1]); });
+          // Every other plain, unconditional stat line (no "while / after / at / for ..."): tallied for the Other Bonuses row
+          if((mm=/^(Stamina Recovery|Healing|Poise Defense|Stagger Resistance|Movement Speed|Stamina Cost|Focus Cost|Focus Gain|Attack Stamina Cost|Dodge Stamina Cost|Experience Gain|Durability Loss ignored with|Poise Damage|Barrier Gain|Burn Buildup|Frost Buildup|Shock Buildup|Infection Buildup) (increased|reduced)(?: by)? (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))){ out.other=out.other||{}; out.other[mm[1]]=(out.other[mm[1]]||0)+(/reduced/i.test(mm[2])?-1:1)*parseFloat(mm[3]); }
+          if((mm=/^Gain (\d+(?:\.\d+)?)% Regainable Health\s*$/i.exec(t.trim()))){ out.other=out.other||{}; out.other['Regainable Health']=(out.other['Regainable Health']||0)+parseFloat(mm[1]); }
           if((mm=/^Armor (increased|reduced) by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))){ out.statPct=out.statPct||{}; out.statPct.armor=(out.statPct.armor||0)+(/reduced/i.test(mm[1])?-1:1)*parseFloat(mm[2]); }
           if((mm=/^Max (Health|Stamina|Focus) (increased|reduced) by (\d+(?:\.\d+)?)%\s*$/i.exec(t.trim()))){ var sk=mm[1].toLowerCase(); out.statPct=out.statPct||{}; out.statPct[sk]=(out.statPct[sk]||0)+(/reduced/i.test(mm[2])?-1:1)*parseFloat(mm[3]); }
           if((mm=/(Fire|Cold|Ice|Lightning|Plague|Physical)\s+Resistance increased by (\d+(?:\.\d+)?)%/i.exec(t))){
@@ -4625,6 +4630,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var loadColor=cs.ratio>=1?'var(--rust)':(cs.ratio>=.6?'var(--gold)':'var(--verdigris)');
       h+='<div class="attr" style="--accent:'+loadColor+'"><span>Equip Load</span><span class="meter"><i style="width:'+pct+'%"></i></span><b>'+(Math.round(cs.weight*10)/10)+' / '+Math.round(cs.capacity)+'</b></div>';
       h+='<div class="attr" style="--accent:'+loadColor+'"><span>Weight Class</span><span></span><b>'+cs.cls.name+' ('+Math.round(cs.ratio*100)+'%) &middot; Stamina Recovery &times;'+cs.cls.rec+'</b></div>';
+      var ok=Object.keys(cs.other||{}).filter(function(k){ return cs.other[k]; });
+      if(ok.length) h+='<div class="attr" style="--accent:var(--gold)"><span>Other Bonuses</span><span></span><b>'+ok.map(function(k){ var v=Math.round(cs.other[k]*10)/10; return k+' '+(v>0?'+':'')+v+'%'; }).join(' &middot; ')+'</b></div>';
       var resKeys=Object.keys(cs.res);
       if(resKeys.length) h+='<div class="attr" style="--accent:var(--c-plague)"><span>Resistances</span><span></span><b>'+resKeys.map(function(k){ return RES_NAMES[k]+' +'+cs.res[k]+'%'; }).join(' &middot; ')+'</b></div>';
       wrap.innerHTML=h;
