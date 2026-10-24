@@ -3106,6 +3106,9 @@ footer li{color:#6f665b}
     // and (for weapons) runes - rings and utility runes don't get this sub-editor.
     var DETAIL_CATS=['weapon','offhand','helm','chest','legs','gloves','ring'];
     var WEAPON_DETAIL_CATS=['weapon','offhand'];
+    // Only actual weapons carry rune slots. Shields and quivers sit in the off-hand slots too, but
+    // have nowhere to socket a rune, so they get (and keep) an empty rune list.
+    function takesRunes(key){ return String(key||'').indexOf('/db/weapons/')===0; }
     var RARITIES=[
       {id:'standard',name:'Common'},
       {id:'magical',name:'Magical'},
@@ -3895,7 +3898,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       html+=detailFieldRow('Rarity','<select class="cb-detail-rarity" data-id="'+id+'"'+(uniqOk&&m.rarity==='unique'?' disabled title="Unique items are always Unique"':'')+'>'+rarityOpts+'</select>');
       html+=detailFieldRow('Creation Level (1&ndash;16)','<input type="number" inputmode="numeric" pattern="[0-9]*" class="cb-detail-creation" data-id="'+id+'" min="'+uniqFloor(id)+'" max="16" value="'+Math.min(m.creation||m.level,m.level)+'"><small class="cb-detail-hint cb-rule">Upgrade level can\u2019t be lower than creation level, so raising creation raises upgrade too.</small>');
       html+=detailFieldRow('Upgrade Level (1&ndash;16)','<input type="number" inputmode="numeric" pattern="[0-9]*" class="cb-detail-level" data-id="'+id+'" min="'+uniqFloor(id)+'" max="16" value="'+m.level+'">');
-      if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
+      if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1&&m.runes.length){
         html+=detailFieldRow('Weapon Runes ('+m.runes.length+')','<span class="cb-detail-slots">'+detailSlotInputs(id,'runes',m.runes,'Rune')+'</span>');
       }
       html+=detailFieldRow('Facet','<span class="cb-clrw"><input type="text" class="cb-detail-facet" data-id="'+id+'" data-pool="'+enchPoolFor(id)+'" autocomplete="off" value="'+(m.facet||'').replace(/"/g,'&quot;')+'" placeholder="None"><button type="button" class="cb-clr" tabindex="-1" aria-label="Clear" title="Clear">&times;</button></span>');
@@ -5270,6 +5273,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       equipped[id]=key;
       if(DETAIL_CATS.indexOf(meta.cat)>-1){
         itemMeta[id]=normalizeItemMeta(defaultItemMeta(meta.cat,item.lv));
+        if(!takesRunes(key)) itemMeta[id].runes=[];
         if(UNIQ_BY_ITEM[key]) applyUniqueEnchants(id); else if(RING_OWN[key]) applyRingOwn(id);
         // some weapons ship with a rune already socketed (the card lists it ahead of the empty slots)
         if(WEAPON_DETAIL_CATS.indexOf(meta.cat)>-1){
@@ -5347,7 +5351,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         Object.keys(o.m||{}).forEach(function(id){
           var cur=itemMeta[id], sv=o.m[id]; if(!cur||!equipped[id]) return;
           cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.creation=Math.max(1,Math.min(cur.level,+sv.c||+sv.l||1)); cur.facet=sv.f||'';
-          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=(sv.u||[]).slice(); if(cur.cat==='ring'&&sv.x) cur.resists=sv.x.slice(0,2).map(function(r){ return {k:r&&r.k||'',v:r&&r.v||''}; });
+          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=takesRunes(equipped[id])?(sv.u||[]).slice():[]; if(cur.cat==='ring'&&sv.x) cur.resists=sv.x.slice(0,2).map(function(r){ return {k:r&&r.k||'',v:r&&r.v||''}; });
           clampUniqLv(id); normalizeItemMeta(cur); reconcileOwn(id);
           var lb=slotEls[id].el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=cur.level;
         });
