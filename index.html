@@ -106,7 +106,7 @@
   function srcChip(n){ var nm=SRC[n]||('Source '+n); return '<span class="wd-src" data-s="'+n+'">'+(SRC[n]?'<i class="wd-ic" data-ic="src-'+n+'"></i>':'')+esc(nm)+'</span>'; }
   function itemHref(key){ try{ if(window.__itemUrl) return window.__itemUrl(key); }catch(e){} return '#item/'+encodeURIComponent(key); }
   function linkHtml(l){
-    var ic=l.pos?'<span class="wd-li-ic" style="background-position:'+l.pos[0]+'px '+l.pos[1]+'px"></span>':'<span class="wd-li-ic none"></span>';
+    var ic=l.p?'<span class="wd-li-ic" style="background-position:'+(-l.p[0]*18)+'px '+(-l.p[1]*18)+'px"></span>':'<span class="wd-li-ic none"></span>';
     return '<a class="wd-link'+(l.rar?' rar-'+esc(l.rar):'')+'" href="'+esc(itemHref(l.key))+'" data-k="'+esc(l.key)+'">'+ic+'<span class="wd-li-name">'+esc(l.name)+'</span></a>';
   }
   // adj: optional per-render overrides from the builder {stat:{StatArmor:'260',...}, req:fn(count)->value}
