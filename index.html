@@ -77,6 +77,13 @@
    moment later. The router adds body.paged right before its first route(). */
 body:not(.paged) .wrap > *:not(header.masthead),html.cb-shared-pending body:not(.cb-shared) .wrap > *:not(header.masthead){visibility:hidden}
 html.auth-popup .wrap,html.auth-popup .pgbar,html.auth-popup #cbModal{visibility:hidden!important}
+body.pg-maint [data-page].pg-on{display:none!important}
+.pg-maint{padding:72px 16px 96px}
+.pg-maint-box{max-width:640px;margin:0 auto;text-align:center;border:1px solid rgba(201,169,110,.35);background:rgba(0,0,0,.35);padding:40px 32px}
+.pg-maint-kicker{font-family:var(--data);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+.pg-maint-box h2{margin:0 0 16px}
+.pg-maint-box p{color:#d9ccb0;line-height:1.6;margin:0 0 12px}
+.pg-maint-sub{opacity:.75;font-size:.95em}
 html.auth-popup body{overflow:hidden}
 html.auth-popup .auth-popup-note{position:fixed;inset:0;display:grid;place-items:center;text-align:center;color:var(--gold);font-family:var(--serif,Georgia,serif);font-size:1.15rem;letter-spacing:.04em;z-index:99}
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
@@ -6776,7 +6783,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // dropdown link or a direct #hash should still light up the Gear tab as the active button.
   CHAP_TITLE['gear']=CHAP_TITLE['infusions'];
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
+  // Item database rebuild: every section that draws on the item cards is parked behind a notice
+  // until the cards, icons and vendor stock are regenerated from the game files.
+  var MAINT_GROUPS={cat:1,recipes:1,vend:1,cerim:1,itempage:1};
+  function maintNotice(on){
+    var n=document.getElementById('pgMaint');
+    if(!n){ n=document.createElement('section'); n.id='pgMaint'; n.className='pg-maint'; n.innerHTML='<div class="pg-maint-box"><p class="pg-maint-kicker">Rebuilding</p><h2>The item database is being rebuilt</h2><p>The Trove, Crafting Recipes, Vendors and the Cerim Builder are offline for a short while so every item card, icon and vendor listing can be regenerated from the game files. Saved and published builds are safe and will come back as they were.</p><p class="pg-maint-sub">Factions &amp; Classes, Infusions &amp; Enchantments, Media and Community Builds are still open.</p></div>'; var w=document.querySelector('.wrap'); var bar=document.querySelector('.pgbar'); var top=bar; while(top&&top.parentNode!==w) top=top.parentNode; var h=top||(w&&w.querySelector('header.masthead')); if(h&&h.parentNode===w) w.insertBefore(n,h.nextSibling); else (w||document.body).appendChild(n); }
+    n.hidden=!on; document.body.classList.toggle('pg-maint',!!on);
+  }
   function show(group,chap){ current=group; currentChap=chap;
+    maintNotice(!!MAINT_GROUPS[group]);
     document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); });
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
