@@ -2203,6 +2203,21 @@ section,article.klass{scroll-margin-top:24px}
 .hero-sub{margin:0;font-size:15.5px;line-height:1.6;color:var(--muted);max-width:68ch}
 @media (max-width:760px){.hero{min-height:340px}.hero-text{padding:30px 22px 48px 30px;max-width:none;text-align:left}.hero-sub{margin-left:0}.hero-art::after{background:linear-gradient(180deg,rgba(10,8,7,.2) 0%,rgba(10,8,7,.9) 55%,rgba(10,8,7,.97) 100%)}}
 
+
+/* home on desktop: the video is the whole screen, the logo floats over it, and the menu runs down the right edge */
+@media (min-width:761px){
+  body.on-home .masthead{height:0;padding-block:0;z-index:60}
+  body.on-home .masthead .logo{margin-top:26px}
+  body.on-home .header-bg,body.on-home .masthead .keybar{display:none}
+  body.on-home .hero{margin-top:0;min-height:100vh;min-height:100svh}
+  body.on-home .pgbar{position:absolute;top:50vh;right:0;transform:translateY(-50%);flex-direction:column;flex-wrap:nowrap;align-items:flex-end;gap:2px;margin:0;padding:12px 26px 12px 40px;z-index:70;background:none}
+  body.on-home .pgbar::before{display:none}
+  body.on-home .pgbar-item{justify-content:flex-end}
+  body.on-home .pgbar button{text-align:right;text-shadow:0 1px 6px rgba(0,0,0,.9)}
+  body.on-home .pgbar-right{margin:10px 0 0;flex-direction:column;align-items:flex-end;gap:8px}
+  body.on-home .toc-drop{left:auto;right:100%;top:-6px;margin-right:22px}
+  body.on-home .hero-art::after{background:linear-gradient(90deg,rgba(10,8,7,.8) 0%,rgba(10,8,7,.62) 34%,rgba(10,8,7,.08) 62%,rgba(10,8,7,.35) 100%),linear-gradient(270deg,rgba(10,8,7,.55) 0%,rgba(10,8,7,0) 22%),linear-gradient(180deg,rgba(10,8,7,.45) 0%,rgba(10,8,7,0) 22%,rgba(10,8,7,0) 55%,rgba(10,8,7,.55) 100%)}
+}
 .contents{margin:22px 0 6px;padding:12px 18px 12px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:grid;grid-template-columns:1fr;gap:6px}
 .contents h3{margin:0 0 2px;font-size:9.5px;font-family:var(--data);letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
 .contents > ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px 10px}
@@ -7067,7 +7082,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   CHAP_TITLE['gear']=CHAP_TITLE['infusions'];
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
   function show(group,chap){ current=group; currentChap=chap;
-    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); });
+    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home');
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
