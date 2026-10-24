@@ -491,6 +491,20 @@ body.lt-on #lore .lore-beats{display:none}
   .lt-title{max-width:none;overflow-wrap:break-word;word-break:break-word}
 }
 </style><!-- /LT:css -->
+<!-- Visitor counts: GoatCounter (no cookies, no personal data; see /privacy). Paths are
+     recorded without query strings so shared-build links don't leak their payload into the stats,
+     and the sign-in popup window is never counted. -->
+<script>
+window.goatcounter={
+  path:function(p){ return location.pathname+location.hash; },
+  no_onload:(function(){ try{ return !!(window.opener&&window.name==='wdAuth'); }catch(e){ return false; } })()
+};
+// Called by the page router after every in-page navigation (this is a single-page site, so the
+// browser never reloads). A view is counted once per distinct path; the load itself is counted by
+// count.js, so the path at load time starts out as already counted.
+window.__gcCount=(function(){ var last=location.pathname+location.hash; return function(){ try{ var g=window.goatcounter, p=g.path(); if(p===last||g.no_onload) return; last=p; if(g.count) g.count({path:p}); }catch(e){} }; })();
+</script>
+<script data-goatcounter="https://wickeddossier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5945,7 +5959,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function goProfile(name){
           // Keep relative assets resolving from the root once the path gains a second segment.
           if(!document.querySelector('base')){ var bb=document.createElement('base'); bb.href='/'; document.head.appendChild(bb); }
-          if(history.pushState){ history.pushState(null,'','/profile/'+encodeURIComponent(name)); syncHash(); } else location.href='/profile/'+encodeURIComponent(name);
+          if(history.pushState){ history.pushState(null,'','/profile/'+encodeURIComponent(name)); syncHash(); if(window.__gcCount) window.__gcCount(); } else location.href='/profile/'+encodeURIComponent(name);
         }
         window.__cmGoProfile=goProfile;
         function loadLiked(){
@@ -6791,6 +6805,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       else if(history.pushState) history.pushState(null,'',url);
       else location.hash=(url.indexOf('#')>-1)?url.slice(url.indexOf('#')):'';
     }catch(e){}
+    if(window.__gcCount) window.__gcCount();
     // The Builds tab from an author page: the section is already shown and pushState fires no
     // event, so tell the community module the path changed (it reads /profile/<name> vs /builds).
     if(window.__cmProfile) window.__cmProfile();
@@ -6814,6 +6829,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     show(group,chap);
     var url=urlFor(group,id);
     try{ if(CAN_USE_CLEAN_URLS && history.pushState) history.pushState(null,'',url); }catch(e){}
+    if(window.__gcCount) window.__gcCount();
     el.scrollIntoView({block:'start'});
     return true;
   };
@@ -7050,6 +7066,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(CAN_USE_CLEAN_URLS && history.pushState) history.pushState(null,'',itemFullUrl(key));
       else location.hash=itemHash(key);
     }catch(e){}
+    if(window.__gcCount) window.__gcCount();
     ipRender(key);
     window.scrollTo(0,0);
   };
