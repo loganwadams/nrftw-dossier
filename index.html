@@ -1352,6 +1352,8 @@ body.cb-shared .cb-dmg-cond{display:none}
 .cb-sh-item:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--edge)}
 .cb-sh-item.r-magical:before{background:#5b8ef0}.cb-sh-item.r-plagued:before{background:#7862f5}.cb-sh-item.r-unique:before{background:#e0903a}
 .cb-sh-item:hover{border-color:rgba(201,162,74,.4)}
+.cb-sh-item.is-exalted{border-color:rgba(242,195,92,.6);box-shadow:0 0 0 1px rgba(242,195,92,.25),0 0 10px rgba(242,195,92,.15)}
+.cb-sh-item.is-exalted:before{background:#f2c35c}
 .cb-sh-top{display:flex;align-items:center;gap:12px}
 .cb-sh-top .m-ic{flex:none}
 .cb-sh-slot{font-family:var(--data);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#7c7265;margin-bottom:2px}
@@ -5542,6 +5544,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var m={}; Object.keys(itemMeta).forEach(function(id){
         if(!equipped[id]) return; var v=itemMeta[id];
         m[id]={r:v.rarity,l:v.level,c:v.creation,f:v.facet||'',g:v.gems||[],e:v.enchants||[],u:v.runes||[],x:v.resists||null};
+        if(v.exalts&&v.exalts.some(function(n){ return n>0; })){ m[id].xa=v.exalts.slice(0,5); m[id].xb=v.exBase||{}; }
       });
       var out={v:1,lv:+document.getElementById('cbLevel').value,a:a,e:Object.assign({},equipped),m:m};
       if(CB_CREDIT) out.cr=CB_CREDIT;
@@ -5588,7 +5591,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         Object.keys(o.m||{}).forEach(function(id){
           var cur=itemMeta[id], sv=o.m[id]; if(!cur||!equipped[id]) return;
           cur.rarity=sv.r||'standard'; cur.level=Math.max(1,Math.min(16,+sv.l||1)); cur.creation=Math.max(1,Math.min(cur.level,+sv.c||+sv.l||1)); cur.facet=sv.f||'';
-          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=takesRunes(equipped[id])?(sv.u||[]).slice():[]; if(cur.cat==='ring'&&sv.x) cur.resists=sv.x.slice(0,2).map(function(r){ return {k:r&&r.k||'',v:r&&r.v||''}; });
+          cur.gems=(sv.g||[]).slice(); cur.enchants=(sv.e||[]).slice(); cur.runes=takesRunes(equipped[id])?(sv.u||[]).slice():[]; if(sv.xa){ cur.exalts=sv.xa.slice(0,5); cur.exBase=sv.xb||{}; } if(cur.cat==='ring'&&sv.x) cur.resists=sv.x.slice(0,2).map(function(r){ return {k:r&&r.k||'',v:r&&r.v||''}; });
           clampUniqLv(id); normalizeItemMeta(cur); reconcileOwn(id);
           var lb=slotEls[id].el.querySelector('.cb-slot-lv'); if(lb) lb.textContent=cur.level;
         });
@@ -5614,7 +5617,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var rows='';
         function row(k,list){ (list||[]).filter(Boolean).forEach(function(v){ rows+='<li><i>'+k+'</i><span>'+escH(v)+'</span></li>'; }); }
         if(m){ row('Facet',m.facet?[m.facet]:[]); row('Rune',m.runes); row('Gem',m.gems); row('Enchant',m.enchants); }
-        html+='<div class="cb-sh-item r-'+rar+'" data-slot="'+id+'"><div class="cb-sh-top"><span class="m-ic" data-k="'+equipped[id]+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span><div>'+
+        var exd=!!(m&&(m.exalts||[]).some(function(n){ return n>0; }));
+        html+='<div class="cb-sh-item r-'+rar+(exd?' is-exalted':'')+'" data-slot="'+id+'"><div class="cb-sh-top"><span class="m-ic" data-k="'+equipped[id]+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span><div>'+
           '<div class="cb-sh-slot">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</div>'+
           '<div class="cb-sh-name r-'+rar+'">'+escH(item.n)+'</div>'+
           '<div class="cb-sh-meta">'+escH(item.t||'')+(m?' &middot; '+CB_RARITY_NAME[rar]+' &middot; Upgrade '+m.level:'')+'</div></div></div>'+(rows?'<ul class="cb-sh-mods">'+rows+'</ul>':'')+'</div>';
