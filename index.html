@@ -6202,7 +6202,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
               '<div class="cm-sum">Level '+sm.lv+(sm.types.length?' &middot; '+escH(sm.types.slice(0,2).join(', ')):'')+'</div>'+
-              (sm.gear.length?'<div class="cm-gear">'+sm.gear.map(function(g){ return '<span class="cm-gi r-'+escH(g.r)+'" data-k="'+escH(g.k)+'"><span class="m-ic" style="background-position:-'+(g.p?g.p[0]*48:0)+'px -'+(g.p?g.p[1]*48:0)+'px"></span></span>'; }).join('')+'</div>':'')+
+              
               '<div class="cm-foot-row"><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span><span class="cm-acts">'+
                 '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-8.6C.9 9.2 2.4 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.6 0 5.1 3.7 3.3 6.9C19 16.4 12 21 12 21z"/></svg><span>'+r.likes+'</span></button>'+
                 '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></span></div>'+
