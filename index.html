@@ -24,6 +24,9 @@
   // then keep the content hidden (see the body:not(.paged) rule) rather than showing the empty
   // builder in the meantime. restoreBuild() clears the flag if the link turns out not to be one.
   if(/[?&]s=/.test(location.search)) document.documentElement.classList.add('cb-shared-pending');
+  // Sign-in popup: this window was opened by the site itself to run the Google/Discord handshake
+  // (see signIn in the account module). Show only a "finishing sign-in" note; it closes itself.
+  try{ if(window.opener&&window.name==='wdAuth'){ document.documentElement.classList.add('auth-popup'); document.addEventListener('DOMContentLoaded',function(){ var n=document.createElement('div'); n.className='auth-popup-note'; n.textContent='Finishing sign-in\u2026'; document.body.appendChild(n); }); } }catch(e){}
   document.addEventListener('click',function(e){
     if(!document.querySelector('base')) return;
     var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
@@ -73,6 +76,9 @@
    out of sight - otherwise a fresh load paints Home first and the real page replaces it a
    moment later. The router adds body.paged right before its first route(). */
 body:not(.paged) .wrap > *:not(header.masthead),html.cb-shared-pending body:not(.cb-shared) .wrap > *:not(header.masthead){visibility:hidden}
+html.auth-popup .wrap,html.auth-popup .pgbar,html.auth-popup #cbModal{visibility:hidden!important}
+html.auth-popup body{overflow:hidden}
+html.auth-popup .auth-popup-note{position:fixed;inset:0;display:grid;place-items:center;text-align:center;color:var(--gold);font-family:var(--serif,Georgia,serif);font-size:1.15rem;letter-spacing:.04em;z-index:99}
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
 .pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;padding:8px 0}
 /* the bar's dark glass background/border run edge-to-edge on both desktop and mobile, breaking
@@ -5460,7 +5466,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return m.full_name||m.name||m.user_name||((u&&u.email)||'').split('@')[0]||'Signed in';
       }
       function notify(){ listeners.forEach(function(f){ try{ f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:avatarOf(user)||(myProfile&&myProfile.avatar_url)||null}:null); }catch(e){} }); }
+      var POP=false; try{ POP=!!(window.opener&&window.name==='wdAuth'); }catch(e){}
+      // Hand the finished session to the window that opened this popup (same origin only) and close.
+      function popReport(payload){
+        try{ window.opener.postMessage(Object.assign({type:'wdAuth'},payload),location.origin); }catch(e){}
+        setTimeout(function(){ try{ window.close(); }catch(e){} },150);
+      }
       function setUser(u){
+        if(POP) return; // the popup never shows account UI; the opener takes over once it has the session
         var changed=(u&&u.id)!==(user&&user.id);
         user=u; if(changed) myProfile=null;
         $('cbAcctIn2').hidden=!u; $('cbAcctHint').hidden=!!u;
@@ -5486,6 +5499,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var qs=new URLSearchParams(location.search), why=qs.get('error_description')||qs.get('error')||'';
           var hadVerifier=false; try{ for(var q=0;q<localStorage.length;q++){ var kk=localStorage.key(q); if(kk&&/code-verifier/.test(kk)) hadVerifier=true; } }catch(e){ why=why||'browser storage is blocked ('+e.message+')'; }
           function fail(detail){
+            if(POP){ popReport({ok:false,detail:detail||why||'unknown'}); return; }
             if(user) return;
             if(/user email/i.test(detail||'')){ openModal('Discord needs a verified email','<p>Discord didn\u2019t share an email address for this account, and the dossier needs one to create your sign-in. Your Discord account probably has no email on it, or it isn\u2019t verified yet.</p><p>In Discord, open <strong>User Settings \u2192 My Account</strong>, add or verify your email, then come back and tap <strong>Connect with Discord</strong> again.</p>'); try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} return; }
             openModal('Sign-in didn’t finish','<p>Discord sent you back, but the sign-in couldn’t be completed. Please try once more from a normal (non-private) browser tab on wickeddossier.com.</p><p>Details for support: <em>'+escH(detail||'unknown')+'</em></p>');
@@ -5495,7 +5509,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           else client().then(function(c){ return c.auth.initialize(); }).then(function(r){
               if(r&&r.error) throw r.error;
               return c0().auth.getSession();
-            }).then(function(r){ if(!(r&&r.data&&r.data.session)) fail('no session came back'+(hadVerifier?'':' (the sign-in verifier was missing from browser storage)')); })
+            }).then(function(r){
+              var ss=r&&r.data&&r.data.session;
+              if(!ss) return fail('no session came back'+(hadVerifier?'':' (the sign-in verifier was missing from browser storage)'));
+              if(POP) popReport({ok:true,access_token:ss.access_token,refresh_token:ss.refresh_token});
+            })
             .catch(function(e){ fail((e&&e.message)||String(e)); });
           function c0(){ return sb; }
         }
@@ -5517,13 +5535,58 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
 
       // ---- sign in / out (the buttons live in the site menu bar; see the nav module at the end of the page)
+      var authPop=null;
       function signIn(provider){
         provider=(provider==='google')?'google':'discord';
+        // Open the provider in a small popup (like most game-tool sites) so the page you're on
+        // stays put; the popup lands back on this site, posts the session over and closes itself.
+        // Only the real site can do this (the popup posts to its own origin); anywhere else, and
+        // when the popup is blocked, fall back to the full-page redirect.
+        var pop=null, w=520, h=700;
+        if(/^https?:$/.test(location.protocol)&&!/^\/profile\//.test(location.pathname)){
+          try{
+            var l=Math.max(0,Math.round((screen.width-w)/2)), t=Math.max(0,Math.round((screen.height-h)/2));
+            if(authPop&&!authPop.closed) authPop.close();
+            pop=window.open('','wdAuth','popup=yes,width='+w+',height='+h+',left='+l+',top='+t+',resizable=yes,scrollbars=yes');
+            if(pop){ try{ pop.document.write('<!doctype html><title>Sign in</title><body style="margin:0;background:#0a0807;color:#c8a04a;font:1.1rem Georgia,serif;display:grid;place-items:center;height:100vh">Connecting\u2026</body>'); }catch(e){} }
+          }catch(e){ pop=null; }
+        }
+        authPop=pop;
         client().then(function(c){
-          try{ var sec=$('cerim-builder'); sessionStorage.setItem('cbAfterAuth',(sec&&sec.offsetParent)?'builder':'home'); }catch(e){}
-          return c.auth.signInWithOAuth({provider:provider,options:{redirectTo:location.origin+'/'}});
-        }).catch(function(e){ openModal('Sign in',"<p>Sign-in isn't available right now. "+escH(cleanErr(e))+'</p>'); });
+          if(!pop){ try{ var sec=$('cerim-builder'); sessionStorage.setItem('cbAfterAuth',(sec&&sec.offsetParent)?'builder':'home'); }catch(e){} }
+          return c.auth.signInWithOAuth({provider:provider,options:{redirectTo:location.origin+'/',skipBrowserRedirect:!!pop}});
+        }).then(function(r){
+          if(!pop) return;
+          if(r&&r.error) throw r.error;
+          if(!(r&&r.data&&r.data.url)) throw new Error('no sign-in link came back');
+          pop.location.href=r.data.url;
+        }).catch(function(e){ if(pop){ try{ pop.close(); }catch(x){} } openModal('Sign in',"<p>Sign-in isn't available right now. "+escH(cleanErr(e))+'</p>'); });
       }
+      // Belt and braces: the popup's client also writes the session to this origin's storage, so
+      // if its postMessage never arrives (opener severed on the way through the provider), pick
+      // the session up from the storage event instead and close the popup ourselves.
+      if(!POP) window.addEventListener('storage',function(e){
+        if(!authPop||!e.key||e.key.indexOf('sb-')!==0||e.key.indexOf('-auth-token')<0||/code-verifier/.test(e.key)||!e.newValue) return;
+        var ss=null; try{ ss=JSON.parse(e.newValue); }catch(x){}
+        if(!ss||!ss.access_token||!ss.refresh_token) return;
+        var pop=authPop; authPop=null;
+        client().then(function(c){ return c.auth.setSession({access_token:ss.access_token,refresh_token:ss.refresh_token}); })
+          .then(function(){ setTimeout(function(){ try{ if(pop&&!pop.closed) pop.close(); }catch(x){} },400); }).catch(function(){});
+      });
+      if(!POP) window.addEventListener('message',function(e){
+        var d=e.data; if(!d||d.type!=='wdAuth'||e.origin!==location.origin) return;
+        if(authPop&&e.source&&e.source!==authPop) return;
+        authPop=null;
+        if(!d.ok){
+          var detail=d.detail||'';
+          if(/user email/i.test(detail)) openModal('Discord needs a verified email','<p>Discord didn\u2019t share an email address for this account, and the dossier needs one to create your sign-in. In Discord, open <strong>User Settings \u2192 My Account</strong>, add or verify your email, then try again.</p>');
+          else if(!/access_denied|cancel/i.test(detail)) openModal('Sign-in didn\u2019t finish','<p>The sign-in couldn\u2019t be completed. Please try once more.</p><p>Details for support: <em>'+escH(detail||'unknown')+'</em></p>');
+          return;
+        }
+        client().then(function(c){ return c.auth.setSession({access_token:d.access_token,refresh_token:d.refresh_token}); })
+          .then(function(r){ if(r&&r.error) throw r.error; })
+          .catch(function(e){ openModal('Sign-in didn\u2019t finish','<p>'+escH(cleanErr(e))+'</p>'); });
+      });
       function signOut(){
         client().then(function(c){ return c.auth.signOut(); }).then(function(){ setUser(null); }).catch(function(){});
       }
