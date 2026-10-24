@@ -385,6 +385,8 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-del:hover{color:#e07a6a;text-decoration:underline}
 @media (max-width:600px){.ep-del{margin-left:0;flex-basis:100%;text-align:left;margin-top:6px}}
 .cm-pf-links{display:inline-flex;align-items:center;gap:10px;align-self:center}
+.cm-pf-dname{align-self:center;font-family:var(--data);font-size:12px;color:var(--bone);background:rgba(0,0,0,.35);border:1px solid var(--edge);padding:4px 9px}
+.cm-pf-dname::before{content:"Discord: ";color:#8b8174}
 .cm-pf-discord{display:inline-flex;align-items:center;align-self:center;color:var(--gold);filter:drop-shadow(0 1px 2px rgba(0,0,0,.9)) drop-shadow(0 0 6px rgba(0,0,0,.6));transition:color .15s,transform .15s}
 .cm-pf-discord:hover{color:#efe3c8}
 .cm-pf-discord svg{width:26px;height:26px}
@@ -395,6 +397,16 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-id{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
 .ep-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-dim);flex:none}
 .ep-id .cb-pub-l{margin:0;flex:1}
+.ep-toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;flex:none;align-self:flex-start;margin-left:auto}
+.ep-toggle-l{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ep-toggle input{position:absolute;opacity:0;width:0;height:0}
+.ep-switch{position:relative;width:38px;height:20px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid var(--edge);transition:background .15s,border-color .15s;flex:none}
+.ep-switch::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#8b8174;transition:transform .15s,background .15s}
+.ep-toggle input:checked+.ep-switch{background:rgba(201,169,110,.25);border-color:var(--gold-dim)}
+.ep-toggle input:checked+.ep-switch::after{transform:translateX(18px);background:var(--gold)}
+.ep-toggle input:focus-visible+.ep-switch{outline:1px solid var(--gold);outline-offset:2px}
+.ep-toggle:hover .ep-toggle-l{color:var(--bone)}
+@media (max-width:600px){.ep-id{flex-wrap:wrap}.ep-toggle{margin-left:0;flex-basis:100%;align-self:auto}}
 .cm-pf-head{margin:-8px 0 22px;padding:0;display:flex;flex-direction:column;gap:8px}
 .cm-pf-name{display:none}
 .cm-pf-bio{margin-top:0;font-size:15px;color:var(--bone);line-height:1.6;max-width:70ch}
@@ -2763,19 +2775,20 @@ footer li{color:#6f665b}
     <div class="ep-wrap">
       <div id="epSignedOut" class="ep-box" hidden><p>Sign in to edit your profile.</p><button type="button" class="cb-mbtn" id="epSignIn">Sign in</button></div>
       <form id="epForm" class="ep-box" hidden>
-        <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><small>Shown on every build you publish. Usernames can&rsquo;t be changed. The picture is the one on the account you signed in with.</small></div></div>
+        <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><small>Shown on every build you publish. Usernames can&rsquo;t be changed. The picture is the one on the account you signed in with.</small></div>
+          <label class="ep-toggle" title="When off, your name on builds is plain text and your profile page is hidden"><span class="ep-toggle-l">Public profile</span><input type="checkbox" id="epPublic" checked><span class="ep-switch" aria-hidden="true"></span></label></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
         <label class="cb-pub-l cb-pub-chk" id="epDiscordRow"><input type="checkbox" id="epDiscord"> <span>Share my Discord profile <small>Adds a Discord icon next to your name that links to <b id="epDiscordName"></b></small></span></label>
-        <p class="ep-note" id="epDiscordNote" hidden>Sign in with Discord to be able to share your Discord profile.</p>
+        <p class="ep-note" id="epDiscordNote" hidden>Signed in with Google? Add your Discord username under Links below; it shows as a Discord icon that reveals your username.</p>
         <div class="ep-socials">
           <div class="cb-pub-l ep-social-l">Links on your profile <small>(optional &mdash; just your name on each site)</small></div>
+          <label class="cb-pub-l ep-social" id="epDiscordManualRow" hidden><span>Discord</span><span class="ep-url"><i>@</i><input type="text" id="epDiscordManual" maxlength="32" placeholder="yourusername" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>Twitch</span><span class="ep-url"><i>twitch.tv/</i><input type="text" id="epTwitch" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>YouTube</span><span class="ep-url"><i>youtube.com/@</i><input type="text" id="epYoutube" maxlength="40" placeholder="yourchannel" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>Kick</span><span class="ep-url"><i>kick.com/</i><input type="text" id="epKick" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>Steam</span><span class="ep-url"><i>steamcommunity.com/id/</i><input type="text" id="epSteam" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>Reddit</span><span class="ep-url"><i>reddit.com/u/</i><input type="text" id="epReddit" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
         </div>
-        <label class="cb-pub-l cb-pub-chk"><input type="checkbox" id="epPublic" checked> <span>Show my profile page <small>(when off, your name on builds is plain text and links to nothing)</small></span></label>
         <div class="ep-actions"><button type="submit" class="cb-tool primary" id="epSave">Save profile</button><a href="#" id="epView" class="cb-tool" hidden>View my profile</a><span class="cb-mmsg" id="epMsg" role="status"></span><button type="button" class="ep-del" id="epDelAcct">Delete my account</button></div>
       </form>
     </div>
@@ -5658,7 +5671,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         v=v.replace(/^https?:\/\//i,'').replace(/^(m\.|www\.)/i,'');
         v=v.replace(/^(twitch\.tv|youtube\.com|youtu\.be|kick\.com|steamcommunity\.com|reddit\.com)\//i,'');
         v=v.replace(/^(c|channel|user|id|profiles|u)\//i,'').replace(/^u\//i,'').replace(/[?#].*$/,'').replace(/\/+$/,'');
-        if(kind==='youtube') v=v.replace(/^@/,'');
+        if(kind==='youtube'||kind==='discord') v=v.replace(/^@/,'');
+        if(kind==='discord'){ if(!/^[A-Za-z0-9_.]{2,32}$/.test(v)) return false; return v.toLowerCase(); }
         if(!/^[A-Za-z0-9_.-]{2,40}$/.test(v)) return false;
         if(kind==='youtube') v='@'+v;
         return v;
@@ -5674,7 +5688,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         epOut.hidden=!!user; epForm.hidden=!user;
         if(!user) return;
         var dn=discordName(user);
-        $('epDiscordRow').hidden=!dn; $('epDiscordNote').hidden=!!dn; if(dn) $('epDiscordName').textContent=dn;
+        $('epDiscordRow').hidden=!dn; $('epDiscordNote').hidden=!!dn; $('epDiscordManualRow').hidden=!!dn; if(dn) $('epDiscordName').textContent=dn;
         $('epMsg').textContent=''; var dl=$('epDelAcct'); if(dl){ dl.dataset.sure=''; dl.textContent='Delete my account'; }
         loadMyProfile().then(function(p){
           p=p||{};
@@ -5682,7 +5696,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           $('epName').textContent=p.display_name;
           var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; } else ai.hidden=true;
           $('epBio').value=p.bio||'';
-          $('epDiscord').checked=!!p.discord_name;
+          $('epDiscord').checked=!!p.discord_name; $('epDiscordManual').value=dn?'':(p.discord_name||'');
           $('epTwitch').value=p.twitch||''; $('epYoutube').value=(p.youtube||'').replace(/^@/,''); $('epKick').value=p.kick||''; $('epSteam').value=p.steam||''; $('epReddit').value=p.reddit||'';
           $('epPublic').checked=p.is_public!==false;
           var v=$('epView'); v.hidden=p.is_public===false; v.href='/profile/'+encodeURIComponent(p.display_name||'');
@@ -5694,12 +5708,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           e.preventDefault();
           var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), shareD=!!dn&&$('epDiscord').checked, m=$('epMsg');
           if(!nm){ registerUsername(fillProfilePage); return; }
+          var manualD=dn?null:cleanHandle($('epDiscordManual').value,'discord');
+          if(manualD===false){ m.textContent='Enter just your Discord username (letters, numbers, dots, underscores).'; m.className='cb-mmsg err'; $('epDiscordManual').focus(); return; }
           var soc={twitch:cleanHandle($('epTwitch').value,'twitch'),youtube:cleanHandle($('epYoutube').value,'youtube'),kick:cleanHandle($('epKick').value,'kick'),steam:cleanHandle($('epSteam').value,'steam'),reddit:cleanHandle($('epReddit').value,'reddit')};
           var badK=Object.keys(soc).filter(function(k){ return soc[k]===false; })[0];
           $('epTwitch').value=soc.twitch||$('epTwitch').value; $('epYoutube').value=soc.youtube?soc.youtube.replace(/^@/,''):$('epYoutube').value; $('epKick').value=soc.kick||$('epKick').value; $('epSteam').value=soc.steam||$('epSteam').value; $('epReddit').value=soc.reddit||$('epReddit').value;
           if(badK){ m.textContent='Enter just your '+({twitch:'Twitch',youtube:'YouTube',kick:'Kick',steam:'Steam',reddit:'Reddit'})[badK]+' name (letters, numbers, dots, dashes, underscores).'; m.className='cb-mmsg err'; $('ep'+badK.charAt(0).toUpperCase()+badK.slice(1)).focus(); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,discord_id:shareD?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:dn?(shareD?dn:null):manualD,discord_id:(dn&&shareD)?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
             .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
@@ -5848,13 +5864,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(!curProfile&&rows) renderBoards();
           pf.hidden=!curProfile;
           var pfA=$('cmPfAvatar'), sh=sec.querySelector('.sect-head');
-          if(!curProfile){ setHeading('Community Builds'); pfA.hidden=true; pfA.removeAttribute('src'); ['cmPfDiscord','cmPfTwitch','cmPfYoutube','cmPfKick','cmPfReddit','cmPfSteam'].forEach(function(id){ $(id).hidden=true; }); if(sh) sh.classList.remove('has-avatar'); return; }
-          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); ['cmPfDiscord','cmPfTwitch','cmPfYoutube','cmPfKick','cmPfReddit','cmPfSteam'].forEach(function(id){ var el=$(id); el.hidden=true; el.removeAttribute('href'); }); pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar');
+          if(!curProfile){ setHeading('Community Builds'); pfA.hidden=true; pfA.removeAttribute('src'); ['cmPfDiscord','cmPfTwitch','cmPfYoutube','cmPfKick','cmPfReddit','cmPfSteam'].forEach(function(id){ $(id).hidden=true; }); var dt=document.getElementById('cmPfDname'); if(dt) dt.hidden=true; if(sh) sh.classList.remove('has-avatar'); return; }
+          pfName.textContent=name; pfName.dataset.set='1'; setHeading(name); pfBio.textContent=''; pfCount.textContent=''; pfList.innerHTML=''; var pfD=$('cmPfDiscord'); ['cmPfDiscord','cmPfTwitch','cmPfYoutube','cmPfKick','cmPfReddit','cmPfSteam'].forEach(function(id){ var el=$(id); el.hidden=true; el.removeAttribute('href'); }); var dnTag=document.getElementById('cmPfDname'); if(dnTag) dnTag.hidden=true; pfA.hidden=true; pfA.removeAttribute('src'); if(sh) sh.classList.remove('has-avatar');
           document.title=name+' - Community Builds - Wicked Dossier';
           var key=name.toLowerCase();
           var p=pfCache[key]||(pfCache[key]=client().then(function(c){ return c.from('profiles').select('user_id,display_name,bio,is_public,discord_name,discord_id,avatar_url,twitch,youtube,kick,steam,reddit').ilike('display_name',name.replace(/[%_]/g,'\\$&')).maybeSingle(); }).then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; }));
           p.then(function(prof){ if(curProfile!==name) return;
-            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; if(sh) sh.classList.add('has-avatar'); } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.title='Discord: '+prof.discord_name; if(prof.discord_id) pfD.href='https://discord.com/users/'+encodeURIComponent(prof.discord_id); pfD.hidden=false; }
+            if(prof){ curUid=prof.user_id; if(prof.avatar_url){ pfA.referrerPolicy='no-referrer'; pfA.src=prof.avatar_url; pfA.hidden=false; if(sh) sh.classList.add('has-avatar'); } if(prof.display_name){ pfName.textContent=prof.display_name; setHeading(prof.display_name); document.title=prof.display_name+' - Community Builds - Wicked Dossier'; } if(prof.bio) pfBio.textContent=prof.bio; if(prof.discord_name){ pfD.title='Discord: '+prof.discord_name; pfD.dataset.name=prof.discord_name; if(prof.discord_id){ pfD.href='https://discord.com/users/'+encodeURIComponent(prof.discord_id); pfD.target='_blank'; } else { pfD.href='#'; pfD.removeAttribute('target'); } pfD.hidden=false; }
               [['twitch','cmPfTwitch','Twitch'],['youtube','cmPfYoutube','YouTube'],['kick','cmPfKick','Kick'],['reddit','cmPfReddit','Reddit'],['steam','cmPfSteam','Steam']].forEach(function(k){ var h=prof[k[0]], el=$(k[1]); if(h){ el.href=socialUrl(k[0],h); el.title=k[2]+': '+h; el.hidden=false; } }); }
             if(rows) renderProfileList(); });
           if(rows) renderProfileList(); else load(false);
@@ -5911,6 +5927,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             });
           }
         }
+        $('cmPfDiscord').addEventListener('click',function(e){
+          // No Discord profile URL exists for a bare username, so the icon reveals (and copies) it instead.
+          if(this.getAttribute('href')!=='#') return; e.preventDefault();
+          var n=this.dataset.name||''; var tag=document.getElementById('cmPfDname'); if(!tag){ tag=document.createElement('span'); tag.id='cmPfDname'; tag.className='cm-pf-dname'; this.parentNode.insertAdjacentElement('afterend',tag); }
+          tag.textContent=n; tag.hidden=false; try{ if(navigator.clipboard) navigator.clipboard.writeText(n); }catch(x){}
+        });
         list.addEventListener('click',onListClick); pfList.addEventListener('click',onListClick);
         function onListKey(e){ if(e.key!=='Enter') return; var card=e.target.closest('.cm-card'); if(card&&e.target===card) card.click(); }
         list.addEventListener('keydown',onListKey); pfList.addEventListener('keydown',onListKey);
