@@ -115,7 +115,7 @@
     (ps||[]).forEach(function(p){
       if('t' in p && Object.keys(p).length===1 && adj&&adj.statT&&lastIc&&adj.statT[lastIc]!=null&&/^\d/.test(p.t)){ out.push(esc(adj.statT[lastIc])); lastIc=null; }
       else if('t' in p && Object.keys(p).length===1){ out.push(esc(p.t)); }
-      else if('v' in p){ var v=p.v; if(adj&&adj.stat&&lastIc&&adj.stat[lastIc]!=null){ v=adj.stat[lastIc]; } out.push('<b class="wd-num">'+esc(v)+'</b>'); }
+      else if('v' in p){ var v=p.v; if(!inl&&adj&&adj.stat&&lastIc&&adj.stat[lastIc]!=null){ v=adj.stat[lastIc]; } out.push('<b class="wd-num">'+esc(v)+'</b>'); }
       else if('r' in p){ out.push('<span class="wd-rng">(<b class="wd-num">'+esc(p.r[0])+'</b>–<b class="wd-num">'+esc(p.r[1])+'</b>)</span>'); }
       else if('ic' in p){ lastIc=String(p.ic).replace(/^fi-/,''); out.push(icon(p.ic,inl)); }
       else if('sc' in p){ out.push('<span class="wd-school '+esc(p.sc)+'">'+esc(p.t)+'</span>'); }
@@ -4844,7 +4844,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       return s;
     }
     window.cbTipAdjust=function(anchor,c){
-      var slot=anchor.closest&&anchor.closest('.cb-slot'); if(!slot) return c;
+      var slot=anchor.closest&&anchor.closest('.cb-slot,.cb-sh-item'); if(!slot) return c;
       var id=slot.dataset.slot, m=itemMeta[id], key=equipped[id]; if(!m||!key) return c;
       var out=Object.assign({},c), lv=Math.max(1,Math.min(16,+m.level||+c.lv||1));
       out.lv=lv; out.ex=(function(){ var t=0; (m.exalts||[]).forEach(function(n){ t+=n||0; }); return t>0; })(); out.r=m.rarity||c.r; out.cr=Math.max(1,Math.min(lv,+(m.creation||+c.lv)||+c.lv||lv)); if(/^(unique|legendary)$/.test(out.r)) out.cr=Math.max(out.cr,Math.min(lv,+c.lv||1));
@@ -5614,7 +5614,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var rows='';
         function row(k,list){ (list||[]).filter(Boolean).forEach(function(v){ rows+='<li><i>'+k+'</i><span>'+escH(v)+'</span></li>'; }); }
         if(m){ row('Facet',m.facet?[m.facet]:[]); row('Rune',m.runes); row('Gem',m.gems); row('Enchant',m.enchants); }
-        html+='<div class="cb-sh-item r-'+rar+'"><div class="cb-sh-top"><span class="m-ic" data-k="'+equipped[id]+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span><div>'+
+        html+='<div class="cb-sh-item r-'+rar+'" data-slot="'+id+'"><div class="cb-sh-top"><span class="m-ic" data-k="'+equipped[id]+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span><div>'+
           '<div class="cb-sh-slot">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</div>'+
           '<div class="cb-sh-name r-'+rar+'">'+escH(item.n)+'</div>'+
           '<div class="cb-sh-meta">'+escH(item.t||'')+(m?' &middot; '+CB_RARITY_NAME[rar]+' &middot; Upgrade '+m.level:'')+'</div></div></div>'+(rows?'<ul class="cb-sh-mods">'+rows+'</ul>':'')+'</div>';
