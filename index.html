@@ -490,6 +490,11 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cm-meta b{color:var(--gold)}
 .cm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .cm-card{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));cursor:pointer;transition:border-color .15s,transform .15s}
+.cm-card.g-red{border-left-color:#e5604f}.cm-card.g-blue{border-left-color:#5da2ff}.cm-card.g-gold{border-left-color:#ffd56b;box-shadow:inset 3px 0 12px -6px rgba(255,205,90,.6)}
+.cm-pills{display:flex;flex-wrap:wrap;gap:6px}.cm-pill{font-family:var(--data);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(201,169,110,.28);background:rgba(201,169,110,.07);color:#d9b45f}.cm-pill.dim{border-color:rgba(255,255,255,.1);background:none;color:#8b8174}
+.cm-gear{display:flex;flex-wrap:wrap;gap:5px}.cm-gi{width:34px;height:34px;display:block;overflow:hidden;position:relative;background:rgba(0,0,0,.35);border:1px solid var(--edge);border-bottom:2px solid #5a5043}
+.cm-gi .m-ic{zoom:.708;margin:0;border:0;background-color:transparent;display:block}
+.cm-gi.r-magical{border-bottom-color:#5b8ef0}.cm-gi.r-plagued{border-bottom-color:#7862f5}.cm-gi.r-unique{border-bottom-color:#e0903a}
 .cm-card:hover{border-color:var(--gold);transform:translateY(-1px)}
 .cm-top{display:flex;gap:12px;align-items:center}
 .cm-top .m-ic{width:48px;height:48px;flex:none;border:1px solid var(--edge)}
@@ -500,7 +505,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cm-sum i{font-style:normal;color:var(--gold-dim)}
 .cm-desc{font-size:13.5px;color:var(--bone);line-height:1.5;font-style:italic}
 .cm-attrs{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
-.cm-attrs b{color:var(--bone);font-weight:600}
+.cm-attrs b{color:#d9b45f;font-weight:700;font-size:11px}
 .cm-foot-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:8px;border-top:1px solid rgba(201,169,110,.12)}
 .cm-date{font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
 .cm-acts{display:flex;gap:6px;align-items:center}
@@ -6155,11 +6160,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         window.__cmGradeOf=gradeOf;
         function summarize(r){
           if(r._sum) return r._sum;
-          var o=decodeBuild(r.code), sum={lv:0,main:null,type:'',types:[],attrs:[],slots:0};
+          var o=decodeBuild(r.code), sum={lv:0,main:null,type:'',types:[],attrs:[],slots:0,gear:[]};
           if(o){
             sum.lv=+o.lv||0;
             var ids=Object.keys(o.e||{}).filter(function(id){ return cards&&cards[o.e[id]]; }).sort(slotOrder);
             sum.slots=ids.length;
+            sum.gear=ids.map(function(id){ var it=cards[o.e[id]]; return {k:o.e[id],n:it.n,p:it.p,r:(o.m&&o.m[id]&&o.m[id].r)||'standard'}; });
             var wid=null; ids.forEach(function(id){ var it=cards[o.e[id]]; if(slotEls[id]&&slotEls[id].cat==='weapon'){ if(!wid) wid=id; if(sum.types.indexOf(it.t)<0) sum.types.push(it.t); } });
             var mainId=wid||ids[0]; sum.main=cards[o.e[mainId]]; sum.type=wid?(sum.main.t||''):'';
             ATTRS.forEach(function(a){ var v=+(o.a&&o.a[a.id])||10; if(v>10) sum.attrs.push({n:a.name,v:v}); });
@@ -6191,11 +6197,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var sm=summarize(r), it=sm.main;
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
-            return '<article class="cm-card" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
+            return '<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
               '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+authorHtml(r)+'</b></div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
-              '<div class="cm-sum"><i>Level '+sm.lv+'</i>'+(it?' &middot; '+escH(it.n)+(sm.type?' <i>('+escH(sm.type)+')</i>':''):'')+' &middot; '+sm.slots+' item'+(sm.slots===1?'':'s')+' equipped</div>'+
+              '<div class="cm-pills"><span class="cm-pill">Level '+sm.lv+'</span>'+sm.types.slice(0,2).map(function(t){ return '<span class="cm-pill">'+escH(t)+'</span>'; }).join('')+'<span class="cm-pill dim">'+sm.slots+' item'+(sm.slots===1?'':'s')+'</span></div>'+
+              (sm.gear.length?'<div class="cm-gear">'+sm.gear.map(function(g){ return '<span class="cm-gi r-'+escH(g.r)+'" data-k="'+escH(g.k)+'"><span class="m-ic" style="background-position:-'+(g.p?g.p[0]*48:0)+'px -'+(g.p?g.p[1]*48:0)+'px"></span></span>'; }).join('')+'</div>':'')+
               (attrs?'<div class="cm-attrs">'+attrs+'</div>':'')+
               '<div class="cm-foot-row"><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span><span class="cm-acts">'+
                 '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-8.6C.9 9.2 2.4 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.6 0 5.1 3.7 3.3 6.9C19 16.4 12 21 12 21z"/></svg><span>'+r.likes+'</span></button>'+
