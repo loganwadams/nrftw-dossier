@@ -5079,9 +5079,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var schools={}; rows.forEach(function(r){ schools[r.st.school||'physical']=1; });
       var gOn=0,gOff=0; det.forEach(function(id){ (itemMeta[id].gems||[]).forEach(function(g){ var gd=GEM_DMG[dmgNorm(g)]; if(!gd) return; if(!rows.length||schools[gd[0]]) gOn++; else gOff++; }); });
       var coh=(gOn+gOff)?gOn/(gOn+gOff):1;
-      var eg=(eSlots?3.2*eFill/eSlots:1.6)+(gSlots?2.4*gFill/gSlots:1.2)+(fSlots?.8*fFill/fSlots:.4)+(exCap?1.6*exUsed/exCap:.8)+2*coh;
-      var ew=[]; if(eSlots&&eFill<eSlots) ew.push((eSlots-eFill)+' empty enchant slot'+(eSlots-eFill>1?'s':'')); if(gSlots&&gFill<gSlots) ew.push((gSlots-gFill)+' empty gem socket'+(gSlots-gFill>1?'s':'')); if(fSlots&&fFill<fSlots) ew.push('no facet on '+(fSlots-fFill)+' weapon'+(fSlots-fFill>1?'s':'')); if(exCap&&exUsed<exCap) ew.push((exCap-exUsed)+' exalt step'+(exCap-exUsed>1?'s':'')+' unused'); if(gOff) ew.push(gOff+' damage gem'+(gOff>1?'s':'')+' for an element no weapon deals');
-      out.push({id:'ench',label:'Enchants & Gems',w:.17,score:clamp(eg),why:ew.length?cap(ew):'Slots filled, exalts spent, gems match the weapons.'});
+      var eg=(eSlots?3.6*eFill/eSlots:1.8)+(gSlots?2.8*gFill/gSlots:1.4)+(fSlots?.8*fFill/fSlots:.4)+2.4*coh+(exCap?.5*exUsed/exCap:0);   // exalting is a small bonus on top; never a deduction
+      var ew=[]; if(eSlots&&eFill<eSlots) ew.push((eSlots-eFill)+' empty enchant slot'+(eSlots-eFill>1?'s':'')); if(gSlots&&gFill<gSlots) ew.push((gSlots-gFill)+' empty gem socket'+(gSlots-gFill>1?'s':'')); if(fSlots&&fFill<fSlots) ew.push('no facet on '+(fSlots-fFill)+' weapon'+(fSlots-fFill>1?'s':'')); if(gOff) ew.push(gOff+' damage gem'+(gOff>1?'s':'')+' for an element no weapon deals');
+      out.push({id:'ench',label:'Enchants & Gems',w:.17,score:clamp(eg),why:ew.length?cap(ew):'Slots filled and gems match the weapons.'});
       // 7. Elemental coherence: one element across weapons, gems and damage enchants (mixing splits the bonuses)
       var els={}; var addE=function(t){ t=nm(t); if(/resist|reduced/.test(t)||!/damage|infus|electric/.test(t)) return; var mm=t.match(/\b(fire|ice|cold|lightning|electric|plague)\b/); if(mm){ var e=mm[1]==='cold'?'ice':mm[1]==='electric'?'lightning':mm[1]; els[e]=(els[e]||0)+1; } };
       det.forEach(function(id){ var m=itemMeta[id]; (m.gems||[]).forEach(addE); (m.enchants||[]).forEach(addE); });
@@ -5094,10 +5094,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var q=det.length?(5*rareN/det.length+5*lvSum/det.length):0;
       var qw=[]; if(det.length){ var com=det.filter(function(id){ return itemMeta[id].rarity==='standard'; }).length; if(com) qw.push(com+' Common item'+(com>1?'s':'')); var low=det.filter(function(id){ return (itemMeta[id].level||1)<16; }).length; if(low) qw.push(low+' item'+(low>1?'s':'')+' below level 16'); }
       out.push({id:'qual',label:'Rarity & Level',w:.08,score:clamp(q),why:qw.length?qw.join(', ')+'.':(det.length?'Top rarity and max level throughout.':'No gear yet.')});
-      // Strict curve: squaring each category means only a near-flawless category scores high, and a 10 needs every
+      // Firm but fair curve: each category is raised to the 1.5 power, so only a strong category scores high, and a 10 needs every
       // category perfect - elite builds only.
       var perfect=out.every(function(c){ return c.score>=9.99; });
-      out.forEach(function(c){ c.score=10*Math.pow(c.score/10,2); });
+      out.forEach(function(c){ c.score=10*Math.pow(c.score/10,1.5); });
       var total10=0; out.forEach(function(c){ total10+=c.score*c.w; });
       total10=perfect?10:Math.min(9.9,r1(total10));
       var label=total10>=9?'Exceptional':total10>=8?'Strong':total10>=6.5?'Solid':total10>=5?'Workable':total10>=3.5?'Rough':'Just started';
@@ -5115,7 +5115,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-grade-rows">'+g.cats.map(function(c){
           return '<div class="cb-grade-row"><span class="cb-grade-name">'+c.label+' <i>'+Math.round(c.w*100)+'%</i></span><span class="cb-grade-bar '+tierOf(c.score)+'"><span style="width:'+(c.score*10)+'%"></span></span><b>'+c.score.toFixed(1)+'</b><small>'+dmgEsc(c.why)+'</small></div>';
         }).join('')+'</div>'+
-        '<p class="cb-grade-note">Graded on everything in the build &mdash; gear and rarity, requirements, damage attributes and bonuses (exalts included), armor and resistance amounts, load, Health and Stamina, attribute allocation, enchants, gems, facets and exalts, and how well the elements line up. It is not a meta tier list.</p>';
+        '<p class="cb-grade-note">Graded on everything in the build &mdash; gear and rarity, requirements, damage attributes and bonuses (exalts included), armor and resistance amounts, load, Health and Stamina, attribute allocation, enchants, gems and facets (exalting gives a small boost, never a penalty), and how well the elements line up. It is not a meta tier list.</p>';
     }
     function computeReport(){
       var profile=computeProfile();
