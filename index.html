@@ -2236,16 +2236,16 @@ section,article.klass{scroll-margin-top:24px}
   body.on-home .pgbar-search::before{content:"Search the dossier";font:500 9.5px var(--data);letter-spacing:.2em;text-transform:uppercase;color:#cdbf9f;text-shadow:0 1px 6px rgba(0,0,0,.9);transition:color .25s}
   body.on-home .pgbar-search:hover::before,body.on-home .pgbar-search:focus-visible::before{color:#efe3c8}
   body.on-home .pgbar-right{position:absolute;top:26px;right:34px;margin:0;flex-direction:column;align-items:flex-end;gap:10px}
-  body.on-home .pgbar-item.toc-has-drop{position:relative}
-  body.on-home .pgbar .toc-drop{position:absolute;left:auto;right:calc(100% + 34px);top:var(--dy,0px);bottom:auto;margin:0;padding:0;min-width:0;max-height:80vh;overflow:visible;background:none;border:0;box-shadow:none;backdrop-filter:none;opacity:0;visibility:hidden;pointer-events:none;transform:translate(34px,-50%);transition:opacity .3s,transform .45s cubic-bezier(.2,.8,.2,1),visibility 0s .45s;display:block;column-gap:18px}
-  body.on-home .pgbar .toc-drop::after{content:"";position:absolute;top:0;bottom:0;left:100%;width:40px}
-  body.on-home .pgbar .toc-has-drop:hover .toc-drop,body.on-home .pgbar .toc-has-drop:focus-within .toc-drop,body.on-home .pgbar:not(.menu-open) .toc-has-drop.open .toc-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translate(0,-50%);transition:opacity .3s,transform .45s cubic-bezier(.2,.8,.2,1),visibility 0s}
+  body.on-home .pgbar-item.toc-has-drop{position:static}
+  body.on-home .pgbar-item.toc-has-drop::before{content:"";position:absolute;right:100%;margin-right:-60px;width:300px;height:40px;pointer-events:auto}
+  body.on-home .pgbar .toc-drop{position:absolute;left:auto;right:calc(100% - 18px);top:50%;bottom:auto;margin:0;padding:0;min-width:0;max-height:80vh;overflow:visible;background:none;border:0;box-shadow:none;backdrop-filter:none;opacity:0;visibility:hidden;pointer-events:none;transform:translate(34px,-50%);transition:opacity .3s,transform .45s cubic-bezier(.2,.8,.2,1),visibility 0s .45s;display:block;column-gap:10px}
+    body.on-home .pgbar .toc-has-drop:hover .toc-drop,body.on-home .pgbar .toc-has-drop:focus-within .toc-drop,body.on-home .pgbar:not(.menu-open) .toc-has-drop.open .toc-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translate(0,-50%);transition:opacity .3s,transform .45s cubic-bezier(.2,.8,.2,1),visibility 0s}
   body.on-home .pgbar .toc-drop:has(li:nth-child(9)){column-count:2}
   body.on-home .pgbar .toc-drop li{break-inside:avoid}
   body.on-home .toc-drop-row{justify-content:flex-end}
-  body.on-home .pgbar .toc-drop a{justify-content:flex-end;font:400 15px/1.2 var(--display);letter-spacing:.05em;text-transform:none;color:#e9dcc0;padding:7px 12px;text-shadow:0 1px 10px rgba(0,0,0,.95);background:none;transition:color .25s,transform .3s cubic-bezier(.2,.7,.2,1)}
+  body.on-home .pgbar .toc-drop a{justify-content:flex-end;font:400 14px/1.2 var(--display);letter-spacing:.04em;text-transform:none;color:#e9dcc0;padding:5px 10px;text-shadow:0 1px 10px rgba(0,0,0,.95);background:none;transition:color .25s,transform .3s cubic-bezier(.2,.7,.2,1)}
   body.on-home .pgbar .toc-drop a:hover,body.on-home .pgbar .toc-drop a:focus-visible{color:#e8863a;transform:translateX(-8px);background:none}
-  body.on-home .pgbar .toc-drop a img{width:22px;height:22px;order:2}
+  body.on-home .pgbar .toc-drop a img{width:18px;height:18px;order:2}
   body.on-home .pgbar-item,body.on-home .pgbar-right{transition:opacity .3s}
   body.on-home .pgbar:has(.toc-has-drop:hover) .pgbar-item:not(:hover),body.on-home .pgbar:has(.toc-has-drop:hover) .pgbar-right{opacity:.18}
   body.on-home .hero-art::after{background:linear-gradient(90deg,rgba(10,8,7,.8) 0%,rgba(10,8,7,.62) 34%,rgba(10,8,7,.08) 62%,rgba(10,8,7,.35) 100%),linear-gradient(270deg,rgba(10,8,7,.55) 0%,rgba(10,8,7,0) 22%),linear-gradient(180deg,rgba(10,8,7,.45) 0%,rgba(10,8,7,0) 22%,rgba(10,8,7,0) 42%,rgba(10,8,7,.7) 76%,#0a0807 91%)}
