@@ -490,6 +490,9 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cm-meta b{color:var(--gold)}
 .cm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .cm-card{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));cursor:pointer;transition:border-color .15s,transform .15s}
+.cm-who{display:flex;align-items:center;gap:9px;min-width:0}.cm-who-av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none;border:1px solid rgba(201,169,110,.35)}
+.cm-who-ini{display:flex;align-items:center;justify-content:center;background:#2b2113;color:#d9b45f;font-size:13px;font-weight:700}
+.cm-who-t{display:flex;flex-direction:column;gap:1px;min-width:0}.cm-who-t .cm-by{font-size:12.5px}.cm-who-t .cm-date{font-size:10px}
 .cm-card.g-red{border-left-color:#e5604f}.cm-card.g-blue{border-left-color:#5da2ff}.cm-card.g-gold{border-left-color:#ffd56b;box-shadow:inset 3px 0 12px -6px rgba(255,205,90,.6)}
 .cm-pills{display:flex;flex-wrap:wrap;gap:6px}.cm-pill{font-family:var(--data);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(201,169,110,.28);background:rgba(201,169,110,.07);color:#d9b45f}.cm-pill.dim{border-color:rgba(255,255,255,.1);background:none;color:#8b8174}
 .cm-gear{display:flex;flex-wrap:wrap;gap:5px}.cm-gi{width:28px;height:28px;display:block;overflow:hidden;position:relative;background:rgba(0,0,0,.35);border:1px solid var(--edge);border-bottom:2px solid #5a5043}
@@ -498,7 +501,7 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cm-card:hover{border-color:var(--gold);transform:translateY(-1px)}
 .cm-top{display:flex;gap:12px;align-items:center}
 .cm-top .m-ic{width:48px;height:48px;flex:none;border:1px solid var(--edge)}
-.cm-name{font-family:var(--display);font-size:18px;line-height:1.2;color:#efe3c8}
+.cm-name{font-family:var(--display);font-size:24px;line-height:1.2;color:#efe3c8}
 .cm-by{font-size:12px;color:var(--muted);margin-top:2px}
 .cm-by b{color:var(--bone);font-weight:500}
 .cm-sum{font-size:12.5px;color:#bdac8b;line-height:1.5}
@@ -6129,10 +6132,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           var top=Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){ return b.n-a.n||a.name.localeCompare(b.name); }).slice(0,5);
           $('cmTopAuthors').innerHTML=top.length?top.map(function(a){ var n=escH(a.name); var av=avatarCache[a.uid]; var pic=av?'<img class="cm-board-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-board-av cm-board-av-empty"></span>'; return '<li>'+pic+'<a href="/profile/'+encodeURIComponent(a.name)+'" data-u="'+n+'">'+n+'</a><b>'+a.n+' build'+(a.n===1?'':'s')+'</b></li>'; }).join(''):'<li><span style="flex:1;color:#8b8174">No public profiles yet</span></li>';
           // Profile pictures live on the profiles table: fetch the ones we don't have yet, then redraw.
-          var need=top.filter(function(a){ return a.uid&&!(a.uid in avatarCache); }).map(function(a){ return a.uid; });
+          var need=[]; rows.forEach(function(x){ if(x.user_id&&!(x.user_id in avatarCache)&&need.indexOf(x.user_id)<0) need.push(x.user_id); });
           if(need.length){ need.forEach(function(u){ avatarCache[u]=null; });
             client().then(function(c){ return c.from('profiles').select('user_id,avatar_url').in('user_id',need); })
-              .then(function(r){ (r.data||[]).forEach(function(x){ avatarCache[x.user_id]=x.avatar_url||null; }); renderBoards(); }).catch(function(){}); }
+              .then(function(r){ (r.data||[]).forEach(function(x){ avatarCache[x.user_id]=x.avatar_url||null; }); renderBoards(); try{ render(); }catch(e){} }).catch(function(){}); }
           var liked=rows.slice().sort(function(a,b){ return (b.likes-a.likes)||((new Date(b.published_at||b.updated_at))-(new Date(a.published_at||a.updated_at))); }).slice(0,5);
           $('cmTopLiked').innerHTML=liked.map(function(r){ return '<li><a href="#" data-open="'+escH(String(r.id))+'">'+escH(r.name)+'</a><span class="cm-board-by">'+escH(r.author_name||'Anonymous')+'</span><b>\u2665 '+r.likes+'</b></li>'; }).join('');
           boards.hidden=!!curProfile;
@@ -6198,12 +6201,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
             return '<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
-              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+authorHtml(r)+'</b></div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+
+              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
               '<div class="cm-sum">Level '+sm.lv+(sm.types.length?' &middot; '+escH(sm.types.slice(0,2).join(', ')):'')+'</div>'+
               
-              '<div class="cm-foot-row"><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span><span class="cm-acts">'+
+              '<div class="cm-foot-row"><span class="cm-who">'+(function(){ var av=r.user_id&&avatarCache[r.user_id], nm=r.author_name||'Anonymous'; return (av?'<img class="cm-who-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-who-av cm-who-ini">'+escH(nm.charAt(0).toUpperCase())+'</span>')+'<span class="cm-who-t"><span class="cm-by">by <b>'+authorHtml(r)+'</b></span><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span></span>'; })()+'</span><span class="cm-acts">'+
                 '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-8.6C.9 9.2 2.4 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.6 0 5.1 3.7 3.3 6.9C19 16.4 12 21 12 21z"/></svg><span>'+r.likes+'</span></button>'+
                 '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></span></div>'+
               '</article>';
