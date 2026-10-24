@@ -6503,7 +6503,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   if(!VIDEOS.length){ return; }
   empty.hidden=true;
   if(toolbar) toolbar.hidden=false;
-  // on the hosted site YouTube's own player is embedded; inside the Claude artifact viewer other
+  // on the hosted site YouTube's own player is embedded; inside the sandboxed preview viewer other
   // sites' frames are blocked, so there each video is a card that opens on YouTube instead
   var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
   function fmt(d){ var p=d.split('-'); return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0]; }
@@ -6866,7 +6866,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the
-  // live site, but not inside the Claude Artifact preview, which serves this same page from a
+  // live site, but not inside the sandboxed preview, which serves this same page from a
   // versioned sub-path (.../_f/<version>/). Rewriting the address bar to an absolute "/..." path
   // there overwrites that sub-path prefix, and every relative fetch/img issued afterwards
   // (cards.json, lazily-loaded icons, etc.) breaks because it now resolves against the wrong
