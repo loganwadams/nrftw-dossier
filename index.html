@@ -321,7 +321,9 @@ body.paged .contents{display:none}
 
 /* mobile full-screen search */
 .sro{display:none}
-@media (max-width:760px){
+.sro.on{background:rgba(12,10,8,.97)}
+.sro .sro-bar,.sro .sro-chips,.sro .sro-list{width:100%;max-width:760px;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box}
+.sro .sro-bar{padding-top:calc(28px + env(safe-area-inset-top))}
 .sro.on{display:flex;flex-direction:column;position:fixed;inset:0;z-index:9999;background:#0c0a08}
 :root:not([data-theme="night"]) .sro.on{background:#0c0a08}
 .sro-bar{display:flex;gap:10px;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 12px 8px}
@@ -337,7 +339,6 @@ body.paged .contents{display:none}
 .sro-list .sr-item{padding:12px 14px}
 .sr-snip{margin-top:0!important}
 html.sro-open,html.sro-open body{overflow:hidden}
-}
 .sr-hint{padding:22px 18px;color:var(--muted);font-size:14px;line-height:1.5}
 .sr-item.has-ic{grid-template-columns:44px 1fr auto;align-items:center}
 .sr-item.has-ic .sr-snip{grid-column:2/-1}
@@ -390,10 +391,11 @@ html.sro-open,html.sro-open body{overflow:hidden}
 :root[data-theme="night"] .sr-chips,:root[data-theme="night"] .sr-chips button{background:#14101f}
 .sr-hit{animation:srhit 1.6s ease-out}
 @keyframes srhit{0%,60%{box-shadow:0 0 0 2px var(--gold)}100%{box-shadow:0 0 0 2px transparent}}
-.pgbar-search{display:none;align-items:center;appearance:none;background:none;border:1px solid transparent;color:var(--muted);padding:9px 14px;cursor:pointer;transition:color .15s}
+.pgbar-search{display:inline-flex;align-items:center;appearance:none;background:none;border:1px solid transparent;color:var(--muted);padding:9px 14px;cursor:pointer;transition:color .15s}
 .pgbar-search:hover{color:var(--bone)}
 .pgbar-search svg{width:15px;height:15px;display:block}
 .pgbar.show-search .pgbar-search{display:inline-flex}
+header.masthead form.search{display:none!important}
 @media (max-width:760px){.search{position:relative;top:auto;right:auto;transform:none;margin:18px 0 0}}
 </style><!-- /SR:css -->
 <!-- VIDEOS:css --><style>
@@ -7506,7 +7508,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   if(pgbar){
     var pgBtn=document.createElement('button'); pgBtn.type='button'; pgBtn.className='pgbar-search'; pgBtn.setAttribute('aria-label','Search the dossier');
     pgBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
-    pgBtn.addEventListener('click',function(){ if(window.matchMedia('(max-width:760px)').matches){ window.__openSearch&&window.__openSearch(); return; } window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ input.focus(); },260); });
+    pgBtn.addEventListener('click',function(){ if(true){ window.__openSearch&&window.__openSearch(); return; } window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ input.focus(); },260); });
     var pgRight=pgbar.querySelector('.pgbar-right'); if(!pgRight){ pgRight=document.createElement('span'); pgRight.className='pgbar-right'; pgbar.appendChild(pgRight); }
     pgRight.appendChild(pgBtn);
     var burger=pgbar.querySelector('.pgbar-burger'), mq=window.matchMedia('(max-width:760px)');
@@ -7837,7 +7839,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   ovIn.addEventListener('keydown',function(e){ if(e.key==='Escape') closeOv(); else if(e.key==='Enter'){ e.preventDefault(); if(results.length) go(results[0]); } });
   ov.querySelector('.sro-chips').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; filt=b.dataset.f; ov.querySelectorAll('.sro-chips button').forEach(function(x){ x.classList.toggle('on',x===b); }); search(); ovList.scrollTop=0; });
   ovList.addEventListener('scroll',function(){ if(document.activeElement===ovIn) ovIn.blur(); },{passive:true});
-  window.__openSearch=function(){ if(window.matchMedia('(max-width:760px)').matches) openOv(); };
+  window.__openSearch=function(){ openOv(); };
   input.addEventListener('input',function(){ if(curInput===input) search(); });
   input.addEventListener('focus',function(){ if(input.value.trim().length<2){ search(); } else if(results.length) list.classList.add('on'); });
   function listClick(e){ var b=e.target.closest&&e.target.closest('button'); if(!b) return; if(b.closest('.sr-chips')){ e.preventDefault(); filt=b.dataset.f; search(); return; } var q=b.getAttribute('data-q'); if(q){ e.preventDefault(); setQuery(q); } }
