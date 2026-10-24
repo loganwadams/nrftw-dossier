@@ -319,6 +319,8 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .cm-board li{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid rgba(201,169,110,.08);font-size:13.5px;color:var(--bone)}
 .cm-board li:first-child{border-top:0}
 .cm-board li::before{counter-increment:cmb;content:counter(cmb);font-family:var(--data);font-size:10px;color:var(--gold-dim);width:14px;flex:none;text-align:right}
+.cm-board-av{width:24px;height:24px;border-radius:50%;object-fit:cover;flex:none}
+.cm-board-av-empty{display:inline-block;background:rgba(201,169,110,.12);border:1px solid rgba(201,169,110,.25)}
 .cm-board li a{color:var(--bone);text-decoration:none;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cm-board li a:hover{color:var(--gold)}
 .cm-board li small{color:#8b8174;font-size:12px;white-space:nowrap}
@@ -2171,8 +2173,8 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 .m-setcard:hover::before,.m-setcard.tt-open::before{border-color:var(--gold)}
 .m-setcard-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;padding-bottom:8px;position:relative}
 .m-setcard-name{font-family:var(--display);font-size:15.5px;letter-spacing:.03em;color:var(--gold)}
-.m-setcard-pieces{display:flex;flex-wrap:wrap;gap:8px}
-.m-setcard-pieces .m-card{flex:1 1 150px;min-height:44px;padding:4px 8px 4px 4px;cursor:pointer;background:rgba(0,0,0,.3)}
+.m-setcard-pieces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px} /* fixed two-up: an odd last piece keeps the same width as the others */
+.m-setcard-pieces .m-card{min-width:0;min-height:44px;padding:4px 8px 4px 4px;cursor:pointer;background:rgba(0,0,0,.3)}
 .m-setcard-src{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(201,169,110,.1)}
 .m-setcard-src .src-ic-wrap{opacity:1}
 .m-setcard-src .src-ic-wrap .item-source{filter:none}
@@ -5749,12 +5751,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function setHeading(t){ if(secH2) secH2.textContent=t; }
         var listParts=[sec.querySelector('.standfirst'),sec.querySelector('.cm-tools'),metaEl,list,sec.querySelector('.cm-foot'),$('cmBoards')];
         // Top 5 contributors (public builds per author) and top 5 most-liked builds, from the same rows.
+        var avatarCache={};
         function renderBoards(){
           var boards=$('cmBoards'); if(!boards||!rows) return;
           if(!rows.length){ boards.hidden=true; return; }
           var by={}; rows.forEach(function(r){ var k=(r.author_name||'Anonymous'); (by[k]=by[k]||{name:k,n:0,uid:r.user_id}).n++; if(r.user_id) by[k].uid=r.user_id; });
           var top=Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){ return b.n-a.n||a.name.localeCompare(b.name); }).slice(0,5);
-          $('cmTopAuthors').innerHTML=top.map(function(a){ var n=escH(a.name); return '<li>'+(a.uid?'<a href="/profile/'+encodeURIComponent(a.name)+'" data-u="'+n+'">'+n+'</a>':'<span style="flex:1">'+n+'</span>')+'<b>'+a.n+' build'+(a.n===1?'':'s')+'</b></li>'; }).join('');
+          $('cmTopAuthors').innerHTML=top.map(function(a){ var n=escH(a.name); var av=a.uid&&avatarCache[a.uid]; var pic=av?'<img class="cm-board-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-board-av cm-board-av-empty"></span>'; return '<li>'+pic+(a.uid?'<a href="/profile/'+encodeURIComponent(a.name)+'" data-u="'+n+'">'+n+'</a>':'<span style="flex:1">'+n+'</span>')+'<b>'+a.n+' build'+(a.n===1?'':'s')+'</b></li>'; }).join('');
+          // Profile pictures live on the profiles table: fetch the ones we don't have yet, then redraw.
+          var need=top.filter(function(a){ return a.uid&&!(a.uid in avatarCache); }).map(function(a){ return a.uid; });
+          if(need.length){ need.forEach(function(u){ avatarCache[u]=null; });
+            client().then(function(c){ return c.from('profiles').select('user_id,avatar_url').in('user_id',need); })
+              .then(function(r){ (r.data||[]).forEach(function(x){ avatarCache[x.user_id]=x.avatar_url||null; }); renderBoards(); }).catch(function(){}); }
           var liked=rows.slice().sort(function(a,b){ return (b.likes-a.likes)||((new Date(b.published_at||b.updated_at))-(new Date(a.published_at||a.updated_at))); }).slice(0,5);
           $('cmTopLiked').innerHTML=liked.map(function(r){ return '<li><a href="#" data-open="'+escH(String(r.id))+'">'+escH(r.name)+'</a><span class="cm-board-by">'+escH(r.author_name||'Anonymous')+'</span><b>\u2665 '+r.likes+'</b></li>'; }).join('');
           boards.hidden=!!curProfile;
