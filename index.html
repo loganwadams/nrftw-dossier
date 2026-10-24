@@ -2193,7 +2193,7 @@ section,article.klass{scroll-margin-top:24px}
 .hero-art::after{content:"";position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(10,8,7,.8) 0%,rgba(10,8,7,.62) 34%,rgba(10,8,7,.08) 62%,rgba(10,8,7,0) 100%),
   linear-gradient(180deg,rgba(10,8,7,0) 0%,rgba(10,8,7,0) 55%,rgba(10,8,7,.55) 100%)}
-.hero-text{position:relative;z-index:1;padding:46px 54px 64px max(54px,calc((100vw - 1180px)/2 + 54px));box-sizing:content-box;max-width:min(760px,calc(100vw - 108px));text-align:left}
+.hero-text{position:relative;z-index:1;padding:46px 54px 34px clamp(28px,4vw,64px);box-sizing:content-box;max-width:min(760px,calc(100vw - 108px));text-align:left}
 .hero-title span{display:block}
 
 /* content-box above: the left padding grows with the viewport to stay on the page column, so the cap has to apply to the text alone - with a border-box cap the padding swallowed it on wide monitors (2560px: a 40px-wide column, one word per line) */
