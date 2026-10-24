@@ -6724,11 +6724,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Trove, never from the chapter bar, so it isn't offered as a destination there.
     {id:'item-page',     num:'',   label:'Item',          group:'itempage', target:'item-page', tag:['item-page'], hidden:true}
   ];
-  // Vendors, Catalog, Media and Cerim Builder are each a standalone page (one chapter, nothing
-  // else sharing the group) so they get a real clean path instead of a #hash. Factions/Classes
-  // share one page ("world"), and Infusions/Enchantments share one page ("gear"), so those stay
-  // on hash-based chapter anchors within their shared page.
-  var CLEAN_PATHS={vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
+  // Every top-level section gets a clean path. A group's first chapter is the bare path
+  // (/factions, /items = Infusions); later chapters in a shared page hang a hash off it
+  // (/items#enchantments). Old /#factions and /#infusions links still resolve via the hash.
+  var CLEAN_PATHS={world:'/factions', gear:'/items', vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the

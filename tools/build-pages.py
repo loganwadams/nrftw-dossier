@@ -26,6 +26,10 @@ PAGES = {
                'Browse No Rest for the Wicked builds published by other players, open the full loadout and analysis, and copy any build into your own Cerim Builder.'),
     'crafting-recipes': ('Crafting Recipes \u2014 No Rest for the Wicked | Wicked Dossier',
                          'Every crafting and refinery recipe in No Rest for the Wicked: what each item takes to make, at which station, straight from the game files.'),
+    'factions': ('Factions & Classes \u2014 No Rest for the Wicked | Wicked Dossier',
+                 'The factions of Isola Sacra and the classes of No Rest for the Wicked: who they are, how they fight and where they fit in the story of Sacrament.'),
+    'items': ('Infusions & Enchantments \u2014 No Rest for the Wicked | Wicked Dossier',
+              'How gear works in No Rest for the Wicked: infusions, enchantments, gems and the rules that decide what a weapon or armor piece can roll.'),
     'media': ('Media — No Rest for the Wicked Trailers & Videos | Wicked Dossier',
               'Official No Rest for the Wicked trailers, gameplay reveals and developer videos from Moon Studios.'),
 }
