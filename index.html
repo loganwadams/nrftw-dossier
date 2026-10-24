@@ -2346,7 +2346,9 @@ section,article.klass{scroll-margin-top:24px}
 .cb-chip i{font-style:normal;font-weight:400;color:#a89c88;letter-spacing:.02em}
 .cb-chip.good{color:#9fcf8f}.cb-chip.bad{color:#e08a7a}
 #cbReportVerdict{display:none!important}
-.cm-top{align-items:center}.cm-grade{font-family:var(--display);letter-spacing:.13em;margin-left:auto;align-self:flex-start;font-size:1.9rem;line-height:1;font-weight:600;padding-left:12px}
+.cm-top{align-items:center}.cm-gradebox{margin-left:auto;align-self:flex-start;text-align:right;padding-left:12px}
+.cm-grade-lbl{display:block;font-family:var(--display);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#d9b45f;margin-bottom:4px;white-space:nowrap}
+.cm-grade{font-family:var(--display);letter-spacing:.13em;font-size:1.9rem;line-height:1;font-weight:600}
 .cm-grade small{font-size:.38em;opacity:.7;letter-spacing:.06em;margin-left:3px}
 .cm-grade.g-red{color:#e5604f}.cm-grade.g-blue{color:#5da2ff}.cm-grade.g-gold{color:#ffd56b;text-shadow:0 0 10px rgba(255,205,90,.9),0 0 26px rgba(255,190,60,.65),0 0 48px rgba(255,170,40,.4)}
 .cb-credit-note{margin:6px 0 14px;padding:8px 12px;border-left:2px solid var(--gold,#c9a24a);background:rgba(201,162,74,.07);font-size:13px;color:#cdbf9f}
@@ -6190,7 +6192,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
             return '<article class="cm-card" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
-              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+authorHtml(r)+'</b></div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-grade '+tierOf(g)+'" title="Build grade">'+g.toFixed(1)+'<small>/10</small></div>'; })()+'</div>'+
+              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div><div class="cm-by">by <b>'+authorHtml(r)+'</b></div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
               '<div class="cm-sum"><i>Level '+sm.lv+'</i>'+(it?' &middot; '+escH(it.n)+(sm.type?' <i>('+escH(sm.type)+')</i>':''):'')+' &middot; '+sm.slots+' item'+(sm.slots===1?'':'s')+' equipped</div>'+
