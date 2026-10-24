@@ -7343,7 +7343,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
       body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(key))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+WDCARD.html(c)+'</div><div id="ipMats"></div>';
       loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
-      var ipCard=body.querySelector('.ip-tt'); if(ipCard){ var sk=ipSourceKey(c); if(sk) ipCard.insertAdjacentHTML('afterend',sk); }
+      var ipCard=body.querySelector('.ip-tt'); if(ipCard){  }
       if(h2) h2.textContent=c.n||'Item';
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
