@@ -381,6 +381,9 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ep-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
 .ep-actions .cb-mmsg{margin:0}
 .ep-actions a.cb-tool{text-decoration:none}
+.ep-del{margin-left:auto;appearance:none;background:none;border:0;padding:0;cursor:pointer;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#a8675b}
+.ep-del:hover{color:#e07a6a;text-decoration:underline}
+@media (max-width:600px){.ep-del{margin-left:0;flex-basis:100%;text-align:left;margin-top:6px}}
 .cm-pf-links{display:inline-flex;align-items:center;gap:10px;align-self:center}
 .cm-pf-discord{display:inline-flex;align-items:center;align-self:center;color:var(--gold);filter:drop-shadow(0 1px 2px rgba(0,0,0,.9)) drop-shadow(0 0 6px rgba(0,0,0,.6));transition:color .15s,transform .15s}
 .cm-pf-discord:hover{color:#efe3c8}
@@ -2773,7 +2776,7 @@ footer li{color:#6f665b}
           <label class="cb-pub-l ep-social"><span>Reddit</span><span class="ep-url"><i>reddit.com/u/</i><input type="text" id="epReddit" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
         </div>
         <label class="cb-pub-l cb-pub-chk"><input type="checkbox" id="epPublic" checked> <span>Show my profile page <small>(when off, your name on builds is plain text and links to nothing)</small></span></label>
-        <div class="ep-actions"><button type="submit" class="cb-tool primary" id="epSave">Save profile</button><a href="#" id="epView" class="cb-tool" hidden>View my profile</a><span class="cb-mmsg" id="epMsg" role="status"></span></div>
+        <div class="ep-actions"><button type="submit" class="cb-tool primary" id="epSave">Save profile</button><a href="#" id="epView" class="cb-tool" hidden>View my profile</a><span class="cb-mmsg" id="epMsg" role="status"></span><button type="button" class="ep-del" id="epDelAcct">Delete my account</button></div>
       </form>
     </div>
   </section>
@@ -5575,7 +5578,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           });
           h+='</ul>';
         }
-        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span><button type="button" class="cb-mbtn danger" id="cbDelAcct">Delete my account</button></div>';
+        h+='<div class="cb-mmsg" role="status"></div><div class="cb-modal-foot"><span>'+rows.length+' / '+MAXB+' saved</span></div>';
         mB.innerHTML=h;
         var el=mB.querySelector('.cb-empty-link');
         if(el) el.addEventListener('click',function(e){ e.preventDefault(); closeModal(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
@@ -5610,13 +5613,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             client().then(function(c){ return c.from('builds').delete().eq('id',r.id); })
               .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
           }
-        });
-        $('cbDelAcct').addEventListener('click',function(){
-          var b=this;
-          if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again — deletes your account and all saved builds'; return; }
-          client().then(function(c){ return c.rpc('delete_my_account').then(function(x){ if(x.error) throw x.error; return c.auth.signOut(); }); })
-            .then(function(){ setUser(null); openModal('Account deleted','<p>Your account and all your saved builds have been deleted.</p>'); })
-            .catch(function(e){ msg(cleanErr(e),1); });
         });
       }
 
@@ -5679,7 +5675,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(!user) return;
         var dn=discordName(user);
         $('epDiscordRow').hidden=!dn; $('epDiscordNote').hidden=!!dn; if(dn) $('epDiscordName').textContent=dn;
-        $('epMsg').textContent='';
+        $('epMsg').textContent=''; var dl=$('epDelAcct'); if(dl){ dl.dataset.sure=''; dl.textContent='Delete my account'; }
         loadMyProfile().then(function(p){
           p=p||{};
           if(!p.display_name){ registerUsername(fillProfilePage); return; }
@@ -5706,6 +5702,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:shareD?dn:null,discord_id:shareD?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
             .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
+        });
+        $('epDelAcct').addEventListener('click',function(){
+          var b=this, m=$('epMsg');
+          if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again \u2014 deletes your account, profile and all saved builds'; return; }
+          m.textContent='Deleting\u2026'; m.className='cb-mmsg';
+          client().then(function(c){ return c.rpc('delete_my_account').then(function(x){ if(x.error) throw x.error; return c.auth.signOut(); }); })
+            .then(function(){ setUser(null); openModal('Account deleted','<p>Your account, profile and all your saved builds have been deleted.</p>'); if(window.__pgGoto) window.__pgGoto('home'); })
+            .catch(function(e){ m.textContent=cleanErr(e); m.className='cb-mmsg err'; b.dataset.sure=''; b.textContent='Delete my account'; });
         });
         $('epView').addEventListener('click',function(e){ e.preventDefault(); var nm=(myProfile&&myProfile.display_name)||''; if(nm&&window.__cmGoProfile&&window.__pgGoto){ window.__pgGoto('community-builds'); window.__cmGoProfile(nm); } else location.href=this.href; });
         var epSec=$('edit-profile');
