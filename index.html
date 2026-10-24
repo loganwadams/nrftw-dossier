@@ -4933,10 +4933,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var catCount=function(c){ return Object.keys(equipped).filter(function(id){ return slotEls[id]&&slotEls[id].cat===c; }).length; };
       var armorN=['helm','chest','legs','gloves'].filter(function(c){ return catCount(c)>0; }).length;
       var weapN=catCount('weapon'), offN=catCount('offhand'), ringN=catCount('ring'), runeN=catCount('rune');
+      // Build archetype from the main hand: a two-handed heavy weapon (great sword/axe/hammer/club,
+      // curved great sword, scythe, halberd, spear) marks a "tank" build - it is expected to carry
+      // weight, so Heavy load is not held against it and no off-hand is required.
+      var TWO_H=/^(great_sword|great_axe|great_hammer|great_club|curved_great_sword|scythe|halberd|spear)$/;
+      var mainRows=dmg.rows.filter(function(r){ return slotEls[r.id]&&slotEls[r.id].cat==='weapon'&&r.st.base>0; });
+      var tank=mainRows.length>0&&mainRows.every(function(r){ return TWO_H.test(r.st.folder||''); });
       var out=[];
       // 1. Gear coverage
-      var gear=10*(armorN/4*.4+(weapN?.25:0)+(offN?.1:0)+Math.min(ringN,3)/3*.1+Math.min(runeN,4)/4*.15);
-      var miss=[]; if(!weapN) miss.push('a main-hand weapon'); if(armorN<4) miss.push((4-armorN)+' armor piece'+(4-armorN>1?'s':'')); if(!offN) miss.push('an off-hand'); if(ringN<3) miss.push((3-ringN)+' ring slot'+(3-ringN>1?'s':'')); if(runeN<4) miss.push((4-runeN)+' utility rune slot'+(4-runeN>1?'s':''));
+      var gear=10*(armorN/4*.4+(weapN?.25:0)+((offN||tank)?.1:0)+Math.min(ringN,3)/3*.1+Math.min(runeN,4)/4*.15);
+      var miss=[]; if(!weapN) miss.push('a main-hand weapon'); if(armorN<4) miss.push((4-armorN)+' armor piece'+(4-armorN>1?'s':'')); if(!offN&&!tank) miss.push('an off-hand'); if(ringN<3) miss.push((3-ringN)+' ring slot'+(3-ringN>1?'s':'')); if(runeN<4) miss.push((4-runeN)+' utility rune slot'+(4-runeN>1?'s':''));
       out.push({id:'gear',label:'Gear',w:.20,score:clamp(gear),why:miss.length?'Empty: '+miss.join(', ')+'.':'Every slot is filled.'});
       // 2. Offense
       var rows=dmg.rows.filter(function(r){ return r.st.base>0; }), off=0, offWhy='No weapon with a damage stat equipped.';
@@ -4946,11 +4952,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var scaleN=best.st.scales.length?best.st.scales:[], pts=0; scaleN.forEach(function(n){ pts+=Math.max(0,(attrVals[n.toLowerCase()]||10)-10); });
         var inv=spent>0?Math.min(1,pts/Math.max(1,spent*.5)):0;
         var mod=Math.min(1,Math.max(0,(best.L&&best.L.pct)||0)/30); // percentage points added by enchants, gems and facet
-        off=(reqOk?4:0)+3*inv+2*mod+(rows.length>1?1:0);
+        off=(reqOk?4:0)+3*inv+2*mod+((rows.length>1||tank)?1:0);
         if(!reqOk) bits.push('a weapon is under its requirement (a flat damage penalty)');
         if(inv<.6) bits.push(scaleN.length?'few points in '+scaleN.join('/')+' for '+best.item.n:'weapon has no attribute scaling');
         if(mod<.5) bits.push('little bonus damage from enchants, gems or facet');
-        if(rows.length<2) bits.push('only one damage weapon');
+        if(rows.length<2&&!tank) bits.push('only one damage weapon');
         offWhy=bits.length?bits.join('; ')[0].toUpperCase()+bits.join('; ').slice(1)+'.':'Requirements met, damage attributes invested, bonuses stacked.';
       }
       out.push({id:'off',label:'Offense',w:.25,score:clamp(off),why:offWhy});
@@ -4960,10 +4966,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var dw=[]; if(armorN<4) dw.push('missing armor pieces'); if(resKeys<4) dw.push('resistance on '+resKeys+' of 4 elements');
       out.push({id:'def',label:'Defense',w:.20,score:clamp(def),why:dw.length?dw.join('; ')[0].toUpperCase()+dw.join('; ').slice(1)+'.':'Full armor with every resistance covered.'});
       // 4. Survivability and load
-      var loadS={Light:10,Normal:8.5,Heavy:5,Overencumbered:1}[cs.cls.name]; if(loadS==null) loadS=5;
+      // Load target depends on what the build is: a two-handed tank is fine anywhere up to Heavy;
+      // everything else (one-handers, dual wield, bows, casters) is built around staying Light.
+      var loadS=(tank?{Light:10,Normal:10,Heavy:10,Overencumbered:1}:{Light:10,Normal:8.5,Heavy:5,Overencumbered:1})[cs.cls.name]; if(loadS==null) loadS=5;
       var hs=Math.max(0,(attrVals.health||10)-10)+Math.max(0,(attrVals.stamina||10)-10);
       var vit=spent>0?Math.min(1,hs/Math.max(1,spent*.2)):.5;
-      out.push({id:'surv',label:'Survivability',w:.20,score:clamp(loadS*.6+10*vit*.4),why:cs.cls.name+' load ('+Math.round(cs.ratio*100)+'%)'+(vit<.6?'; few points in Health/Stamina.':'; Health and Stamina are covered.')});
+      out.push({id:'surv',label:'Survivability',w:.20,score:clamp(loadS*.6+10*vit*.4),why:cs.cls.name+' load ('+Math.round(cs.ratio*100)+'%)'+(tank?(cs.cls.name==='Overencumbered'?' - too much even for a two-hander':' - fine for a two-handed build'):(cs.cls.name==='Light'?'':' - this build wants Light'))+(vit<.6?'; few points in Health/Stamina.':'; Health and Stamina are covered.')});
       // 5. Optimization
       var det=Object.keys(equipped).filter(function(id){ return itemMeta[id]&&itemMeta[id].cat!=='ring'; }), eSlots=0,eFill=0,gSlots=0,gFill=0,rareN=0,lvSum=0;
       det.forEach(function(id){ var m=itemMeta[id]; (m.enchants||[]).forEach(function(v){ eSlots++; if(v&&String(v).indexOf('__')<0) eFill++; }); (m.gems||[]).forEach(function(v){ gSlots++; if(v) gFill++; }); if(m.rarity!=='standard') rareN++; lvSum+=Math.min(16,m.level||1)/16; });
@@ -4982,6 +4990,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       out.forEach(function(c){ c.score=r1(c.score); });
       return {score:total10,label:label,cats:out,worst:worst};
     }
+    // (computeGrade reads dmg.rows[].st.folder for the archetype; weaponStats sets it from the item key.)
     function tierOf(v){ return v>=9.995?'g-gold':v>=7?'g-blue':'g-red'; }
     function gradeHtml(g){
       var tier=tierOf(g.score);
