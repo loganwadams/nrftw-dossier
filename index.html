@@ -2184,23 +2184,24 @@ html{scroll-behavior:smooth}
 section,article.klass{scroll-margin-top:24px}
 /* --- overview: hero band + chapter tiles --------------------------------- */
 /* full-width hero band; the clips play behind the text */
-.hero{position:relative;margin:-8px calc(50% - 50vw) 0;width:100vw;min-height:max(430px,calc(100vh - 181px));min-height:max(430px,calc(100svh - 181px));display:flex;align-items:flex-end;overflow:hidden;border:0;isolation:isolate}
+.hero{position:relative;margin:-8px calc(50% - 50vw) 0;width:100vw;min-height:max(430px,calc(100vh - 181px));min-height:max(430px,calc(100svh - 181px));display:flex;align-items:flex-end;justify-content:flex-end;overflow:hidden;border:0;isolation:isolate}
 .hero-art{position:absolute;inset:0;z-index:-2;filter:saturate(1.05) brightness(1.15);background:#0a0807}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity 1.8s ease-in-out}
 .hero-slide.on{opacity:1}
 .hero-slide video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;display:block}
 @media (prefers-reduced-motion:reduce){.hero-slide{transition:none}}
 .hero-art::after{content:"";position:absolute;inset:0;background:
-  linear-gradient(90deg,rgba(10,8,7,.8) 0%,rgba(10,8,7,.62) 34%,rgba(10,8,7,.08) 62%,rgba(10,8,7,0) 100%),
+  linear-gradient(270deg,rgba(10,8,7,.8) 0%,rgba(10,8,7,.62) 34%,rgba(10,8,7,.08) 62%,rgba(10,8,7,0) 100%),
   linear-gradient(180deg,rgba(10,8,7,0) 0%,rgba(10,8,7,0) 55%,rgba(10,8,7,.55) 100%)}
-.hero-text{position:relative;z-index:1;padding:46px 54px 78px max(116px,calc((100vw - 1180px)/2 + 116px));box-sizing:content-box;max-width:min(520px,calc(58vw - 170px))}
+.hero-text{position:relative;z-index:1;padding:46px max(54px,calc((100vw - 1180px)/2 + 54px)) 64px 54px;box-sizing:content-box;max-width:min(760px,calc(100vw - 108px));text-align:right}
+.hero-title span{display:block}
+.hero-sub{margin-left:auto}
 /* content-box above: the left padding grows with the viewport to stay on the page column, so the cap has to apply to the text alone - with a border-box cap the padding swallowed it on wide monitors (2560px: a 40px-wide column, one word per line) */
 .hero-kicker{margin:0 0 12px;font-family:var(--data);font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .hero-title{margin:0 0 14px;font-size:clamp(28px,4vw,52px);line-height:1.08;color:#efe3c8;text-wrap:balance}
 :root[data-theme="night"] .hero-title{color:#e4dcf2}
 .hero-sub{margin:0;font-size:15.5px;line-height:1.6;color:var(--muted);max-width:68ch}
-@media (min-width:761px) and (max-width:1000px){.hero-text{max-width:min(450px,calc(70vw - 170px))}}
-@media (max-width:760px){.hero{min-height:340px}.hero-text{padding:30px 22px 48px 30px;max-width:none}.hero-art::after{background:linear-gradient(180deg,rgba(10,8,7,.2) 0%,rgba(10,8,7,.9) 55%,rgba(10,8,7,.97) 100%)}}
+@media (max-width:760px){.hero{min-height:340px}.hero-text{padding:30px 22px 48px 30px;max-width:none;text-align:left}.hero-sub{margin-left:0}.hero-art::after{background:linear-gradient(180deg,rgba(10,8,7,.2) 0%,rgba(10,8,7,.9) 55%,rgba(10,8,7,.97) 100%)}}
 
 .contents{margin:22px 0 6px;padding:12px 18px 12px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:grid;grid-template-columns:1fr;gap:6px}
 .contents h3{margin:0 0 2px;font-size:9.5px;font-family:var(--data);letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
@@ -2538,7 +2539,7 @@ footer li{color:#6f665b}
     </div>
     <div class="hero-text">
       <p class="hero-kicker">841 TE &middot; Isola Sacra</p>
-      <h2 class="hero-title">The King is dead. The Pestilence has returned.</h2>
+      <h2 class="hero-title"><span>The King is dead.</span> <span>The Pestilence has returned.</span></h2>
       <p class="hero-sub">Wicked Dossier gives you the tools to survive Isola Sacra: a searchable list of every item, recipe, vendor and enchantment, plus a builder for planning loadouts you can share.</p>
     </div>
   </section>
