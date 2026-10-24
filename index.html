@@ -5755,9 +5755,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function renderBoards(){
           var boards=$('cmBoards'); if(!boards||!rows) return;
           if(!rows.length){ boards.hidden=true; return; }
-          var by={}; rows.forEach(function(r){ var k=(r.author_name||'Anonymous'); (by[k]=by[k]||{name:k,n:0,uid:r.user_id}).n++; if(r.user_id) by[k].uid=r.user_id; });
+          // Only published builds reach this page at all; for the contributor board, only authors with
+          // a public profile (the view blanks user_id for private ones) are listed.
+          var by={}; rows.forEach(function(r){ if(!r.user_id) return; var k=(r.author_name||'Anonymous'); (by[k]=by[k]||{name:k,n:0,uid:r.user_id}).n++; });
           var top=Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){ return b.n-a.n||a.name.localeCompare(b.name); }).slice(0,5);
-          $('cmTopAuthors').innerHTML=top.map(function(a){ var n=escH(a.name); var av=a.uid&&avatarCache[a.uid]; var pic=av?'<img class="cm-board-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-board-av cm-board-av-empty"></span>'; return '<li>'+pic+(a.uid?'<a href="/profile/'+encodeURIComponent(a.name)+'" data-u="'+n+'">'+n+'</a>':'<span style="flex:1">'+n+'</span>')+'<b>'+a.n+' build'+(a.n===1?'':'s')+'</b></li>'; }).join('');
+          $('cmTopAuthors').innerHTML=top.length?top.map(function(a){ var n=escH(a.name); var av=avatarCache[a.uid]; var pic=av?'<img class="cm-board-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-board-av cm-board-av-empty"></span>'; return '<li>'+pic+'<a href="/profile/'+encodeURIComponent(a.name)+'" data-u="'+n+'">'+n+'</a><b>'+a.n+' build'+(a.n===1?'':'s')+'</b></li>'; }).join(''):'<li><span style="flex:1;color:#8b8174">No public profiles yet</span></li>';
           // Profile pictures live on the profiles table: fetch the ones we don't have yet, then redraw.
           var need=top.filter(function(a){ return a.uid&&!(a.uid in avatarCache); }).map(function(a){ return a.uid; });
           if(need.length){ need.forEach(function(u){ avatarCache[u]=null; });
