@@ -363,6 +363,10 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .sr-ex code{flex:none;min-width:158px;color:var(--gold)}
 .sr-item .sr-snip{font-family:var(--data);font-size:10px;letter-spacing:.04em}
 .pg-filter{margin:0 0 18px}
+.sect-head:has(.pg-filter-inline){flex-wrap:wrap;align-items:center;gap:14px 22px}
+.pg-filter-inline{position:relative;flex:1 1 380px;margin:0;display:flex;justify-content:flex-end}.pg-filter-inline .pgf-field{width:100%;max-width:560px}
+.pg-filter-inline .pgf-meta{position:absolute;right:2px;top:100%;padding:4px 0 0;white-space:nowrap}
+.pg-filter-inline .pgf-help{position:absolute;right:0;top:calc(100% + 4px);width:min(640px,100%);margin:0;z-index:30}
 .pgf-field{position:relative;display:flex;align-items:center;gap:8px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.35);padding:0 10px;max-width:640px}
 .pgf-field svg{width:16px;height:16px;flex:none;color:var(--gold);opacity:.7}
 .pgf-field input{flex:1;min-width:0;height:42px;background:none;border:0;outline:0;color:var(--bone);font-family:var(--body);font-size:14px}
@@ -7679,7 +7683,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     opts=opts||{}; if(!sec) return; var host=sec.querySelector('.sect-head'); if(!host) return;
     var bar=document.createElement('div'); bar.className='pg-filter';
     bar.innerHTML='<div class="pgf-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'" autocomplete="off"><button type="button" class="pgf-x" aria-label="Clear filter" hidden>&times;</button></div><div class="pgf-meta"></div>';
-    host.insertAdjacentElement('afterend',bar);
+    // Trove and Crafting Recipes: the filter sits beside the page heading instead of under it
+    if(/^(catalog|recipes|infusions|enchantments)$/.test(sec.id)){ bar.classList.add('pg-filter-inline'); host.appendChild(bar); } else host.insertAdjacentElement('afterend',bar);
     var fi=bar.querySelector('input'), meta=bar.querySelector('.pgf-meta'), x=bar.querySelector('.pgf-x'), t=null;
     // Optional key of example queries under the field (the Trove asks for one): shown while the
     // empty field has focus, same examples and syntax notes as the main search's help panel, but
