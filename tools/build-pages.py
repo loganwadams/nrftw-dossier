@@ -16,6 +16,8 @@ import re, sys, html
 
 SITE = 'https://wickeddossier.com'
 PAGES = {
+    'archive': ('Archive \u2014 No Rest for the Wicked Item Collections | Wicked Dossier',
+                'Browse every collection in No Rest for the Wicked: the Trove of items, crafting recipes, infusions and enchantments.'),
     'trove': ('Trove — No Rest for the Wicked Item Database | Wicked Dossier',
               'Every No Rest for the Wicked item in one place: weapons, armor, shields, runes, gems, ingredients and crafting recipes, with stats, sources, crafting and upgrade materials.'),
     'vendors': ('Vendors — No Rest for the Wicked Merchants & Stock | Wicked Dossier',
