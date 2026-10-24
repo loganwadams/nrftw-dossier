@@ -1,0 +1,217 @@
+/* item tooltip card styles */
+.tt{position:fixed;z-index:9999;width:372px;max-width:calc(100vw - 24px);pointer-events:none;opacity:0;transition:opacity .18s;font-family:var(--body);font-size:13.5px;line-height:1.35;color:#d9ccb0;
+ background:radial-gradient(120% 90% at 20% 0%,#2b2a2c 0%,#141315 60%,#0b0a0b 100%);border:1px solid rgba(201,169,110,.45);box-shadow:0 18px 50px rgba(0,0,0,.75),inset 0 0 0 1px rgba(0,0,0,.6)}
+.tt.on{opacity:1}
+.tt-close{display:none;position:absolute;top:-11px;right:-11px;width:26px;height:26px;z-index:3;appearance:none;border-radius:50%;background:#1c1713;border:1px solid rgba(201,169,110,.55);color:#cfc3ac;font-size:17px;line-height:1;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 4px 10px rgba(0,0,0,.5)}
+@media (hover:none){.tt-close{display:flex}}
+.tt-head{display:grid;grid-template-columns:64px 1fr 48px;gap:12px;align-items:start;padding:14px 14px 10px}
+.tt-ic{width:64px;height:64px;background:rgba(0,0,0,.45) url(img/items-sheet.webp) no-repeat;background-size:2048px auto;border:1px solid rgba(201,169,110,.35)}
+.tt-name{font-family:var(--display);font-size:19px;line-height:1.1;color:#f0e6cf;margin:2px 0 3px}
+.tt-type{font-size:12.5px;color:#9b917f;letter-spacing:.02em}
+.tt-lv{width:36px;height:36px;margin:4px 4px 0 auto;display:grid;place-items:center;font-family:var(--data);font-size:15px;color:#f0e6cf;background:linear-gradient(135deg,#3a3a3c,#151516);transform:rotate(45deg);border:1px solid rgba(201,169,110,.35)}
+.tt-lv span{transform:rotate(-45deg)}
+
+/* ---- Wicked Dossier card body (own markup: data/cards.json semantic model rendered by WDCARD) ---- */
+.wd-card{padding:0 0 6px}
+.wd-row,.wd-kv{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;padding:3px 14px;min-height:22px}
+.wd-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:2px;padding:4px 0 2px}
+.wd-cols .wd-row,.wd-cols .wd-kv{padding:1px 14px}
+.wd-kv .wd-k{flex:0 0 auto;min-width:96px;color:#9a9a9c;font-variant:small-caps;font-size:14px}
+.wd-kv .wd-v{flex:1 1 0;display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px}
+.wd-h{padding:5px 14px 1px;color:#9a9a9c;font-variant:small-caps;font-size:14px;letter-spacing:.03em}
+.wd-num{color:#9ec1ff;font-family:var(--data);font-weight:400;font-size:.95em;letter-spacing:.02em}
+.wd-rng .wd-num{margin:0 1px}
+.wd-kw{color:#f0e6cf;font-weight:600}
+.wd-desc{padding:8px 14px 6px;font-style:italic;color:#c9bca0;line-height:1.45}
+.wd-hr{height:1px;margin:5px 0;background:linear-gradient(90deg,rgba(201,169,110,0),rgba(201,169,110,.45) 20%,rgba(201,169,110,.45) 80%,rgba(201,169,110,0))}
+.wd-school{font-weight:600}.wd-school.physical{color:#f0e6cf}.wd-school.fire{color:#ff9b5a}.wd-school.ice{color:#8fd8ff}.wd-school.plague{color:#b48cff}.wd-school.lightning{color:#ffe37a}.wd-school.bleed{color:#ff7a7a}
+/* stat glyphs: Wicked Dossier sheet cut from the game's own UI sprites (img/wd-glyphs.webp) */
+.wd-ic{display:inline-block;width:22px;height:22px;flex:none;vertical-align:-6px;background:url(img/wd-glyphs.webp) no-repeat;background-size:264px 176px;border:0;padding:0;border-radius:0;min-width:0}
+.wd-ic span{display:none}
+.wd-ic.inl{width:18px;height:18px;vertical-align:-4px;background-size:216px 144px;display:inline-block}
+.wd-ic.inl[data-ic]{background-position:calc(var(--gx) * 18 / 32) calc(var(--gy) * 18 / 32)}
+.wd-ic[data-ic="StatDamage"]{background-position:-0px -0px;--gx:-0px;--gy:-0px}
+.wd-ic[data-ic="PoiseDamage"]{background-position:-22px -0px;--gx:-32px;--gy:-0px}
+.wd-ic[data-ic="StatCritical"]{background-position:-44px -0px;--gx:-64px;--gy:-0px}
+.wd-ic[data-ic="StatArmor"]{background-position:-66px -0px;--gx:-96px;--gy:-0px}
+.wd-ic[data-ic="iconItemShieldArmor"]{background-position:-88px -0px;--gx:-128px;--gy:-0px}
+.wd-ic[data-ic="StatPoiseDefense"]{background-position:-110px -0px;--gx:-160px;--gy:-0px}
+.wd-ic[data-ic="StatStaminaRegen"]{background-position:-132px -0px;--gx:-192px;--gy:-0px}
+.wd-ic[data-ic="StatFocusGain"]{background-position:-154px -0px;--gx:-224px;--gy:-0px}
+.wd-ic[data-ic="StatDurability"]{background-position:-176px -0px;--gx:-256px;--gy:-0px}
+.wd-ic[data-ic="StatWeight"]{background-position:-198px -0px;--gx:-288px;--gy:-0px}
+.wd-ic[data-ic="Strength"]{background-position:-220px -0px;--gx:-320px;--gy:-0px}
+.wd-ic[data-ic="Dexterity"]{background-position:-242px -0px;--gx:-352px;--gy:-0px}
+.wd-ic[data-ic="Intelligence"]{background-position:-0px -22px;--gx:-0px;--gy:-32px}
+.wd-ic[data-ic="Faith"]{background-position:-22px -22px;--gx:-32px;--gy:-32px}
+.wd-ic[data-ic="Focus"]{background-position:-44px -22px;--gx:-64px;--gy:-32px}
+.wd-ic[data-ic="Stamina"]{background-position:-66px -22px;--gx:-96px;--gy:-32px}
+.wd-ic[data-ic="Health"]{background-position:-88px -22px;--gx:-128px;--gy:-32px}
+.wd-ic[data-ic="moneyBronze"]{background-position:-110px -22px;--gx:-160px;--gy:-32px}
+.wd-ic[data-ic="moneySilver"]{background-position:-132px -22px;--gx:-192px;--gy:-32px}
+.wd-ic[data-ic="StatFireArmor"]{background-position:-154px -22px;--gx:-224px;--gy:-32px}
+.wd-ic[data-ic="StatColdArmor"]{background-position:-176px -22px;--gx:-256px;--gy:-32px}
+.wd-ic[data-ic="StatLightningArmor"]{background-position:-198px -22px;--gx:-288px;--gy:-32px}
+.wd-ic[data-ic="StatPlagueArmor"]{background-position:-220px -22px;--gx:-320px;--gy:-32px}
+.wd-ic[data-ic="StatEnchantmentPower"]{background-position:-242px -22px;--gx:-352px;--gy:-32px}
+.wd-ic[data-ic="iconEnchantUnique"]{background-position:-0px -44px;--gx:-0px;--gy:-64px}
+.wd-ic[data-ic="iconEnchantNegative"]{background-position:-22px -44px;--gx:-32px;--gy:-64px}
+.wd-ic[data-ic="iconEnchantPlagued"]{background-position:-44px -44px;--gx:-64px;--gy:-64px}
+.wd-ic[data-ic="iconEnchantMagical"]{background-position:-66px -44px;--gx:-96px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantWeapon"]{background-position:-88px -44px;--gx:-128px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantShield"]{background-position:-110px -44px;--gx:-160px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantOffhand"]{background-position:-132px -44px;--gx:-192px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantArmor"]{background-position:-154px -44px;--gx:-224px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantHelmet"]{background-position:-176px -44px;--gx:-256px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantPants"]{background-position:-198px -44px;--gx:-288px;--gy:-64px}
+.wd-ic[data-ic="iconGemEnchantGloves"]{background-position:-220px -44px;--gx:-320px;--gy:-64px}
+.wd-ic[data-ic="iconToolDamage"]{background-position:-242px -44px;--gx:-352px;--gy:-64px}
+.wd-ic[data-ic="StatStaminaCost"]{background-position:-0px -66px;--gx:-0px;--gy:-96px}
+.wd-ic[data-ic="StatMaxStamina"]{background-position:-22px -66px;--gx:-32px;--gy:-96px}
+.wd-ic[data-ic="StatElementalDamageTaken"]{background-position:-44px -66px;--gx:-64px;--gy:-96px}
+.wd-ic[data-ic="StatFocusRegen"]{background-position:-66px -66px;--gx:-96px;--gy:-96px}
+.wd-ic[data-ic="StatHealthRegen"]{background-position:-88px -66px;--gx:-128px;--gy:-96px}
+.wd-ic[data-ic="StatExperience"]{background-position:-110px -66px;--gx:-160px;--gy:-96px}
+.wd-ic[data-ic="StatHealthRally"]{background-position:-132px -66px;--gx:-192px;--gy:-96px}
+.wd-ic[data-ic="StatLifesteal"]{background-position:-154px -66px;--gx:-224px;--gy:-96px}
+.wd-ic[data-ic="StatPhysicalDamage"]{background-position:-176px -66px;--gx:-256px;--gy:-96px}
+.wd-ic[data-ic="StatBarrier"]{background-position:-198px -66px;--gx:-288px;--gy:-96px}
+.wd-ic[data-ic="StatStamina"]{background-position:-220px -66px;--gx:-320px;--gy:-96px}
+.wd-ic[data-ic="StatLightningDamage"]{background-position:-242px -66px;--gx:-352px;--gy:-96px}
+.wd-ic[data-ic="StatFocus"]{background-position:-0px -88px;--gx:-0px;--gy:-128px}
+.wd-ic[data-ic="StatPlagueDamage"]{background-position:-22px -88px;--gx:-32px;--gy:-128px}
+.wd-ic[data-ic="StatFireDamage"]{background-position:-44px -88px;--gx:-64px;--gy:-128px}
+.wd-ic[data-ic="StatColdDamage"]{background-position:-66px -88px;--gx:-96px;--gy:-128px}
+.wd-ic[data-ic="StatDamageTaken"]{background-position:-88px -88px;--gx:-128px;--gy:-128px}
+.wd-ic[data-ic="StatHealing"]{background-position:-110px -88px;--gx:-160px;--gy:-128px}
+.wd-ic[data-ic="StatMaxHealth"]{background-position:-132px -88px;--gx:-192px;--gy:-128px}
+.wd-ic[data-ic="StatMovementSpeed"]{background-position:-154px -88px;--gx:-224px;--gy:-128px}
+.wd-ic[data-ic="StatBleed"]{background-position:-176px -88px;--gx:-256px;--gy:-128px}
+.wd-ic[data-ic="StatHealth"]{background-position:-198px -88px;--gx:-288px;--gy:-128px}
+.wd-ic[data-ic="StatMaxFocus"]{background-position:-220px -88px;--gx:-320px;--gy:-128px}
+.wd-ic[data-ic="StatEquipLoad"]{background-position:-242px -88px;--gx:-352px;--gy:-128px}
+.wd-ic[data-ic="StatAttackSpeed"]{background-position:-0px -110px;--gx:-0px;--gy:-160px}
+.wd-ic[data-ic="StatFocusCost"]{background-position:-22px -110px;--gx:-32px;--gy:-160px}
+.wd-ic[data-ic="StatStaggerResistance"]{background-position:-44px -110px;--gx:-64px;--gy:-160px}
+.wd-ic[data-ic="StatFatality"]{background-position:-66px -110px;--gx:-96px;--gy:-160px}
+.wd-ic[data-ic="StatThorns"]{background-position:-88px -110px;--gx:-128px;--gy:-160px}
+.wd-ic[data-ic="StatPenetration"]{background-position:-110px -110px;--gx:-160px;--gy:-160px}
+.wd-ic[data-ic="groupA"]{background-position:-132px -110px;--gx:-192px;--gy:-160px}
+.wd-ic[data-ic="groupB"]{background-position:-154px -110px;--gx:-224px;--gy:-160px}
+.wd-ic[data-ic="groupC"]{background-position:-176px -110px;--gx:-256px;--gy:-160px}
+.wd-ic[data-ic="groupE"]{background-position:-198px -110px;--gx:-288px;--gy:-160px}
+.wd-ic[data-ic="groupH"]{background-position:-220px -110px;--gx:-320px;--gy:-160px}
+.wd-ic[data-ic="groupJ"]{background-position:-242px -110px;--gx:-352px;--gy:-160px}
+.wd-ic[data-ic="groupK"]{background-position:-0px -132px;--gx:-0px;--gy:-192px}
+.wd-ic[data-ic="groupL"]{background-position:-22px -132px;--gx:-32px;--gy:-192px}
+.wd-ic[data-ic="groupNone"]{background-position:-44px -132px;--gx:-64px;--gy:-192px}
+.wd-ic[data-ic="srcVendor"]{background-position:-66px -132px;--gx:-96px;--gy:-192px}
+.wd-ic[data-ic="srcCrafting"]{background-position:-88px -132px;--gx:-128px;--gy:-192px}
+.wd-ic[data-ic="srcChest"]{background-position:-110px -132px;--gx:-160px;--gy:-192px}
+.wd-ic[data-ic="srcBoss"]{background-position:-132px -132px;--gx:-192px;--gy:-192px}
+.wd-ic[data-ic="srcEnemy"]{background-position:-154px -132px;--gx:-224px;--gy:-192px}
+.wd-ic[data-ic="srcOre"]{background-position:-176px -132px;--gx:-256px;--gy:-192px}
+.wd-ic[data-ic="srcPlant"]{background-position:-198px -132px;--gx:-288px;--gy:-192px}
+.wd-ic[data-ic="srcQuest"]{background-position:-220px -132px;--gx:-320px;--gy:-192px}
+.wd-ic[data-ic="srcShiny"]{background-position:-242px -132px;--gx:-352px;--gy:-192px}
+.wd-ic[data-ic="srcChallenge"]{background-position:-0px -154px;--gx:-0px;--gy:-224px}
+.wd-ic[data-ic="srcUnknown"]{background-position:-22px -154px;--gx:-32px;--gy:-224px}
+.wd-ic[data-ic="utilityRune"]{background-position:-44px -154px;--gx:-64px;--gy:-224px}
+.wd-ic[data-ic^="src"]{width:16px;height:16px;vertical-align:-3px;background-size:192px 128px;background-position:calc(var(--gx) * 16 / 32) calc(var(--gy) * 16 / 32);opacity:.85}
+.wd-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 10px;padding:2px 14px}
+.wd-gems{grid-template-columns:1fr}
+.wd-slot{display:flex;align-items:center;gap:6px;min-height:20px}
+.wd-slot.empty{color:#7d7466}
+.wd-dot{width:14px;height:14px;border-radius:50%;border:1px solid #6d6557;flex:0 0 14px}
+.wd-link{display:inline-flex;align-items:center;gap:6px;color:#f0e6cf;text-decoration:none}
+.tt a.wd-link:hover{text-decoration:none;color:#fff}
+.wd-li-ic{display:block;width:18px;height:18px;flex:0 0 18px;background:url(img/items-sheet.webp) no-repeat;background-size:576px auto}
+.wd-li-ic.none{background:none;border:1px solid #6d6557;border-radius:50%;width:14px;height:14px;flex-basis:14px}
+.wd-ench{margin:4px 0;padding:6px 14px 6px}
+.wd-en{display:flex;flex-wrap:wrap;align-items:center;gap:3px 5px;margin:3px 0;padding-left:2px}
+.wd-en.kind-unique{color:#f2c35c}.wd-en.kind-plagued{color:#c6a0ff}.wd-en.kind-negative{color:#ff8a8a}.wd-en.kind-standard{color:#d9d6cf}
+.wd-en .wd-kw{color:inherit}
+.wd-gemfx{padding:4px 14px 2px}
+.wd-gf{display:grid;grid-template-columns:92px 1fr;column-gap:10px;align-items:start;margin:3px 0}
+.wd-gf-slot{display:flex;align-items:center;gap:5px;color:#a69c88;font-variant:small-caps;font-size:14px}
+.wd-gf-fx{display:flex;flex-wrap:wrap;align-items:center;gap:3px 5px}.wd-gf-fx.none{color:#7d7466}
+.wd-set{padding:4px 14px}
+.wd-set-pc{display:flex;align-items:center;gap:6px;margin:3px 0}
+.wd-muted{color:#7d7466}
+.wd-info{background:rgba(0,0,0,.3);padding:2px 0}
+.wd-info .wd-kv{padding:4px 14px}
+.wd-src{display:inline-flex;align-items:center;gap:4px;padding:1px 6px 1px 4px;border:1px solid rgba(201,169,110,.3);border-radius:3px;background:rgba(0,0,0,.3);color:#b9ad96;font-size:11px;line-height:1.5;white-space:nowrap}
+.wd-attack .wd-v{display:block}
+.wd-atk{display:flex;align-items:flex-start;gap:8px;margin:2px 0}
+.wd-atk-main{flex:1 1 0;padding:4px 8px;background:rgba(0,0,0,.25);border-left:2px solid rgba(201,169,110,.3)}
+.wd-atk-school{font-weight:600}.wd-atk-mods,.wd-atk-x{color:#d9d6cf}
+.wd-atk-mult{flex:none;min-width:28px;text-align:right;color:#c9bca0;padding-top:4px}
+.wd-li{margin:1px 0}
+/* only the OPEN card should be tappable on touch */
+@media (hover:none){.tt.on{pointer-events:auto}}
+
+
+/* ---- card art from the game's own item-card layers (per rarity) ---- */
+.tt{overflow:hidden;isolation:isolate;background:#050608;border:0;box-shadow:0 18px 50px rgba(0,0,0,.75),0 0 0 1px rgba(0,0,0,.8);font-size:14.5px;color:#e4e0d8}
+.tt .lay{position:absolute;inset:0;z-index:-1;pointer-events:none;background-repeat:no-repeat}
+.tt .bg{background-size:100% 100%}.tt .top{background-size:100% auto;background-position:top}
+.tt.r-standard .bg{background-image:url(img/card/rl-std-bg.webp)}.tt.r-standard .top{background-image:url(img/card/rl-std-top.webp);opacity:.9}
+.tt.r-magical .bg{background-image:url(img/card/rl-mag-bg.webp)}.tt.r-magical .top{background-image:url(img/card/rl-mag-top.webp)}
+.tt.r-plagued .bg{background-image:url(img/card/rl-pl-bg.webp)}.tt.r-plagued .top{background-image:url(img/card/rl-pl-top.webp)}
+.tt.r-plagued .vein{background:url(img/card/rl-pl-vein.webp) center 30%/100% auto no-repeat;opacity:.45}
+.tt.r-unique .bg{background-image:url(img/card/rl-un-bg.webp)}.tt.r-unique .top{background-image:url(img/card/rl-un-top.webp)}
+.tt .shade{background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.35))}
+.tt .tt-name{color:#ece8e0;font-variant:small-caps;font-size:23px;letter-spacing:.03em}
+.tt .tt-type{font-size:16px;color:#d9d6cf}
+.tt .wd-h,.tt .wd-k{color:#9a9a9c;font-variant:small-caps;font-size:14px}
+.tt .tt-head{grid-template-columns:76px 1fr 62px;padding-left:12px}
+.tt .tt-ic{position:relative;margin:10px 6px;background-color:transparent;border:0}
+.tt .tt-ic:before{content:"";position:absolute;left:-6px;top:-10px;width:76px;height:84px;background:var(--slot) 0 0/100% 100% no-repeat;z-index:-1}
+.tt.r-standard{--slot:url(img/card/bd-standard.webp);--dia:url(img/card/rl-dia-std.webp)}
+.tt.r-magical{--slot:url(img/card/bd-magical.webp);--dia:url(img/card/rl-dia-mag.webp)}
+.tt.r-plagued{--slot:url(img/card/bd-plagued.webp);--dia:url(img/card/rl-dia-pl.webp)}
+.tt.r-unique{--slot:url(img/card/bd-unique.webp);--dia:url(img/card/rl-dia-un.webp)}
+.tt .tt-lv{width:58px;height:58px;margin:0 0 0 auto;transform:none;background:none;border:0;font-family:var(--display);font-size:21px;font-weight:400;letter-spacing:-.5px;color:#c9c9cf;text-shadow:0 1px 1px rgba(0,0,0,.6);position:relative}
+.tt .tt-lv span{transform:none;position:relative;z-index:1}
+.tt .tt-lv:before{content:"";position:absolute;left:11px;top:11px;width:36px;height:36px;transform:rotate(45deg);background:linear-gradient(135deg,#14181e,#05070a)}
+.tt .tt-lv:after{content:"";position:absolute;inset:0;background:var(--dia) center/contain no-repeat;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);pointer-events:none}
+.tt .wd-hr{height:8px;margin:0;background:url(img/card/c-separator.webp) center/100% 2px no-repeat}
+.tt .wd-ench{background-size:100% 100%;background-repeat:no-repeat;margin:4px 0;padding-top:8px}
+.tt.r-standard .enchant-panel{background-image:url(img/card/c-enchstandard.webp)}
+.tt.r-magical .enchant-panel{background-image:url(img/card/rl-mag-ban.webp)}
+.tt.r-plagued .enchant-panel{background-image:url(img/card/rl-pl-ban.webp)}
+.tt.r-unique .enchant-panel{background-image:url(img/card/rl-un-ban.webp)}
+.tt .wd-info{background:rgba(0,0,0,.3)}
+/* sprites from the item sheet shown inline inside armor-set cards */
+.tt .wd-li-ic{display:block;width:18px;height:18px;background:url(img/items-sheet.webp) no-repeat;background-size:576px auto}
+.tt .tt-close{top:6px;right:6px}
+
+/* Trove / catalog cards: the box each item sits in takes the item's base rarity from the game's card art */
+.m-card[data-rar]{background-color:#06070a;background-repeat:no-repeat;background-size:cover;background-position:center}
+.m-card[data-rar=standard]{background-image:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.25)),url(img/card/rl-std-top.webp),url(img/card/rl-std-bg.webp);border-color:rgba(150,165,180,.22)}
+.m-card[data-rar=magical]{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url(img/card/rl-mag-top.webp),url(img/card/rl-mag-bg.webp);border-color:rgba(46,150,220,.5)}
+.m-card[data-rar=plagued]{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url(img/card/rl-pl-top.webp),url(img/card/rl-pl-bg.webp);border-color:rgba(170,70,110,.5)}
+.m-card[data-rar=unique]{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url(img/card/rl-un-top.webp),url(img/card/rl-un-bg.webp);border-color:rgba(214,170,60,.55)}
+/* level diamond fill: the game's own blue progress-fill texture, shown from the bottom up to --t (fill height %),
+   brightened to the in-game blue */
+.tt .tt-lv .lvf{position:absolute;left:0;top:0;width:58px;height:58px;clip-path:polygon(50% 6.5%,93.5% 50%,50% 93.5%,6.5% 50%);background:url(img/card/lvfill.webp) center/100% 100% no-repeat;filter:brightness(1.06) saturate(.88);-webkit-mask:linear-gradient(to top,#000 var(--t),transparent var(--t));mask:linear-gradient(to top,#000 var(--t),transparent var(--t))}
+
+/* Exalted items (builder): the game's own Exalted frame - ornate top banner, gold side rails, misted base, and the tier ornament by the level diamond */
+.tt.tt-ex{padding-top:30px}
+.tt .ex-t{z-index:0;background:url(img/card/ex-top.webp) center top/100% auto no-repeat}
+.tt.tt-ex-un .ex-t{background-image:url(img/card/ex-top-un.webp)}
+.tt .ex-b{z-index:0;background:url(img/card/ex-bot.webp) center bottom/100% auto no-repeat}
+.tt .ex-r{z-index:0;background:linear-gradient(90deg,rgba(120,100,50,.0) 0,#b9a468 1px,rgba(20,16,8,.9) 2px,rgba(0,0,0,0) 3px) left top/100% 100% no-repeat,linear-gradient(270deg,rgba(120,100,50,.0) 0,#b9a468 1px,rgba(20,16,8,.9) 2px,rgba(0,0,0,0) 3px) right top/100% 100% no-repeat;-webkit-mask:linear-gradient(90deg,#000 0,#000 3px,transparent 3px,transparent calc(100% - 3px),#000 calc(100% - 3px));mask:linear-gradient(90deg,#000 0,#000 3px,transparent 3px,transparent calc(100% - 3px),#000 calc(100% - 3px))}
+.tt .tt-exlbl{position:absolute;left:0;right:0;top:3px;text-align:center;z-index:1;font:400 13px/20px var(--display);letter-spacing:.14em;text-transform:uppercase;color:#d9cfae;text-shadow:0 1px 2px #000;pointer-events:none}
+.tt.tt-ex .tt-lv:before{box-shadow:0 0 14px rgba(217,190,110,.35)}
+.tt.tt-ex .tt-head{position:relative}
+.tt.tt-ex .tt-head:after{content:"";position:absolute;right:-6px;top:-18px;width:78px;height:99px;background:url(img/card/ex-tier.webp) center/contain no-repeat;opacity:.8;pointer-events:none;z-index:-1}
+/* Exalted frame sits OUTSIDE the card, like the game's border: banner on top, rails down both sides, mist along the base */
+.tt.tt-ex{overflow:visible;padding-top:0}
+.tt.tt-ex .ex-t{inset:auto;left:-9px;right:-9px;top:-31px;bottom:0;background-position:center top;background-size:100% auto}
+.tt.tt-ex .ex-b{inset:auto;left:-9px;right:-9px;bottom:-6px;height:130px;background-position:center bottom;background-size:100% auto}
+.tt.tt-ex .ex-r{inset:-2px -3px}
+.tt.tt-ex .tt-exlbl{top:-27px}
+/* exalted: thin gilt rail on the left of the icon box, as in game */
+.tt.tt-ex .tt-ic:after{content:"";position:absolute;left:-4px;top:-6px;width:4px;height:84px;pointer-events:none;z-index:2;background:linear-gradient(90deg,#1a1408 0,#1a1408 22%,#cdb978 45%,#f0e1a6 62%,#8a7440 82%,#1a1408 100%);-webkit-mask:linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);mask:linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);box-shadow:0 0 5px rgba(217,190,110,.35)}
+
