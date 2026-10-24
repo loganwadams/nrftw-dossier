@@ -312,9 +312,21 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .ip-upt td:first-child{white-space:nowrap}
 .ip-craft-unknown{margin:0;font-size:13px;font-style:italic;color:var(--muted)}
 /* Community Builds page */
+.cm-boards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:0 0 22px}
+.cm-board{padding:14px 16px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.cm-board h3{margin:0 0 10px;font-family:var(--data);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.cm-board ol{margin:0;padding:0;list-style:none;counter-reset:cmb}
+.cm-board li{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid rgba(201,169,110,.08);font-size:13.5px;color:var(--bone)}
+.cm-board li:first-child{border-top:0}
+.cm-board li::before{counter-increment:cmb;content:counter(cmb);font-family:var(--data);font-size:10px;color:var(--gold-dim);width:14px;flex:none;text-align:right}
+.cm-board li a{color:var(--bone);text-decoration:none;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-board li a:hover{color:var(--gold)}
+.cm-board li small{color:#8b8174;font-size:12px;white-space:nowrap}
+.cm-board li b{font-family:var(--data);font-size:11px;color:var(--gold);font-weight:600;white-space:nowrap}
+.cm-board .cm-board-by{color:#8b8174;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
 .cm-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
 .cm-tools .cm-q{flex:1 1 260px;max-width:420px}
-.cm-tools select{height:42px;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:0 10px;cursor:pointer}
+.cm-tools select{height:42px;width:auto;appearance:none;-webkit-appearance:none;background:rgba(0,0,0,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a96e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/12px 12px;border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:0 30px 0 12px;cursor:pointer}
 .cm-meta{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174;margin:0 0 16px;min-height:14px}
 .cm-meta b{color:var(--gold)}
 .cm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
@@ -2722,6 +2734,10 @@ footer li{color:#6f665b}
   <section id="community-builds">
     <div class="sect-head"><img id="cmPfAvatar" class="cm-pf-avatar" alt="" hidden><h2>Community Builds</h2><span class="cm-pf-links" id="cmPfLinks"><a id="cmPfDiscord" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="Discord"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.54 5.33A16.7 16.7 0 0 0 15.4 4l-.2.4a15.6 15.6 0 0 1 3.8 1.9 13.6 13.6 0 0 0-14 0 15.6 15.6 0 0 1 3.8-1.9L8.6 4a16.7 16.7 0 0 0-4.14 1.33C1.8 9.3 1.1 13.2 1.45 17a16.8 16.8 0 0 0 5.1 2.6l1.1-1.8a10.7 10.7 0 0 1-1.7-.8l.4-.3a12 12 0 0 0 11.3 0l.4.3c-.5.3-1.1.6-1.7.8l1.1 1.8a16.8 16.8 0 0 0 5.1-2.6c.4-4.4-.7-8.3-3-11.67ZM8.7 14.7c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg></a><a id="cmPfTwitch" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="Twitch"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.3 2 2.5 6.6V20h4.7v2.5h2.6L12.3 20h3.8l5.4-5.4V2H4.3Zm15.4 11.7-3.1 3.1h-4.9l-2.6 2.6v-2.6H5.1V3.8h14.6v9.9ZM16.3 7.3h-1.8v5.4h1.8V7.3Zm-4.9 0h-1.8v5.4h1.8V7.3Z"/></svg></a><a id="cmPfYoutube" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.2a2.9 2.9 0 0 0-2-2C19.2 4.7 12 4.7 12 4.7s-7.2 0-9 .5a2.9 2.9 0 0 0-2 2A30 30 0 0 0 .5 12a30 30 0 0 0 .5 4.8 2.9 2.9 0 0 0 2 2c1.8.5 9 .5 9 .5s7.2 0 9-.5a2.9 2.9 0 0 0 2-2 30 30 0 0 0 .5-4.8 30 30 0 0 0-.5-4.8ZM9.7 15V9l6 3-6 3Z"/></svg></a><a id="cmPfKick" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="Kick"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 2h5.3v5.3h2.7V4.7h2.7V2H21v5.3h-2.7v2.6h-2.6v4.2h2.6v2.6H21V22h-7.3v-2.7h-2.7v-2.6H8.3V22H3V2Z"/></svg></a><a id="cmPfReddit" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="Reddit"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.1a2.2 2.2 0 0 0-3.7-1.6 10.8 10.8 0 0 0-5.8-1.8l1-4.7 3.2.7a1.5 1.5 0 1 0 .2-1l-3.7-.8a.5.5 0 0 0-.6.4l-1.1 5.4a10.9 10.9 0 0 0-5.9 1.8 2.2 2.2 0 1 0-2.4 3.6 4.3 4.3 0 0 0 0 .7c0 3.4 3.9 6.1 8.8 6.1s8.8-2.7 8.8-6.1a4.3 4.3 0 0 0 0-.7 2.2 2.2 0 0 0 1.2-2ZM7 13.6a1.5 1.5 0 1 1 1.5 1.5A1.5 1.5 0 0 1 7 13.6Zm8.5 4.1a5.7 5.7 0 0 1-3.5 1.1 5.7 5.7 0 0 1-3.5-1.1.4.4 0 0 1 .5-.6 4.9 4.9 0 0 0 3 .9 4.9 4.9 0 0 0 3-.9.4.4 0 0 1 .5.6Zm-.3-2.6a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5Z"/></svg></a><a id="cmPfSteam" class="cm-pf-discord" hidden target="_blank" rel="noopener" title="Steam"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-9.97 9.2l5.36 2.22a2.83 2.83 0 0 1 1.6-.5h.16l2.39-3.46v-.05a3.78 3.78 0 1 1 3.78 3.78h-.09l-3.4 2.43v.13a2.84 2.84 0 0 1-5.63.53L2.37 14.7A10 10 0 1 0 12 2ZM8.3 17.2l-1.23-.5a2.13 2.13 0 0 0 3.87-.1 2.13 2.13 0 0 0-1.1-2.8 2.1 2.1 0 0 0-1.66-.04l1.27.53a1.57 1.57 0 0 1-1.15 2.91Zm7.02-5.2a2.52 2.52 0 1 1 0-5.04 2.52 2.52 0 0 1 0 5.04Zm0-4.4a1.89 1.89 0 1 0 0 3.78 1.89 1.89 0 0 0 0-3.78Z"/></svg></a></span></div>
     <p class="standfirst">Cerim builds published by other players. Open one to see the full loadout and the builder&rsquo;s analysis, or copy it straight into your own builder.</p>
+    <div class="cm-boards" id="cmBoards" hidden>
+      <div class="cm-board"><h3>Top Contributors</h3><ol id="cmTopAuthors"></ol></div>
+      <div class="cm-board"><h3>Most Liked</h3><ol id="cmTopLiked"></ol></div>
+    </div>
     <div class="cm-tools">
       <div class="pgf-field cm-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="cmQ" placeholder="Search builds by name, author or weapon" aria-label="Search builds" autocomplete="off"></div>
       <select id="cmSort" aria-label="Sort"><option value="new">Newest</option><option value="likes">Most liked</option><option value="lv">Highest level</option></select>
@@ -5731,7 +5747,22 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var qEl=$('cmQ'), sortEl=$('cmSort'), metaEl=$('cmMeta');
         var pf=$('cmProfile'), pfList=$('cmPfList'), pfName=$('cmPfName'), pfBio=$('cmPfBio'), pfCount=$('cmPfCount'), secH2=sec.querySelector('.sect-head h2');
         function setHeading(t){ if(secH2) secH2.textContent=t; }
-        var listParts=[sec.querySelector('.standfirst'),sec.querySelector('.cm-tools'),metaEl,list,sec.querySelector('.cm-foot')];
+        var listParts=[sec.querySelector('.standfirst'),sec.querySelector('.cm-tools'),metaEl,list,sec.querySelector('.cm-foot'),$('cmBoards')];
+        // Top 5 contributors (public builds per author) and top 5 most-liked builds, from the same rows.
+        function renderBoards(){
+          var boards=$('cmBoards'); if(!boards||!rows) return;
+          if(!rows.length){ boards.hidden=true; return; }
+          var by={}; rows.forEach(function(r){ var k=(r.author_name||'Anonymous'); (by[k]=by[k]||{name:k,n:0,uid:r.user_id}).n++; if(r.user_id) by[k].uid=r.user_id; });
+          var top=Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){ return b.n-a.n||a.name.localeCompare(b.name); }).slice(0,5);
+          $('cmTopAuthors').innerHTML=top.map(function(a){ var n=escH(a.name); return '<li>'+(a.uid?'<a href="/profile/'+encodeURIComponent(a.name)+'" data-u="'+n+'">'+n+'</a>':'<span style="flex:1">'+n+'</span>')+'<b>'+a.n+' build'+(a.n===1?'':'s')+'</b></li>'; }).join('');
+          var liked=rows.slice().sort(function(a,b){ return (b.likes-a.likes)||((new Date(b.published_at||b.updated_at))-(new Date(a.published_at||a.updated_at))); }).slice(0,5);
+          $('cmTopLiked').innerHTML=liked.map(function(r){ return '<li><a href="#" data-open="'+escH(String(r.id))+'">'+escH(r.name)+'</a><span class="cm-board-by">'+escH(r.author_name||'Anonymous')+'</span><b>\u2665 '+r.likes+'</b></li>'; }).join('');
+          boards.hidden=!!curProfile;
+        }
+        $('cmBoards').addEventListener('click',function(e){
+          var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); goProfile(al.getAttribute('data-u')); return; }
+          var ao=e.target.closest('a[data-open]'); if(ao){ e.preventDefault(); var id=ao.getAttribute('data-open'); for(var i=0;i<(rows||[]).length;i++) if(String(rows[i].id)===id){ open(rows[i]); return; } }
+        });
         // Author pages are addressed by username (unique, fixed at registration): /builds#u/<username>
         function authorHref(r){ return (r.user_id&&r.author_name)?('/profile/'+encodeURIComponent(r.author_name)):null; }
         function authorHtml(r){ var h=authorHref(r), n=escH(r.author_name||'Anonymous'); return h?'<a href="'+h+'" data-u="'+escH(r.author_name)+'" title="See all builds by '+n+'">'+n+'</a>':n; }
@@ -5800,6 +5831,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function showProfile(name){
           curProfile=name||null; curUid=null;
           listParts.forEach(function(el){ if(el) el.hidden=!!curProfile; });
+          if(!curProfile&&rows) renderBoards();
           pf.hidden=!curProfile;
           var pfA=$('cmPfAvatar'), sh=sec.querySelector('.sect-head');
           if(!curProfile){ setHeading('Community Builds'); pfA.hidden=true; pfA.removeAttribute('src'); ['cmPfDiscord','cmPfTwitch','cmPfYoutube','cmPfKick','cmPfReddit','cmPfSteam'].forEach(function(id){ $(id).hidden=true; }); if(sh) sh.classList.remove('has-avatar'); return; }
@@ -5833,7 +5865,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(loading) return; if(rows&&!force) return;
           loading=true; if(!rows) list.innerHTML='<p class="ip-loading">Loading builds&hellip;</p>';
           Promise.all([loadCards(), client().then(function(c){ return c.from('community_builds').select('id,name,code,description,author_name,published_at,updated_at,likes,user_id'); }), loadLiked()])
-            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); render(); if(curProfile) renderProfileList(); })
+            .then(function(res){ var r=res[1]; if(r.error) throw r.error; rows=(r.data||[]); rows.forEach(function(x){ x.likes=+x.likes||0; }); render(); renderBoards(); if(curProfile) renderProfileList(); })
             .catch(function(e){ list.innerHTML='<p class="cm-empty">Couldn&rsquo;t load the community builds. '+escH(cleanErr(e))+'</p>'; })
             .then(function(){ loading=false; });
         }
@@ -5852,7 +5884,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(b.dataset.a==='like'){
             var on=!!liked[r.id];
             client().then(function(c){ return on?c.from('build_likes').delete().eq('build_id',r.id).eq('user_id',user.id):c.from('build_likes').insert({build_id:r.id,user_id:user.id}); })
-              .then(function(x){ if(x.error) throw x.error; if(on){ delete liked[r.id]; r.likes=Math.max(0,r.likes-1); } else { liked[r.id]=1; r.likes++; } render(); })
+              .then(function(x){ if(x.error) throw x.error; if(on){ delete liked[r.id]; r.likes=Math.max(0,r.likes-1); } else { liked[r.id]=1; r.likes++; } render(); renderBoards(); })
               .catch(function(err){ openModal('Like',"<p>Couldn't save that. "+escH(cleanErr(err))+'</p>'); });
           } else if(b.dataset.a==='report'){
             openModal('Report \u201c'+r.name+'\u201d','<p>Tell us what&rsquo;s wrong with this build listing (an offensive name or description, say). Reports go only to the site owner.</p><label class="cb-pub-l">Reason<input type="text" id="cmRepReason" maxlength="200" placeholder="What is the problem?"></label><button type="button" class="cb-mbtn" id="cmRepGo">Send report</button><div class="cb-mmsg" role="status"></div>');
