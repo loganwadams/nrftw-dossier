@@ -8153,10 +8153,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var main=document.createElement('button'); main.type='button';
   var menu=document.createElement('span'); menu.className='nav-acct-menu';
   function item(t,f){ var b=document.createElement('button'); b.type='button'; b.textContent=t; b.addEventListener('click',function(){ box.classList.remove('open'); f(); }); menu.appendChild(b); }
-  item('My builds',function(){ window.__cbAcct.openList(); });
-  item('Edit profile',function(){ window.__cbAcct.editProfile(); });
+  item('My Builds',function(){ window.__cbAcct.openList(); });
+  item('Edit Profile',function(){ window.__cbAcct.editProfile(); });
   item('Privacy',function(){ window.__cbAcct.openPrivacy(); });
-  item('Sign out',function(){ window.__cbAcct.signOut(); });
+  item('Sign Out',function(){ window.__cbAcct.signOut(); });
   box.appendChild(main); box.appendChild(menu);
   var panel=bar.querySelector('.pgbar-panel'), amq=window.matchMedia('(max-width:760px)');
   function placeAcct(){ if(amq.matches&&panel){ box.classList.add('in-panel'); panel.insertBefore(box,panel.firstChild); } else { box.classList.remove('in-panel'); right.insertBefore(box,right.firstChild); var sb=bar.querySelector('.pgbar-search'); if(sb&&sb.parentNode===right) right.insertBefore(sb,box); } }
