@@ -2329,17 +2329,7 @@ body.on-archive:not(.ar-preview) footer .legal-short a{color:#c9a96e;text-decora
   body .pgbar{padding-right:38px}
   body .pgbar .hm-rail{display:block;position:absolute;right:24px;top:calc(50% - 170px);height:340px;width:1px;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(201,169,110,.5) 12%,rgba(201,169,110,.5) 88%,transparent)}
   body .pgbar .hm-dot{position:absolute;left:-3px;top:0;width:7px;height:7px;opacity:0;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .25s;pointer-events:none}
-  body .pgbar .hm-dot::before{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:radial-gradient(circle,#fff 0,#f4ffff 40%,#8ff0ff 100%);box-shadow:0 0 6px 2px rgba(150,240,255,.95),0 0 16px 6px rgba(40,170,255,.6);animation:orbPulse 2.4s ease-in-out infinite}
-  body .pgbar .hm-dot::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:15px;margin:-7.5px 0 0 -30px;border-radius:50%;background:radial-gradient(ellipse at 85% 50%,rgba(120,235,255,.85) 0,rgba(40,170,255,.38) 45%,transparent 72%);transform-origin:85% 50%;transform:rotate(-38deg);filter:blur(1.5px);animation:orbTail 2.4s ease-in-out infinite}
-  body .pgbar .hm-dot .sp{position:absolute;left:50%;top:50%;width:0;height:0;animation:orbSpin 3.2s linear infinite}
-  body .pgbar .hm-dot .sp b{position:absolute;width:3px;height:2px;border-radius:50%;background:#7fefff;box-shadow:0 0 4px #5fe0ff;opacity:.9}
-  body .pgbar .hm-dot .sp b:nth-child(1){left:13px;top:-1px}
-  body .pgbar .hm-dot .sp b:nth-child(2){left:-11px;top:6px;transform:rotate(40deg);opacity:.7}
-  body .pgbar .hm-dot .sp b:nth-child(3){left:-3px;top:-14px;transform:rotate(-30deg);opacity:.8}
-  @keyframes orbPulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.18);filter:brightness(1.25)}}
-  @keyframes orbTail{0%,100%{opacity:.85;transform:rotate(-38deg) scaleX(1)}50%{opacity:1;transform:rotate(-30deg) scaleX(1.18)}}
-  @keyframes orbSpin{to{transform:rotate(360deg)}}
-  @media (prefers-reduced-motion:reduce){body .pgbar .hm-dot::before,body .pgbar .hm-dot::after,body .pgbar .hm-dot .sp{animation:none}}
+  body .pgbar .hm-dot img{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;max-width:none;pointer-events:none;mix-blend-mode:screen;user-select:none}
   body .pgbar .hm-dot.on{opacity:1}
   body .pgbar button{transition:color .25s,transform .3s cubic-bezier(.2,.7,.2,1)}
   body .pgbar button:hover,body .pgbar button:focus-visible{color:#efe3c8;transform:translateX(-4px)}
@@ -8254,6 +8244,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var bar=document.querySelector('.pgbar'); if(!bar) return;
   var rail=document.createElement('span'); rail.className='hm-rail'; rail.setAttribute('aria-hidden','true');
   var dot=document.createElement('span'); dot.className='hm-dot'; rail.appendChild(dot); bar.appendChild(rail);
+  var orbImg=document.createElement('img'); orbImg.alt=''; orbImg.decoding='async'; orbImg.draggable=false;
+  orbImg.src=window.matchMedia('(prefers-reduced-motion:reduce)').matches?'img/loot-orb-still.png':'img/loot-orb.webp'; dot.appendChild(orbImg);
   var mq=window.matchMedia('(min-width:761px)');
   function y(el){ var r=el.getBoundingClientRect(), b=rail.getBoundingClientRect(); return r.top-b.top+r.height/2-3.5; }
   function rest(){
