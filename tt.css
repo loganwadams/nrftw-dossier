@@ -220,3 +220,16 @@
 /* exalted: thin gilt rail on the left of the icon box, as in game */
 .tt.tt-ex .tt-ic:after{content:"";position:absolute;left:-4px;top:-6px;width:4px;height:84px;pointer-events:none;z-index:2;background:linear-gradient(90deg,#1a1408 0,#1a1408 22%,#cdb978 45%,#f0e1a6 62%,#8a7440 82%,#1a1408 100%);-webkit-mask:linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);mask:linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);box-shadow:0 0 5px rgba(217,190,110,.35)}
 
+
+.wd-ic[data-ic="ResearchPaper"]{background:url(img/items-sheet.webp) no-repeat;background-size:704px 814px;background-position:-242px -308px}
+.wd-ic.inl[data-ic="ResearchPaper"]{background-size:576px 666px;background-position:-198px -252px}
+
+.wd-craft{padding:6px 14px 8px}
+.wd-craft-h{display:flex;justify-content:space-between;color:#9a9a9c;font-variant:small-caps;font-size:14px;margin-bottom:4px}
+.wd-craft-r{display:flex;align-items:center;gap:8px;padding:2px 0}
+.wd-craft-n{flex:1 1 auto;color:#d9d3c3}
+.wd-craft-c{color:#d9d3c3;font-weight:600}
+.wd-research{display:flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(0,0,0,.3)}
+.wd-research-k{color:#9a9a9c;font-variant:small-caps;font-size:14px;letter-spacing:.04em;margin-right:6px}
+.wd-research .wd-ic{width:22px;height:22px;background-size:704px 814px;background-position:-242px -308px}
+.wd-research .wd-num{color:#d9d3c3}

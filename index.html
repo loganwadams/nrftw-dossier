@@ -83,7 +83,7 @@
     StatStaminaRegen:['REGEN','Stamina Recovery'],StatFocusGain:['GAIN','Focus Gain'],StatDurability:['DUR','Durability'],
     StatWeight:['WT','Weight'],Strength:['STR','Strength'],Dexterity:['DEX','Dexterity'],Intelligence:['INT','Intelligence'],
     Faith:['FAI','Faith'],Focus:['FOC','Focus'],Stamina:['STA','Stamina'],Health:['HP','Health'],
-    moneyBronze:['¢','Copper'],moneySilver:['S','Silver'],moneyGold:['G','Gold'],
+    moneyBronze:['¢','Copper'],moneySilver:['S','Silver'],moneyGold:['G','Gold'],ResearchPaper:['RP','Research Paper'],
     StatFireArmor:['FIRE','Fire Resistance'],StatColdArmor:['ICE','Ice Resistance'],StatLightningArmor:['LTNG','Lightning Resistance'],StatPlagueArmor:['PLG','Plague Resistance'],
     StatEnchantmentPower:['ENCH','Enchantment Power'],iconEnchantUnique:['★','Unique enchantment'],iconEnchantNegative:['✕','Drawback'],
     iconGemEnchantWeapon:['W','Weapons'],iconGemEnchantShield:['S','Shields'],iconGemEnchantOffhand:['O','Off-Hands'],
@@ -145,6 +145,8 @@
       case 'cols': return '<div class="wd-cols">'+b.rows.map(function(r){ return blockHtml(r,adj); }).join('')+'</div>';
       case 'row': return '<div class="wd-row">'+parts(b.parts,adj)+'</div>';
       case 'kv': return kvHtml(b,adj);
+      case 'craft': return '<div class="wd-craft"><div class="wd-craft-h"><span>Crafting Requirements</span><span>Crafts '+esc(b.crafts)+'</span></div>'+b.ing.map(function(g){ return '<div class="wd-craft-r"><span class="wd-li-ic'+(g.p?'':' none')+'"'+(g.p?' style="background-position:'+(-g.p[0]*18)+'px '+(-g.p[1]*18)+'px"':'')+'></span><span class="wd-craft-n">'+esc(g.name)+'</span><span class="wd-craft-c">'+esc(g.n)+'</span></div>'; }).join('')+'</div>';
+      case 'research': return '<div class="wd-research"><span class="wd-research-k">Research</span>'+icon('ResearchPaper')+'<b class="wd-num">'+esc(b.n)+'</b></div>';
       case 'desc': return '<div class="wd-desc">'+parts(b.parts,adj,true)+'</div>';
       case 'runes': return '<div class="wd-slots wd-runes">'+b.slots.map(function(s){ return s?('<div class="wd-slot">'+(s.key?linkHtml(s):'<span class="wd-li-ic none"></span><span class="wd-li-name">'+esc(s.name)+'</span>')+'</div>'):'<div class="wd-slot empty"><span class="wd-dot"></span>Empty</div>'; }).join('')+'</div>';
       case 'gems': return '<div class="wd-slots wd-gems">'+b.items.map(function(it){ return 'empty' in it?('<div class="wd-slot empty"><span class="wd-dot"></span>Empty'+(it.empty>1?' × '+it.empty:'')+'</div>'):('<div class="wd-slot">'+parts(it.parts,adj)+'</div>'); }).join('')+'</div>';
@@ -164,6 +166,8 @@
     case 'row': case 'desc': o.push(pText(b.parts)); break;
     case 'h': o.push(b.t); break;
     case 'cols': o.push(bText(b.rows)); break;
+    case 'craft': b.ing.forEach(function(g){ o.push(g.name+' '+g.n); }); break;
+    case 'research': o.push('Research '+b.n); break;
     case 'kv': o.push(b.label||pText(b.labelParts)); if(b.parts) o.push(pText(b.parts)); (b.list||[]).forEach(function(l){ o.push(pText(l)); }); break;
     case 'runes': b.slots.forEach(function(s){ o.push(s?s.name:'Empty'); }); break;
     case 'gems': b.items.forEach(function(it){ o.push('empty' in it?'Empty':pText(it.parts)); }); break;
