@@ -87,7 +87,7 @@
     StatFireArmor:['FIRE','Fire Resistance'],StatColdArmor:['ICE','Ice Resistance'],StatLightningArmor:['LTNG','Lightning Resistance'],StatPlagueArmor:['PLG','Plague Resistance'],
     StatEnchantmentPower:['ENCH','Enchantment Power'],iconEnchantUnique:['★','Unique enchantment'],iconEnchantNegative:['✕','Drawback'],
     iconGemEnchantWeapon:['W','Weapons'],iconGemEnchantShield:['S','Shields'],iconGemEnchantOffhand:['O','Off-Hands'],
-    iconGemEnchantArmor:['B','Body'],iconGemEnchantHelmet:['H','Helmets'],iconGemEnchantPants:['P','Pants'],iconGemEnchantGloves:['G','Gloves'],
+    iconGemEnchantArmor:['T','Torso'],iconGemEnchantHelmet:['H','Helmets'],iconGemEnchantPants:['P','Pants'],iconGemEnchantGloves:['G','Gloves'],
     iconToolDamage:['TOOL','Tool Damage'],StatStaminaCost:['STA−','Stamina Cost'],StatMaxStamina:['STA+','Max Stamina'],
     StatElementalDamageTaken:['ELEM','Elemental Damage Taken'],StatFocusRegen:['FOC↻','Focus Regen'],StatHealthRegen:['HP↻','Health Regen'],
     StatExperience:['XP','Experience'],StatHealthRally:['RALLY','Rally'],StatLifesteal:['LS','Lifesteal'],StatPhysicalDamage:['PHYS','Physical Damage'],
@@ -149,7 +149,7 @@
       case 'runes': return '<div class="wd-slots wd-runes">'+b.slots.map(function(s){ return s?('<div class="wd-slot">'+(s.key?linkHtml(s):'<span class="wd-li-ic none"></span><span class="wd-li-name">'+esc(s.name)+'</span>')+'</div>'):'<div class="wd-slot empty"><span class="wd-dot"></span>Empty</div>'; }).join('')+'</div>';
       case 'gems': return '<div class="wd-slots wd-gems">'+b.items.map(function(it){ return 'empty' in it?('<div class="wd-slot empty"><span class="wd-dot"></span>Empty'+(it.empty>1?' × '+it.empty:'')+'</div>'):('<div class="wd-slot">'+parts(it.parts,adj)+'</div>'); }).join('')+'</div>';
       case 'ench': return '<div class="wd-ench">'+(b.title?'<div class="wd-h">'+esc(b.title)+'</div>':'')+b.items.map(function(e){ return '<div class="wd-en kind-'+esc(e.kind||'standard')+'"'+(e.group!=null?' data-group="'+e.group+'"':'')+'>'+parts(e.parts,adj,true)+'</div>'; }).join('')+'</div>';
-      case 'gemfx': return '<div class="wd-gemfx">'+b.items.map(function(g){ return '<div class="wd-gf"><span class="wd-gf-slot">'+(g.ic?icon(g.ic):'')+esc(g.slot)+'</span><span class="wd-gf-fx'+(g.parts.length?'':' none')+'">'+(g.parts.length?parts(g.parts,adj,true):'–')+'</span></div>'; }).join('')+'</div>';
+      case 'gemfx': return '<div class="wd-gemfx">'+b.items.map(function(g){ return '<div class="wd-gf"><span class="wd-gf-slot">'+(g.ic?icon(g.ic):'')+esc(g.slot==='Body'?'Torso':g.slot)+'</span><span class="wd-gf-fx'+(g.parts.length?'':' none')+'">'+(g.parts.length?parts(g.parts,adj,true):'–')+'</span></div>'; }).join('')+'</div>';
       case 'set': return '<div class="wd-set">'+b.items.map(function(g){ return '<div class="wd-set-pc">'+(g.ic?icon(g.ic):'')+(g.parts.length?parts(g.parts,adj):'<span class="wd-muted">–</span>')+'</div>'; }).join('')+'</div>';
       case 'info': var rows=b.rows.filter(function(r){ return !/^Source/i.test(r.label); }); return rows.length?'<div class="wd-info">'+rows.map(function(r){ return '<div class="wd-kv"><span class="wd-k">'+esc(r.label)+'</span><span class="wd-v">'+parts(r.parts,adj)+'</span></div>'; }).join('')+'</div>':'';
       case 'attack': return '<div class="wd-kv wd-attack"><span class="wd-k">'+esc(b.label)+'</span><span class="wd-v">'+b.attacks.map(function(a){ return '<div class="wd-atk"><div class="wd-atk-main"><div class="wd-atk-school">'+parts(a.school,adj)+'</div><div class="wd-atk-mods">'+parts(a.mods,adj)+'</div>'+(a.extra||[]).map(function(e){ return '<div class="wd-atk-x">'+parts(e,adj)+'</div>'; }).join('')+'</div>'+(a.mult?'<span class="wd-atk-mult">'+esc(a.mult)+'</span>':'')+'</div>'; }).join('')+'</span></div>';
@@ -213,6 +213,7 @@
     f.weight=f.stats.StatWeight!=null?num(f.stats.StatWeight):null;
     return f;
   }
+  window.wdTorso=function(t){ return String(t==null?'':t).replace(/\bBody$/,'Torso'); };
   window.WDCARD={html:cardHtml,text:cardText,facts:cardFacts,icon:icon,src:srcChip,SRC:SRC,ABBR:ABBR,esc:esc};
 })();
 </script><link rel="stylesheet" href="tt.css"><!-- TT:css -->
@@ -7092,7 +7093,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       t.className='tt r-'+(c.r||'standard');
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
       t.classList.toggle('tt-ex',!!c.ex); t.classList.toggle('tt-ex-un',!!c.ex&&c.r==='unique');
-      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>'+(c.ex?'<div class="lay ex-t"></div><div class="lay ex-b"></div><div class="lay ex-r"></div><div class="tt-exlbl">Exalted</div>':'')+'<div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(k||''))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||WDCARD.html(c));
+      t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>'+(c.ex?'<div class="lay ex-t"></div><div class="lay ex-b"></div><div class="lay ex-r"></div><div class="tt-exlbl">Exalted</div>':'')+'<div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(k||''))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||WDCARD.html(c));
       t.classList.add('on'); place(x,y); }); }
   function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   // hover-follow is for a real mouse only: touch devices synthesize a mouseover+mousemove right
@@ -7553,7 +7554,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(document.getElementById('ipBody')!==body) return; // navigated away while this was loading
       if(!c){ body.innerHTML='<p class="ip-error">That item could not be found.</p>'; return; }
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(key))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+WDCARD.html(c)+'</div><div id="ipMats"></div>';
+      body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(key))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+WDCARD.html(c)+'</div><div id="ipMats"></div>';
       loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
       var ipCard=body.querySelector('.ip-tt'); if(ipCard){  }
       if(h2) h2.textContent=c.n||'Item';
@@ -8285,7 +8286,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var c=db[k]; if(!c) return;
         var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
         var d=document.createElement('div'); d.className='tt ip-tt r-'+(c.r||'standard');
-        d.innerHTML='<div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv&&window.lvFill?'<div class="tt-lv">'+window.lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||window.WDCARD.html(c));
+        d.innerHTML='<div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+(c.lv&&window.lvFill?'<div class="tt-lv">'+window.lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||window.WDCARD.html(c));
         host.appendChild(d);
       });
       var old=document.getElementById('infGemCards'); if(old) old.remove();
