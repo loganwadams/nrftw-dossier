@@ -8340,7 +8340,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Archive pool cards: each raises up to ten random icons from its own category
   [['pool-runes'],['pool-ingredients'],['pool-resources'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
-    if(el) wire(el,function(){ return sample(trove(c[0]),10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
+    if(el) wire(el,function(){ var pool=trove(c[0]); if(c[0]==='pool-resources') pool=pool.concat(trove('pool-refined-resources')); return sample(pool,10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
 })();
 </script>
