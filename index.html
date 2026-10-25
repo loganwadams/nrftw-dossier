@@ -807,6 +807,9 @@ body.on-cerim .pgbar-search{color:#c8c8c8}
 body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/header-scene-cerim.webp);filter:brightness(.78)}
 #cerim-builder>.sect-head,#cerim-builder>.standfirst{display:none}
 #infusions .cols2[data-m="intro:infusions"],#infusions .inf-group-head>p{display:none}
+#infusions .inf-group{display:none}
+.inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
+.inf-gemgrid .ip-tt{max-width:none}
 body.on-cerim::before{
   background:
     radial-gradient(90% 70% at 50% 40%, #1b1b1b 0%, #111111 55%, #080808 100%),
@@ -8395,6 +8398,31 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }).catch(function(){});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+})();
+</script>
+<script>
+(function(){
+  // Infusions page: every gem shown as its own item card (the same panel the Trove opens), built from the item database.
+  function build(){
+    var sec=document.getElementById('infusions'); var head=document.getElementById('pool-gems');
+    if(!sec||!head||!window.__ttLoad) return;
+    var keys=[], n=head.nextElementSibling;
+    while(n&&!n.classList.contains('m-cat-head')){ n.querySelectorAll('.m-card[data-k]').forEach(function(c){ keys.push(c.getAttribute('data-k')); }); n=n.nextElementSibling; }
+    if(!keys.length) return;
+    window.__ttLoad().then(function(db){
+      var host=document.createElement('div'); host.className='inf-gemgrid'; host.id='infGemCards';
+      keys.forEach(function(k){
+        var c=db[k]; if(!c) return;
+        var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
+        var d=document.createElement('div'); d.className='tt ip-tt r-'+(c.r||'standard');
+        d.innerHTML='<div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+c.t+'</div></div>'+(c.lv&&window.lvFill?'<div class="tt-lv">'+window.lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||window.WDCARD.html(c));
+        host.appendChild(d);
+      });
+      var old=document.getElementById('infGemCards'); if(old) old.remove();
+      var first=sec.querySelector('.inf-group'); if(first) first.parentNode.insertBefore(host,first); else sec.appendChild(host);
+    }).catch(function(){});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
 })();
 </script>
 </body></html>
