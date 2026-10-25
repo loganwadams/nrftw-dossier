@@ -3018,6 +3018,7 @@ footer li{color:#6f665b}
       <a class="ar-card" href="#enchantments"><h3>Enchantments</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-runes"><h3>Runes</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-ingredients"><h3>Ingredients &amp; Food</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-resources"><h3>Resources</h3><span class="ar-go">Open</span></a>
     </div>
     </div>
   </section>
@@ -8337,7 +8338,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
   var enc=document.querySelector('.ar-card[href="#enchantments"]'); if(enc) wire(enc,enchantItems);
   // Archive pool cards: each raises up to ten random icons from its own category
-  [['pool-runes'],['pool-ingredients'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
+  [['pool-runes'],['pool-ingredients'],['pool-resources'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
     if(el) wire(el,function(){ return sample(trove(c[0]),10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
