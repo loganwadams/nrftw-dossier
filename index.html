@@ -8466,6 +8466,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     add(trove('pool-shields'),1); add(trove('pool-quivers'),1); add(trove('pool-throwable-items'),1);
     return items;
   }
+  // Enchantments: the game's damage-type glyphs - plague, fire, ice, lightning, bleed, physical
+  function enchantItems(){ return [[1,4],[2,4],[3,4],[11,3],[8,4],[8,3]].map(function(g){ return {g:g}; }); }
   function wire(card,make){
     var layer=document.createElement('span'); layer.className='ar-gems'; layer.setAttribute('aria-hidden','true'); card.appendChild(layer);
     var timer=null;
@@ -8478,6 +8480,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       items.forEach(function(it,i){
         var im;
         if(it.src){ im=document.createElement('img'); im.src=it.src; im.alt=''; }
+        else if(it.g){ im=document.createElement('span'); im.className='ar-sp'; im.style.backgroundImage='url(img/wd-glyphs.webp)'; im.style.backgroundSize=(12*SIZE)+'px auto'; im.style.backgroundPosition=(-it.g[0]*SIZE)+'px '+(-it.g[1]*SIZE)+'px'; }
         else { im=document.createElement('span'); im.className='ar-sp'; im.style.backgroundPosition=(-it.p[0]*SIZE)+'px '+(-it.p[1]*SIZE)+'px'; }
         im.style.left=(X0+i*STEP)+'px';
         im.style.bottom=(-(8+Math.random()*24))+'px';
@@ -8494,6 +8497,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   }
   var inf=document.querySelector('.ar-card[href="#infusions"]'); if(inf) wire(inf,gemItems);
   var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
+  var enc=document.querySelector('.ar-card[href="#enchantments"]'); if(enc) wire(enc,enchantItems);
 })();
 </script>
 </body></html>
