@@ -2204,6 +2204,39 @@ section,article.klass{scroll-margin-top:24px}
 @media (max-width:760px){.hero{min-height:340px}.hero-text{padding:30px 22px 48px 30px;max-width:none;text-align:left}.hero-sub{margin-left:0}.hero-art::after{background:linear-gradient(180deg,rgba(10,8,7,.2) 0%,rgba(10,8,7,.9) 55%,rgba(10,8,7,.97) 100%)}}
 
 
+/* media page: editorial layout */
+.md{padding:6px 0 10px}
+.md-intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin:26px 0 38px}
+.md-intro h1{margin:0;font:400 clamp(44px,7vw,92px)/.95 var(--display);color:var(--bone);text-transform:none;letter-spacing:0}
+.md-intro h1 em{font-style:normal;color:var(--gold)}
+.md-intro p{margin:0 0 8px;color:var(--muted);max-width:44ch;font-size:16px;line-height:1.6}
+.md-gal{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.md-gal a{position:relative;overflow:hidden;background:#000;display:block;min-height:190px}
+.md-gal a:nth-child(1){grid-column:span 4;grid-row:span 2}
+.md-gal a:nth-child(4),.md-gal a:nth-child(5){grid-column:span 3}
+.md-gal-more{margin-top:10px}.md-gal-more a:nth-child(n){grid-column:span 2;grid-row:auto}
+.md-gal-more[hidden]{display:none}
+.md-gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88);transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .4s}
+.md-gal a:hover img{transform:scale(1.05);filter:none}
+.md-gal a:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(5,4,3,.82))}
+.md-gal a span{position:absolute;z-index:1;left:16px;right:16px;bottom:13px;font:400 15px/1.2 var(--display);color:var(--bone);text-shadow:0 1px 8px rgba(0,0,0,.9)}
+.md-credit{margin:14px 0 0;color:var(--muted);font-size:12.5px;letter-spacing:.04em}
+.md-credit button{appearance:none;background:none;border:0;padding:0;margin-left:6px;font:inherit;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-dim)}
+.md-tl{margin-top:64px;display:grid;grid-template-columns:120px 1fr;gap:0 30px}
+.md-yr{font:400 54px/1 var(--display);color:rgba(201,169,110,.38);position:sticky;top:30px;align-self:start;padding-top:14px}
+.md-ev{display:grid;grid-template-columns:160px 1fr auto;gap:20px;align-items:center;padding:14px 0;border-top:1px solid var(--edge);cursor:pointer;color:inherit;text-decoration:none;transition:padding-left .3s,background .3s}
+.md-ev:hover,.md-ev:focus-visible{padding-left:12px;background:linear-gradient(90deg,rgba(201,169,110,.08),transparent);outline:none}
+.md-ev .md-th{position:relative;aspect-ratio:16/9;background:#000 center/cover no-repeat}
+.md-ev .md-th:after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;border:1px solid rgba(233,220,192,.8);border-radius:50%;background:rgba(10,8,7,.5) no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e9dcc0' d='M8 5v14l11-7z'/%3E%3C/svg%3E");opacity:0;transition:opacity .3s}
+.md-ev:hover .md-th:after{opacity:1}
+.md-ev p{margin:0;font:400 18px/1.25 var(--display);color:var(--bone)}
+.md-ev small{display:block;margin-top:4px;color:var(--muted);font-size:11px;letter-spacing:.12em}
+.md-ev em{font:500 12px var(--data);font-style:normal;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
+.md-lb{position:fixed;inset:0;z-index:200;background:rgba(5,4,3,.92);display:grid;place-items:center;padding:4vw}
+.md-lb div{width:min(1100px,100%);aspect-ratio:16/9}.md-lb iframe{width:100%;height:100%;border:0}
+.md-lb button{position:absolute;top:18px;right:24px;appearance:none;background:none;border:0;color:var(--bone);font-size:34px;cursor:pointer}
+@media (max-width:860px){.md-intro{grid-template-columns:1fr}.md-tl{grid-template-columns:1fr}.md-yr{position:static;padding:22px 0 6px}.md-ev{grid-template-columns:104px 1fr}.md-ev em{display:none}.md-gal a:nth-child(n){grid-column:span 6;grid-row:auto}.md-gal-more a:nth-child(n){grid-column:span 6}}
+
 .legal-short{display:none}
 @media (min-width:761px){
   body.on-home{overflow:hidden}
@@ -3097,7 +3130,14 @@ footer li{color:#6f665b}
 <!-- /ITEM PAGE -->
 <!-- VIDEOS -->
   <section id="videos">
-    <div class="sect-head"><h2>Media</h2></div>
+    <div class="md" id="md">
+      <div class="md-intro"><h1>Watch &amp;<br><em>look.</em></h1><p>Every trailer, showcase and stream from the studio, and the cinematic art behind them, in one place.</p></div>
+      <div class="md-gal" id="md-gal"></div>
+      <p class="md-credit">Art by Damian Gerrits, Associate Art Lead at Moon Studios &middot; <button type="button" id="md-more">See all <span id="md-artn"></span> pieces</button></p>
+      <div class="md-gal md-gal-more" id="md-gal2" hidden></div>
+      <div class="md-tl" id="md-tl"></div>
+    </div>
+    <div class="md-legacy" hidden>
 
     <div class="m-cat-head" id="vidsec-youtube"><h3><img class="brand-badge" src="img/brand/youtube-logo-gold.png" alt="YouTube"></h3><span id="vid-count"></span></div>
     <div class="m-cat" id="vidsec-youtube-body">
@@ -3112,6 +3152,7 @@ footer li{color:#6f665b}
       <p class="standfirst" id="art-sub">Concept and promo art by Damian Gerrits, Associate Art Lead at Moon Studios &mdash; tap a piece to see it full-size on ArtStation.</p>
       <div class="vid-grid" id="art-grid"></div>
       <p class="vid-empty" id="art-empty" hidden>No ArtStation pieces have been added yet. Once links are in, they appear here the same way as the YouTube videos.</p>
+    </div>
     </div>
   </section>
   <section id="cerim-builder">
@@ -6773,6 +6814,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   "thumb": "img/vid/l3Ozk5iBuH4.webp"
   }
   ];
+  window.__VIDEOS=VIDEOS;
   var grid=document.getElementById('vid-grid'), empty=document.getElementById('vid-empty'), toolbar=document.getElementById('vid-toolbar'), sortSel=document.getElementById('vid-sort');
   var countEl=document.getElementById('vid-count');
   if(countEl) countEl.textContent=VIDEOS.length+(VIDEOS.length===1?' video':' videos');
@@ -6835,6 +6877,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     { title:'No Rest for the Wicked — Inquisition Arrival', url:'https://www.artstation.com/artwork/XJewYy', thumb:'https://cdna.artstation.com/p/assets/covers/images/078/544/496/large/damian-gerrits-damian-gerrits-nrftw-inquisitionarrival-01-thumbnail-2048x2048.jpg?1722405140' },
     { title:'No Rest for the Wicked — IGN First: Warrick the Torn', url:'https://www.artstation.com/artwork/JvKDkv', thumb:'https://cdnb.artstation.com/p/assets/covers/images/072/648/631/large/damian-gerrits-damian-gerrits-ign-thumbnail-warrickthetorn-2048x2048.jpg?1707872798' }
   ];
+  window.__ARTWORKS=ARTWORKS;
   var grid=document.getElementById('art-grid'), empty=document.getElementById('art-empty');
   var countEl=document.getElementById('art-count');
   if(countEl) countEl.textContent=ARTWORKS.length+(ARTWORKS.length===1?' piece':' pieces');
@@ -6847,6 +6890,26 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       +'<span class="vid-body"><span class="vid-title">'+p.title+'</span><span class="vid-note">Damian Gerrits on ArtStation</span></span>';
     grid.appendChild(a);
   });
+})();
+</script>
+<script>
+(function(){
+  var V=(window.__VIDEOS||[]).slice().sort(function(a,b){return (b.date||'').localeCompare(a.date||'')}), A=window.__ARTWORKS||[];
+  var gal=document.getElementById('md-gal'), gal2=document.getElementById('md-gal2'), tl=document.getElementById('md-tl'); if(!gal||!tl) return;
+  var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function clean(t){ return t.replace(/^No Rest for the Wicked\s*[\u2014\u2013-]\s*/,''); }
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function tile(p){ return '<a href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.thumb+'" alt="" loading="lazy"><span>'+esc(clean(p.title))+'</span></a>'; }
+  gal.innerHTML=A.slice(0,5).map(tile).join(''); gal2.innerHTML=A.slice(5).map(tile).join('');
+  document.getElementById('md-artn').textContent=A.length;
+  var more=document.getElementById('md-more'); more.addEventListener('click',function(){ gal2.hidden=!gal2.hidden; more.innerHTML=gal2.hidden?'See all <span>'+A.length+'</span> pieces':'Show fewer'; });
+  var byY={}, ys=[]; V.forEach(function(v){ var y=(v.date||'').slice(0,4)||'Undated'; if(!byY[y]){byY[y]=[];ys.push(y);} byY[y].push(v); });
+  tl.innerHTML=ys.map(function(y){ return '<div class="md-yr">'+y+'</div><div>'+byY[y].map(function(v){ var d=(v.date||'').split('-'); return '<a class="md-ev" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-t="'+esc(v.title)+'"><span class="md-th" style="background-image:url('+v.thumb+')"></span><div><p>'+esc(v.title)+'</p><small>'+esc(v.note||'')+'</small></div><em>'+(d.length>2?M[+d[1]-1]+' '+(+d[2]):'')+'</em></a>'; }).join('')+'</div>'; }).join('');
+  var canEmbed=!/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
+  tl.addEventListener('click',function(e){ var a=e.target.closest('.md-ev'); if(!a||!canEmbed) return; e.preventDefault();
+    var lb=document.createElement('div'); lb.className='md-lb'; lb.innerHTML='<button type="button" aria-label="Close">&times;</button><div><iframe src="https://www.youtube-nocookie.com/embed/'+a.dataset.id+'?autoplay=1" title="'+a.dataset.t+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
+    function close(){ lb.remove(); document.removeEventListener('keydown',key); } function key(ev){ if(ev.key==='Escape') close(); }
+    lb.addEventListener('click',function(ev){ if(ev.target===lb||ev.target.tagName==='BUTTON') close(); }); document.addEventListener('keydown',key); document.body.appendChild(lb); });
 })();
 </script>
 <!-- /VIDEOS -->
