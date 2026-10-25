@@ -8369,6 +8369,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(m){ if(m[1]==='1') localStorage.setItem(KEY,'1'); else localStorage.removeItem(KEY); }
     on=localStorage.getItem(KEY)==='1';
   }catch(e){}
+  on=true; // cards are visible to everyone for now; the Under construction notice stays
   var p=document.getElementById('arPrivate'); if(p&&on){ p.hidden=false; document.body.classList.add('ar-preview'); }
 })();
 </script>
