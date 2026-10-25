@@ -2304,6 +2304,11 @@ body.cat-view #catalog .m-cat-collapse{display:none!important}
 .ar-card[href="#enchantments"]{background:url(img/archive-enchantments.webp) 80% 50%/160% auto no-repeat}
 .ar-card[href="#armory"]{background:url(img/archive-armory.webp) center/cover no-repeat}
 .ar-card[href="#recipes"]{background:url(img/archive-recipes.webp) 45% 50%/125% auto no-repeat}
+.ar-card[href="#recipes"]::before{content:"";position:absolute;left:50%;bottom:0;width:190px;height:88px;margin-left:-95px;pointer-events:none;z-index:0;opacity:0;transform:translateY(130%);
+  background:url(img/recipe-food.webp) 0 100%/auto 84px no-repeat,url(img/recipe-potion.webp) 100% 100%/auto 84px no-repeat;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease}
+.ar-card[href="#recipes"]:hover::before,.ar-card[href="#recipes"]:focus-visible::before{opacity:.97;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.ar-card[href="#recipes"]::before{transition:opacity .2s}.ar-card[href="#recipes"]:hover::before{transform:none}}
 .ar-card[href="#pool-runes"]{background:url(img/archive-runes.webp) center/cover no-repeat}
 .ar-card[href="#pool-embers"]{background:url(img/archive-embers.webp) 55% 45%/150% auto no-repeat}
 .ar-card[href="#pool-resources"]{background:url(img/archive-resources.webp) 38% 40%/150% auto no-repeat}
