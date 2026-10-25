@@ -7886,7 +7886,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var EXAMPLES=[['req:dex','Weapons that require Dexterity'],['req:dex>=20','… with at least 20 Dex'],['req:str<=15 type:sword','Light-requirement swords'],['scales:int','Scale with Intelligence'],['scales:str,dex','Scale with Strength and Dexterity'],['type:bow lv>=5 sort:-dmg','Bows, best damage first'],['rarity:unique','Unique gear'],['school:fire','Fire damage weapons'],['armor>=300','Heavy armor'],['"stagger"','Exact phrase']];
   function helpHTML(intro){ return '<div class="sr-help"><p>'+(intro||'Search by name or by what an item does &mdash; or filter by its stats. Click a line to try it:')+'</p>'+
     EXAMPLES.map(function(e){ return '<button type="button" class="sr-ex" data-q="'+esc(e[0])+'"><code>'+esc(e[0])+'</code><span>'+esc(e[1])+'</span></button>'; }).join('')+
-    '<p class="sr-help-sm"><b>Fields</b> req &middot; scales &middot; type &middot; rarity &middot; school &middot; lv &middot; dmg &middot; poise &middot; armor &middot; weight &middot; crit &middot; sort &nbsp;&bull;&nbsp; <b>Operators</b> &gt; &lt; &gt;= &lt;= 10-20 &nbsp;&bull;&nbsp; <code>a,b</code> both &nbsp;<code>a|b</code> either &nbsp;<code>-x</code> exclude &nbsp;<code>"phrase"</code> exact</p></div>'; }
+    '</div>'; }
   function setQuery(q){ curInput.value=q; search(); curInput.focus(); }
   function render(q,words,P){ var list=curList; list.innerHTML=''; sel=-1;
     if(list===window.__srList){ var ch=document.createElement('div'); ch.className='sr-chips';
