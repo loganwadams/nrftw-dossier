@@ -2533,14 +2533,11 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px;border:0;background-color:transparent;background-image:url(img/items-sheet.webp)!important;-webkit-mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
 /* item cards: ragged, faded edges instead of hard squares (six irregular masks, repeated in turn) */
 /* varied shading: each card shifts where the dark top sits and how its backdrop lies */
-#catalog .m-card[data-rar]{background-size:auto,var(--ts,100% 100%),var(--bs,cover);background-position:center,var(--tp,center),var(--bp,center)}
-#catalog .m-card:nth-child(7n+1){--ts:100% 100%;--tp:center}
-#catalog .m-card:nth-child(7n+2){--ts:150% 150%;--tp:50% 100%}
-#catalog .m-card:nth-child(7n+3){--ts:170% 170%;--tp:0 0}
-#catalog .m-card:nth-child(7n+4){--ts:170% 170%;--tp:100% 100%}
-#catalog .m-card:nth-child(7n+5){--ts:135% 135%;--tp:100% 0}
-#catalog .m-card:nth-child(7n+6){--ts:135% 135%;--tp:0 100%}
-#catalog .m-card:nth-child(7n+7){--ts:150% 150%;--tp:100% 50%}
+#catalog .m-card[data-rar]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-std-bg.webp)!important;background-size:auto,var(--bs,cover);background-position:center,var(--bp,center)}
+#catalog .m-card[data-rar=magical]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-mag-bg.webp)!important}
+#catalog .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
+#catalog .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
+#catalog .m-card:nth-child(3n+2){--ga:135deg}#catalog .m-card:nth-child(3n){--ga:225deg}#catalog .m-card:nth-child(7n+4){--ga:0deg}
 #catalog .m-card:nth-child(5n+1){--bs:cover;--bp:center}
 #catalog .m-card:nth-child(5n+2){--bs:150% 150%;--bp:0 0}
 #catalog .m-card:nth-child(5n+3){--bs:150% 150%;--bp:100% 0}
