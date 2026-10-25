@@ -2206,10 +2206,10 @@ section,article.klass{scroll-margin-top:24px}
 
 /* media page: editorial layout */
 .md{padding:6px 0 10px}
-.md-intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin:26px 0 38px}
+.md-intro{margin:150px 0 34px}
 .md-intro h1{margin:0;font:400 clamp(44px,7vw,92px)/.95 var(--display);color:var(--bone);text-transform:none;letter-spacing:0}
 .md-intro h1 em{font-style:normal;color:var(--gold)}
-.md-intro p{margin:0 0 8px;color:var(--muted);max-width:44ch;font-size:16px;line-height:1.6}
+.md-intro p{margin:0;color:var(--bone);max-width:46ch;font:400 clamp(20px,2.2vw,28px)/1.35 var(--display);text-shadow:0 1px 14px rgba(0,0,0,.9)}
 .md-gal{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
 .md-gal a{position:relative;overflow:hidden;background:#000;display:block;min-height:190px}
 .md-gal a:nth-child(1){grid-column:span 4;grid-row:span 2}
@@ -2235,12 +2235,18 @@ section,article.klass{scroll-margin-top:24px}
 .md-lb{position:fixed;inset:0;z-index:200;background:rgba(5,4,3,.92);display:grid;place-items:center;padding:4vw}
 .md-lb div{width:min(1100px,100%);aspect-ratio:16/9}.md-lb iframe{width:100%;height:100%;border:0}
 .md-lb button{position:absolute;top:18px;right:24px;appearance:none;background:none;border:0;color:var(--bone);font-size:34px;cursor:pointer}
-@media (max-width:860px){.md-intro{grid-template-columns:1fr}.md-tl{grid-template-columns:1fr}.md-yr{position:static;padding:22px 0 6px}.md-ev{grid-template-columns:104px 1fr}.md-ev em{display:none}.md-gal a:nth-child(n){grid-column:span 6;grid-row:auto}.md-gal-more a:nth-child(n){grid-column:span 6}}
+@media (max-width:860px){.md-intro{margin-top:110px}.md-tl{grid-template-columns:1fr}.md-yr{position:static;padding:22px 0 6px}.md-ev{grid-template-columns:104px 1fr}.md-ev em{display:none}.md-gal a:nth-child(n){grid-column:span 6;grid-row:auto}.md-gal-more a:nth-child(n){grid-column:span 6}}
+
+/* media page: top and bottom scenes stay put while the content scrolls over them */
+body.on-media .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
+body.on-media footer{z-index:auto}
+body.on-media footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
+body.on-media .md-ev{background:linear-gradient(90deg,rgba(10,8,7,.55),rgba(10,8,7,.35))}
 
 .legal-short{display:none}
 @media (min-width:761px){
   body.on-home{overflow:hidden}
-  body footer{position:relative;margin:auto 0 0 calc(-1*(20px + clamp(0px,calc((100vw - 1640px)/2),60px)) + 28px);padding:40px 0 14px;z-index:1;background:none}
+  body footer{position:relative;margin:auto 0 0 calc(-1*(20px + clamp(0px,calc((100vw - 1180px)/2),60px)) + 28px);padding:40px 0 14px;z-index:1;background:none}
   body.on-home footer,body.on-archive:not(.ar-preview) footer{position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 28px 14px;z-index:60;pointer-events:none;background:none}
   footer .footer-bg,footer .src-toggle,footer .srcs,footer .legal:not(.legal-short){display:none!important}
   body.on-archive:not(.ar-preview) footer .footer-bg{display:block!important}
@@ -2284,9 +2290,9 @@ body.on-archive:not(.ar-preview) footer .legal-short a{color:#c9a96e;text-decora
   body.on-home .masthead .logo{margin-top:26px}
   body.on-home .header-bg,body.on-home .masthead .keybar{display:none}
   body.on-home .hero{margin-top:0;min-height:100vh;min-height:100svh}
-  body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{margin-left:calc(-1*(clamp(0px,calc((100vw - 1640px)/2),60px) + min(1640px,calc(100vw - 250px))/2))}
+  body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{margin-left:calc(-1*(clamp(0px,calc((100vw - 1180px)/2),60px) + min(1640px,calc(100vw - 250px))/2))}
   body.on-archive:not(.ar-preview) .footer-bg{margin-left:-50vw}
-  body:not(.on-home) .wrap{max-width:min(1640px,calc(100vw - 250px));margin-left:clamp(0px,calc((100vw - 1640px)/2),60px);margin-right:auto}
+  body:not(.on-home) .wrap{max-width:min(1640px,calc(100vw - 250px));margin-left:clamp(0px,calc((100vw - 1180px)/2),60px);margin-right:auto}
   body .pgbar{position:fixed;top:0;right:0;height:100vh;height:100svh;justify-content:center;flex-direction:column;flex-wrap:nowrap;align-items:flex-end;gap:2px;margin:0;padding:12px 26px 12px 40px;z-index:70;background:none;pointer-events:none}
   body .pgbar>*{pointer-events:auto}
   body .pgbar::before{display:none}
@@ -3129,7 +3135,7 @@ footer li{color:#6f665b}
 <!-- VIDEOS -->
   <section id="videos">
     <div class="md" id="md">
-      <div class="md-intro"><h1>Watch &amp;<br><em>look.</em></h1><p>Every trailer, showcase and stream from the studio, and the cinematic art behind them, in one place.</p></div>
+      <div class="md-intro"><p>Every trailer, showcase and stream from the studio, and the cinematic art behind them, in one place.</p></div>
       <div class="md-gal" id="md-gal"></div>
       <p class="md-credit">Art by Damian Gerrits, Associate Art Lead at Moon Studios &middot; <button type="button" id="md-more">See all <span id="md-artn"></span> pieces</button></p>
       <div class="md-gal md-gal-more" id="md-gal2" hidden></div>
@@ -7238,7 +7244,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   CHAP_TITLE['gear']='Archive';
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
   function show(group,chap){ current=group; currentChap=chap;
-    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
+    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
