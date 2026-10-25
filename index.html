@@ -1433,6 +1433,13 @@ body.cb-shared .cb-acct-hint{display:none!important}
 .nav-acct.open .nav-acct-menu{display:flex}
 .nav-acct-menu button{appearance:none;background:none;border:0;text-align:left;color:var(--bone);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:10px 12px;cursor:pointer}
 .nav-acct-menu button:hover{background:rgba(255,255,255,.05);color:var(--gold)}
+
+@media (min-width:761px){
+  body .nav-acct-menu{right:-6px;top:calc(100% + 4px);min-width:0;padding:8px 6px;align-items:flex-end;gap:0;background:linear-gradient(270deg,rgba(10,8,7,.88),rgba(10,8,7,.55) 70%,rgba(10,8,7,0));border:0;box-shadow:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  body .nav-acct-menu button{text-align:right;font:400 15px/1.2 var(--display);letter-spacing:.05em;text-transform:none;color:#cdbf9f;padding:8px 12px;text-shadow:0 1px 6px rgba(0,0,0,.9);transition:color .25s,transform .3s cubic-bezier(.2,.7,.2,1)}
+  body .nav-acct-menu button:hover,body .nav-acct-menu button:focus-visible{background:none;color:#efe3c8;transform:translateX(-4px)}
+  body .nav-acct-menu button svg{width:16px;height:16px;vertical-align:-3px;margin-right:8px}
+}
 @media (max-width:760px){.pgbar-burger,.pgbar-burger:hover,.pgbar-burger:focus-visible{border-color:transparent!important;background:none}.pgbar.menu-open .pgbar-burger{background:none;color:#f0d9a0;text-shadow:0 0 10px rgba(240,217,160,.55)}.pgbar.menu-open .pgbar-burger .bg-ic{filter:drop-shadow(0 0 4px rgba(240,217,160,.6))}.masthead form.search{display:none!important}.nav-acct.in-panel{margin:0 0 6px;padding:0 0 6px;border-bottom:1px solid var(--edge)}.nav-acct{width:100%;flex-direction:column;align-items:stretch}.nav-acct>button{text-align:left}.nav-acct-menu{position:static;box-shadow:none;border:0;padding:0 0 0 10px}}
 .cb-share-msg{display:inline-block;margin-left:12px;font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--verdigris);vertical-align:middle}
 .cb-reset-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
