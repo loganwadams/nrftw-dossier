@@ -762,6 +762,7 @@ window.__gcCount=(function(){ var last=location.pathname+location.hash; return f
    place of the warm amber. Same variables the whole site uses, re-pointed while this page is open
    (the body.on-cerim class is set by the page router), so nothing on any other page changes. */
 body.on-cerim{
+  --c-storm:#a6a6a6;
   --ink:#060606;
   --ink-2:#0b0b0b;
   --panel:#101010;
@@ -779,6 +780,15 @@ body.on-cerim{
   --edge-rgb:42,42,42;
   --w1:#8a8a8a;--w2:#7a7a7a;--w3:#686868;--w4:#b3b3b3;--w5:#151515;--w6:#0e0e0e;--w7:#b5b5b5;
 }
+/* Cerim Builder: neutral greys for the remaining blue accents */
+body.on-cerim .cb-tool.share{color:#d0d0d0;border-color:rgba(205,205,205,.4);background:rgba(205,205,205,.06)}
+body.on-cerim .cb-tool.share:hover{background:rgba(205,205,205,.14);border-color:#d2d2d2;color:#f0f0f0}
+body.on-cerim .cb-dmg-table thead th.cb-dmg-derived,body.on-cerim .cb-dmg-table td.cb-dmg-derived{background:rgba(205,205,205,.05)}
+body.on-cerim .cb-report-btn,body.on-cerim .cb-share-btn{background:linear-gradient(180deg,#4a4a4a,#8a8a8a);border-color:#8a8a8a;color:#f0f0f0}
+body.on-cerim .ek-df{color:#bdbdbd}
+body.on-cerim .cb-grade-tier.g-blue,body.on-cerim .cb-grade-score.g-blue b,body.on-cerim .cb-report-grade.g-blue{color:#bdbdbd}
+body.on-cerim .cb-grade-bar.g-blue span{background:linear-gradient(90deg,#4a4a4a,#bdbdbd)}
+body.on-cerim .pgbar .hm-rail{filter:grayscale(1)}
 body.on-cerim::before{
   background:
     radial-gradient(90% 70% at 50% 40%, #1b1b1b 0%, #111111 55%, #080808 100%),
