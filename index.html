@@ -8275,6 +8275,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(!keys.length) return;
     window.__ttLoad().then(function(db){
       var host=document.createElement('div'); host.className='inf-gemgrid'; host.id='infGemCards';
+      // pair each gem with its other size (Chipped/Mottled, Tiny/Small with Mottled/Medium) so both sit side by side
+      function fam(k){ var c=db[k]; return c?String(c.n).replace(/^(Chipped|Mottled|Tiny|Small|Medium)\s+/,'').toLowerCase():''; }
+      function big(k){ var c=db[k]; return c&&/^(Mottled|Medium)\s/.test(c.n)?1:0; }
+      keys.sort(function(a,b){ var fa=fam(a), fb=fam(b); return fa<fb?-1:fa>fb?1:big(a)-big(b); });
       keys.forEach(function(k){
         var c=db[k]; if(!c) return;
         var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
