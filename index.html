@@ -776,7 +776,8 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
 .inf-gemgrid .ip-tt{max-width:none}
 #emberCards{display:none}
-body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards{display:grid!important}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards{display:flex!important;gap:22px;align-items:flex-start}
+#emberCards .em-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:22px}
 body.cat-view #catalog[data-cv="Embers"] .m-cats>#pool-embers+.m-cat{display:none!important}
 .ar-card>*:not(.ar-gems){position:relative;z-index:1}
 .ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
@@ -8506,6 +8507,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var old=document.getElementById('emberCards'); if(old) old.remove();
       var cat=head.nextElementSibling; while(cat&&!cat.classList.contains('m-cat')) cat=cat.nextElementSibling;
       (cat||head).insertAdjacentElement('afterend',host);
+      var cards=[].slice.call(host.children), cols=0;
+      function lay(){
+        var w=host.clientWidth; if(!w) return;
+        var n=Math.max(1,Math.floor((w+22)/(400+22))); if(n===cols) return; cols=n;
+        host.innerHTML=''; var cs=[];
+        for(var i=0;i<n;i++){ var c=document.createElement('div'); c.className='em-col'; host.appendChild(c); cs.push(c); }
+        cards.forEach(function(d){ var t=cs[0]; cs.forEach(function(c){ if(c.offsetHeight<t.offsetHeight) t=c; }); t.appendChild(d); });
+      }
+      lay(); if(window.ResizeObserver) new ResizeObserver(lay).observe(host); else window.addEventListener('resize',lay);
     }).catch(function(){});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
