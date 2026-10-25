@@ -7367,7 +7367,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   CHAP_TITLE['gear']='Archive';
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
   function show(group,chap){ current=group; currentChap=chap;
-    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'); document.body.classList.toggle('on-builds',group==='builds'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
+    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'||group==='builds'); document.body.classList.toggle('on-builds',group==='builds'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
