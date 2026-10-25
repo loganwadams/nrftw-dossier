@@ -7368,7 +7368,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
   document.querySelectorAll('article.klass').forEach(function(a){ a.setAttribute('data-page','world'); a.setAttribute('data-chap','classes'); });
   var contents=document.querySelector('nav.contents'); if(contents) contents.setAttribute('data-page','home');
-  var GROUP_FIRST_CHAP={}; CHAPS.forEach(function(c){ if(!(c.group in GROUP_FIRST_CHAP)) GROUP_FIRST_CHAP[c.group]=c.id; });
+  var GROUP_FIRST_CHAP={}, GROUP_FIRST_TGT={}; CHAPS.forEach(function(c){ if(!(c.group in GROUP_FIRST_CHAP)){ GROUP_FIRST_CHAP[c.group]=c.id; GROUP_FIRST_TGT[c.group]=c.target; } });
   var bar=document.createElement('nav'); bar.className='pgbar'; bar.setAttribute('aria-label','Chapters');
   var head=document.querySelector('header.masthead'); head.parentNode.insertBefore(bar, head.nextSibling);
   function pageOf(el){ while(el&&el!==document.body){ if(el.getAttribute&&el.getAttribute('data-page')) return el.getAttribute('data-page'); el=el.parentNode; } return null; }
@@ -7409,7 +7409,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function urlFor(group,id){
     if(group in CLEAN_PATHS){
       var base=CLEAN_PATHS[group];
-      return (id && id!==GROUP_FIRST_CHAP[group]) ? (base+'#'+id) : base;
+      return (id && id!==GROUP_FIRST_CHAP[group] && id!==GROUP_FIRST_TGT[group]) ? (base+'#'+id) : base;
     }
     return (!id||id==='home') ? ROOT_PATH : (ROOT_PATH+'#'+id);
   }
@@ -7439,7 +7439,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // section, since there's real content above it to skip past. Compare against c.target, not
     // c.id - the Gear tab's own id is "gear" but it lands on "infusions", the group's real first
     // chapter, so it's target that identifies the actual landing section.
-    if(GROUP_FIRST_CHAP[c.group]===c.target){ window.scrollTo({top:0,left:0,behavior:'smooth'}); return; }
+    if(GROUP_FIRST_CHAP[c.group]===c.target||GROUP_FIRST_TGT[c.group]===c.target){ window.scrollTo({top:0,left:0,behavior:'smooth'}); return; }
     var el=document.getElementById(c.target); if(el) el.scrollIntoView({block:'start'}); else bar.scrollIntoView({block:'start'}); }
   // Shared with the search module (separate closure) so a cross-page search-result jump into
   // Vendors/Catalog/Media lands on the clean path instead of a bare "#id" that would leave the
