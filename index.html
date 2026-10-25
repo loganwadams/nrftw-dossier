@@ -2217,6 +2217,7 @@ section,article.klass{scroll-margin-top:24px}
 .md-gal a:nth-child(4),.md-gal a:nth-child(5){grid-column:span 3}
 .md-gal-more{margin-top:10px}.md-gal-more a:nth-child(n){grid-column:span 2;grid-row:auto}
 .md-gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88);transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .4s}
+.md-gal a.md-crop img{inset:auto 0 0 0;height:122%}
 .md-gal a:hover img{transform:scale(1.05);filter:none}
 .md-gal a:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(5,4,3,.82))}
 .md-gal a span{position:absolute;z-index:1;left:16px;right:16px;bottom:13px;font:400 15px/1.2 var(--display);color:var(--bone);text-shadow:0 1px 8px rgba(0,0,0,.9)}
@@ -6906,7 +6907,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function clean(t){ return t.replace(/^No Rest for the Wicked\s*[\u2014\u2013-]\s*/,''); }
   function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
-  function tile(p){ return '<a href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.thumb+'" alt="" loading="lazy"><span>'+esc(clean(p.title))+'</span></a>'; }
+  function tile(p){ return '<a'+(/lG1qeY|DLenYe/.test(p.url)?' class="md-crop"':'')+' href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.thumb+'" alt="" loading="lazy"><span>'+esc(clean(p.title))+'</span></a>'; }
   gal.innerHTML=A.slice(0,5).map(tile).join(''); gal2.innerHTML=A.slice(5).map(tile).join('');
   tl.innerHTML=V.map(function(v){ var d=(v.date||'').split('-'); return '<a class="md-ev" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-y="'+(d[0]||'')+'" data-t="'+esc(v.title)+'"><span class="md-th" style="background-image:url('+v.thumb+')"></span><div><p>'+esc(v.title)+'</p><small>'+esc(v.note||'')+'</small></div><em>'+(d.length>2?M[+d[1]-1]+' '+(+d[2]):'')+'</em></a>'; }).join('');
   var yearEl=document.getElementById('md-year'), brand=yearEl&&yearEl.parentNode, evs=[].slice.call(tl.querySelectorAll('.md-ev'));
