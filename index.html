@@ -804,6 +804,7 @@ body.on-cerim .pgbar-search::before{color:#c8c8c8}
 body.on-cerim .pgbar-search:hover::before,body.on-cerim .pgbar-search:focus-visible::before{color:#f0f0f0}
 body.on-cerim .pgbar-right .nav-acct>button:hover,body.on-cerim .pgbar-right .nav-provs>button.nav-connect:hover,body.on-cerim .pgbar-right .nav-provs.open>button.nav-connect{color:#f0f0f0}
 body.on-cerim .pgbar-search{color:#c8c8c8}
+body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/header-scene-cerim.webp);filter:brightness(.78)}
 body.on-cerim::before{
   background:
     radial-gradient(90% 70% at 50% 40%, #1b1b1b 0%, #111111 55%, #080808 100%),
@@ -816,7 +817,7 @@ body.on-cerim #vellum{
     linear-gradient(90deg, rgba(0,0,0,.35), transparent 10%, transparent 90%, rgba(0,0,0,.35)),
     linear-gradient(180deg, rgba(0,0,0,.28), transparent 12%, transparent 88%, rgba(0,0,0,.4));
 }
-body.on-cerim .header-bg,body.on-cerim .footer-bg{filter:grayscale(1) contrast(1.08) brightness(.85)}
+body.on-cerim .footer-bg{filter:grayscale(1) contrast(1.08) brightness(.85)}
 body.on-cerim .cb-row-icon img{filter:grayscale(1) brightness(1.3) contrast(1.05)}
 body.on-cerim .pgbar-right .nav-acct>button,body.on-cerim .pgbar-right .nav-provs>button.nav-connect{color:#c8c8c8}
 body.on-cerim .cb-notice{color:#d4d4d4}
@@ -7366,7 +7367,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   CHAP_TITLE['gear']='Archive';
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
   function show(group,chap){ current=group; currentChap=chap;
-    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
+    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'); document.body.classList.toggle('on-builds',group==='builds'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
