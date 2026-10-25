@@ -2530,7 +2530,7 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 /* Items page: square cards */
 #catalog .m-cards{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
 #catalog .m-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;aspect-ratio:1/1;padding:12px 10px;min-height:0;overflow:hidden}
-#catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px}
+#catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px;border:0;background-color:transparent;-webkit-mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
 /* item cards: ragged, faded edges instead of hard squares (six irregular masks, repeated in turn) */
 #catalog .m-card{border-color:transparent!important;-webkit-mask:url(img/mask/card-0.png) center/100% 100% no-repeat;mask:url(img/mask/card-0.png) center/100% 100% no-repeat;transition:filter .2s}
 #catalog .m-card:nth-child(6n+2){-webkit-mask-image:url(img/mask/card-1.png);mask-image:url(img/mask/card-1.png)}
