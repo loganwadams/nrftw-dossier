@@ -2207,10 +2207,14 @@ section,article.klass{scroll-margin-top:24px}
 .legal-short{display:none}
 @media (min-width:761px){
   body.on-home{overflow:hidden}
-  body.on-home footer{position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 28px 14px;z-index:60;pointer-events:none;background:none}
-  body.on-home footer .footer-bg,body.on-home footer .src-toggle,body.on-home footer .srcs,body.on-home footer .legal:not(.legal-short){display:none!important}
-  body.on-home footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;text-align:left;font-size:11px;color:#a89d86;text-shadow:0 1px 6px rgba(0,0,0,.9);pointer-events:auto}
-  body.on-home footer .legal-short a{color:#c9a96e;text-decoration:none}
+  body{padding-bottom:44px}
+  body.on-home,body.on-archive{padding-bottom:0}
+  footer{position:fixed;left:0;right:0;bottom:0;margin:0;padding:26px 28px 14px;z-index:60;pointer-events:none;background:linear-gradient(transparent,rgba(10,8,7,.92) 70%)}
+  body.on-home footer,body.on-archive:not(.ar-preview) footer{padding-top:0;background:none}
+  footer .footer-bg,footer .src-toggle,footer .srcs,footer .legal:not(.legal-short){display:none!important}
+  body.on-archive:not(.ar-preview) footer .footer-bg{display:block!important}
+  footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;text-align:left;font-size:11px;color:#a89d86;text-shadow:0 1px 6px rgba(0,0,0,.9);pointer-events:auto}
+  footer .legal-short a{color:#c9a96e;text-decoration:none}
 }
 .pgbar .hm-rail{display:none}
 .ar-wip{display:flex;gap:30px;align-items:stretch;min-height:min(300px,34vh);margin:22px 0 0;padding:6px 0}
@@ -2223,7 +2227,6 @@ section,article.klass{scroll-margin-top:24px}
 .ar-wip p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.6;max-width:46ch}
 @media (prefers-reduced-motion:reduce){.ar-rail i{animation:none}}
 body.on-archive:not(.ar-preview){overflow:hidden;height:100vh;height:100svh}
-body.on-archive:not(.ar-preview) footer{position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 max(16px,env(safe-area-inset-left,0px)) 14px;z-index:60;background:none}
 body.on-archive:not(.ar-preview) footer .src-toggle,body.on-archive:not(.ar-preview) footer .srcs,body.on-archive:not(.ar-preview) footer .legal:not(.legal-short){display:none!important}
 body.on-archive:not(.ar-preview) #archive>.sect-head{display:none}
 body.on-archive:not(.ar-preview) .ar-wip{position:relative;z-index:70}
