@@ -810,6 +810,11 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 #infusions .inf-group{display:none}
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
 .inf-gemgrid .ip-tt{max-width:none}
+.ar-card>*:not(.ar-gems){position:relative;z-index:1}
+.ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
+.ar-gems img{position:absolute;bottom:0;width:48px;height:48px;transform:translateY(110%);opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
+.ar-gems.on img{transform:translateY(-4px);opacity:.95}
+@media (prefers-reduced-motion:reduce){.ar-gems img{transition:opacity .2s}.ar-gems.on img{transform:none}}
 body.on-cerim::before{
   background:
     radial-gradient(90% 70% at 50% 40%, #1b1b1b 0%, #111111 55%, #080808 100%),
@@ -8427,6 +8432,30 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }).catch(function(){});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
+<script>
+(function(){
+  // Archive: hovering the Infusions card raises five randomly chosen gems up from its bottom edge.
+  var GEMS=['Chipped_Amethyst','Chipped_Black_Pearl','Chipped_Blood_Stone','Chipped_Diamond','Chipped_Dianite','Chipped_Emerald','Chipped_Granite','Chipped_Jade','Chipped_Jewel','Chipped_Marble','Chipped_Meteorite','Chipped_Moon_Stone','Chipped_Quartz','Chipped_Ruby','Chipped_Sapphire','Chipped_Shield_Emblem','Chipped_Spike','Chipped_Topaz','Medium_Skull','Mottled_Amethyst','Mottled_Black_Pearl','Mottled_Blood_Stone','Mottled_Diamond','Mottled_Dianite','Mottled_Emerald','Mottled_Fang','Mottled_Feather','Mottled_Granite','Mottled_Jade','Mottled_Jewel','Mottled_Marble','Mottled_Meteorite','Mottled_Moon_Stone','Mottled_Quartz','Mottled_Ruby','Mottled_Sapphire','Mottled_Shield_Emblem','Mottled_Spike','Mottled_Topaz','Small_Skull','Tiny_Fang','Tiny_Feather'];
+  var card=document.querySelector('.ar-card[href="#infusions"]'); if(!card) return;
+  var layer=document.createElement('span'); layer.className='ar-gems'; layer.setAttribute('aria-hidden','true'); card.appendChild(layer);
+  var timer=null;
+  function raise(){
+    clearTimeout(timer);
+    var pool=GEMS.slice(), pick=[];
+    for(var i=0;i<5;i++){ pick.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); }
+    layer.classList.remove('on'); layer.innerHTML='';
+    pick.forEach(function(n,i){
+      var im=document.createElement('img'); im.src='img/inf/'+n+'.webp'; im.alt='';
+      im.style.left=(24+i*15+(Math.random()*2-1))+'%'; im.style.transitionDelay=(i*90)+'ms';
+      layer.appendChild(im);
+    });
+    void layer.offsetWidth; requestAnimationFrame(function(){ layer.classList.add('on'); });
+  }
+  function lower(){ layer.classList.remove('on'); timer=setTimeout(function(){ layer.innerHTML=''; },800); }
+  card.addEventListener('mouseenter',raise); card.addEventListener('mouseleave',lower);
+  card.addEventListener('focus',raise); card.addEventListener('blur',lower);
 })();
 </script>
 </body></html>
