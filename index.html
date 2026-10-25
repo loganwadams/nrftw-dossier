@@ -2226,6 +2226,9 @@ body.on-archive:not(.ar-preview){overflow:hidden;height:100vh;height:100svh}
 body.on-archive:not(.ar-preview) footer{position:fixed;left:0;right:0;bottom:0;margin:0;padding:0 max(16px,env(safe-area-inset-left,0px)) 14px;z-index:60;background:none}
 body.on-archive:not(.ar-preview) footer .src-toggle,body.on-archive:not(.ar-preview) footer .srcs,body.on-archive:not(.ar-preview) footer .legal:not(.legal-short){display:none!important}
 body.on-archive:not(.ar-preview) #archive>.sect-head{display:none}
+body.on-archive:not(.ar-preview) .ar-wip{position:relative;z-index:70}
+body.on-archive:not(.ar-preview) footer{pointer-events:none}
+body.on-archive:not(.ar-preview) footer a{pointer-events:auto}
 body.on-archive:not(.ar-preview) footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;font-size:11px;color:#a89d86;text-shadow:0 1px 6px rgba(0,0,0,.9)}
 body.on-archive:not(.ar-preview) footer .legal-short a{color:#c9a96e;text-decoration:none}
 .ar-intro{margin:0 0 22px;color:var(--muted);max-width:60ch}
