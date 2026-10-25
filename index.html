@@ -8253,7 +8253,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 (function(){
   var bar=document.querySelector('.pgbar'); if(!bar) return;
   var rail=document.createElement('span'); rail.className='hm-rail'; rail.setAttribute('aria-hidden','true');
-  var dot=document.createElement('span'); dot.className='hm-dot'; dot.innerHTML='<i class="sp"><b></b><b></b><b></b></i>'; rail.appendChild(dot); bar.appendChild(rail);
+  var dot=document.createElement('span'); dot.className='hm-dot'; rail.appendChild(dot); bar.appendChild(rail);
   var mq=window.matchMedia('(min-width:761px)');
   function y(el){ var r=el.getBoundingClientRect(), b=rail.getBoundingClientRect(); return r.top-b.top+r.height/2-3.5; }
   function rest(){
