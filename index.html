@@ -3035,6 +3035,7 @@ footer li{color:#6f665b}
     <div class="ar-grid">
       <a class="ar-card" href="#pool-weapons"><span class="ar-k">161 items</span><h3>Weapons</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-armor"><span class="ar-k">419 items</span><h3>Armor</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-rings"><span class="ar-k">21 items</span><h3>Rings</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-quivers"><span class="ar-k">4 items</span><h3>Quivers</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-shields"><span class="ar-k">28 items</span><h3>Shields</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-armor-sets"><span class="ar-k">120 items</span><h3>Armor Sets</h3><span class="ar-go">Open</span></a>
@@ -8308,7 +8309,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function add(list,n){ sample(list,n).forEach(function(p){ items.push({p:p}); }); }
     add(trove('pool-weapons'),3);
     ['Helmet','Body','Pants','Gloves'].forEach(function(slot){ add(trove('pool-armor',function(l){ return new RegExp(slot+'\\s*$').test(l.trim().replace(/\s*\d+$/,'')); }),1); });
-    add(trove('pool-shields'),1); add(trove('pool-quivers'),1); add(trove('pool-throwable-items'),1);
+    add(trove('pool-rings'),1); add(trove('pool-shields'),1); add(trove('pool-quivers'),1); add(trove('pool-throwable-items'),1);
     return items;
   }
   // Enchantments: the game's damage-type glyphs - plague, fire, ice, lightning, bleed, physical
@@ -8344,7 +8345,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
   var enc=document.querySelector('.ar-card[href="#enchantments"]'); if(enc) wire(enc,enchantItems);
   // Archive pool cards: each raises up to ten random icons from its own category
-  [['pool-runes'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
+  [['pool-runes'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
     if(el) wire(el,function(){ return sample(trove(c[0]),10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
