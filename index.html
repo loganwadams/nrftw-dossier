@@ -806,7 +806,7 @@ body.on-cerim .pgbar-right .nav-acct>button:hover,body.on-cerim .pgbar-right .na
 body.on-cerim .pgbar-search{color:#c8c8c8}
 body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/header-scene-cerim.webp);filter:brightness(.78)}
 #cerim-builder>.sect-head,#cerim-builder>.standfirst{display:none}
-#enchantments>.sect-head,#infusions .cols2[data-m="intro:infusions"],#enchantments .cols2[data-m="intro:enchantments"],#infusions .inf-group-head>p{display:none}
+#infusions>.sect-head,#enchantments>.sect-head,#infusions .cols2[data-m="intro:infusions"],#enchantments .cols2[data-m="intro:enchantments"],#infusions .inf-group-head>p{display:none}
 #infusions .inf-group{display:none}
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
 .inf-gemgrid .ip-tt{max-width:none}
@@ -2349,6 +2349,9 @@ section,article.klass{scroll-margin-top:24px}
 body.on-media .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
 body.on-media footer{z-index:auto}
 body.on-media footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
+body:not(.on-home) footer{z-index:auto}
+body:not(.on-home) footer .footer-bg{display:block!important;position:fixed;left:0;right:0;bottom:0;width:auto!important;margin-left:0!important;height:min(810px,100vh)}
+
 body.on-armory .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
 body.on-armory footer{z-index:auto}
 body.on-armory footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
