@@ -21,7 +21,7 @@
   // since with a <base> they'd otherwise navigate to "/#section" (a full reload).
   // Archive sub-pages live at /archive/<id> (e.g. /archive/pool-quick-items); the old /archive#<id> form still works.
   // __wdRawId() is the id of the section being asked for, from either form.
-  window.__wdRawId=function(){ var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); return location.hash.slice(1)||(m?m[1]:''); };
+  window.__wdRawId=function(){ var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
   if(/^\/profile\//.test(location.pathname)||/^\/archive\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
@@ -3080,7 +3080,7 @@ footer li{color:#6f665b}
       <a class="ar-card" href="#pool-gems"><h3>Infusions</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#enchantments"><h3>Enchantments</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-runes"><h3>Runes</h3><span class="ar-go">Open</span></a>
-      <a class="ar-card" href="#pool-quick-items"><h3>Potions</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-quick-items"><h3>Quick Items</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-embers"><h3>Embers</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-ingredients"><h3>Ingredients &amp; Food</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#recipes"><h3>Crafting Recipes</h3><span class="ar-go">Open</span></a>
@@ -7357,8 +7357,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Shared with the search module (exposed on window below) so every piece of code that
   // changes the address bar agrees on the same URL shape.
   function urlFor(group,id){
-    // an Archive category (Potions, Runes, Weapons...) is a view of the item database but belongs to the Archive: /archive/<id>
-    var ce=id&&document.getElementById(id); if(ce&&ce.classList&&ce.classList.contains('m-cat-head')) return '/archive/'+id;
+    // an Archive category (Quick Items, Runes, Weapons...) is a view of the item database but belongs to the Archive: /archive/<id>
+    var ce=id&&document.getElementById(id); if(ce&&ce.classList&&ce.classList.contains('m-cat-head')) return '/archive/'+id.replace(/^pool-/,'');
     if(group in CLEAN_PATHS){
       var base=CLEAN_PATHS[group];
       return (id && id!==GROUP_FIRST_CHAP[group] && id!==GROUP_FIRST_TGT[group]) ? (base+(group==='archive'?'/':'#')+id) : base;
@@ -8441,7 +8441,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     'pool-gems':{t:'Infusions',ids:['pool-gems'],back:['archive','Archive'],note:'<p class="cb-notice"><strong>Heads up:</strong> gem infusions will be introduced into the game at the 1.0 launch, allowing you to combine gems to create new and unique traits.</p>'},
     'pool-embers':{t:'Embers',ids:['pool-embers'],back:['archive','Archive']},
     'pool-furniture':{t:'Structures',ids:['pool-furniture'],back:['archive','Archive']},
-    'pool-quick-items':{t:'Potions',ids:['pool-quick-items'],back:['archive','Archive']},
+    'pool-quick-items':{t:'Quick Items',ids:['pool-quick-items'],back:['archive','Archive']},
     'pool-weapons':{t:'Weapons',ids:['pool-weapons'],back:['armory','Armory']},
     'pool-armor':{t:'Armor',ids:['pool-armor'],back:['armory','Armory']},
     'pool-rings':{t:'Rings',ids:['pool-rings'],back:['armory','Armory']},
