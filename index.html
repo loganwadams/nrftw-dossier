@@ -812,7 +812,7 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 .inf-gemgrid .ip-tt{max-width:none}
 .ar-card>*:not(.ar-gems){position:relative;z-index:1}
 .ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
-.ar-gems img{position:absolute;bottom:0;width:44px;height:44px;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
+.ar-gems img{position:absolute;bottom:0;width:72px;height:72px;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
 .ar-gems.on img{transform:translateY(0) rotate(var(--rot,0deg));opacity:.97}
 @media (prefers-reduced-motion:reduce){.ar-gems img{transition:opacity .2s}.ar-gems.on img{transform:none}}
 body.on-cerim::before{
@@ -8446,19 +8446,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var pool=GEMS.slice(), pick=[];
     for(var i=0;i<10;i++){ pick.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); }
     layer.classList.remove('on'); layer.innerHTML='';
-    // a bundled heap: six gems along the bottom, four stacked on top, overlapping, centred on the card
-    var rows=[6,4], idx=0;
-    rows.forEach(function(cnt,r){
-      for(var c=0;c<cnt;c++){
-        var im=document.createElement('img'); im.src='img/inf/'+pick[idx]+'.webp'; im.alt='';
-        var x=(c-(cnt-1)/2)*30+(Math.random()*6-3);
-        im.style.left='calc(50% + '+x+'px - 22px)';
-        im.style.bottom=(r*26-6+Math.random()*4)+'px';
-        im.style.zIndex=String(1+r);
-        im.style.setProperty('--rot',(Math.random()*40-20).toFixed(0)+'deg');
-        im.style.transitionDelay=(idx*55)+'ms';
-        layer.appendChild(im); idx++;
-      }
+    // one tight row, overlapping like a bundle, centred along the card's bottom edge
+    var N=pick.length, STEP=20, SIZE=72;
+    pick.forEach(function(name,i){
+      var im=document.createElement('img'); im.src='img/inf/'+name+'.webp'; im.alt='';
+      var x=(i-(N-1)/2)*STEP;
+      im.style.left='calc(50% + '+x+'px - '+(SIZE/2)+'px)';
+      im.style.bottom=(2+Math.random()*8)+'px';
+      im.style.zIndex=String(1+i);
+      im.style.setProperty('--rot',(Math.random()*16-8).toFixed(0)+'deg');
+      im.style.transitionDelay=(i*50)+'ms';
+      layer.appendChild(im);
     });
     void layer.offsetWidth; requestAnimationFrame(function(){ layer.classList.add('on'); });
   }
