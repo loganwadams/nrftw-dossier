@@ -2345,6 +2345,9 @@ section,article.klass{scroll-margin-top:24px}
 body.on-media .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
 body.on-media footer{z-index:auto}
 body.on-media footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
+body.on-armory .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
+body.on-armory footer{z-index:auto}
+body.on-armory footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
 body.on-cerim .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
 body.on-cerim footer{z-index:auto}
 body.on-cerim footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
@@ -3133,11 +3136,24 @@ footer li{color:#6f665b}
     <div class="ar-private" id="arPrivate" hidden>
     <p class="ar-intro">Everything the game keeps track of, sorted by kind. Pick a collection.</p>
     <div class="ar-grid">
+      <a class="ar-card" href="#armory"><span class="ar-k">Collection</span><h3>Armory</h3><p>Weapons, armor, quivers, shields, armor sets and throwable items, each with its own list.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#catalog"><span class="ar-k">Collection</span><h3>Trove</h3><p>Every weapon, armor piece, shield, rune, gem and ingredient, with stats and where each one comes from.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#recipes"><span class="ar-k">Collection</span><h3>Crafting Recipes</h3><p>What each item takes to make, at which station, and what a refinery turns into what.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#infusions"><span class="ar-k">Collection</span><h3>Infusions</h3><p>The infusion effects you can put on gear and how they behave.</p><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#enchantments"><span class="ar-k">Collection</span><h3>Enchantments</h3><p>Every enchantment, what it does and which gear can carry it.</p><span class="ar-go">Open</span></a>
     </div>
+    </div>
+  </section>
+  <section id="armory">
+    <div class="sect-head"><h2>Armory</h2></div>
+    <p class="ar-intro">Everything you wear, wield or throw. Pick a collection.</p>
+    <div class="ar-grid">
+      <a class="ar-card" href="#pool-weapons"><span class="ar-k">161 items</span><h3>Weapons</h3><p>Every one-handed, two-handed and dual-wielding weapon, with stats and sources.</p><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-armor"><span class="ar-k">419 items</span><h3>Armor</h3><p>Helmets, bodies, gloves and pants, with armor values and resistances.</p><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-quivers"><span class="ar-k">4 items</span><h3>Quivers</h3><p>Ammunition carriers for bows.</p><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-shields"><span class="ar-k">28 items</span><h3>Shields</h3><p>Every shield, with its armor and block values.</p><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-armor-sets"><span class="ar-k">120 items</span><h3>Armor Sets</h3><p>Matched armor pieces grouped by set.</p><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-throwable-items"><span class="ar-k">7 items</span><h3>Throwable Items</h3><p>Bombs and other items you throw.</p><span class="ar-go">Open</span></a>
     </div>
   </section>
   <section id="catalog">
@@ -7303,6 +7319,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'vend',  ids:['vendors']},
     {id:'cat',   ids:['catalog']},
     {id:'recipes', ids:['recipes']},
+    {id:'armory', ids:['armory']},
     {id:'vid',   ids:['videos']},
     {id:'cerim', ids:['cerim-builder']},
     {id:'builds', ids:['community-builds']},
@@ -7321,6 +7338,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'vendors',      num:'06', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors']},
     {id:'catalog',    num:'07', label:'Trove',    group:'cat',   target:'catalog', tag:['catalog'], cls:'pg-hide'},
     {id:'recipes',    num:'',   label:'Crafting Recipes', group:'recipes', target:'recipes', tag:['recipes'], hidden:true},
+    {id:'armory',     num:'',   label:'Armory', group:'armory', target:'armory', tag:['armory'], hidden:true},
     {id:'videos',       num:'08', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
     {id:'community-builds', num:'09', label:'Community Builds', group:'builds', target:'community-builds', tag:['community-builds'], cls:'pg-videos', aria:'Community Builds'},
     {id:'cerim-builder', num:'10', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'},
@@ -7332,7 +7350,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Every top-level section gets a clean path. A group's first chapter is the bare path
   // (/factions, /items = Infusions); later chapters in a shared page hang a hash off it
   // (/items#enchantments). Old /#factions and /#infusions links still resolve via the hash.
-  var CLEAN_PATHS={world:'/factions', gear:'/items', archive:'/archive', vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
+  var CLEAN_PATHS={world:'/factions', gear:'/items', archive:'/archive', vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', armory:'/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the
@@ -7369,7 +7387,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   CHAP_TITLE['gear']='Archive';
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
   function show(group,chap){ current=group; currentChap=chap;
-    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'||group==='builds'); document.body.classList.toggle('on-builds',group==='builds'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
+    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'||group==='builds'); document.body.classList.toggle('on-builds',group==='builds'); document.body.classList.toggle('on-armory',group==='armory'); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
