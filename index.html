@@ -7321,7 +7321,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var GROUPS=[
     {id:'home',  ids:['hero','intro','lore','brief']},
     {id:'world', ids:['factions','systems']},
-    {id:'gear',  ids:['infusions','enchantments']},
+    {id:'gear',  ids:['infusions']},
+    {id:'enchant', ids:['enchantments']},
     {id:'archive', ids:['archive']},
     {id:'vend',  ids:['vendors']},
     {id:'cat',   ids:['catalog']},
@@ -7340,7 +7341,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     {id:'systems',      num:'03', label:'Systems',            group:'world', target:'systems', tag:['systems'], cls:'pg-hide', hidden:true},
     {id:'lore',         num:'',   label:'Codex',              group:'world', target:'factions', tag:[], drop:true, hidden:true}, // Codex dropdown retired: Factions & Classes is its own tab
     {id:'infusions',    num:'04', label:'Infusions',         group:'gear',  target:'infusions', tag:['infusions'], hidden:true},
-    {id:'enchantments', num:'05', label:'Enchantments',      group:'gear',  target:'enchantments', tag:['enchantments'], hidden:true},
+    {id:'enchantments', num:'05', label:'Enchantments',      group:'enchant', target:'enchantments', tag:['enchantments'], hidden:true},
     {id:'gear',         num:'04', label:'Archive',            group:'archive', target:'archive', tag:['archive']},
     {id:'vendors',      num:'06', label:'Vendors',           group:'vend',  target:'vendors', tag:['vendors']},
     {id:'catalog',    num:'07', label:'Trove',    group:'cat',   target:'catalog', tag:['catalog'], cls:'pg-hide'},
@@ -7357,7 +7358,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Every top-level section gets a clean path. A group's first chapter is the bare path
   // (/factions, /items = Infusions); later chapters in a shared page hang a hash off it
   // (/items#enchantments). Old /#factions and /#infusions links still resolve via the hash.
-  var CLEAN_PATHS={world:'/factions', gear:'/items', archive:'/archive', vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', armory:'/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
+  var CLEAN_PATHS={world:'/factions', gear:'/items', enchant:'/enchantments', archive:'/archive', vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', armory:'/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk;
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the
