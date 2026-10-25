@@ -2285,7 +2285,6 @@ body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{background:linear-
 @media (prefers-reduced-motion:reduce){.ar-rail i{animation:none}}
 body.on-archive:not(.ar-preview){overflow:hidden;height:100vh;height:100svh}
 body.on-archive:not(.ar-preview) footer .src-toggle,body.on-archive:not(.ar-preview) footer .srcs,body.on-archive:not(.ar-preview) footer .legal:not(.legal-short){display:none!important}
-body.on-archive #archive>.sect-head{display:none}
 body.on-archive:not(.ar-preview) .ar-wip{position:relative;z-index:70}
 body.on-archive:not(.ar-preview) .ar-rail{display:none}
 body.on-archive:not(.ar-preview) .ar-wip{gap:0}
@@ -2294,7 +2293,7 @@ body.on-archive:not(.ar-preview) footer a{pointer-events:auto}
 body.on-archive:not(.ar-preview) footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;font-size:11px;color:#a89d86;text-shadow:0 1px 6px rgba(0,0,0,.9)}
 body.on-archive:not(.ar-preview) footer .legal-short a{color:#c9a96e;text-decoration:none}
 .ar-intro{margin:0 0 22px;color:var(--muted);max-width:60ch}
-.ar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
+.ar-grid{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
 .ar-card{position:relative;display:flex;flex-direction:column;gap:8px;min-height:190px;padding:23px 23px 19px;border:0;background:linear-gradient(180deg,var(--panel-2),var(--panel));color:inherit;text-decoration:none;overflow:hidden;transition:border-color .3s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
 /* category pages: a Trove category opened from an Archive or Armory card shows alone, under its own title */
 #catalog .cv-back,.sect-back{display:inline-block;margin:0 0 14px;font-family:var(--display);font-size:15px;letter-spacing:.06em;color:var(--gold);text-decoration:none;text-shadow:0 1px 2px #000}
@@ -3075,11 +3074,6 @@ footer li{color:#6f665b}
   </section>
   <section id="archive">
     <div class="sect-head"><h2>Archive</h2></div>
-    <div class="ar-wip" role="status">
-      <div class="ar-wip-body">
-        <h3>Archive</h3>
-      </div>
-    </div>
     <div class="ar-private" id="arPrivate" hidden>
     <div class="ar-grid">
       <a class="ar-card" href="#armory"><h3>Armory</h3><span class="ar-go">Open</span></a>
