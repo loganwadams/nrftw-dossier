@@ -2206,7 +2206,8 @@ section,article.klass{scroll-margin-top:24px}
 
 /* media page: editorial layout */
 .md{padding:6px 0 10px}
-.md-sec{margin-top:-67px}.md-sec-art{margin-top:80px}.md-brand{position:sticky;top:0;z-index:6;margin:0 0 14px;padding:14px 0 12px;pointer-events:none}.md-brand img{height:38px;width:auto;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,.85))}
+.md-sec{margin-top:-67px}.md-sec-art{margin-top:80px}.md-brand{position:sticky;top:0;z-index:6;margin:0 0 14px;padding:14px 0 12px;pointer-events:none}.md-year{margin-top:6px;font:400 40px/1 var(--display);color:rgba(201,169,110,.55);text-shadow:0 2px 10px rgba(0,0,0,.85)}
+.md-brand img{height:30px;width:auto;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,.85))}
 .md-intro h1{margin:0;font:400 clamp(44px,7vw,92px)/.95 var(--display);color:var(--bone);text-transform:none;letter-spacing:0}
 .md-intro h1 em{font-style:normal;color:var(--gold)}
 .md-intro p{margin:0;color:var(--bone);max-width:46ch;font:400 clamp(20px,2.2vw,28px)/1.35 var(--display);text-shadow:0 1px 14px rgba(0,0,0,.9)}
@@ -2222,8 +2223,7 @@ section,article.klass{scroll-margin-top:24px}
 .md-gal a span{position:absolute;z-index:1;left:16px;right:16px;bottom:13px;font:400 15px/1.2 var(--display);color:var(--bone);text-shadow:0 1px 8px rgba(0,0,0,.9)}
 .md-credit{margin:14px 0 0;color:var(--muted);font-size:12.5px;letter-spacing:.04em}
 .md-credit button{appearance:none;background:none;border:0;padding:0;margin-left:6px;font:inherit;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-dim)}
-.md-tl{display:grid;grid-template-columns:120px 1fr;gap:0 30px}
-.md-yr{font:400 54px/1 var(--display);color:rgba(201,169,110,.38);align-self:start;padding-top:14px}
+.md-tl{display:block;margin-left:190px}
 .md-ev{display:grid;grid-template-columns:160px 1fr auto;gap:20px;align-items:center;padding:14px 0;border-top:1px solid var(--edge);cursor:pointer;color:inherit;text-decoration:none;transition:padding-left .3s,background .3s}
 .md-ev:hover,.md-ev:focus-visible{padding-left:12px;background:linear-gradient(90deg,rgba(201,169,110,.08),transparent);outline:none}
 .md-ev .md-th{position:relative;aspect-ratio:16/9;background:#000 center/cover no-repeat}
@@ -2235,7 +2235,7 @@ section,article.klass{scroll-margin-top:24px}
 .md-lb{position:fixed;inset:0;z-index:200;background:rgba(5,4,3,.92);display:grid;place-items:center;padding:4vw}
 .md-lb div{width:min(1100px,100%);aspect-ratio:16/9}.md-lb iframe{width:100%;height:100%;border:0}
 .md-lb button{position:absolute;top:18px;right:24px;appearance:none;background:none;border:0;color:var(--bone);font-size:34px;cursor:pointer}
-@media (max-width:860px){.md-sec{margin-top:80px}.md-tl{grid-template-columns:1fr}.md-yr{position:static;padding:22px 0 6px}.md-ev{grid-template-columns:104px 1fr}.md-ev em{display:none}.md-gal a:nth-child(n){grid-column:span 6;grid-row:auto}.md-gal-more a:nth-child(n){grid-column:span 6}}
+@media (max-width:860px){.md-tl{margin-left:0}.md-sec{margin-top:80px}.md-ev{grid-template-columns:104px 1fr}.md-ev em{display:none}.md-gal a:nth-child(n){grid-column:span 6;grid-row:auto}.md-gal-more a:nth-child(n){grid-column:span 6}}
 
 /* media page: top and bottom scenes stay put while the content scrolls over them */
 body.on-media .header-bg{position:fixed;top:0;left:0;width:100%;margin-left:0!important}
@@ -3135,7 +3135,7 @@ footer li{color:#6f665b}
 <!-- VIDEOS -->
   <section id="videos">
     <div class="md" id="md">
-      <section class="md-sec"><div class="md-brand"><img src="img/brand/youtube-logo-gold.png" alt="YouTube"></div>
+      <section class="md-sec"><div class="md-brand"><img src="img/brand/youtube-logo-gold.png" alt="YouTube"><div class="md-year" id="md-year"></div></div>
       <div class="md-tl" id="md-tl"></div></section>
       <section class="md-sec md-sec-art"><div class="md-brand"><img src="img/brand/artstation-logo-gold.png" alt="ArtStation"></div>
       <div class="md-gal" id="md-gal"></div>
@@ -6908,8 +6908,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   gal.innerHTML=A.slice(0,5).map(tile).join(''); gal2.innerHTML=A.slice(5).map(tile).join('');
   document.getElementById('md-artn').textContent=A.length;
   var more=document.getElementById('md-more'); more.addEventListener('click',function(){ gal2.hidden=!gal2.hidden; more.innerHTML=gal2.hidden?'See all <span>'+A.length+'</span> pieces':'Show fewer'; });
-  var byY={}, ys=[]; V.forEach(function(v){ var y=(v.date||'').slice(0,4)||'Undated'; if(!byY[y]){byY[y]=[];ys.push(y);} byY[y].push(v); });
-  tl.innerHTML=ys.map(function(y){ return '<div class="md-yr">'+y+'</div><div>'+byY[y].map(function(v){ var d=(v.date||'').split('-'); return '<a class="md-ev" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-t="'+esc(v.title)+'"><span class="md-th" style="background-image:url('+v.thumb+')"></span><div><p>'+esc(v.title)+'</p><small>'+esc(v.note||'')+'</small></div><em>'+(d.length>2?M[+d[1]-1]+' '+(+d[2]):'')+'</em></a>'; }).join('')+'</div>'; }).join('');
+  tl.innerHTML=V.map(function(v){ var d=(v.date||'').split('-'); return '<a class="md-ev" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-y="'+(d[0]||'')+'" data-t="'+esc(v.title)+'"><span class="md-th" style="background-image:url('+v.thumb+')"></span><div><p>'+esc(v.title)+'</p><small>'+esc(v.note||'')+'</small></div><em>'+(d.length>2?M[+d[1]-1]+' '+(+d[2]):'')+'</em></a>'; }).join('');
+  var yearEl=document.getElementById('md-year'), brand=yearEl&&yearEl.parentNode, evs=[].slice.call(tl.querySelectorAll('.md-ev'));
+  function setYear(){ if(!yearEl||!evs.length) return; var line=brand.getBoundingClientRect().bottom, y=evs[0].dataset.y; for(var i=0;i<evs.length;i++){ if(evs[i].getBoundingClientRect().bottom>line+8){ y=evs[i].dataset.y; break; } y=evs[i].dataset.y; } if(yearEl.textContent!==y) yearEl.textContent=y; }
+  window.addEventListener('scroll',setYear,{passive:true}); window.addEventListener('resize',setYear); new MutationObserver(function(){ setTimeout(setYear,60); }).observe(document.body,{attributes:true,attributeFilter:['class']}); setYear(); setTimeout(setYear,400);
   var canEmbed=!/claude\.ai$|claudeusercontent\.com$/.test(location.hostname);
   tl.addEventListener('click',function(e){ var a=e.target.closest('.md-ev'); if(!a||!canEmbed) return; e.preventDefault();
     var lb=document.createElement('div'); lb.className='md-lb'; lb.innerHTML='<button type="button" aria-label="Close">&times;</button><div><iframe src="https://www.youtube-nocookie.com/embed/'+a.dataset.id+'?autoplay=1" title="'+a.dataset.t+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
