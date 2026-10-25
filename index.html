@@ -8480,7 +8480,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       items.forEach(function(it,i){
         var im;
         if(it.src){ im=document.createElement('img'); im.src=it.src; im.alt=''; }
-        else if(it.g){ im=document.createElement('span'); im.className='ar-sp'; im.style.backgroundImage='url(img/wd-glyphs.webp)'; im.style.backgroundSize=(12*SIZE)+'px auto'; im.style.backgroundPosition=(-it.g[0]*SIZE)+'px '+(-it.g[1]*SIZE)+'px'; }
+        else if(it.g){ im=document.createElement('span'); im.className='ar-sp'; im.style.backgroundImage='url(img/wd-glyphs-hd.webp)'; im.style.backgroundSize=(12*SIZE)+'px auto'; im.style.backgroundPosition=(-it.g[0]*SIZE)+'px '+(-it.g[1]*SIZE)+'px'; }
         else { im=document.createElement('span'); im.className='ar-sp'; im.style.backgroundPosition=(-it.p[0]*SIZE)+'px '+(-it.p[1]*SIZE)+'px'; }
         im.style.left=(X0+i*STEP)+'px';
         im.style.bottom=(-(8+Math.random()*24))+'px';
