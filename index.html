@@ -3026,6 +3026,7 @@ footer li{color:#6f665b}
       <a class="ar-card" href="#pool-runes"><h3>Runes</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-ingredients"><h3>Ingredients &amp; Food</h3><span class="ar-go">Open</span></a>
       <a class="ar-card" href="#pool-resources"><h3>Resources</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-furniture"><h3>Furniture</h3><span class="ar-go">Open</span></a>
     </div>
     </div>
   </section>
@@ -8356,7 +8357,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
   var enc=document.querySelector('.ar-card[href="#enchantments"]'); if(enc) wire(enc,enchantItems);
   // Archive pool cards: each raises up to ten random icons from its own category
-  [['pool-runes'],['pool-ingredients'],['pool-resources'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
+  [['pool-runes'],['pool-ingredients'],['pool-resources'],['pool-furniture'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
     if(el) wire(el,function(){ var pool=trove(c[0]); if(c[0]==='pool-resources') pool=pool.concat(trove('pool-refined-resources')); return sample(pool,10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
@@ -8371,6 +8372,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     'pool-ingredients':{t:'Ingredients & Food',ids:['pool-ingredients'],back:['archive','Archive']},
     'pool-resources':{t:'Resources',ids:['pool-resources','pool-refined-resources'],back:['archive','Archive']},
     'pool-refined-resources':{t:'Resources',ids:['pool-resources','pool-refined-resources'],back:['archive','Archive']},
+    'pool-furniture':{t:'Furniture',ids:['pool-furniture'],back:['archive','Archive']},
     'pool-weapons':{t:'Weapons',ids:['pool-weapons'],back:['armory','Armory']},
     'pool-armor':{t:'Armor',ids:['pool-armor'],back:['armory','Armory']},
     'pool-rings':{t:'Rings',ids:['pool-rings'],back:['armory','Armory']},
