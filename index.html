@@ -2530,8 +2530,22 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 /* Items page: square cards */
 #catalog .m-cards{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
 #catalog .m-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;aspect-ratio:1/1;padding:12px 10px;min-height:0;overflow:hidden}
-#catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px;border:0;background-color:transparent;-webkit-mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
+#catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px;border:0;background-color:transparent;background-image:url(img/items-sheet.webp)!important;-webkit-mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
 /* item cards: ragged, faded edges instead of hard squares (six irregular masks, repeated in turn) */
+/* varied shading: each card shifts where the dark top sits and how its backdrop lies */
+#catalog .m-card[data-rar]{background-size:auto,var(--ts,100% 100%),var(--bs,cover);background-position:center,var(--tp,center),var(--bp,center)}
+#catalog .m-card:nth-child(7n+1){--ts:100% 100%;--tp:center}
+#catalog .m-card:nth-child(7n+2){--ts:100% 55%;--tp:center bottom}
+#catalog .m-card:nth-child(7n+3){--ts:170% 170%;--tp:0 0}
+#catalog .m-card:nth-child(7n+4){--ts:170% 170%;--tp:100% 100%}
+#catalog .m-card:nth-child(7n+5){--ts:135% 135%;--tp:100% 0}
+#catalog .m-card:nth-child(7n+6){--ts:135% 135%;--tp:0 100%}
+#catalog .m-card:nth-child(7n+7){--ts:100% 40%;--tp:center top}
+#catalog .m-card:nth-child(5n+1){--bs:cover;--bp:center}
+#catalog .m-card:nth-child(5n+2){--bs:150% 150%;--bp:0 0}
+#catalog .m-card:nth-child(5n+3){--bs:150% 150%;--bp:100% 0}
+#catalog .m-card:nth-child(5n+4){--bs:150% 150%;--bp:0 100%}
+#catalog .m-card:nth-child(5n+5){--bs:150% 150%;--bp:100% 100%}
 #catalog .m-card{border-color:transparent!important;-webkit-mask:url(img/mask/card-0.png) center/100% 100% no-repeat;mask:url(img/mask/card-0.png) center/100% 100% no-repeat;transition:filter .2s}
 #catalog .m-card:nth-child(6n+2){-webkit-mask-image:url(img/mask/card-1.png);mask-image:url(img/mask/card-1.png)}
 #catalog .m-card:nth-child(6n+3){-webkit-mask-image:url(img/mask/card-2.png);mask-image:url(img/mask/card-2.png)}
