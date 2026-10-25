@@ -2534,6 +2534,7 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 /* item cards: ragged, faded edges instead of hard squares (six irregular masks, repeated in turn) */
 /* varied shading: each card shifts where the dark top sits and how its backdrop lies */
 #catalog .m-card[data-rar]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-std-bg.webp)!important;background-size:auto,var(--bs,cover);background-position:center,var(--bp,center)}
+#catalog .m-card:not([data-rar]){background-color:#06070a;background-repeat:no-repeat;background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-std-bg.webp);background-size:auto,var(--bs,cover);background-position:center,var(--bp,center)}
 #catalog .m-card[data-rar=magical]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-mag-bg.webp)!important}
 #catalog .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
 #catalog .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
@@ -2550,6 +2551,18 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-card:nth-child(6n+5){-webkit-mask-image:url(img/mask/card-4.png);mask-image:url(img/mask/card-4.png)}
 #catalog .m-card:nth-child(6n){-webkit-mask-image:url(img/mask/card-5.png);mask-image:url(img/mask/card-5.png)}
 #catalog .m-card:hover,#catalog .m-card.tt-open{filter:brightness(1.3) saturate(1.1)}
+#catalog .m-cards:has(.m-setcard){grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
+/* armor set cards and their pieces keep their own layout, not the square item-card look */
+#catalog .m-setcard{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:block;text-align:left;overflow:visible;padding:14px 16px;border-color:var(--edge-hot)!important;border-left-color:var(--gold-dim)!important;background:linear-gradient(180deg,var(--panel-2),var(--panel))!important}
+#catalog .m-setcard:hover,#catalog .m-setcard.tt-open{filter:none}
+#catalog .m-setcard-pieces .m-card{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;column-gap:10px;justify-content:normal;text-align:left;overflow:visible;padding:6px 10px 6px 6px;min-height:44px;border-color:rgba(var(--gold-rgb),.18)!important;background:rgba(0,0,0,.22)!important}
+#catalog .m-setcard-pieces .m-card:hover{filter:brightness(1.3)}
+#catalog .m-setcard-pieces .m-card .m-ic{zoom:1;margin:0;border:1px solid rgba(var(--gold-rgb),.12);-webkit-mask:none;mask:none;background-size:1536px,100% 100%!important;background-repeat:no-repeat!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=standard]{background-image:url(img/items-sheet.webp),url(img/card/bd-standard.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=magical]{background-image:url(img/items-sheet.webp),url(img/card/bd-magical.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=plagued]{background-image:url(img/items-sheet.webp),url(img/card/bd-plagued.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=unique]{background-image:url(img/items-sheet.webp),url(img/card/bd-unique.webp)!important}
+#catalog .m-setcard-pieces .m-card-req{display:none}
 #catalog .m-card-name{display:block;max-width:100%;overflow-wrap:anywhere}
 #catalog .m-card-lv{font-family:"Arcon","Marcellus",sans-serif;font-size:12px;letter-spacing:.08em}
 #catalog .m-card-req{font-family:"Arcon","Marcellus",sans-serif;font-size:11px;letter-spacing:.06em;color:var(--gold);opacity:.85;min-height:1.2em}
