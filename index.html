@@ -8258,7 +8258,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var req={}; try{ req=WDCARD.facts(c).req||{}; }catch(e){}
         var ks=Object.keys(req), sp=document.createElement('span');
         sp.className='m-card-req'+(ks.length?'':' none');
-        if(ks.length) sp.innerHTML=ks.map(function(k){ return '<span class="rq">'+WDCARD.icon(k,true)+'<b>'+req[k]+'</b></span>'; }).join(''); else sp.textContent='No requirements';
+        if(ks.length) sp.innerHTML=ks.map(function(k){ return '<span class="rq">'+WDCARD.icon(k,true)+'<b>'+req[k]+'</b></span>'; }).join('');
         el.appendChild(sp);
       });
     }).catch(function(){});
