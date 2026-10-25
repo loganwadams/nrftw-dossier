@@ -8419,7 +8419,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Archive pool cards: each raises up to ten random icons from its own category
   [['pool-runes'],['pool-ingredients'],['pool-resources'],['pool-embers'],['pool-furniture'],['pool-quick-items'],['pool-rings'],['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
-    if(el) wire(el,function(){ var pool=trove(c[0]); if(c[0]==='pool-resources') pool=pool.concat(trove('pool-refined-resources'),trove('pool-fuels')); return sample(pool,10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
+    if(el) wire(el,function(){ var pool=trove(c[0]); if(c[0]==='pool-resources') pool=pool.concat(trove('pool-refined-resources'),trove('pool-components'),trove('pool-fuels')); return sample(pool,10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
 })();
 </script>
@@ -8430,8 +8430,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var CV={
     'pool-runes':{t:'Runes',ids:['pool-runes'],back:['archive','Archive']},
     'pool-ingredients':{t:'Ingredients & Food',ids:['pool-ingredients'],back:['archive','Archive']},
-    'pool-resources':{t:'Crafting Materials',ids:['pool-resources','pool-refined-resources','pool-fuels'],back:['archive','Archive']},
-    'pool-refined-resources':{t:'Crafting Materials',ids:['pool-resources','pool-refined-resources','pool-fuels'],back:['archive','Archive']},
+    'pool-resources':{t:'Crafting Materials',ids:['pool-resources','pool-refined-resources','pool-components','pool-fuels'],back:['archive','Archive']},
+    'pool-refined-resources':{t:'Crafting Materials',ids:['pool-resources','pool-refined-resources','pool-components','pool-fuels'],back:['archive','Archive']},
     'pool-gems':{t:'Infusions',ids:['pool-gems'],back:['archive','Archive'],note:'<p class="cb-notice"><strong>Heads up:</strong> gem infusions will be introduced into the game at the 1.0 launch, allowing you to combine gems to create new and unique traits.</p>'},
     'pool-embers':{t:'Embers',ids:['pool-embers'],back:['archive','Archive']},
     'pool-furniture':{t:'Household Items',ids:['pool-furniture'],back:['archive','Archive']},
