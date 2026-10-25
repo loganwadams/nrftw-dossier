@@ -8479,14 +8479,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   }
   // Enchantments: the game's damage-type glyphs - plague, fire, ice, lightning, bleed, physical
   function enchantItems(){ return ['fire','ice','lightning','plague','physical','bleed','thorns','durability','weight','focus','health'].map(function(n){ return {src:'img/ench/'+n+'.webp'}; }); }
-  function wire(card,make){
+  function wire(card,make,tight){
     var layer=document.createElement('span'); layer.className='ar-gems'; layer.setAttribute('aria-hidden','true'); card.appendChild(layer);
     var timer=null;
     function raise(){
       clearTimeout(timer);
       var items=shuffle(make()), N=items.length; if(!N) return;
       layer.classList.remove('on'); layer.innerHTML='';
-      var W=card.clientWidth, X0=-SIZE*0.4, X1=W-SIZE*0.6, STEP=N>1?(X1-X0)/(N-1):0;
+      var W=card.clientWidth, X0=-SIZE*0.4, X1=W-SIZE*0.6, STEP=N>1?(X1-X0)/(N-1):0; if(tight){ STEP=SIZE*0.62; X0=(W-(SIZE+(N-1)*STEP))/2; }
       var order=[]; for(var o=0;o<N;o++) order.push(o+1); shuffle(order);
       items.forEach(function(it,i){
         var im;
@@ -8512,7 +8512,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Archive pool cards: each raises up to ten random icons from its own category
   [['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
-    if(el) wire(el,function(){ return sample(trove(c[0]),10).map(function(p){ return {p:p}; }); });
+    if(el) wire(el,function(){ return sample(trove(c[0]),10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
 })();
 </script>
