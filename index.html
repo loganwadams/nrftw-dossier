@@ -19,7 +19,10 @@
   // relative asset URL (data/cards.json, img/...) resolve one directory too deep. A <base> pinned to
   // the site root keeps them right; in-page "#section" links are then routed by hash explicitly,
   // since with a <base> they'd otherwise navigate to "/#section" (a full reload).
-  if(/^\/profile\//.test(location.pathname)){
+  // Archive sub-pages live at /archive/<id> (e.g. /archive/pool-quick-items); the old /archive#<id> form still works.
+  // __wdRawId() is the id of the section being asked for, from either form.
+  window.__wdRawId=function(){ var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); return location.hash.slice(1)||(m?m[1]:''); };
+  if(/^\/profile\//.test(location.pathname)||/^\/archive\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
   // A shared/community build (?s=...) is only ready once the item database has loaded; until
@@ -32,7 +35,9 @@
   document.addEventListener('click',function(e){
     if(!document.querySelector('base')) return;
     var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
-    e.preventDefault(); location.hash=a.getAttribute('href');
+    e.preventDefault(); var hid=a.getAttribute('href').slice(1); try{ hid=decodeURIComponent(hid); }catch(x){}
+    if(hid && window.__pgGoto && window.__pgGoto(hid)) return;
+    location.hash=a.getAttribute('href');
   });
 })();</script>
 <!-- Night mode: feature paused for now, so the site stays in day mode regardless of any
@@ -7244,7 +7249,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     heads.forEach(function(o){ if(o.head===h) o.setState(false); });
     subs.forEach(function(o){ if(o.cat===container) o.setState(false); });
   }
-  expandFor(decodeURIComponent(location.hash.slice(1)));
+  expandFor(decodeURIComponent(window.__wdRawId()));
   window.addEventListener('hashchange',function(){ expandFor(decodeURIComponent(location.hash.slice(1))); });
 })();
 </script>
@@ -7307,7 +7312,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/archive\/[^\/]+$/.test(p);
   })();
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
@@ -7352,9 +7357,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Shared with the search module (exposed on window below) so every piece of code that
   // changes the address bar agrees on the same URL shape.
   function urlFor(group,id){
+    // an Archive category (Potions, Runes, Weapons...) is a view of the item database but belongs to the Archive: /archive/<id>
+    var ce=id&&document.getElementById(id); if(ce&&ce.classList&&ce.classList.contains('m-cat-head')) return '/archive/'+id;
     if(group in CLEAN_PATHS){
       var base=CLEAN_PATHS[group];
-      return (id && id!==GROUP_FIRST_CHAP[group] && id!==GROUP_FIRST_TGT[group]) ? (base+'#'+id) : base;
+      return (id && id!==GROUP_FIRST_CHAP[group] && id!==GROUP_FIRST_TGT[group]) ? (base+(group==='archive'?'/':'#')+id) : base;
     }
     return (!id||id==='home') ? ROOT_PATH : (ROOT_PATH+'#'+id);
   }
@@ -7645,7 +7652,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // Item pages take priority over everything below - a hash of "item/<key>" never matches a
     // real element id, so left to the generic lookup below it would just silently fall through
     // to Home, same as any other unmatched hash.
-    var rawHash=location.hash.slice(1);
+    var rawHash=window.__wdRawId();
     if(rawHash.indexOf(ITEM_HASH_PREFIX)===0){ show('itempage','item-page'); ipRender(itemKeyFromHash(rawHash)); window.scrollTo(0,0); return; }
     // Author profile pages: /profile/<username> (and the older #u/<username> hash form).
     var pm=/^\/profile\/([^\/]+)\/?$/.exec(location.pathname);
@@ -7674,8 +7681,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('hashchange',route);
   window.addEventListener('popstate',route);
   route();
-  if(!location.hash) window.scrollTo(0,0);
-  else window.addEventListener('load',function(){ setTimeout(function(){ var el=document.getElementById(decodeURIComponent(location.hash.slice(1))); if(el) el.scrollIntoView({block:'start'}); },150); });
+  if(!window.__wdRawId()) window.scrollTo(0,0);
+  else window.addEventListener('load',function(){ setTimeout(function(){ var el=document.getElementById(decodeURIComponent(window.__wdRawId())); if(el) el.scrollIntoView({block:'start'}); },150); });
 
   // Scroll-spy: Factions/Classes/Systems (and any other page holding more than one chapter)
   // are one continuous scroll, not separate pages - a tab click gets you there, but scrolling
@@ -8451,7 +8458,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var back=document.createElement('a'); back.className='cv-back'; back.href='#archive'; back.textContent='\u2190 Archive'; cat.insertBefore(back,cat.firstChild);
   var opened=[], subOpened=[];
   function run(){
-    var id=''; try{ id=decodeURIComponent(location.hash.slice(1)); }catch(e){}
+    var id=''; try{ id=decodeURIComponent(window.__wdRawId()); }catch(e){}
     var cfg=CV[id], visible=cat.classList.contains('pg-on');
     if(!(cfg&&visible)){ exit(); return; }
     if(document.body.classList.contains('cat-view')&&cat.getAttribute('data-cv')===cfg.t) return;
