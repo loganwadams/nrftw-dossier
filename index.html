@@ -3169,12 +3169,12 @@ footer li{color:#6f665b}
     <div class="sect-head"><h2>Armory</h2></div>
     <p class="ar-intro">Everything you wear, wield or throw. Pick a collection.</p>
     <div class="ar-grid">
-      <a class="ar-card" href="#pool-weapons"><span class="ar-k">161 items</span><h3>Weapons</h3><p>Every one-handed, two-handed and dual-wielding weapon, with stats and sources.</p><span class="ar-go">Open</span></a>
-      <a class="ar-card" href="#pool-armor"><span class="ar-k">419 items</span><h3>Armor</h3><p>Helmets, bodies, gloves and pants, with armor values and resistances.</p><span class="ar-go">Open</span></a>
-      <a class="ar-card" href="#pool-quivers"><span class="ar-k">4 items</span><h3>Quivers</h3><p>Ammunition carriers for bows.</p><span class="ar-go">Open</span></a>
-      <a class="ar-card" href="#pool-shields"><span class="ar-k">28 items</span><h3>Shields</h3><p>Every shield, with its armor and block values.</p><span class="ar-go">Open</span></a>
-      <a class="ar-card" href="#pool-armor-sets"><span class="ar-k">120 items</span><h3>Armor Sets</h3><p>Matched armor pieces grouped by set.</p><span class="ar-go">Open</span></a>
-      <a class="ar-card" href="#pool-throwable-items"><span class="ar-k">7 items</span><h3>Throwable Items</h3><p>Bombs and other items you throw.</p><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-weapons"><span class="ar-k">161 items</span><h3>Weapons</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-armor"><span class="ar-k">419 items</span><h3>Armor</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-quivers"><span class="ar-k">4 items</span><h3>Quivers</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-shields"><span class="ar-k">28 items</span><h3>Shields</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-armor-sets"><span class="ar-k">120 items</span><h3>Armor Sets</h3><span class="ar-go">Open</span></a>
+      <a class="ar-card" href="#pool-throwable-items"><span class="ar-k">7 items</span><h3>Throwable Items</h3><span class="ar-go">Open</span></a>
     </div>
   </section>
   <section id="catalog">
@@ -8479,7 +8479,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       clearTimeout(timer);
       var items=shuffle(make()), N=items.length; if(!N) return;
       layer.classList.remove('on'); layer.innerHTML='';
-      var W=card.clientWidth, X0=-SIZE*0.4, X1=W-SIZE*0.6, STEP=(X1-X0)/(N-1);
+      var W=card.clientWidth, X0=-SIZE*0.4, X1=W-SIZE*0.6, STEP=N>1?(X1-X0)/(N-1):0;
       var order=[]; for(var o=0;o<N;o++) order.push(o+1); shuffle(order);
       items.forEach(function(it,i){
         var im;
@@ -8502,6 +8502,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var inf=document.querySelector('.ar-card[href="#infusions"]'); if(inf) wire(inf,gemItems);
   var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
   var enc=document.querySelector('.ar-card[href="#enchantments"]'); if(enc) wire(enc,enchantItems);
+  // Archive pool cards: each raises up to ten random icons from its own category
+  [['pool-weapons'],['pool-armor'],['pool-quivers'],['pool-shields'],['pool-armor-sets'],['pool-throwable-items']].forEach(function(c){
+    var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
+    if(el) wire(el,function(){ return sample(trove(c[0]),10).map(function(p){ return {p:p}; }); });
+  });
 })();
 </script>
 </body></html>
