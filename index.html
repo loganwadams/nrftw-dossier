@@ -775,6 +775,9 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 #infusions .inf-group{display:none}
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
 .inf-gemgrid .ip-tt{max-width:none}
+#emberCards{display:none}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards{display:grid!important}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#pool-embers+.m-cat{display:none!important}
 .ar-card>*:not(.ar-gems){position:relative;z-index:1}
 .ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
 .ar-gems img{position:absolute;bottom:0;width:84px;height:84px;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
@@ -8481,6 +8484,31 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('popstate',function(){ setTimeout(run,0); });
   ['pushState','replaceState'].forEach(function(k){ var o=history[k]; history[k]=function(){ var r=o.apply(this,arguments); setTimeout(run,0); return r; }; });
   run();
+})();
+</script>
+<script>
+(function(){
+  // Embers page: there are only a few, so each one is shown as its full item card.
+  function build(){
+    var head=document.getElementById('pool-embers'); if(!head||!window.__ttLoad) return;
+    var keys=[], n=head.nextElementSibling;
+    while(n&&!n.classList.contains('m-cat-head')){ n.querySelectorAll('.m-card[data-k]').forEach(function(c){ keys.push(c.getAttribute('data-k')); }); n=n.nextElementSibling; }
+    if(!keys.length) return;
+    window.__ttLoad().then(function(db){
+      var host=document.createElement('div'); host.className='inf-gemgrid'; host.id='emberCards';
+      keys.forEach(function(k){
+        var c=db[k]; if(!c) return;
+        var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
+        var d=document.createElement('div'); d.className='tt ip-tt r-'+(c.r||'standard');
+        d.innerHTML='<div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+(c.lv&&window.lvFill?'<div class="tt-lv">'+window.lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||window.WDCARD.html(c));
+        host.appendChild(d);
+      });
+      var old=document.getElementById('emberCards'); if(old) old.remove();
+      var cat=head.nextElementSibling; while(cat&&!cat.classList.contains('m-cat')) cat=cat.nextElementSibling;
+      (cat||head).insertAdjacentElement('afterend',host);
+    }).catch(function(){});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
 })();
 </script>
 </body></html>
