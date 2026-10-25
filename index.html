@@ -817,6 +817,13 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 .ar-gems.on .ar-sp{transform:translateY(0) rotate(var(--rot,0deg));opacity:.97}
 .ar-gems.on img{transform:translateY(0) rotate(var(--rot,0deg));opacity:.97}
 @media (prefers-reduced-motion:reduce){.ar-gems img{transition:opacity .2s}.ar-gems.on img{transform:none}}
+/* hover: the game's notched rule slides down from the top of the card */
+.ar-card::after{content:"";position:absolute;left:0;right:0;top:0;height:0;aspect-ratio:auto;padding-top:calc(100% * 44 / 1768 * 1.0);height:0;
+  background:var(--gold);opacity:0;transform:translateY(-100%);pointer-events:none;z-index:2;
+  -webkit-mask:url(img/divider-notch.webp) center top/100% 100% no-repeat;mask:url(img/divider-notch.webp) center top/100% 100% no-repeat;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
+.ar-card:hover::after,.ar-card:focus-visible::after{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.ar-card::after{transition:none}}
 body.on-cerim::before{
   background:
     radial-gradient(90% 70% at 50% 40%, #1b1b1b 0%, #111111 55%, #080808 100%),
