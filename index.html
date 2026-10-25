@@ -813,6 +813,8 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 .ar-card>*:not(.ar-gems){position:relative;z-index:1}
 .ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
 .ar-gems img{position:absolute;bottom:0;width:84px;height:84px;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
+.ar-gems .ar-sp{position:absolute;bottom:0;width:84px;height:84px;background:url(img/items-sheet.webp) no-repeat;background-size:2688px auto;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
+.ar-gems.on .ar-sp{transform:translateY(0) rotate(var(--rot,0deg));opacity:.97}
 .ar-gems.on img{transform:translateY(0) rotate(var(--rot,0deg));opacity:.97}
 @media (prefers-reduced-motion:reduce){.ar-gems img{transition:opacity .2s}.ar-gems.on img{transform:none}}
 body.on-cerim::before{
@@ -8436,34 +8438,62 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 </script>
 <script>
 (function(){
-  // Archive: hovering the Infusions card raises five randomly chosen gems up from its bottom edge.
+  // Archive: hovering the Infusions or Armory card raises ten random icons from the card's bottom edge, in one
+  // overlapping row that runs flush with the card's edges. Infusions: ten gems. Armory: 3 weapons, 4 armor
+  // pieces (helmet, body, pants, gloves), a shield, a quiver and a throwable item, shuffled together.
   var GEMS=['Chipped_Amethyst','Chipped_Black_Pearl','Chipped_Blood_Stone','Chipped_Diamond','Chipped_Dianite','Chipped_Emerald','Chipped_Granite','Chipped_Jade','Chipped_Jewel','Chipped_Marble','Chipped_Meteorite','Chipped_Moon_Stone','Chipped_Quartz','Chipped_Ruby','Chipped_Sapphire','Chipped_Shield_Emblem','Chipped_Spike','Chipped_Topaz','Medium_Skull','Mottled_Amethyst','Mottled_Black_Pearl','Mottled_Blood_Stone','Mottled_Diamond','Mottled_Dianite','Mottled_Emerald','Mottled_Fang','Mottled_Feather','Mottled_Granite','Mottled_Jade','Mottled_Jewel','Mottled_Marble','Mottled_Meteorite','Mottled_Moon_Stone','Mottled_Quartz','Mottled_Ruby','Mottled_Sapphire','Mottled_Shield_Emblem','Mottled_Spike','Mottled_Topaz','Small_Skull','Tiny_Fang','Tiny_Feather'];
-  var card=document.querySelector('.ar-card[href="#infusions"]'); if(!card) return;
-  var layer=document.createElement('span'); layer.className='ar-gems'; layer.setAttribute('aria-hidden','true'); card.appendChild(layer);
-  var timer=null;
-  function raise(){
-    clearTimeout(timer);
-    var pool=GEMS.slice(), pick=[];
-    for(var i=0;i<10;i++){ pick.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); }
-    layer.classList.remove('on'); layer.innerHTML='';
-    // one overlapping row spanning the card edge to edge; stacking order is shuffled
-    var N=pick.length, SIZE=84, W=card.clientWidth, X0=-SIZE*0.4, X1=W-SIZE*0.6, STEP=(X1-X0)/(N-1);
-    var order=[]; for(var o=0;o<N;o++) order.push(o+1);
-    for(var q=N-1;q>0;q--){ var j=Math.floor(Math.random()*(q+1)); var t=order[q]; order[q]=order[j]; order[j]=t; }
-    pick.forEach(function(name,i){
-      var im=document.createElement('img'); im.src='img/inf/'+name+'.webp'; im.alt='';
-      im.style.left=(X0+i*STEP)+'px';
-      im.style.bottom=(-(8+Math.random()*24))+'px';
-      im.style.zIndex=String(order[i]);
-      im.style.setProperty('--rot',(Math.random()*16-8).toFixed(0)+'deg');
-      im.style.transitionDelay=(i*50)+'ms';
-      layer.appendChild(im);
-    });
-    void layer.offsetWidth; requestAnimationFrame(function(){ layer.classList.add('on'); });
+  var SIZE=84;
+  function shuffle(a){ for(var q=a.length-1;q>0;q--){ var j=Math.floor(Math.random()*(q+1)); var t=a[q]; a[q]=a[j]; a[j]=t; } return a; }
+  function sample(a,n){ return shuffle(a.slice()).slice(0,n); }
+  function trove(headId,test){
+    var head=document.getElementById(headId), out=[]; if(!head) return out;
+    var n=head.nextElementSibling;
+    while(n&&!n.classList.contains('m-cat-head')){
+      var h5=n.querySelector('h5'), label=h5?h5.textContent:'';
+      if(!test||test(label)) n.querySelectorAll('.m-card .m-ic').forEach(function(ic){
+        var m=/-(\d+)px\s+-?(\d+)px/.exec(ic.getAttribute('style')||''); if(m) out.push([+m[1]/48,+m[2]/48]);
+      });
+      n=n.nextElementSibling;
+    }
+    return out;
   }
-  function lower(){ layer.classList.remove('on'); timer=setTimeout(function(){ layer.innerHTML=''; },800); }
-  card.addEventListener('mouseenter',raise); card.addEventListener('mouseleave',lower);
-  card.addEventListener('focus',raise); card.addEventListener('blur',lower);
+  function gemItems(){ return sample(GEMS,10).map(function(n){ return {src:'img/inf/'+n+'.webp'}; }); }
+  function armoryItems(){
+    var items=[];
+    function add(list,n){ sample(list,n).forEach(function(p){ items.push({p:p}); }); }
+    add(trove('pool-weapons'),3);
+    ['Helmet','Body','Pants','Gloves'].forEach(function(slot){ add(trove('pool-armor',function(l){ return new RegExp(slot+'\\s*$').test(l.trim().replace(/\s*\d+$/,'')); }),1); });
+    add(trove('pool-shields'),1); add(trove('pool-quivers'),1); add(trove('pool-throwable-items'),1);
+    return items;
+  }
+  function wire(card,make){
+    var layer=document.createElement('span'); layer.className='ar-gems'; layer.setAttribute('aria-hidden','true'); card.appendChild(layer);
+    var timer=null;
+    function raise(){
+      clearTimeout(timer);
+      var items=shuffle(make()), N=items.length; if(!N) return;
+      layer.classList.remove('on'); layer.innerHTML='';
+      var W=card.clientWidth, X0=-SIZE*0.4, X1=W-SIZE*0.6, STEP=(X1-X0)/(N-1);
+      var order=[]; for(var o=0;o<N;o++) order.push(o+1); shuffle(order);
+      items.forEach(function(it,i){
+        var im;
+        if(it.src){ im=document.createElement('img'); im.src=it.src; im.alt=''; }
+        else { im=document.createElement('span'); im.className='ar-sp'; im.style.backgroundPosition=(-it.p[0]*SIZE)+'px '+(-it.p[1]*SIZE)+'px'; }
+        im.style.left=(X0+i*STEP)+'px';
+        im.style.bottom=(-(8+Math.random()*24))+'px';
+        im.style.zIndex=String(order[i]);
+        im.style.setProperty('--rot',(Math.random()*16-8).toFixed(0)+'deg');
+        im.style.transitionDelay=(i*50)+'ms';
+        layer.appendChild(im);
+      });
+      void layer.offsetWidth; requestAnimationFrame(function(){ layer.classList.add('on'); });
+    }
+    function lower(){ layer.classList.remove('on'); timer=setTimeout(function(){ layer.innerHTML=''; },800); }
+    card.addEventListener('mouseenter',raise); card.addEventListener('mouseleave',lower);
+    card.addEventListener('focus',raise); card.addEventListener('blur',lower);
+  }
+  var inf=document.querySelector('.ar-card[href="#infusions"]'); if(inf) wire(inf,gemItems);
+  var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
 })();
 </script>
 </body></html>
