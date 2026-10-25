@@ -2548,6 +2548,14 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 .m-card-name{font-family:var(--display);font-variant:small-caps;font-size:16px;letter-spacing:.03em;line-height:1.2;color:#e4dccb}
 .m-card-uniq .m-card-name{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(201,169,110,.5)}
 .m-card-lv{font-family:var(--data);font-size:9px;letter-spacing:.08em;color:#8b8174}
+/* Items page: square cards */
+#catalog .m-cards{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
+#catalog .m-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;aspect-ratio:1/1;padding:12px 10px;min-height:0;overflow:hidden}
+#catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px}
+#catalog .m-card-name{display:block;max-width:100%;overflow-wrap:anywhere}
+#catalog .m-card-lv{font-family:"Arcon","Marcellus",sans-serif;font-size:12px;letter-spacing:.08em}
+#catalog .m-card-req{font-family:"Arcon","Marcellus",sans-serif;font-size:11px;letter-spacing:.06em;color:var(--gold);opacity:.85;min-height:1.2em}
+#catalog .m-card-req.none{color:#8b8174;opacity:.7}
 /* set cards get their own column count (two item-card widths each, as many as fit) instead of spanning two of the item grid's columns, which left an odd column empty on the right at some widths */
 .m-cards:has(.m-setcard){grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
 .m-setcard{grid-column:auto;display:block;min-height:0;padding:14px 16px;border:1px solid var(--edge-hot);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));position:relative;transition:border-color .15s,box-shadow .15s}
@@ -8259,6 +8267,26 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     on=localStorage.getItem(KEY)==='1';
   }catch(e){}
   var p=document.getElementById('arPrivate'); if(p&&on){ p.hidden=false; document.body.classList.add('ar-preview'); }
+})();
+</script>
+<script>
+(function(){
+  var AB={Strength:'STR',Dexterity:'DEX',Intelligence:'INT',Faith:'FAI'};
+  function run(){
+    var cards=document.querySelectorAll('#catalog .m-card[data-k]'); if(!cards.length||!window.WDCARD) return;
+    fetch('data/cards.json').then(function(r){ return r.json(); }).then(function(j){
+      cards.forEach(function(el){
+        if(el.querySelector('.m-card-req')) return;
+        var c=j[el.getAttribute('data-k')]; if(!c) return;
+        var req={}; try{ req=WDCARD.facts(c).req||{}; }catch(e){}
+        var ks=Object.keys(req), sp=document.createElement('span');
+        sp.className='m-card-req'+(ks.length?'':' none');
+        sp.textContent=ks.length?ks.map(function(k){ return (AB[k]||k)+' '+req[k]; }).join('  \u00b7  '):'No requirements';
+        el.appendChild(sp);
+      });
+    }).catch(function(){});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
 })();
 </script>
 </body></html>
