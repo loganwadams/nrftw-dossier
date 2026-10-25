@@ -2216,7 +2216,6 @@ section,article.klass{scroll-margin-top:24px}
 .md-gal a:nth-child(1){grid-column:span 4;grid-row:span 2}
 .md-gal a:nth-child(4),.md-gal a:nth-child(5){grid-column:span 3}
 .md-gal-more{margin-top:10px}.md-gal-more a:nth-child(n){grid-column:span 2;grid-row:auto}
-.md-gal-more[hidden]{display:none}
 .md-gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88);transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .4s}
 .md-gal a:hover img{transform:scale(1.05);filter:none}
 .md-gal a:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(5,4,3,.82))}
@@ -3140,8 +3139,9 @@ footer li{color:#6f665b}
       <div class="md-tl" id="md-tl"></div></section>
       <section class="md-sec md-sec-art"><div class="md-brand"><img src="img/brand/artstation-logo-gold.png" alt="ArtStation"></div>
       <div class="md-gal" id="md-gal"></div>
-      <p class="md-credit">Art by Damian Gerrits, Associate Art Lead at Moon Studios &middot; <button type="button" id="md-more">See all <span id="md-artn"></span> pieces</button></p>
-      <div class="md-gal md-gal-more" id="md-gal2" hidden></div></section>
+      
+      <div class="md-gal md-gal-more" id="md-gal2"></div>
+      <p class="md-credit">Art by Damian Gerrits, Associate Art Lead at Moon Studios</p></section>
     </div>
     <div class="md-legacy" hidden>
 
@@ -6907,8 +6907,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   function tile(p){ return '<a href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.thumb+'" alt="" loading="lazy"><span>'+esc(clean(p.title))+'</span></a>'; }
   gal.innerHTML=A.slice(0,5).map(tile).join(''); gal2.innerHTML=A.slice(5).map(tile).join('');
-  document.getElementById('md-artn').textContent=A.length;
-  var more=document.getElementById('md-more'); more.addEventListener('click',function(){ gal2.hidden=!gal2.hidden; more.innerHTML=gal2.hidden?'See all <span>'+A.length+'</span> pieces':'Show fewer'; });
   tl.innerHTML=V.map(function(v){ var d=(v.date||'').split('-'); return '<a class="md-ev" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-y="'+(d[0]||'')+'" data-t="'+esc(v.title)+'"><span class="md-th" style="background-image:url('+v.thumb+')"></span><div><p>'+esc(v.title)+'</p><small>'+esc(v.note||'')+'</small></div><em>'+(d.length>2?M[+d[1]-1]+' '+(+d[2]):'')+'</em></a>'; }).join('');
   var yearEl=document.getElementById('md-year'), brand=yearEl&&yearEl.parentNode, evs=[].slice.call(tl.querySelectorAll('.md-ev'));
   function setYear(){ if(!yearEl||!evs.length) return; var line=brand.getBoundingClientRect().bottom, y=evs[0].dataset.y; for(var i=0;i<evs.length;i++){ if(evs[i].getBoundingClientRect().bottom>line+8){ y=evs[i].dataset.y; break; } y=evs[i].dataset.y; } if(yearEl.textContent!==y) yearEl.textContent=y; }
