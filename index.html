@@ -2531,6 +2531,14 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-cards{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
 #catalog .m-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;aspect-ratio:1/1;padding:12px 10px;min-height:0;overflow:hidden}
 #catalog .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px}
+/* item cards: ragged, faded edges instead of hard squares (six irregular masks, repeated in turn) */
+#catalog .m-card{border-color:transparent!important;-webkit-mask:url(img/mask/card-0.png) center/100% 100% no-repeat;mask:url(img/mask/card-0.png) center/100% 100% no-repeat;transition:filter .2s}
+#catalog .m-card:nth-child(6n+2){-webkit-mask-image:url(img/mask/card-1.png);mask-image:url(img/mask/card-1.png)}
+#catalog .m-card:nth-child(6n+3){-webkit-mask-image:url(img/mask/card-2.png);mask-image:url(img/mask/card-2.png)}
+#catalog .m-card:nth-child(6n+4){-webkit-mask-image:url(img/mask/card-3.png);mask-image:url(img/mask/card-3.png)}
+#catalog .m-card:nth-child(6n+5){-webkit-mask-image:url(img/mask/card-4.png);mask-image:url(img/mask/card-4.png)}
+#catalog .m-card:nth-child(6n){-webkit-mask-image:url(img/mask/card-5.png);mask-image:url(img/mask/card-5.png)}
+#catalog .m-card:hover,#catalog .m-card.tt-open{filter:brightness(1.3) saturate(1.1)}
 #catalog .m-card-name{display:block;max-width:100%;overflow-wrap:anywhere}
 #catalog .m-card-lv{font-family:"Arcon","Marcellus",sans-serif;font-size:12px;letter-spacing:.08em}
 #catalog .m-card-req{font-family:"Arcon","Marcellus",sans-serif;font-size:11px;letter-spacing:.06em;color:var(--gold);opacity:.85;min-height:1.2em}
