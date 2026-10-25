@@ -818,7 +818,7 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 .ar-gems.on img{transform:translateY(0) rotate(var(--rot,0deg));opacity:.97}
 @media (prefers-reduced-motion:reduce){.ar-gems img{transition:opacity .2s}.ar-gems.on img{transform:none}}
 /* hover: the game's notched rule slides down from the top of the card */
-.ar-card::after{content:"";position:absolute;left:0;right:0;top:22px;height:18px;
+.ar-card::after{content:"";position:absolute;left:0;right:0;top:-1px;height:24px;
   background:#efe3c4;filter:drop-shadow(0 0 4px rgba(230,200,130,.55));opacity:0;transform:translateY(-140%);pointer-events:none;z-index:3;
   -webkit-mask:url(img/divider-notch.webp) center/100% 100% no-repeat;mask:url(img/divider-notch.webp) center/100% 100% no-repeat;
   transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
@@ -2417,9 +2417,7 @@ body.on-archive:not(.ar-preview) footer .legal-short a{color:#c9a96e;text-decora
 .ar-card[href="#armory"]{background:url(img/archive-armory.webp) 80% 50%/130% auto no-repeat}
 .ar-card h3,.ar-card p{text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 8px rgba(0,0,0,.9),0 0 18px rgba(0,0,0,.75)}
 
-.ar-card::before{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
-.ar-card:hover,.ar-card:focus-visible{border-color:var(--gold-dim);transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.5);outline:none}
-.ar-card:hover::before,.ar-card:focus-visible::before{transform:scaleX(1)}
+.ar-card:hover,.ar-card:focus-visible{transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.5);outline:none}
 .ar-k{font-family:var(--data);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-dim)}
 .ar-card h3{margin:0;font-family:var(--display);font-weight:400;font-size:21px;color:var(--bone)}
 .ar-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
