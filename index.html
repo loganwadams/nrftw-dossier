@@ -2271,6 +2271,13 @@ body.on-archive:not(.ar-preview) footer .legal-short a{color:#c9a96e;text-decora
 .ar-intro{margin:0 0 22px;color:var(--muted);max-width:60ch}
 .ar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
 .ar-card{position:relative;display:flex;flex-direction:column;gap:8px;min-height:190px;padding:23px 23px 19px;border:0;background:linear-gradient(180deg,var(--panel-2),var(--panel));color:inherit;text-decoration:none;overflow:hidden;transition:border-color .3s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+/* category pages: a Trove category opened from an Archive or Armory card shows alone, under its own title */
+#catalog .cv-back{display:none}
+body.cat-view #catalog .cv-back{display:inline-block;margin:0 0 14px;font-family:var(--display);font-size:15px;letter-spacing:.06em;color:var(--gold);text-decoration:none;text-shadow:0 1px 2px #000}
+body.cat-view #catalog .cv-back:hover{color:var(--bone)}
+body.cat-view #catalog .m-cats>*:not(.cv-on){display:none!important}
+body.cat-view #catalog .m-cats>.m-cat-head.cv-solo{display:none!important}
+body.cat-view #catalog .m-cat-collapse{display:none!important}
 .ar-card[href="#infusions"]{background:url(img/archive-infusions.webp) 28% 48%/210% auto no-repeat}
 .ar-card[href="#enchantments"]{background:url(img/archive-enchantments.webp) 80% 50%/160% auto no-repeat}
 .ar-card[href="#armory"]{background:url(img/archive-armory.webp) center/cover no-repeat}
@@ -8342,6 +8349,64 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var el=document.querySelector('.ar-card[href="#'+c[0]+'"]');
     if(el) wire(el,function(){ var pool=trove(c[0]); if(c[0]==='pool-resources') pool=pool.concat(trove('pool-refined-resources')); return sample(pool,10).map(function(p){ return {p:p}; }); },c[0]==='pool-quivers');
   });
+})();
+</script>
+<script>
+(function(){
+  // Archive and Armory cards each open their own page: the Trove shows just that category (resources
+  // also brings in refined resources), retitled, with a link back to the grid it came from.
+  var CV={
+    'pool-runes':{t:'Runes',ids:['pool-runes'],back:['archive','Archive']},
+    'pool-ingredients':{t:'Ingredients & Food',ids:['pool-ingredients'],back:['archive','Archive']},
+    'pool-resources':{t:'Resources',ids:['pool-resources','pool-refined-resources'],back:['archive','Archive']},
+    'pool-refined-resources':{t:'Resources',ids:['pool-resources','pool-refined-resources'],back:['archive','Archive']},
+    'pool-weapons':{t:'Weapons',ids:['pool-weapons'],back:['armory','Armory']},
+    'pool-armor':{t:'Armor',ids:['pool-armor'],back:['armory','Armory']},
+    'pool-rings':{t:'Rings',ids:['pool-rings'],back:['armory','Armory']},
+    'pool-quivers':{t:'Quivers',ids:['pool-quivers'],back:['armory','Armory']},
+    'pool-shields':{t:'Shields',ids:['pool-shields'],back:['armory','Armory']},
+    'pool-armor-sets':{t:'Armor Sets',ids:['pool-armor-sets'],back:['armory','Armory']},
+    'pool-throwable-items':{t:'Throwable Items',ids:['pool-throwable-items'],back:['armory','Armory']}
+  };
+  var cat=document.getElementById('catalog'), cats=cat&&cat.querySelector('.m-cats'); if(!cats) return;
+  var h2=cat.querySelector('.sect-head h2'), intro=cat.querySelector('.m-cat-intro'), introText=intro?intro.innerHTML:'', h2Text=h2?h2.textContent:'';
+  var back=document.createElement('a'); back.className='cv-back'; cat.insertBefore(back,cat.firstChild);
+  var opened=[], subOpened=[];
+  function run(){
+    var id=''; try{ id=decodeURIComponent(location.hash.slice(1)); }catch(e){}
+    var cfg=CV[id], visible=cat.classList.contains('pg-on');
+    if(!(cfg&&visible)){ exit(); return; }
+    if(document.body.classList.contains('cat-view')&&cat.getAttribute('data-cv')===cfg.t) return;
+    exit();
+    document.body.classList.add('cat-view'); cat.setAttribute('data-cv',cfg.t);
+    var kids=Array.prototype.slice.call(cats.children), count=0;
+    cfg.ids.forEach(function(hid,i){
+      var head=document.getElementById(hid); if(!head) return;
+      if(i===0) head.classList.add('cv-solo');
+      var n=head.nextElementSibling; head.classList.add('cv-on');
+      var span=head.querySelector('span'); if(span){ var m=/(\d+)/.exec(span.textContent); if(m) count+=+m[1]; }
+      while(n&&!n.classList.contains('m-cat-head')){ n.classList.add('cv-on'); n=n.nextElementSibling; }
+      if(head.classList.contains('collapsed')){ var b=head.querySelector('.m-cat-collapse'); if(b){ b.click(); opened.push(b); } }
+    });
+    cats.querySelectorAll('.cv-on.sub-collapsed .m-subcat-collapse').forEach(function(b){ b.click(); subOpened.push(b); });
+    if(h2) h2.textContent=cfg.t;
+    if(intro) intro.innerHTML='<strong>'+count+' items.</strong> '+introText;
+    back.href='#'+cfg.back[0]; back.textContent='\u2190 '+cfg.back[1];
+    document.title=cfg.t+' - Wicked Dossier \u00b7 No Rest for the Wicked';
+    window.scrollTo(0,0);
+  }
+  function exit(){
+    if(!document.body.classList.contains('cat-view')) return;
+    document.body.classList.remove('cat-view'); cat.removeAttribute('data-cv');
+    cats.querySelectorAll('.cv-on,.cv-solo').forEach(function(e){ e.classList.remove('cv-on','cv-solo'); });
+    subOpened.forEach(function(b){ var c=b.closest('.m-cat'); if(c&&!c.classList.contains('sub-collapsed')) b.click(); }); subOpened=[];
+    opened.forEach(function(b){ var h=b.closest('.m-cat-head'); if(h&&!h.classList.contains('collapsed')) b.click(); }); opened=[];
+    if(h2) h2.textContent=h2Text; if(intro) intro.innerHTML=introText;
+  }
+  window.addEventListener('hashchange',function(){ setTimeout(run,0); });
+  window.addEventListener('popstate',function(){ setTimeout(run,0); });
+  ['pushState','replaceState'].forEach(function(k){ var o=history[k]; history[k]=function(){ var r=o.apply(this,arguments); setTimeout(run,0); return r; }; });
+  run();
 })();
 </script>
 </body></html>
