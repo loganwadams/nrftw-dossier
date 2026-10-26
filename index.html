@@ -2351,7 +2351,9 @@ body.vend-view #vendors article.merchant.vd-on{display:block}
 .vd-card{min-height:170px;background:radial-gradient(120% 140% at 82% 78%,rgba(var(--gold-rgb),.16),transparent 62%),linear-gradient(180deg,var(--panel-2),var(--panel))}
 .vd-card::before{content:"";position:absolute;z-index:0;width:760px;height:calc(760px*var(--ar));left:min(0px,max(calc(100% - 760px),calc(50% - var(--fx)*760px)));top:min(0px,max(calc(100% - 760px*var(--ar)),calc(50% - var(--fy)*760px*var(--ar))));background:var(--mp) 0 0/100% 100% no-repeat;filter:brightness(.5) saturate(.85);transition:filter .25s}
 .vd-card .ar-k,.vd-card .vd-loc{color:#d6c8a6}
-.vd-card:hover::before,.vd-card:focus-visible::before{filter:brightness(.8) saturate(1)}
+.vd-card:hover::before,.vd-card:focus-visible::before{filter:brightness(.62) saturate(.95)}
+.vd-card h3,.vd-card .ar-k,.vd-card .vd-loc{text-shadow:0 0 3px #000,0 0 7px #000,0 0 12px #000,1px 1px 0 #000,2px 2px 3px #000}
+.vd-card:hover .ar-k,.vd-card:hover .vd-loc,.vd-card:focus-visible .ar-k,.vd-card:focus-visible .vd-loc{color:#f0e4c4}
 .vd-card>.vd-pt{z-index:1}
 .vd-card>:not(.vd-pt){z-index:2}
 .vd-card{background:#0d0b09}
