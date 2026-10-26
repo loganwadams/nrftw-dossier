@@ -687,7 +687,7 @@ window.__gcCount=(function(){ var last=location.pathname+location.hash; return f
 <script data-goatcounter="https://wickeddossier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style id="bg-dim">:root{--bgdim:.08;--grounddim:.2}
 body:not(.on-home) .header-bg{display:none!important}
-body:not(.on-home) .footer-bg,body:not(.on-home) footer .footer-bg,body.on-media footer .footer-bg,body.on-armory footer .footer-bg,body.on-cerim footer .footer-bg,body.on-archive footer .footer-bg{display:none!important;background-image:none!important}
+body:not(.on-home) .footer-bg,body:not(.on-home) footer .footer-bg{filter:grayscale(1) sepia(1) hue-rotate(190deg) saturate(.7) brightness(.5)!important;z-index:-2!important;display:block!important}
 body::before{background:radial-gradient(90% 70% at 50% 40%,#0b0b0c 0%,#070708 55%,#040405 100%),#040405!important}
 #vellum{opacity:var(--grounddim)!important}
 body::after{opacity:.1!important}
@@ -695,13 +695,8 @@ body.on-home .hero-art{filter:brightness(.12)!important}
 body{position:relative}
 body::before{background:radial-gradient(90% 70% at 50% 40%,#131313 0%,#0d0d0d 55%,#070707 100%),#070707!important}
 #vellum{opacity:1!important;background:repeating-linear-gradient(100deg,rgba(255,255,255,.014) 0 1px,transparent 1px 9px),repeating-linear-gradient(8deg,rgba(0,0,0,.1) 0 1px,transparent 1px 14px),linear-gradient(90deg,rgba(0,0,0,.45),transparent 10%,transparent 90%,rgba(0,0,0,.45)),linear-gradient(180deg,rgba(0,0,0,.35),transparent 12%,transparent 88%,rgba(0,0,0,.5))!important}
-#smokeBg{position:absolute;top:0;left:0;width:100%;height:100%;min-height:100vh;z-index:-1;pointer-events:none;overflow:hidden;opacity:.42;filter:saturate(1.25) hue-rotate(-8deg)}
-body.on-home #smokeBg{display:none}
-#smokeBg i{position:absolute;display:block;background-repeat:no-repeat;background-size:100% 100%;-webkit-mask-image:radial-gradient(closest-side,#000 18%,rgba(0,0,0,.65) 50%,rgba(0,0,0,.25) 78%,transparent 100%);mask-image:radial-gradient(closest-side,#000 18%,rgba(0,0,0,.65) 50%,rgba(0,0,0,.25) 78%,transparent 100%);filter:blur(var(--bl,16px))}
-#smokeBg i.ov{background:#7d9cc4;filter:blur(2px);-webkit-mask:url(img/smoke-overlay.webp) center/cover no-repeat;mask:url(img/smoke-overlay.webp) center/cover no-repeat}
 </style>
 </head><body>
-<div id="smokeBg" aria-hidden="true"></div>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap">
@@ -8795,35 +8790,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('resize',soon); window.addEventListener('hashchange',soon); window.addEventListener('popstate',soon); window.addEventListener('load',soon);
   var ps=history.pushState; history.pushState=function(){ var r=ps.apply(this,arguments); soon(); return r; };
   soon();
-})();
-</script>
-<script>
-/* background smoke: the game's own smoke sprites, tinted blue, laid down the page like the official site's cloud sections */
-(function(){
-  try{
-    var host=document.getElementById('smokeBg'); if(!host) return;
-    var R={1:1.385,2:.733,3:.797,5:.509,6:1,7:1,8:1,9:1};
-    var L=[ /* sprite, left vw, top %, width vw, opacity, flip, brightness, blur px */
-      [3,-20,-4,90,0.27,0,0.55,10],[2,40,30,96,0.25,1,0.5,10],[5,-10,58,100,0.23,0,0.5,10],[1,60,78,70,0.25,1,0.55,10],
-      [1,-14,-2,52,0.12,0,1.0,4],[3,52,6,56,0.10,1,1.0,4],[5,10,30,66,0.08,0,1.0,4],[2,58,44,54,0.12,1,1.0,4],[8,-8,60,46,0.10,0,1.0,4],[6,34,80,54,0.11,1,1.0,4],[9,70,78,40,0.08,0,1.0,4],
-      [5,18,8,34,0.19,1,1.5,2],[2,70,16,28,0.21,0,1.6,2],[3,4,44,30,0.19,1,1.5,2],[5,44,50,36,0.18,0,1.5,2],[2,76,58,28,0.20,1,1.6,2],[3,24,68,32,0.18,0,1.5,2],[5,58,88,34,0.19,1,1.5,2]
-    ];
-    var R={1:1.385,2:.733,3:.797,5:.509,6:1,7:1,8:1,9:1};
-    /* broad dark fog banks from the game's own UI smoke textures */
-    [['a',-10,0,125,.573,1,.0],['b',20,34,120,.573,1,.0],['c',-6,60,70,1.326,1,.0],['a',30,78,120,.573,1,.0]].forEach(function(q,i){
-      var el=document.createElement('i');
-      el.style.cssText='left:'+q[1]+'vw;top:'+q[2]+'%;width:'+q[3]+'vw;height:'+(q[3]*q[4])+'vw;opacity:1;background-image:url(img/fog-bank-'+q[0]+'.webp);filter:brightness(3.8) saturate(1.6);'+(i%2?'transform:scaleX(-1);':'')+'-webkit-mask-image:radial-gradient(closest-side,#000 35%,rgba(0,0,0,.5) 70%,transparent 100%);mask-image:radial-gradient(closest-side,#000 35%,rgba(0,0,0,.5) 70%,transparent 100%)';
-      host.appendChild(el);
-    });
-    L.forEach(function(p){
-      var el=document.createElement('i');
-      el.style.cssText='left:'+p[1]+'vw;top:'+p[2]+'%;width:'+p[3]+'vw;height:'+(p[3]*R[p[0]])+'vw;opacity:'+p[4]+';background-image:url(img/smoke-'+p[0]+'.webp);filter:blur('+p[7]+'px) brightness('+p[6]+');'+(p[5]?'transform:scaleX(-1);':'');
-      host.appendChild(el);
-    });
-    var ov=document.createElement('i'); ov.className='ov';
-    ov.style.cssText='left:0;top:0;width:100%;height:100%;opacity:.3';
-    host.appendChild(ov);
-  }catch(e){}
 })();
 </script>
 </body></html>
