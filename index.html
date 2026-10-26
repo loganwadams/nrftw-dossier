@@ -781,6 +781,8 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cm-name,.cm-back-title{font-family:var(--display)!important;font-weight:400!important;color:#e6e1d4!important;text-shadow:0 1px 2px #000}
 .cm-grade,.cm-grade.g-red,.cm-grade.g-blue,.cm-grade.g-gold{font-family:var(--display)!important;font-weight:400!important;color:#e6e1d4!important;text-shadow:0 1px 3px #000}
 .cm-grade small{display:none!important}
+.cm-lo-lbl{display:flex;align-items:center;justify-content:center;width:34px!important}
+.cm-lo-lbl img{width:26px;height:26px;object-fit:contain;filter:drop-shadow(0 1px 2px #000)}
 .cm-card .cm-front .cm-grade{font-size:2.6rem!important;line-height:.95!important;letter-spacing:.01em!important}
 .cm-card .cm-back-head .cm-grade{font-size:2rem!important;line-height:.95!important}
 .cm-grade-lbl{color:#a49f92!important}
@@ -6634,13 +6636,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         }
         // Front of the card: the build's equipped items laid out like the Cerim Builder (main hands, off hands, armor, rings).
         function loadoutHtml(sm){
-          var ROWS=[['Main Hand',['weapon'],3],['Off Hand',['offhand'],3],['Armor',['helm','chest','legs','gloves'],4],['Rings',['ring'],3]];
+          var ROWS=[['Main Hand',['weapon'],3,'weapon'],['Off Hand',['offhand'],3,'shield'],['Armor',['helm','chest','legs','gloves'],4,'armor'],['Rings',['ring'],3,'ring']];
           var g=(sm&&sm.gear)||[];
           return '<div class="cm-loadout">'+ROWS.map(function(row){
             var cells=[];
             if(row[1].length>1){ row[1].forEach(function(cat){ cells.push(g.filter(function(x){ return x.c===cat; })[0]||null); }); }
             else { var list=g.filter(function(x){ return x.c===row[1][0]; }); for(var i=0;i<row[2];i++) cells.push(list[i]||null); }
-            return '<div class="cm-lo-row"><span class="cm-lo-lbl">'+row[0]+'</span><span class="cm-lo-cells">'+cells.map(function(it){
+            return '<div class="cm-lo-row"><span class="cm-lo-lbl" title="'+row[0]+'"><img src="img/cb/icon-'+row[3]+'.webp" alt="'+row[0]+'"></span><span class="cm-lo-cells">'+cells.map(function(it){
               if(!it) return '<span class="cm-lo-cell empty"></span>';
               return '<span class="cm-lo-cell r-'+escH(it.r||'standard')+'" title="'+escH(it.n)+'">'+(it.p?'<span class="m-ic" style="background-position:-'+(it.p[0]*48)+'px -'+(it.p[1]*48)+'px"></span>':'')+'</span>';
             }).join('')+'</span></div>';
