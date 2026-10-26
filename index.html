@@ -7802,6 +7802,35 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     ipRender(key); ipSetBack();
     window.scrollTo(0,0);
   };
+  // Material icons: the sprite cells pad their art by different amounts, so equal boxes still show
+  // unequal icons. Measure each icon's real artwork once and scale it to one common size.
+  (function(){
+    var img=new Image(), ready=false, cv=null, cx=null, cache={}, urls={};
+    img.onload=function(){ try{ cv=document.createElement('canvas'); cv.width=img.naturalWidth; cv.height=img.naturalHeight; cx=cv.getContext('2d',{willReadFrequently:true}); cx.drawImage(img,0,0); ready=true; norm(); }catch(e){} };
+    img.src='img/items-sheet.webp';
+    function bbox(x0,y0,cell){
+      var k=x0+','+y0; if(cache[k]) return cache[k];
+      var d=cx.getImageData(x0,y0,cell,cell).data, x1=-1,y1=-1,mx=cell,my=cell;
+      for(var y=0;y<cell;y++) for(var x=0;x<cell;x++){ if(d[(y*cell+x)*4+3]>24){ if(x<mx) mx=x; if(x>x1) x1=x; if(y<my) my=y; if(y>y1) y1=y; } }
+      return (cache[k]=x1<0?null:[mx,my,x1+1,y1+1]);
+    }
+    function norm(){
+      if(!ready) return;
+      var f=cv.width/2048, cell=Math.round(64*f);
+      document.querySelectorAll('#item-page .ip-mic:not([data-nz])').forEach(function(el){
+        var m=/(-?\d+(?:\.\d+)?)px\s+(-?\d+(?:\.\d+)?)px/.exec(el.style.backgroundPosition||''); if(!m) return;
+        var x0=Math.round(-parseFloat(m[1])*f), y0=Math.round(-parseFloat(m[2])*f); el.setAttribute('data-nz','1');
+        if(x0<0||y0<0||x0+cell>cv.width||y0+cell>cv.height) return;
+        var bb=bbox(x0,y0,cell); if(!bb) return;
+        var size=Math.max(bb[2]-bb[0],bb[3]-bb[1]), sc=Math.min(46*f/size,1.6), w=(bb[2]-bb[0])*sc, h=(bb[3]-bb[1])*sc;
+        var k=x0+','+y0, url=urls[k];
+        if(!url){ var c=document.createElement('canvas'); c.width=128; c.height=128; var g=c.getContext('2d'); g.imageSmoothingQuality='high';
+          var q=2/f; g.drawImage(cv,x0+bb[0],y0+bb[1],bb[2]-bb[0],bb[3]-bb[1],(128-w*q)/2,(128-h*q)/2,w*q,h*q); url=urls[k]=c.toDataURL('image/png'); }
+        el.style.backgroundImage='url('+url+')'; el.style.backgroundSize='100% 100%'; el.style.backgroundPosition='0 0';
+      });
+    }
+    var host=document.getElementById('item-page'); if(host&&window.MutationObserver) new MutationObserver(norm).observe(host,{childList:true,subtree:true});
+  })();
   var ipBack=document.getElementById('ipBack');
   if(ipBack) ipBack.addEventListener('click',function(e){ e.preventDefault(); if(window.__ipFrom&&history.length>1){ window.__ipFrom=null; history.back(); } else if(window.__pgGoto) window.__pgGoto('archive'); });
   function route(){
