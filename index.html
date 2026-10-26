@@ -686,11 +686,17 @@ window.__gcCount=(function(){ var last=location.pathname+location.hash; return f
 </script>
 <script data-goatcounter="https://wickeddossier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style id="bg-dim">:root{--bgdim:.08;--grounddim:.2}
-body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{filter:brightness(var(--bgdim))!important}
-body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0b0a 0%,#070706 55%,#040404 100%),#040404!important}
+body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{filter:grayscale(1) sepia(1) hue-rotate(190deg) saturate(.5) brightness(.75)!important;z-index:-2!important}
+body::before{background:radial-gradient(90% 70% at 50% 40%,#0a0d15 0%,#06080e 55%,#04050a 100%),#04050a!important}
 #vellum{opacity:var(--grounddim)!important}
 body::after{opacity:.1!important}
-body.on-home .hero-art{filter:brightness(.12)!important}</style>
+body.on-home .hero-art{filter:brightness(.12)!important}
+#smokeBg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+body.on-home #smokeBg{display:none}
+#smokeBg i{position:absolute;display:block;background-repeat:no-repeat;background-size:100% 100%;opacity:var(--o,.2);transform:translate(var(--x0),var(--y0)) rotate(var(--r0)) scale(var(--s0))}
+@keyframes smokeDrift{from{transform:translate(var(--x0),var(--y0)) rotate(var(--r0)) scale(var(--s0))}to{transform:translate(var(--x1),var(--y1)) rotate(var(--r1)) scale(var(--s1))}}
+@keyframes smokeIn{to{opacity:var(--o,.09)}}
+@media (prefers-reduced-motion:reduce){#smokeBg i{animation:smokeIn 1s forwards}}</style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8785,6 +8791,27 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('resize',soon); window.addEventListener('hashchange',soon); window.addEventListener('popstate',soon); window.addEventListener('load',soon);
   var ps=history.pushState; history.pushState=function(){ var r=ps.apply(this,arguments); soon(); return r; };
   soon();
+})();
+</script>
+<script>
+/* drifting background smoke: the game's own smoke sprites, grey, placed at random on every load */
+(function(){
+  try{
+    var host=document.createElement('div'); host.id='smokeBg'; host.setAttribute('aria-hidden','true');
+    var files=[1,2,3,5,6,7,8,9], N=6, W=window.innerWidth, H=window.innerHeight;
+    function r(a,b){ return a+Math.random()*(b-a); }
+    for(var i=0;i<N;i++){
+      var f=files[Math.floor(Math.random()*files.length)], el=document.createElement('i');
+      var w=r(420,900), h=w*r(.65,1.0);
+      el.style.cssText='width:'+w+'px;height:'+h+'px;left:'+r(-.15*W,1.0*W)+'px;top:'+r(-.15*H,1.0*H)+'px;background-image:url(img/smoke-'+f+'.webp);'
+        +'--o:'+r(.2,.36).toFixed(3)+';--d:'+r(45,110).toFixed(0)+'s;animation-delay:'+(-r(0,40)).toFixed(0)+'s,'+r(0,3).toFixed(1)+'s;'
+        +'--x0:'+r(-60,0).toFixed(0)+'px;--y0:'+r(-40,0).toFixed(0)+'px;--x1:'+r(0,90).toFixed(0)+'px;--y1:'+r(0,50).toFixed(0)+'px;'
+        +'--r0:'+r(-12,0).toFixed(0)+'deg;--r1:'+r(0,12).toFixed(0)+'deg;--s0:'+(Math.random()<.5?-1:1)*r(.9,1)+';--s1:'+r(1,1.12).toFixed(2)+';';
+      if(parseFloat(el.style.getPropertyValue('--s0'))<0){ el.style.setProperty('--s0',(-parseFloat(el.style.getPropertyValue('--s0'))).toString()); el.style.backgroundPosition='center'; el.style.transform='scaleX(-1)'; }
+      host.appendChild(el);
+    }
+    document.body.insertBefore(host,document.body.firstChild);
+  }catch(e){}
 })();
 </script>
 </body></html>
