@@ -1148,7 +1148,7 @@ section{padding-block:48px}
 .m-setcard-head::after{
   content:"";
   position:absolute;left:0;right:0;bottom:0;height:2px;
-  background:var(--gold-dim);opacity:.55;
+  background:#5a5f66;opacity:.55;
   -webkit-mask-image:url("img/divider-line-mask.webp");mask-image:url("img/divider-line-mask.webp");
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
@@ -2653,11 +2653,11 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-card:hover,#catalog .m-card.tt-open,#arResults .m-card:hover,#arResults .m-card.tt-open{filter:brightness(1.3) saturate(1.1)}
 #catalog .m-cards:has(.m-setcard),#arResults .m-cards:has(.m-setcard){grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
 /* armor set cards and their pieces keep their own layout, not the square item-card look */
-#catalog .m-setcard,#arResults .m-setcard{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:block;text-align:left;overflow:visible;padding:14px 16px;border-color:var(--edge-hot)!important;border-left-color:var(--gold-dim)!important;background:linear-gradient(180deg,var(--panel-2),var(--panel))!important}
+#catalog .m-setcard,#arResults .m-setcard{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:block;text-align:left;overflow:visible;padding:14px 16px;border-color:#3a3d42!important;border-left-color:#3a3d42!important;background:linear-gradient(180deg,var(--panel-2),var(--panel))!important}
 #catalog .m-setcard:hover,#catalog .m-setcard.tt-open,#arResults .m-setcard:hover,#arResults .m-setcard.tt-open{filter:none}
-#catalog .m-setcard-pieces .m-card,#arResults .m-setcard-pieces .m-card{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;column-gap:10px;justify-content:normal;text-align:left;overflow:visible;padding:6px 10px 6px 6px;min-height:44px;border-color:rgba(var(--gold-rgb),.18)!important;background:rgba(0,0,0,.22)!important}
+#catalog .m-setcard-pieces .m-card,#arResults .m-setcard-pieces .m-card{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;column-gap:10px;justify-content:normal;text-align:left;overflow:visible;padding:6px 10px 6px 6px;min-height:44px;border-color:rgba(190,196,205,.16)!important;background:rgba(0,0,0,.22)!important}
 #catalog .m-setcard-pieces .m-card:hover,#arResults .m-setcard-pieces .m-card:hover{filter:brightness(1.3)}
-#catalog .m-setcard-pieces .m-card .m-ic,#arResults .m-setcard-pieces .m-card .m-ic{zoom:1;margin:0;border:1px solid rgba(var(--gold-rgb),.12);-webkit-mask:none;mask:none;background-size:1536px,100% 100%!important;background-repeat:no-repeat!important}
+#catalog .m-setcard-pieces .m-card .m-ic,#arResults .m-setcard-pieces .m-card .m-ic{zoom:1;margin:0;border:1px solid rgba(190,196,205,.12);-webkit-mask:none;mask:none;background-size:1536px,100% 100%!important;background-repeat:no-repeat!important}
 #catalog .m-setcard-pieces .m-ic[data-slot=standard],#arResults .m-setcard-pieces .m-ic[data-slot=standard]{background-image:url(img/items-sheet.webp),url(img/card/bd-standard.webp)!important}
 #catalog .m-setcard-pieces .m-ic[data-slot=magical],#arResults .m-setcard-pieces .m-ic[data-slot=magical]{background-image:url(img/items-sheet.webp),url(img/card/bd-magical.webp)!important}
 #catalog .m-setcard-pieces .m-ic[data-slot=plagued],#arResults .m-setcard-pieces .m-ic[data-slot=plagued]{background-image:url(img/items-sheet.webp),url(img/card/bd-plagued.webp)!important}
@@ -2672,10 +2672,10 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-card-req b,#arResults .m-card-req b{font-weight:400;font-size:13px;letter-spacing:.04em}
 /* set cards get their own column count (two item-card widths each, as many as fit) instead of spanning two of the item grid's columns, which left an odd column empty on the right at some widths */
 .m-cards:has(.m-setcard){grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
-.m-setcard{grid-column:auto;display:block;min-height:0;padding:14px 16px;border:1px solid var(--edge-hot);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));position:relative;transition:border-color .15s,box-shadow .15s}
-.m-setcard::before{content:"";position:absolute;top:-1px;left:-2px;width:10px;height:10px;border-top:1px solid var(--gold-dim);border-left:2px solid var(--gold-dim);pointer-events:none}
-.m-setcard:hover,.m-setcard.tt-open{border-color:var(--gold);box-shadow:0 0 0 1px rgba(var(--gold-rgb),.14),0 10px 26px rgba(0,0,0,.45)}
-.m-setcard:hover::before,.m-setcard.tt-open::before{border-color:var(--gold)}
+.m-setcard{grid-column:auto;display:block;min-height:0;padding:14px 16px;border:1px solid #3a3d42;border-left:2px solid #3a3d42;background:linear-gradient(180deg,var(--panel-2),var(--panel));position:relative;transition:border-color .15s,box-shadow .15s}
+.m-setcard::before{content:"";position:absolute;top:-1px;left:-2px;width:10px;height:10px;border-top:1px solid #3a3d42;border-left:2px solid #3a3d42;pointer-events:none}
+.m-setcard:hover,.m-setcard.tt-open{border-color:#5a5f66;box-shadow:0 0 0 1px rgba(190,196,205,.12),0 10px 26px rgba(0,0,0,.45)}
+.m-setcard:hover::before,.m-setcard.tt-open::before{border-color:#5a5f66}
 .m-setcard-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;padding-bottom:8px;position:relative}
 .m-setcard-name{font-family:var(--display);font-size:15.5px;letter-spacing:.03em;color:var(--gold)}
 .m-setcard-pieces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px} /* fixed two-up: an odd last piece keeps the same width as the others */
