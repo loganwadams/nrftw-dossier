@@ -687,15 +687,12 @@ window.__gcCount=(function(){ var last=location.pathname+location.hash; return f
 <script data-goatcounter="https://wickeddossier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style id="bg-dim">:root{--bgdim:.08;--grounddim:.2}
 body:not(.on-home) .header-bg{display:none!important}
-body:not(.on-home) .footer-bg{filter:grayscale(1) brightness(.6)!important;z-index:-2!important}
+body:not(.on-home) .footer-bg,body:not(.on-home) footer .footer-bg,body.on-media footer .footer-bg,body.on-armory footer .footer-bg,body.on-cerim footer .footer-bg,body.on-archive footer .footer-bg{display:none!important;background-image:none!important}
 body::before{background:radial-gradient(90% 70% at 50% 40%,#0b0b0c 0%,#070708 55%,#040405 100%),#040405!important}
 #vellum{opacity:var(--grounddim)!important}
 body::after{opacity:.1!important}
-body.on-home .hero-art{filter:brightness(.12)!important}
-#smokeBg{position:fixed;inset:0;z-index:-1;pointer-events:none;background:#86a6cc;opacity:.24;-webkit-mask:url(img/smoke-overlay.webp) center/cover no-repeat;mask:url(img/smoke-overlay.webp) center/cover no-repeat}
-body.on-home #smokeBg{display:none}</style>
+body.on-home .hero-art{filter:brightness(.12)!important}</style>
 </head><body>
-<div id="smokeBg" aria-hidden="true"></div>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap">
