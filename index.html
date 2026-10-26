@@ -6670,8 +6670,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         }
         function footHtml(r){ return '<div class="cm-foot-row"><span class="cm-who">'+(function(){ var av=r.user_id&&avatarCache[r.user_id], nm=r.author_name||'Anonymous'; return (av?'<img class="cm-who-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-who-av cm-who-ini">'+escH(nm.charAt(0).toUpperCase())+'</span>')+'<span class="cm-who-t"><span class="cm-by">by <b>'+authorHtml(r)+'</b></span><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span></span>'; })()+'</span></div>'; }
         function actsHtml(r){ return '<div class="cm-actbar">'+
-                '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span>'+r.likes+'</span></button>'+
-                '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></div>'; }
+                '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span>'+r.likes+'</span></button></div>'; }
         function norm(t){ return (t||'').toLowerCase(); }
         function render(){
           if(!rows){ return; }
