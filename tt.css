@@ -261,3 +261,11 @@
 .ip-rn-fx{margin-top:12px}
 .ip-rn-fx .rn-fx-h{padding:12px 20px 0;font-variant:small-caps;font-size:20px;color:#f2eee6;position:relative}
 .ip-rn-fx .rn-more{border-top:0;margin-top:0;padding:4px 14px 12px;position:relative}
+
+/* rune grid cards: melee/ranged/utility type and cost */
+.m-card .rn-meta{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:4px;font-size:12px;letter-spacing:.04em;color:#a99f8e}
+.m-card .rn-t,.m-card .rn-c{display:inline-flex;align-items:center;gap:5px}
+.m-card .rn-t svg{opacity:.85}
+.m-card .rn-c .wd-ic{width:16px;height:16px;background-size:192px 128px;vertical-align:middle}
+.m-card .rn-c .wd-ic[data-ic="Focus"]{background-position:-32px -16px}
+.m-card .rn-c .wd-ic[data-ic="Stamina"]{background-position:-48px -16px}
