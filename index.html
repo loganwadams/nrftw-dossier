@@ -21,8 +21,8 @@
   // since with a <base> they'd otherwise navigate to "/#section" (a full reload).
   // Archive sub-pages live at /archive/<id> (e.g. /archive/pool-quick-items); the old /archive#<id> form still works.
   // __wdRawId() is the id of the section being asked for, from either form.
-  window.__wdRawId=function(){ var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
-  if(/^\/profile\//.test(location.pathname)||/^\/archive\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
+  window.__wdRawId=function(){ var v=/^\/vendors\/([^\/]+)\/?$/.exec(location.pathname); if(v&&location.hash.length<2) return 'vendor-'+v[1]; var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
+  if(/^\/profile\//.test(location.pathname)||/^\/(archive|vendors)\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
   // A shared/community build (?s=...) is only ready once the item database has loaded; until
@@ -2316,6 +2316,11 @@ body.cat-view #catalog .m-cat-collapse{display:none!important}
 .ar-card[href="#pool-quick-items"]{background:url(img/archive-potions.webp) 50% 45%/150% auto no-repeat}
 .ar-card[href="#pool-furniture"]{background:url(img/archive-furniture.webp) 40% 50%/150% auto no-repeat}
 .ar-card[href="#pool-ingredients"]{background:url(img/archive-ingredients.webp) 42% 52%/150% auto no-repeat}
+#vendors article.merchant,#vendors .m-group-head,#vendors .m-grid{display:none}
+#vendors .vd-grid{display:grid}
+body.vend-view #vendors .vd-grid,body.vend-view #vendors .pgf-bar,body.vend-view #vendors .pg-filter{display:none}
+body.vend-view #vendors .m-grid:has(.vd-on){display:grid}
+body.vend-view #vendors article.merchant.vd-on{display:block}
 .vd-card{min-height:170px;background:radial-gradient(120% 140% at 82% 78%,rgba(var(--gold-rgb),.16),transparent 62%),linear-gradient(180deg,var(--panel-2),var(--panel))}
 .vd-card>.vd-pt{position:absolute;right:-6px;bottom:-4px;height:100%;width:auto;max-width:50%;object-fit:contain;object-position:right bottom;pointer-events:none;z-index:0;filter:drop-shadow(0 6px 10px rgba(0,0,0,.65));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .vd-card>.vd-round{height:88%;right:10px;bottom:10px;border-radius:50%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6));-webkit-mask:radial-gradient(circle,#000 62%,transparent 71%);mask:radial-gradient(circle,#000 62%,transparent 71%)}
@@ -7340,7 +7345,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/archive\/[^\/]+$/.test(p);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors)\/[^\/]+$/.test(p);
   })();
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
@@ -7386,6 +7391,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // changes the address bar agrees on the same URL shape.
   function urlFor(group,id){
     // an Archive category (Quick Items, Runes, Weapons...) is a view of the item database but belongs to the Archive: /archive/<id>
+    if(group==='vend' && id && /^vendor-/.test(id)) return '/vendors/'+id.slice(7);
     var ce=id&&document.getElementById(id); if(ce&&ce.classList&&ce.classList.contains('m-cat-head')) return '/archive/'+id.replace(/^pool-/,'');
     if(group in CLEAN_PATHS){
       var base=CLEAN_PATHS[group];
@@ -8085,14 +8091,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       v.querySelectorAll('td,li').forEach(function(e){ add(e.textContent||''); });
       return (v._sold=out); }
     mkBar(sec,'Filter vendors \u2014 by name, role, or what they sell (try req:dex)',function(P,meta){
+      function syncCards(){ vs.forEach(function(v){ var c=sec.querySelector('.vd-card[href="#'+v.id+'"]'); if(c) c.classList.toggle('pgf-hide',v.classList.contains('pgf-hide')); }); }
       vs.forEach(function(v){ var o=v.querySelector('.pgf-note'); if(o) o.remove(); });
-      if(!P){ vs.forEach(function(v){ v.classList.remove('pgf-hide'); }); return; }
+      if(!P){ vs.forEach(function(v){ v.classList.remove('pgf-hide'); }); syncCards(); return; }
       var n=0, nk=P.filters.length?names():null; vs.forEach(function(v){ var ok;
         if(P.filters.length){ var hits=[]; sold(v).forEach(function(nm){ var cs=nk[nm]; if(cs&&cs.some(function(c){ return cardPass(P,c); })) hits.push(cs[0].querySelector('.m-card-name')?txt(cs[0].querySelector('.m-card-name')):nm); });
           ok=hits.length>0; if(ok){ var note=document.createElement('div'); note.className='pgf-note'; note.innerHTML='<b>'+hits.length+' matching item'+(hits.length===1?'':'s')+' sold:</b> '+hits.slice(0,16).map(esc).join(', ')+(hits.length>16?' \u2026 +'+(hits.length-16)+' more':''); var hd=v.querySelector('.m-head'); (hd||v).insertAdjacentElement(hd?'afterend':'afterbegin',note); } }
         else { var r=v._rec||(v._rec={nk:norm(v.textContent),desc:null,ck:null}); ok=textOk(r,P); }
         v.classList.toggle('pgf-hide',!ok); if(ok) n++; });
-      meta.innerHTML=n?('<b>'+n+'</b> vendor'+(n===1?'':'s')+' match'):'No vendors match'; }); })();
+      syncCards(); meta.innerHTML=n?('<b>'+n+'</b> vendor'+(n===1?'':'s')+' match'):'No vendors match'; }); })();
   // Crafting Recipes
   (function(){ var sec=document.getElementById('recipes'); if(!sec) return;
     // collapsible sections, same pattern as the Trove: every type starts collapsed, each sub-group too
@@ -8555,6 +8562,29 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }).catch(function(){});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
+<script>
+(function(){
+  // Vendors page: just the cards. A card opens that vendor's own page (/vendors/<name>), which shows only their entry.
+  var sec=document.getElementById('vendors'); if(!sec) return;
+  var back=document.createElement('a'); back.className='cv-back'; back.href='#vendors'; back.textContent='\u2190 Vendors'; back.hidden=true;
+  var h2=sec.querySelector('.sect-head'); h2.parentNode.insertBefore(back,h2);
+  var h2el=h2.querySelector('h2'), h2Text=h2el.textContent, cur=null;
+  function run(){
+    var id=''; try{ id=decodeURIComponent(window.__wdRawId()); }catch(e){}
+    var art=/^vendor-/.test(id)?document.getElementById(id):null;
+    if(art&&!(art.matches('article.merchant')&&sec.classList.contains('pg-on'))) art=null;
+    if(art===cur) return;
+    if(cur) cur.classList.remove('vd-on');
+    cur=art; document.body.classList.toggle('vend-view',!!art); back.hidden=!art;
+    if(art){ art.classList.add('vd-on'); var nm=art.querySelector('.m-name'); var t=nm?nm.textContent:''; h2el.textContent=t||h2Text; document.title=t+' - Vendors - Wicked Dossier \u00b7 No Rest for the Wicked'; window.scrollTo(0,0); }
+    else { h2el.textContent=h2Text; }
+  }
+  window.addEventListener('hashchange',function(){ setTimeout(run,0); });
+  window.addEventListener('popstate',function(){ setTimeout(run,0); });
+  ['pushState','replaceState'].forEach(function(k){ var o=history[k]; history[k]=function(){ var r=o.apply(this,arguments); setTimeout(run,0); return r; }; });
+  run();
 })();
 </script>
 </body></html>
