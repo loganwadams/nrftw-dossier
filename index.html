@@ -7248,12 +7248,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(rest.length===1&&rest[0].k==='kv'&&rest[0].label==='Effects'&&rest[0].list){ rest=rest[0].list.map(function(l){ return {k:'row',parts:l}; }); }
     var tx=[]; (desc?desc.parts:[]).forEach(function(p){ tx.push(p.br?'\n':(p.t||'')); });
     var full0=tx.join(' ').replace(/ ?\n ?/g,'\n'); var parts=full0.split('\n');
-    var m=/^Slot this Rune into an? (.*?) to gain the (.*?) (Technique|Spell)\.?$/.exec(parts[0]||'');
+    var m=/^Slot this Rune into (?:an? )?(.*?) to gain the (.*?) ((?:Rune )?(?:Technique|Spell|Attack|Skill|Ability))\.?$/.exec(parts[0]||'');
     var utility=m?/Utility/.test(m[1]):/Utility/.test(full0), kind=utility?'Utility':'Weapon';
-    var first=m?'Slot this Rune into a <b>'+E(m[1])+'</b> to gain the <b>'+E(m[2])+'</b> '+E(m[3])+'.':E(parts[0]||'');
+    var first=m?'Slot this Rune into '+(/^(?!One)[AEIO]/.test(m[1])&&!/s$/.test(m[1])?'an ':/s$/.test(m[1])?'':'a ')+'<b>'+E(m[1])+'</b> to gain the <b>'+E(m[2])+'</b> '+E(m[3])+'.':E(parts[0]||'');
     var body=parts.slice(1).filter(Boolean).map(function(p){ return '<p>'+E(p)+'</p>'; }).join('');
     var sword='<span class="rn-wi"></span>';
-    var fist='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M7 11V7.5a1.5 1.5 0 013 0V10m0-3.5a1.5 1.5 0 013 0V10m0-2.5a1.5 1.5 0 013 0V11m0-1.5a1.5 1.5 0 013 0v5.5a6 6 0 01-6 6h-1.5a5 5 0 01-4-2L5 15.5a1.6 1.6 0 012.6-1.8L9 15"/></svg>';
+    var fist='<span class="rn-wi rn-ui"></span>';
     var costHtml=cost?'<div class="rn-cost"><span class="rn-dia">'+WDCARD.html({s:[{k:'row',parts:cost.parts.filter(function(p){return 'ic' in p;})}]})+'</span><span class="rn-cl">Cost</span><b>'+E((cost.parts.filter(function(p){return 't' in p;})[0]||{}).t||'')+'</b></div>':'';
     var h='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>';
     h+='<div class="rn-head"><div class="rn-name">'+E(c.n)+'</div><div class="rn-row"><span class="rn-type">'+(utility?fist:sword)+kind+' Rune</span>'+costHtml+'</div></div>';
