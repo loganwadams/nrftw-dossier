@@ -269,3 +269,5 @@
 .m-card .rn-c .wd-ic{width:16px;height:16px;background-size:192px 128px;vertical-align:middle}
 .m-card .rn-c .wd-ic[data-ic="Focus"]{background-position:-32px -16px}
 .m-card .rn-c .wd-ic[data-ic="Stamina"]{background-position:-48px -16px}
+
+.m-card .rn-meta:empty{display:none}
