@@ -7244,7 +7244,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       else if(b.k==='info'){ b.rows.forEach(function(r){ if(/^Sell/i.test(r.label)) sell=r; }); }
       else if(b.k!=='hr') rest.push(b);
     });
-    var rest2=[]; rest.forEach(function(b){ if(b.k==='kv'&&b.label==='Effects'&&b.list){ b.list.forEach(function(l){ rest2.push({k:'row',parts:l}); }); } else rest2.push(b); }); rest=rest2;
     rest=rest.filter(function(b){ return !(b.k==='kv'&&b.label==='Applies To'&&b.parts&&b.parts.length===1&&/^[–-]$/.test(b.parts[0].t||'')); });
     var tx=[]; (desc?desc.parts:[]).forEach(function(p){ tx.push(p.br?'\n':(p.t||'')); });
     var full0=tx.join(' ').replace(/ ?\n ?/g,'\n'); var parts=full0.split('\n');
