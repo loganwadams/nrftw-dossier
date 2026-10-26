@@ -8664,4 +8664,23 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   run();
 })();
 </script>
+<script>
+/* footer text starts on the same left edge as the page's own content (home: the kicker line; other pages: the page heading) */
+(function(){
+  function align(){
+    var l=document.querySelector('footer .legal-short'); if(!l||!l.offsetParent&&getComputedStyle(l).display==='none') return;
+    l.style.setProperty('margin-left','0px','important');
+    var t=null;
+    if(document.body.classList.contains('on-home')) t=document.querySelector('.hero-kicker');
+    else{ var hs=document.querySelectorAll('.pg-on h2,[data-page].pg-on .sect-head h2'); for(var i=0;i<hs.length;i++){ if(hs[i].getClientRects().length){ t=hs[i]; break; } } }
+    if(!t) return;
+    var d=Math.round(t.getBoundingClientRect().left-l.getBoundingClientRect().left);
+    if(Math.abs(d)>0&&Math.abs(d)<400) l.style.setProperty('margin-left',d+'px','important');
+  }
+  var q=0; function soon(){ clearTimeout(q); q=setTimeout(align,60); setTimeout(align,500); }
+  window.addEventListener('resize',soon); window.addEventListener('hashchange',soon); window.addEventListener('popstate',soon); window.addEventListener('load',soon);
+  var ps=history.pushState; history.pushState=function(){ var r=ps.apply(this,arguments); soon(); return r; };
+  soon();
+})();
+</script>
 </body></html>
