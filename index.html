@@ -708,11 +708,11 @@ body .pgbar-right .nav-acct>button,body .pgbar-right .nav-provs>button.nav-conne
 body .pgbar-search::before,body.on-cerim .pgbar-search::before{color:#fff!important}
 /* Community Builds: portrait trading-card shape (5:7) */
 #cmList,#cmPfList{grid-template-columns:repeat(auto-fill,minmax(250px,300px))!important;gap:22px!important;justify-content:start}
-.cm-card{position:relative;aspect-ratio:5/7;display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(120px,1fr) auto auto auto;gap:8px 10px!important;padding:12px 13px 12px!important;border:5px solid transparent!important;border-radius:0!important;overflow:hidden;
-  background:linear-gradient(180deg,#17171a,#0d0d0f) padding-box,linear-gradient(145deg,#cdb06a,#5f4a1c 38%,#e2c880 58%,#4a3a14) border-box!important;box-shadow:0 10px 26px rgba(0,0,0,.55);transition:transform .25s,box-shadow .25s!important}
-.cm-card.g-red{background:linear-gradient(180deg,#1b1313,#0d0b0b) padding-box,linear-gradient(145deg,#e5604f,#5a1d15 40%,#e5604f 60%,#3d120d) border-box!important}
-.cm-card.g-blue{background:linear-gradient(180deg,#121722,#0b0d12) padding-box,linear-gradient(145deg,#5da2ff,#1c3f78 40%,#7bb4ff 60%,#142b52) border-box!important}
-.cm-card.g-gold{background:linear-gradient(180deg,#1e1a10,#0e0c08) padding-box,linear-gradient(145deg,#ffe08a,#9a6d1c 38%,#ffd56b 60%,#6e4c10) border-box!important;box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 22px rgba(255,205,90,.25)}
+.cm-card{position:relative;aspect-ratio:5/7;display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(120px,1fr) auto auto auto;gap:8px 10px!important;padding:14px 15px 14px!important;border:0!important;border-radius:0!important;overflow:hidden;
+  background:linear-gradient(180deg,#17171a,#0d0d0f)!important;box-shadow:0 10px 26px rgba(0,0,0,.55);transition:transform .25s,box-shadow .25s!important}
+.cm-card.g-red{background:linear-gradient(180deg,#221515,#0d0b0b 70%)!important}
+.cm-card.g-blue{background:linear-gradient(180deg,#131b2a,#0b0d12 70%)!important}
+.cm-card.g-gold{background:linear-gradient(180deg,#2a2210,#0e0c08 70%)!important;box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 22px rgba(255,205,90,.18)}
 .cm-card:hover{transform:translateY(-8px) scale(1.02)!important;box-shadow:0 18px 38px rgba(0,0,0,.65)}
 .cm-card::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.14) 45%,rgba(160,200,255,.12) 52%,transparent 66%);background-size:250% 100%;background-position:120% 0;transition:background-position .7s}
 .cm-card:hover::after{background-position:-20% 0}
@@ -721,9 +721,16 @@ body .pgbar-search::before,body.on-cerim .pgbar-search::before{color:#fff!import
 .cm-name{font-size:19px!important;line-height:1.15!important}
 .cm-gradebox{grid-column:2;grid-row:1;margin:0!important;padding:0!important}
 .cm-grade{font-size:1.5rem!important;letter-spacing:.06em!important}
-.cm-top>.m-ic,.cm-top>span[class*="ic"]{grid-column:1/-1;grid-row:2;justify-self:center;align-self:center;zoom:2.6;border:0!important;background-color:transparent!important;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
-.cm-card::before{content:"";grid-column:1/-1;grid-row:2;border:1px solid rgba(var(--gold-rgb),.35);border-radius:0;background:radial-gradient(70% 70% at 50% 45%,rgba(var(--gold-rgb),.22),rgba(0,0,0,.45) 75%),rgba(0,0,0,.35);box-shadow:inset 0 0 18px rgba(0,0,0,.7)}
-.cm-top>.m-ic,.cm-top>span[class*="ic"]{position:relative;z-index:1}
+.cm-top>.m-ic,.cm-top>span[class*="ic"]{display:none!important}
+.cm-card::before{content:"";grid-column:1/-1;grid-row:2;border:0;border-radius:0;background:radial-gradient(70% 70% at 50% 45%,rgba(var(--gold-rgb),.22),rgba(0,0,0,.45) 75%),rgba(0,0,0,.35);box-shadow:inset 0 0 18px rgba(0,0,0,.7)}
+.cm-loadout{grid-column:1/-1;grid-row:2;position:relative;z-index:1;display:grid;grid-template-rows:repeat(4,1fr);gap:4px;padding:8px 9px;align-items:center}
+.cm-lo-row{display:flex;align-items:center;gap:8px;min-width:0}
+.cm-lo-lbl{width:50px;flex:none;font-family:var(--data);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.62);line-height:1.2}
+.cm-lo-cells{display:flex;gap:5px;min-width:0}
+.cm-lo-cell{width:40px;height:40px;flex:none;position:relative;overflow:hidden;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);border-bottom:2px solid #5a5043}
+.cm-lo-cell .m-ic{zoom:.833;margin:0;border:0;background-color:transparent;display:block}
+.cm-lo-cell.empty{background:rgba(255,255,255,.03);border-style:dashed;border-color:rgba(255,255,255,.1)}
+.cm-lo-cell.r-magical{border-bottom-color:#5b8ef0}.cm-lo-cell.r-plagued{border-bottom-color:#7862f5}.cm-lo-cell.r-unique{border-bottom-color:#e0903a}
 .cm-desc{grid-column:1/-1;grid-row:3;margin:0;font-size:12px!important;line-height:1.4!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-align:center}
 .cm-credit{display:none}
 .cm-midrow{grid-column:1/-1;grid-row:4;flex-direction:column!important;align-items:center!important;gap:6px!important;text-align:center}
@@ -6575,13 +6582,27 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             sum.lv=+o.lv||0;
             var ids=Object.keys(o.e||{}).filter(function(id){ return cards&&cards[o.e[id]]; }).sort(slotOrder);
             sum.slots=ids.length;
-            sum.gear=ids.map(function(id){ var it=cards[o.e[id]]; return {k:o.e[id],n:it.n,p:it.p,r:(o.m&&o.m[id]&&o.m[id].r)||'standard'}; });
+            sum.gear=ids.map(function(id){ var it=cards[o.e[id]]; return {k:o.e[id],n:it.n,p:it.p,c:(slotEls[id]&&slotEls[id].cat)||'',r:(o.m&&o.m[id]&&o.m[id].r)||'standard'}; });
             var wid=null; ids.forEach(function(id){ var it=cards[o.e[id]]; if(slotEls[id]&&slotEls[id].cat==='weapon'){ if(!wid) wid=id; if(sum.types.indexOf(it.t)<0) sum.types.push(it.t); } });
             var mainId=wid||ids[0]; sum.main=cards[o.e[mainId]]; sum.type=wid?(sum.main.t||''):'';
             ATTRS.forEach(function(a){ var v=+(o.a&&o.a[a.id])||10; if(v>10) sum.attrs.push({n:a.name,v:v}); });
             sum.attrs.sort(function(a,b){ return b.v-a.v; });
           }
           return (r._sum=sum);
+        }
+        // Front of the card: the build's equipped items laid out like the Cerim Builder (main hands, off hands, armor, rings).
+        function loadoutHtml(sm){
+          var ROWS=[['Main Hand',['weapon'],3],['Off Hand',['offhand'],3],['Armor',['helm','chest','legs','gloves'],4],['Rings',['ring'],3]];
+          var g=(sm&&sm.gear)||[];
+          return '<div class="cm-loadout">'+ROWS.map(function(row){
+            var cells=[];
+            if(row[1].length>1){ row[1].forEach(function(cat){ cells.push(g.filter(function(x){ return x.c===cat; })[0]||null); }); }
+            else { var list=g.filter(function(x){ return x.c===row[1][0]; }); for(var i=0;i<row[2];i++) cells.push(list[i]||null); }
+            return '<div class="cm-lo-row"><span class="cm-lo-lbl">'+row[0]+'</span><span class="cm-lo-cells">'+cells.map(function(it){
+              if(!it) return '<span class="cm-lo-cell empty"></span>';
+              return '<span class="cm-lo-cell r-'+escH(it.r||'standard')+'" title="'+escH(it.n)+'">'+(it.p?'<span class="m-ic" style="background-position:-'+(it.p[0]*48)+'px -'+(it.p[1]*48)+'px"></span>':'')+'</span>';
+            }).join('')+'</span></div>';
+          }).join('')+'</div>';
         }
         function norm(t){ return (t||'').toLowerCase(); }
         function render(){
@@ -6608,7 +6629,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
             return '<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
-              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+
+              '<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+loadoutHtml(sm)+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
               '<div class="cm-midrow"><div class="cm-sum">Level '+sm.lv+(sm.types.length?' &middot; '+escH(sm.types.slice(0,2).join(', ')):'')+'</div>'+(function(){ gradeOf(r); var cs=r._gcats; if(!cs) return ''; return '<div class="cm-bars" aria-label="Grade by category">'+cs.map(function(c){ return '<span class="cm-bar" title="'+escH(c.l)+' '+c.s.toFixed(1)+'"><i class="'+tierOf(c.s)+'" style="height:'+Math.max(6,c.s*10)+'%"></i></span>'; }).join('')+'</div>'; })()+'</div>'+
