@@ -8065,7 +8065,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var bar=document.createElement('div'); bar.className='pg-filter';
     bar.innerHTML='<div class="pgf-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'" autocomplete="off"><button type="button" class="pgf-x" aria-label="Clear filter" hidden>&times;</button></div><div class="pgf-meta"></div>';
     // Trove and Crafting Recipes: the filter sits beside the page heading instead of under it
-    if(/^(catalog|recipes|infusions|enchantments)$/.test(sec.id)){ bar.classList.add('pg-filter-inline'); host.appendChild(bar); } else host.insertAdjacentElement('afterend',bar);
+    if(/^(catalog|recipes|infusions|enchantments|vendors)$/.test(sec.id)){ bar.classList.add('pg-filter-inline'); host.appendChild(bar); } else host.insertAdjacentElement('afterend',bar);
     var fi=bar.querySelector('input'), meta=bar.querySelector('.pgf-meta'), x=bar.querySelector('.pgf-x'), t=null;
     // Optional key of example queries under the field (the Trove asks for one): shown while the
     // empty field has focus, same examples and syntax notes as the main search's help panel, but
