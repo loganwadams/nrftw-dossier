@@ -236,3 +236,29 @@
 
 /* rune cards: the rune's own art, large, behind the text in the bottom right */
 .tt.tt-rune:after{content:"";position:absolute;right:-14px;bottom:-10px;width:170px;height:170px;background:url(img/items-sheet.webp) var(--rx,0) var(--ry,0)/5440px auto no-repeat;z-index:-1;pointer-events:none;opacity:.6;filter:drop-shadow(0 4px 10px rgba(0,0,0,.7))}
+
+/* in-game style rune card */
+.tt.tt-rn{padding:0}
+.tt-rn .rn-head{padding:18px 20px 4px}
+.tt-rn .rn-name{font-variant:small-caps;font-size:28px;letter-spacing:.03em;color:#f2eee6;line-height:1.1}
+.tt-rn .rn-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
+.tt-rn .rn-type{display:flex;align-items:center;gap:10px;font-size:19px;color:#d9d6cf}
+.tt-rn .rn-type svg{color:#d9d6cf;flex:0 0 auto}
+.tt-rn .rn-cost{display:flex;align-items:center;gap:8px;font-size:19px;color:#e4e0d8}
+.tt-rn .rn-cost b{font-weight:400;font-size:21px}
+.tt-rn .rn-cl{font-variant:small-caps;color:#9a9a9c;font-size:19px}
+.tt-rn .rn-dia{display:inline-grid;place-items:center;width:38px;height:38px;background:var(--dia) center/100% 100% no-repeat}
+.tt-rn .rn-dia .wd-row{display:block;line-height:0}
+.tt-rn .rn-desc{padding:12px 20px 18px;font-size:17px;line-height:1.45;color:#e4e0d8}
+.tt-rn .rn-desc p{margin:0 0 14px}.tt-rn .rn-desc p:last-child{margin:0}
+.tt-rn .rn-desc b{font-weight:400;color:#ecdf9f}
+.tt-rn .rn-more{padding:0 14px 12px;border-top:1px solid rgba(255,255,255,.08);margin-top:-4px}
+.tt-rn .rn-sell{display:flex;align-items:center;gap:14px;padding:12px 20px;background:rgba(0,0,0,.4);border-top:1px solid rgba(255,255,255,.08);font-size:17px}
+.tt-rn .rn-sell>span{font-variant:small-caps;color:#9a9a9c;font-size:19px;letter-spacing:.02em}
+.tt-rn .rn-sell .wd-row{display:flex;align-items:center;gap:6px;font-size:20px}
+
+.ip-tt.tt-rn .tt-close{display:none}
+.ip-rn-fx{margin-top:12px}
+.ip-rn-fx .rn-fx-h{padding:12px 20px 0;font-variant:small-caps;font-size:20px;color:#f2eee6;position:relative}
+.ip-rn-fx .rn-more{border-top:0;margin-top:0;padding:4px 14px 12px;position:relative}
+.tt.tt-rune:after{opacity:.4}

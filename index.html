@@ -7233,7 +7233,37 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var tipAnchor=null;
   ['pointerover','click','touchstart'].forEach(function(n){ document.addEventListener(n,function(e){ var a=e.target.closest&&e.target.closest('[data-k]'); if(a) tipAnchor=a; },true); });
   document.addEventListener('keydown',function(e){ if(e.key==='Enter'){ var a=document.activeElement; if(a&&a.matches&&a.matches('[data-k]')) tipAnchor=a; } },true);
-  function render(k,x,y){ load().then(function(db){ var c=db[k]; if(!c||cur!==k) return;
+  // Rune cards: laid out like the in-game card (name, rune type + cost, description, sell value).
+  // A click opens the same card with the written-out effects underneath.
+  function runeCardHtml(c,full){
+    var E=WDCARD.esc, blocks=c.s||[], desc=null, cost=null, sell=null, rest=[];
+    blocks.forEach(function(b){
+      if(b.k==='desc'&&!desc) desc=b;
+      else if(b.k==='kv'&&b.label==='Cost') cost=b;
+      else if(b.k==='kv'&&b.label==='Type') {}
+      else if(b.k==='info'){ b.rows.forEach(function(r){ if(/^Sell/i.test(r.label)) sell=r; }); }
+      else if(b.k!=='hr') rest.push(b);
+    });
+    rest=rest.filter(function(b){ return !(b.k==='kv'&&b.label==='Applies To'&&b.parts&&b.parts.length===1&&/^[–-]$/.test(b.parts[0].t||'')); });
+    var tx=[]; (desc?desc.parts:[]).forEach(function(p){ tx.push(p.br?'\n':(p.t||'')); });
+    var full0=tx.join(' ').replace(/ ?\n ?/g,'\n'); var parts=full0.split('\n');
+    var m=/^Slot this Rune into an? (.*?) to gain the (.*?) (Technique|Spell)\.?$/.exec(parts[0]||'');
+    var utility=m?/Utility/.test(m[1]):/Utility/.test(full0), kind=utility?'Utility':'Weapon';
+    var first=m?'Slot this Rune into a <b>'+E(m[1])+'</b> to gain the <b>'+E(m[2])+'</b> '+E(m[3])+'.':E(parts[0]||'');
+    var body=parts.slice(1).filter(Boolean).map(function(p){ return '<p>'+E(p)+'</p>'; }).join('');
+    var sword='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20.5 3.5l-9 9M20.5 3.5h-5l-.5 4.2 1.3 1.3 4.2-.5zM9 11.5l3.5 3.5M5 15l4 4M3.5 20.5l3-3M7 17l-2.2 2.2"/></svg>';
+    var fist='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M7 11V7.5a1.5 1.5 0 013 0V10m0-3.5a1.5 1.5 0 013 0V10m0-2.5a1.5 1.5 0 013 0V11m0-1.5a1.5 1.5 0 013 0v5.5a6 6 0 01-6 6h-1.5a5 5 0 01-4-2L5 15.5a1.6 1.6 0 012.6-1.8L9 15"/></svg>';
+    var costHtml=cost?'<div class="rn-cost"><span class="rn-dia">'+WDCARD.html({s:[{k:'row',parts:cost.parts.filter(function(p){return 'ic' in p;})}]})+'</span><span class="rn-cl">Cost</span><b>'+E((cost.parts.filter(function(p){return 't' in p;})[0]||{}).t||'')+'</b></div>':'';
+    var h='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>';
+    h+='<div class="rn-head"><div class="rn-name">'+E(c.n)+'</div><div class="rn-row"><span class="rn-type">'+(utility?fist:sword)+kind+' Rune</span>'+costHtml+'</div></div>';
+    h+='<div class="rn-desc"><p>'+first+'</p>'+body+'</div>';
+    if(full&&rest.length){ h+='<div class="rn-more">'+WDCARD.html({s:rest.reduce(function(o,b,i){ if(i) o.push({k:'hr',full:false}); o.push(b); return o; },[])})+'</div>'; }
+    if(sell){ h+='<div class="rn-sell"><span>Sell Value</span>'+WDCARD.html({s:[{k:'row',parts:sell.parts}]})+'</div>'; }
+    return h;
+  }
+  window.__runeCard=function(c){ return runeCardHtml(c,false); };
+  window.__runeMore=function(c){ var h=runeCardHtml(c,true), i=h.indexOf('<div class="rn-more">'); if(i<0) return ''; var j=h.indexOf('<div class="rn-sell">'); return h.slice(i,j<0?h.length:j); };
+  function render(k,x,y,full){ load().then(function(db){ var c=db[k]; if(!c||cur!==k) return;
       // the Cerim Builder can show an equipped item at the level and rarity chosen for it
       try{ if(window.cbTipAdjust&&tipAnchor&&tipAnchor.getAttribute('data-k')===k) c=window.cbTipAdjust(tipAnchor,c)||c; }catch(err){}
       var t=el();
@@ -7242,6 +7272,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
       t.classList.toggle('tt-ex',!!c.ex); t.classList.toggle('tt-ex-un',!!c.ex&&c.r==='unique');
       t.innerHTML='<button type="button" class="tt-close" aria-label="Close">&times;</button><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>'+(c.ex?'<div class="lay ex-t"></div><div class="lay ex-b"></div><div class="lay ex-r"></div><div class="tt-exlbl">Exalted</div>':'')+'<div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(k||''))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+(c.h||WDCARD.html(c));
+      if(c.t==='Rune'&&c.p&&!c.ex){ try{ t.innerHTML=runeCardHtml(c,!!full); t.classList.add('tt-rn'); }catch(err){} } else t.classList.remove('tt-rn');
       t.classList.add('on'); place(x,y); }); }
   function closeTip(){ cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   // hover-follow is for a real mouse only: touch devices synthesize a mouseover+mousemove right
@@ -7255,7 +7286,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function out(e){ if(e.pointerType&&e.pointerType!=='mouse') return; var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; var to=e.relatedTarget; if(to&&a.contains(to)) return; cur=null; clearTimeout(timer); if(tip) tip.classList.remove('on'); }
   document.addEventListener('click',function(e){ if(window.__holdActive){ e.preventDefault(); return; }
     if(e.target.closest&&e.target.closest('.tt-close')){ e.preventDefault(); closeTip(); return; }
-    var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; e.preventDefault(); var k=a.getAttribute('data-k'); clearTimeout(timer); cur=k; render(k,e.clientX,e.clientY); });
+    var a=e.target.closest&&e.target.closest('[data-k]'); if(!a) return; e.preventDefault(); var k=a.getAttribute('data-k'); clearTimeout(timer); cur=k; render(k,e.clientX,e.clientY,true); });
   document.addEventListener('keydown',function(e){ if(e.key==='Enter'){ var a=document.activeElement; if(a&&a.matches&&a.matches('[data-k]')){ var r=a.getBoundingClientRect(); cur=a.getAttribute('data-k'); render(cur,r.left+r.width/2,r.top+r.height/2);} } });
   document.addEventListener('pointerover',over); document.addEventListener('pointermove',move); document.addEventListener('pointerout',out);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&tip) tip.classList.remove('on'); });
@@ -7705,6 +7736,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(document.getElementById('ipBody')!==body) return; // navigated away while this was loading
       if(!c){ body.innerHTML='<p class="ip-error">That item could not be found.</p>'; return; }
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
+      if(c.t==='Rune'&&c.p&&!c.ex&&window.__runeCard){
+        var more=window.__runeMore(c);
+        body.innerHTML='<div><div class="tt ip-tt tt-rn r-'+(c.r||'standard')+'">'+window.__runeCard(c)+'</div>'+(more?'<div class="tt ip-tt ip-rn-fx r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="rn-fx-h">Effects</div>'+more+'</div>':'')+'</div><div id="ipMats"></div>';
+        return;
+      }
       body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(key))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+WDCARD.html(c)+'</div><div id="ipMats"></div>';
       loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
       var ipCard=body.querySelector('.ip-tt'); if(ipCard){  }
