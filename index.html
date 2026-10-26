@@ -791,10 +791,13 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cm-lo-cell.empty{background:none;border:0;border-bottom:2px dotted #5a574f;filter:none}
 .cm-br-track{background:rgba(0,0,0,.55);box-shadow:inset 0 1px 2px #000}
 .cm-br-track i,.cm-br-track i.g-red,.cm-br-track i.g-blue,.cm-br-track i.g-gold{background:linear-gradient(180deg,#d8d2bf,#9a947f);box-shadow:none}
-.cm-card.perfect{animation:cmHalo 4s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(235,185,80,.38)) drop-shadow(0 0 26px rgba(214,150,50,.2))}
-.cm-card.perfect .cm-grade{color:#fff1c8!important;text-shadow:0 0 8px rgba(255,214,130,.85),0 0 20px rgba(235,170,60,.55);animation:cmNum 4s ease-in-out infinite}
-@keyframes cmHalo{50%{filter:drop-shadow(0 0 14px rgba(235,185,80,.5)) drop-shadow(0 0 34px rgba(214,150,50,.28))}}
-@keyframes cmNum{50%{text-shadow:0 0 11px rgba(255,224,150,1),0 0 26px rgba(235,170,60,.7)}}
+.cm-card.perfect{animation:cmPd 1.8s ease-in-out infinite}
+.cm-card.perfect::before{content:"";position:absolute;inset:-70px;z-index:-1;border-radius:50%;pointer-events:none;background:conic-gradient(from 0deg,rgba(255,224,150,0),rgba(255,224,150,.5),rgba(255,224,150,0) 12%,rgba(255,224,150,.42) 25%,rgba(255,224,150,0) 37%,rgba(255,224,150,.5) 50%,rgba(255,224,150,0) 62%,rgba(255,224,150,.42) 75%,rgba(255,224,150,0) 87%),radial-gradient(closest-side,rgba(255,214,120,.18),transparent 70%);-webkit-mask-image:radial-gradient(closest-side,#000 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 45%,transparent 100%);animation:cmSpin 28s linear infinite,cmPb 1.8s ease-in-out infinite}
+.cm-card.perfect .cm-grade{color:#fff1c8!important;text-shadow:0 0 10px rgba(255,236,180,1),0 0 26px rgba(255,200,90,.85);animation:cmGp 1.8s ease-in-out infinite}
+@keyframes cmPd{0%,100%{filter:drop-shadow(0 0 16px rgba(255,214,120,.45))}50%{filter:drop-shadow(0 0 22px rgba(255,224,140,.75))}}
+@keyframes cmPb{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes cmSpin{to{transform:rotate(360deg)}}
+@keyframes cmGp{50%{text-shadow:0 0 14px #fff2c8,0 0 36px rgba(255,200,90,1)}}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
