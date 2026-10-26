@@ -752,6 +752,8 @@ body .pgbar-search::before,body.on-cerim .pgbar-search::before{color:#fff!import
 .cm-lo-cell.r-magical{border-bottom-color:#5b8ef0}.cm-lo-cell.r-plagued{border-bottom-color:#7862f5}.cm-lo-cell.r-unique{border-bottom-color:#e0903a}
 .header-bg,body .header-bg,body:not(.on-home) .header-bg{display:none!important}
 body.on-arch footer .footer-bg,body.on-archive footer .footer-bg,body.on-vend footer .footer-bg{height:min(600px,75vh)!important}
+/* soft fade at the top of every footer scene so no hard edge shows where its box begins (seen in Firefox) */
+body:not(.on-home) .footer-bg,body:not(.on-home) footer .footer-bg{-webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.55) 70px,#000 170px)!important;mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.55) 70px,#000 170px)!important}
 body.on-arch .footer-bg,body.on-arch footer .footer-bg,body.on-archive .footer-bg,body.on-vend .footer-bg,body.on-archive footer .footer-bg,body.on-vend footer .footer-bg{background-image:url(img/footer-scene-archive.webp)!important;filter:none!important;opacity:1!important}
 .m-card.rd-full:hover .ip-tt{filter:brightness(1.12)}
 .ar-card h3,.ar-card p,.ar-card .ar-k,.ar-card .ar-go,.ar-card:hover h3,.ar-card:hover p,.ar-card:hover .ar-k,.ar-card:hover .ar-go,.ar-card:focus-visible h3{color:#fff!important}
