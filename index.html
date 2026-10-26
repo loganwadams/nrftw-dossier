@@ -768,6 +768,29 @@ body::after{opacity:.1!important}
 body{position:relative}
 body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55%,#040404 100%),#040404!important}
 #vellum{opacity:1!important;background:repeating-linear-gradient(100deg,rgba(255,255,255,.014) 0 1px,transparent 1px 9px),repeating-linear-gradient(8deg,rgba(0,0,0,.1) 0 1px,transparent 1px 14px),linear-gradient(90deg,rgba(0,0,0,.45),transparent 10%,transparent 90%,rgba(0,0,0,.45)),linear-gradient(180deg,rgba(0,0,0,.35),transparent 12%,transparent 88%,rgba(0,0,0,.5))!important}
+/* Community Builds cards: game panel texture, worn edges, fog and ember glow, number grade */
+.cm-card .cm-face,.cm-card.g-red .cm-face,.cm-card.g-blue .cm-face,.cm-card.g-gold .cm-face{background:#101214 url(img/card-panel.webp) 50% 30%/125% auto!important;box-shadow:0 18px 28px -10px rgba(0,0,0,.7)!important;color:#e6e1d4}
+.cm-front::before,.cm-back::before{content:"";position:absolute;inset:0;grid-area:auto;background:url(img/card-paper.webp) center/180px;mix-blend-mode:soft-light;opacity:.5;filter:grayscale(.5) brightness(.7);box-shadow:none;pointer-events:none}
+.cm-card .cm-face::after,.cm-card:hover .cm-face::after{background:radial-gradient(130% 100% at 35% 25%,transparent 60%,rgba(0,0,0,.28) 100%)!important;transition:none}
+.cm-fog{position:absolute;left:-10%;right:-10%;bottom:-8%;height:52%;background:url(img/card-fog.webp) center bottom/cover;opacity:.32;mix-blend-mode:screen;z-index:2;pointer-events:none;animation:cmDrift 16s ease-in-out infinite alternate;transition:opacity .8s}
+.cm-ember{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.55;transition:opacity .9s;background:radial-gradient(70% 45% at 50% 100%,rgba(230,120,40,.42),rgba(160,60,20,.16) 55%,transparent 80%)}
+.cm-card:hover .cm-ember,.cm-card:focus-within .cm-ember{opacity:1}
+.cm-card:hover .cm-fog,.cm-card:focus-within .cm-fog{opacity:.55}
+@keyframes cmDrift{from{transform:translateX(-4%)}to{transform:translateX(4%)}}
+.cm-face>*:not(.cm-fog):not(.cm-ember){position:relative;z-index:3}
+.cm-name,.cm-back-title{font-family:var(--display)!important;font-weight:400!important;color:#e6e1d4!important;text-shadow:0 1px 2px #000}
+.cm-grade,.cm-grade.g-red,.cm-grade.g-blue,.cm-grade.g-gold{font-family:var(--display)!important;font-weight:400!important;color:#e6e1d4!important;text-shadow:0 1px 3px #000}
+.cm-grade small{display:none!important}
+.cm-grade-lbl{color:#a49f92!important}
+.cm-back-head{border-bottom:0;background:linear-gradient(90deg,transparent,rgba(190,180,150,.35),transparent) bottom/100% 1px no-repeat}
+.cm-lo-cell,.cm-lo-cell.r-magical,.cm-lo-cell.r-plagued,.cm-lo-cell.r-unique{background:none;border:0;overflow:visible;filter:drop-shadow(0 2px 3px #000)}
+.cm-lo-cell.empty{background:none;border:0;border-bottom:2px dotted #5a574f;filter:none}
+.cm-br-track{background:rgba(0,0,0,.55);box-shadow:inset 0 1px 2px #000}
+.cm-br-track i,.cm-br-track i.g-red,.cm-br-track i.g-blue,.cm-br-track i.g-gold{background:linear-gradient(180deg,#d8d2bf,#9a947f);box-shadow:none}
+.cm-card.perfect{animation:cmHalo 4s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(235,185,80,.38)) drop-shadow(0 0 26px rgba(214,150,50,.2))}
+.cm-card.perfect .cm-grade{color:#fff1c8!important;text-shadow:0 0 8px rgba(255,214,130,.85),0 0 20px rgba(235,170,60,.55);animation:cmNum 4s ease-in-out infinite}
+@keyframes cmHalo{50%{filter:drop-shadow(0 0 14px rgba(235,185,80,.5)) drop-shadow(0 0 34px rgba(214,150,50,.28))}}
+@keyframes cmNum{50%{text-shadow:0 0 11px rgba(255,224,150,1),0 0 26px rgba(235,170,60,.7)}}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6648,12 +6671,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var sm=summarize(r), it=sm.main;
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
-            return '<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
-              '<div class="cm-flip"><div class="cm-face cm-front"><div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+loadoutHtml(sm)+
+            return '<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+((function(){ var g=gradeOf(r); return g!=null&&g.toFixed(1)==='10.0'; })()?' perfect':'')+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
+              '<div class="cm-flip"><div class="cm-face cm-front">'+'<i class="cm-fog"></i><i class="cm-ember"></i>'+'<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+loadoutHtml(sm)+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
               '<div class="cm-midrow"><div class="cm-sum">Level '+sm.lv+(sm.types.length?' &middot; '+escH(sm.types.slice(0,2).join(', ')):'')+'</div></div>'+footHtml(r)+'</div>'+
-              '<div class="cm-face cm-back">'+(function(){ var g=gradeOf(r), cs=r._gcats; return '<div class="cm-back-head"><span class="cm-back-title">Grade Breakdown</span>'+(g==null?'':'<div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div>')+'</div>'+(cs&&cs.length?'<div class="cm-back-rows">'+cs.map(function(c){ return '<div class="cm-br"><span class="cm-br-l">'+escH(c.l)+'</span><span class="cm-br-s">'+c.s.toFixed(1)+'</span><span class="cm-br-track"><i class="'+tierOf(c.s)+'" style="width:'+Math.max(4,Math.min(100,c.s*10))+'%"></i></span></div>'; }).join('')+'</div>':'<p class="cm-back-none">No grade yet</p>'); })()+footHtml(r)+'</div></div>'+
+              '<div class="cm-face cm-back">'+'<i class="cm-fog"></i><i class="cm-ember"></i>'+(function(){ var g=gradeOf(r), cs=r._gcats; return '<div class="cm-back-head"><span class="cm-back-title">Grade Breakdown</span>'+(g==null?'':'<div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div>')+'</div>'+(cs&&cs.length?'<div class="cm-back-rows">'+cs.map(function(c){ return '<div class="cm-br"><span class="cm-br-l">'+escH(c.l)+'</span><span class="cm-br-s">'+c.s.toFixed(1)+'</span><span class="cm-br-track"><i class="'+tierOf(c.s)+'" style="width:'+Math.max(4,Math.min(100,c.s*10))+'%"></i></span></div>'; }).join('')+'</div>':'<p class="cm-back-none">No grade yet</p>'); })()+footHtml(r)+'</div></div>'+
               
 
               '</article>';
