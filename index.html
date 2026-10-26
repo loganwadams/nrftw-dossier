@@ -691,6 +691,11 @@ body:not(.on-home) .footer-bg,body:not(.on-home) footer .footer-bg{filter:graysc
 body.on-cerim .footer-bg,body.on-cerim footer .footer-bg{filter:none!important;opacity:1!important}
 body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .header-bg,body:not(.on-home).on-builds .header-bg{display:none!important}
 .vd-card h3,.vd-card .ar-k,.vd-card .vd-loc,.vd-card:hover .ar-k,.vd-card:hover .vd-loc,.vd-card:focus-visible .ar-k,.vd-card:focus-visible .vd-loc{color:#fff!important}
+#catalog .m-cat[data-m="mcat:readables:0"] .m-cards,.m-cat[data-m="mcat:readables:0"] .m-cards{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))!important;gap:18px!important;align-items:start}
+.rd-link{display:block;color:inherit;text-decoration:none}
+.m-card.rd-full,#catalog .m-card.rd-full{display:block!important;aspect-ratio:auto!important;-webkit-mask:none!important;mask:none!important;padding:0;border:0;background:none;min-height:0;aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none!important;cursor:pointer}
+.m-card.rd-full .ip-tt{max-width:none}
+.m-card.rd-full:hover .ip-tt{filter:brightness(1.12)}
 .ar-card h3,.ar-card p,.ar-card .ar-k,.ar-card .ar-go,.ar-card:hover h3,.ar-card:hover p,.ar-card:hover .ar-k,.ar-card:hover .ar-go,.ar-card:focus-visible h3{color:#fff!important}
 .ar-card:not(.vd-card)::before{content:"";position:absolute;inset:0;z-index:0;background:#000;opacity:.4;pointer-events:none;transition:opacity .3s}
 .ar-card:not(.vd-card):hover::before,.ar-card:not(.vd-card):focus-visible::before{opacity:.05}
@@ -7771,6 +7776,29 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
   }
+  // Readables: only nine, so the page shows each one's full card in place of the small tile (same card as its own item page).
+  (function(){
+    var done=false;
+    function fill(){
+      if(done||!window.__ttLoad) return;
+      var cat=document.querySelector('.m-cat[data-m="mcat:readables:0"]'); if(!cat) return;
+      done=true;
+      window.__ttLoad().then(function(db){
+        cat.querySelectorAll('.m-card[data-k]').forEach(function(el){
+          var key=el.getAttribute('data-k'), c=db[key]; if(!c) return;
+          var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
+          el.classList.add('rd-full'); el.removeAttribute('tabindex'); el.removeAttribute('data-k');
+          el.innerHTML='<a class="rd-link" href="'+(window.__itemUrl?window.__itemUrl(key):'#item/'+encodeURIComponent(key)).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"><div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+(c.lv?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+WDCARD.html(c)+'</div></a>';
+        });
+        var dropTip=function(){ document.querySelectorAll('.tt.on:not(.ip-tt)').forEach(function(t){ t.classList.remove('on'); }); }; // drop a hover tip opened on a small tile just before it was swapped
+        dropTip(); setTimeout(dropTip,700);
+      });
+    }
+    if('IntersectionObserver' in window){
+      var h=document.querySelector('.m-cat[data-m="mcat:readables:0"] .m-cards');
+      if(h) new IntersectionObserver(function(es,o){ if(es.some(function(e){ return e.isIntersecting; })){ o.disconnect(); fill(); } }).observe(h);
+    } else fill();
+  })();
   // Called by the Trove's click handler, and by route() on a direct/refreshed item-hash load.
   // Level diamond fill: the number is an "upgrade level" (game balance curve Level->Upgrade Level);
   // each item tier spans a range of it - tier 1: 1-4, tier 2: 4-9, tier 3: 9-16 (17+ is not live yet) -
