@@ -235,7 +235,7 @@
 .wd-research .wd-num{color:#d9d3c3}
 
 /* rune cards: the rune's own art, large, behind the text in the bottom right */
-.tt.tt-rune:after{content:"";position:absolute;right:-14px;bottom:-10px;width:170px;height:170px;background:url(img/items-sheet.webp) var(--rx,0) var(--ry,0)/5440px auto no-repeat;z-index:-1;pointer-events:none;opacity:.6;filter:drop-shadow(0 4px 10px rgba(0,0,0,.7))}
+.tt.tt-rune:after{content:"";position:absolute;right:-95px;top:50%;margin-top:-165px;width:300px;height:300px;background:url(img/items-sheet.webp) var(--rx,0) var(--ry,0)/9600px auto no-repeat;z-index:-1;pointer-events:none;opacity:.32}
 
 /* in-game style rune card */
 .tt.tt-rn{padding:0}
@@ -261,4 +261,3 @@
 .ip-rn-fx{margin-top:12px}
 .ip-rn-fx .rn-fx-h{padding:12px 20px 0;font-variant:small-caps;font-size:20px;color:#f2eee6;position:relative}
 .ip-rn-fx .rn-more{border-top:0;margin-top:0;padding:4px 14px 12px;position:relative}
-.tt.tt-rune:after{opacity:.4}
