@@ -7245,6 +7245,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       else if(b.k!=='hr') rest.push(b);
     });
     rest=rest.filter(function(b){ return !(b.k==='kv'&&b.label==='Applies To'&&b.parts&&b.parts.length===1&&/^[–-]$/.test(b.parts[0].t||'')); });
+    if(rest.length===1&&rest[0].k==='kv'&&rest[0].label==='Effects'&&rest[0].list){ rest=rest[0].list.map(function(l){ return {k:'row',parts:l}; }); }
     var tx=[]; (desc?desc.parts:[]).forEach(function(p){ tx.push(p.br?'\n':(p.t||'')); });
     var full0=tx.join(' ').replace(/ ?\n ?/g,'\n'); var parts=full0.split('\n');
     var m=/^Slot this Rune into an? (.*?) to gain the (.*?) (Technique|Spell)\.?$/.exec(parts[0]||'');
