@@ -452,6 +452,7 @@ header.masthead form.search{display:none!important}
    hidden-by-default parts of .tt. */
 .ip-back{display:inline-flex;align-items:center;gap:6px;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);text-decoration:none;margin:0 0 22px}
 .ip-back:hover,.ip-back:focus-visible{color:var(--gold)}
+#ipBack.sect-back{margin:0 0 22px}
 .ip-body{max-width:1140px}
 .ip-tt{position:relative;opacity:1;pointer-events:auto;width:100%;max-width:460px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
 .ip-loading,.ip-error{color:var(--muted);font-size:14.5px}
@@ -3303,7 +3304,7 @@ footer li{color:#6f665b}
 <!-- ITEM PAGE -->
   <section id="item-page">
     <div class="sect-head"><h2>Item</h2></div>
-    <p><a href="#" id="ipBack" class="ip-back">&larr; Back to Archive</a></p>
+    <p><a href="#" id="ipBack" class="sect-back">&larr; Archive</a></p>
     <div id="ipBody" class="ip-body"><p class="ip-loading">Loading item&hellip;</p></div>
   </section>
 <!-- /ITEM PAGE -->
@@ -7765,24 +7766,40 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var f=Math.max(0,Math.min(1,(n-r[0])/(r[1]-r[0])));
     return f>0?'<i class="lvf" style="--t:'+(6.5+f*87).toFixed(1)+'%"></i>':'';
   };
+  // Where the visitor was just before opening an item page: the back link shows that page's name
+  // and returns there. Direct loads (no previous page of ours) fall back to the Archive.
+  function ipFromLabel(){
+    var h=''; try{ h=decodeURIComponent(window.__wdRawId()||''); }catch(e){}
+    if(h.indexOf(ITEM_HASH_PREFIX)===0){ var t=document.querySelector('#ipBody .tt-name,#ipBody .rn-name,#ipBody h1,#ipBody h2'); return (t&&t.textContent.trim())||'Back'; }
+    if(!h) return 'Home';
+    var el=document.getElementById(h), t2=el&&(el.querySelector('h1,h2,h3')||(/^H[1-3]$/.test(el.tagName)?el:null));
+    if(t2&&t2.textContent.trim()) return t2.textContent.replace(/\s*\d+\s*items?$/i,'').trim();
+    return h==='archive'?'Archive':'Back';
+  }
+  window.__ipFrom=null;
+  function ipSetBack(){
+    var b=document.getElementById('ipBack'); if(!b) return;
+    b.textContent='\u2190 '+(window.__ipFrom?window.__ipFrom.label:'Archive');
+  }
   window.__gotoItem=function(key){
+    window.__ipFrom={label:ipFromLabel(),href:location.href};
     show('itempage','item-page');
     try{
       if(CAN_USE_CLEAN_URLS && history.pushState) history.pushState(null,'',itemFullUrl(key));
       else location.hash=itemHash(key);
     }catch(e){}
     if(window.__gcCount) window.__gcCount();
-    ipRender(key);
+    ipRender(key); ipSetBack();
     window.scrollTo(0,0);
   };
   var ipBack=document.getElementById('ipBack');
-  if(ipBack) ipBack.addEventListener('click',function(e){ e.preventDefault(); if(window.__pgGoto) window.__pgGoto('archive'); });
+  if(ipBack) ipBack.addEventListener('click',function(e){ e.preventDefault(); if(window.__ipFrom&&history.length>1){ window.__ipFrom=null; history.back(); } else if(window.__pgGoto) window.__pgGoto('archive'); });
   function route(){
     // Item pages take priority over everything below - a hash of "item/<key>" never matches a
     // real element id, so left to the generic lookup below it would just silently fall through
     // to Home, same as any other unmatched hash.
     var rawHash=window.__wdRawId();
-    if(rawHash.indexOf(ITEM_HASH_PREFIX)===0){ show('itempage','item-page'); ipRender(itemKeyFromHash(rawHash)); window.scrollTo(0,0); return; }
+    if(rawHash.indexOf(ITEM_HASH_PREFIX)===0){ show('itempage','item-page'); ipRender(itemKeyFromHash(rawHash)); ipSetBack(); window.scrollTo(0,0); return; }
     // Author profile pages: /profile/<username> (and the older #u/<username> hash form).
     var pm=/^\/profile\/([^\/]+)\/?$/.exec(location.pathname);
     if(rawHash.indexOf('u/')===0||(pm&&!rawHash)){ show('builds','community-builds'); if(window.__cmProfile) window.__cmProfile(); window.scrollTo(0,0); return; }
