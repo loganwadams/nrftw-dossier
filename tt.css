@@ -243,6 +243,7 @@
 .tt-rn .rn-name{font-variant:small-caps;font-size:28px;letter-spacing:.03em;color:#f2eee6;line-height:1.1}
 .tt-rn .rn-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
 .tt-rn .rn-type{display:flex;align-items:center;gap:10px;font-size:19px;color:#d9d6cf}
+.tt-rn .rn-wi{display:inline-block;width:28px;height:28px;flex:none;background:url(img/wd-glyphs.webp) -168px -140px/336px 224px no-repeat}
 .tt-rn .rn-type svg{color:#d9d6cf;flex:0 0 auto}
 .tt-rn .rn-cost{display:flex;align-items:center;gap:8px;font-size:19px;color:#e4e0d8}
 .tt-rn .rn-cost b{font-weight:400;font-size:21px}
@@ -275,4 +276,7 @@
 .tt-rn .rn-dia{display:grid;place-items:center}
 .tt-rn .rn-dia .wd-row{display:grid;place-items:center;width:100%;height:100%;line-height:0;margin:0;padding:0}
 .tt-rn .rn-dia .wd-ic{vertical-align:middle;margin:0;display:block}
-.tt-rn .rn-dia .wd-ic{transform:translateY(2px)}
+.tt-rn .rn-dia .wd-ic{transform:none}
+.tt-rn .rn-dia{position:relative}
+.tt-rn .rn-dia .wd-row{position:absolute;inset:0;display:block;width:auto;height:auto}
+.tt-rn .rn-dia .wd-ic{position:absolute;left:50%;top:50%;margin:-11px 0 0 -11px;transform:none;vertical-align:baseline}
