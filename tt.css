@@ -233,3 +233,6 @@
 .wd-research-k{color:#9a9a9c;font-variant:small-caps;font-size:14px;letter-spacing:.04em;margin-right:6px}
 .wd-research .wd-ic{width:22px;height:22px;background-size:704px 814px;background-position:-242px -308px}
 .wd-research .wd-num{color:#d9d3c3}
+
+/* rune cards: the rune's own art, large, behind the text in the bottom right */
+.tt.tt-rune:after{content:"";position:absolute;right:-14px;bottom:-10px;width:170px;height:170px;background:url(img/items-sheet.webp) var(--rx,0) var(--ry,0)/5440px auto no-repeat;z-index:-1;pointer-events:none;opacity:.6;filter:drop-shadow(0 4px 10px rgba(0,0,0,.7))}
