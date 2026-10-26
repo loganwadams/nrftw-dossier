@@ -688,13 +688,13 @@ window.__gcCount=(function(){ var last=location.pathname+location.hash; return f
 <style id="bg-dim">:root{--bgdim:.08;--grounddim:.2}
 body:not(.on-home) .header-bg{display:none!important}
 body:not(.on-home) .footer-bg{filter:grayscale(1)!important;z-index:-2!important}
-body::before{background:radial-gradient(90% 70% at 50% 40%,#0a0d15 0%,#06080e 55%,#04050a 100%),#04050a!important}
+body::before{background:radial-gradient(90% 70% at 50% 40%,#0b0b0c 0%,#070708 55%,#040405 100%),#040405!important}
 #vellum{opacity:var(--grounddim)!important}
 body::after{opacity:.1!important}
 body.on-home .hero-art{filter:brightness(.12)!important}
 #smokeBg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 body.on-home #smokeBg{display:none}
-#smokeBg i{position:absolute;display:block;background-repeat:no-repeat;background-size:100% 100%;opacity:var(--o,.2);transform:translate(var(--x0),var(--y0)) rotate(var(--r0)) scale(var(--s0))}
+#smokeBg i{filter:grayscale(1) brightness(1);position:absolute;display:block;background-repeat:no-repeat;background-size:100% 100%;opacity:var(--o,.2);transform:translate(var(--x0),var(--y0)) rotate(var(--r0)) scale(var(--s0))}
 @keyframes smokeDrift{from{transform:translate(var(--x0),var(--y0)) rotate(var(--r0)) scale(var(--s0))}to{transform:translate(var(--x1),var(--y1)) rotate(var(--r1)) scale(var(--s1))}}
 @keyframes smokeIn{to{opacity:var(--o,.09)}}
 @media (prefers-reduced-motion:reduce){#smokeBg i{animation:smokeIn 1s forwards}}</style>
@@ -8803,9 +8803,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     function r(a,b){ return a+Math.random()*(b-a); }
     for(var i=0;i<N;i++){
       var f=files[Math.floor(Math.random()*files.length)], el=document.createElement('i');
-      var w=r(420,900), h=w*r(.65,1.0);
-      el.style.cssText='width:'+w+'px;height:'+h+'px;left:'+r(-.15*W,1.0*W)+'px;top:'+r(-.15*H,1.0*H)+'px;background-image:url(img/smoke-'+f+'.webp);'
-        +'--o:'+r(.2,.36).toFixed(3)+';--d:'+r(45,110).toFixed(0)+'s;animation-delay:'+(-r(0,40)).toFixed(0)+'s,'+r(0,3).toFixed(1)+'s;'
+      var low=i<3, w=low?r(800,1300):r(420,900), h=w*r(.65,1.0);
+      el.style.cssText='width:'+w+'px;height:'+h+'px;left:'+r(-.15*W,1.0*W)+'px;top:'+(low?r(.4*H,.95*H):r(-.15*H,.8*H))+'px;background-image:url(img/smoke-'+f+'.webp);'
+        +'--o:'+(low?r(.2,.34):r(.2,.36)).toFixed(3)+';--d:'+r(45,110).toFixed(0)+'s;animation-delay:'+(-r(0,40)).toFixed(0)+'s,'+r(0,3).toFixed(1)+'s;'
         +'--x0:'+r(-60,0).toFixed(0)+'px;--y0:'+r(-40,0).toFixed(0)+'px;--x1:'+r(0,90).toFixed(0)+'px;--y1:'+r(0,50).toFixed(0)+'px;'
         +'--r0:'+r(-12,0).toFixed(0)+'deg;--r1:'+r(0,12).toFixed(0)+'deg;--s0:'+(Math.random()<.5?-1:1)*r(.9,1)+';--s1:'+r(1,1.12).toFixed(2)+';';
       if(parseFloat(el.style.getPropertyValue('--s0'))<0){ el.style.setProperty('--s0',(-parseFloat(el.style.getPropertyValue('--s0'))).toString()); el.style.backgroundPosition='center'; el.style.transform='scaleX(-1)'; }
