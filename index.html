@@ -692,6 +692,8 @@ body.on-cerim .footer-bg,body.on-cerim footer .footer-bg{filter:none!important;o
 body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .header-bg,body:not(.on-home).on-builds .header-bg{display:none!important}
 .vd-card h3,.vd-card .ar-k,.vd-card .vd-loc,.vd-card:hover .ar-k,.vd-card:hover .vd-loc,.vd-card:focus-visible .ar-k,.vd-card:focus-visible .vd-loc{color:#fff!important}
 .ar-card h3,.ar-card p,.ar-card .ar-k,.ar-card .ar-go,.ar-card:hover h3,.ar-card:hover p,.ar-card:hover .ar-k,.ar-card:hover .ar-go,.ar-card:focus-visible h3{color:#fff!important}
+.ar-card:not(.vd-card)::before{content:"";position:absolute;inset:0;z-index:0;background:#000;opacity:.4;pointer-events:none;transition:opacity .3s}
+.ar-card:not(.vd-card):hover::before,.ar-card:not(.vd-card):focus-visible::before{opacity:.05}
 .vd-card::before{filter:brightness(.6) saturate(.9)!important;transition:filter .3s}
 .vd-card:hover::before,.vd-card:focus-visible::before{filter:brightness(.95) saturate(1)!important}
 body::before{background:radial-gradient(90% 70% at 50% 40%,#0b0b0c 0%,#070708 55%,#040405 100%),#040405!important}
