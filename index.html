@@ -7619,7 +7619,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function currentItemKey(k){ var cs=window.__cardsRef; if(!cs||cs[k]) return k; var m=/(\d{6,})$/.exec(k||''); if(!m) return k; if(!KEY_BY_ID){ KEY_BY_ID={}; Object.keys(cs).forEach(function(x){ var n=/(\d{6,})$/.exec(x); if(n) KEY_BY_ID[n[1]]=x; }); } return KEY_BY_ID[m[1]]||k; }
   window.__currentItemKey=currentItemKey;
   function itemKeyFromHash(raw){ var s=raw.slice(ITEM_HASH_PREFIX.length); try{ s=decodeURIComponent(s); }catch(e){} return currentItemKey(s); }
-  function itemFullUrl(key){ var h=itemHash(key); return (CAN_USE_CLEAN_URLS?CLEAN_PATHS.cat:'')+'#'+h; }
+  function itemFullUrl(key){ var h=itemHash(key); return (CAN_USE_CLEAN_URLS?CLEAN_PATHS.archive:'')+'#'+h; }
   window.__itemUrl=itemFullUrl;
   // Crafting materials: the Trove's own "Crafting Recipes" table (#recipes,
   // already on the page - no extra fetch) keyed by result item name, so an item's detail page
