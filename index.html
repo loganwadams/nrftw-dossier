@@ -8595,7 +8595,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 (function(){
   // Vendors page: just the cards. A card opens that vendor's own page (/vendors/<name>), which shows only their entry.
   var sec=document.getElementById('vendors'); if(!sec) return;
-  var back=document.createElement('a'); back.className='cv-back'; back.href='#vendors'; back.textContent='\u2190 Vendors'; back.hidden=true;
+  var back=document.createElement('a'); back.className='cv-back sect-back'; back.href='#vendors'; back.textContent='\u2190 Vendors'; back.hidden=true;
   var h2=sec.querySelector('.sect-head'); h2.parentNode.insertBefore(back,h2);
   var h2el=h2.querySelector('h2'), h2Text=h2el.textContent, cur=null;
   function run(){
@@ -8605,7 +8605,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(art===cur) return;
     if(cur) cur.classList.remove('vd-on');
     cur=art; document.body.classList.toggle('vend-view',!!art); back.hidden=!art;
-    if(art){ art.classList.add('vd-on'); var nm=art.querySelector('.m-name'); var t=nm?nm.textContent:''; h2el.textContent=t||h2Text; document.title=t+' - Vendors - Wicked Dossier \u00b7 No Rest for the Wicked'; window.scrollTo(0,0); }
+    if(art){ art.classList.add('vd-on'); var nm=art.querySelector('.m-name'); var t=nm?nm.textContent:''; h2el.textContent=t||h2Text; document.title=t+' - Vendors - Wicked Dossier \u00b7 No Rest for the Wicked'; window.scrollTo(0,0); setTimeout(function(){window.scrollTo(0,0)},80); setTimeout(function(){window.scrollTo(0,0)},350); }
     else { h2el.textContent=h2Text; }
   }
   window.addEventListener('hashchange',function(){ setTimeout(run,0); });
