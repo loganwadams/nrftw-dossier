@@ -686,7 +686,8 @@ window.__gcCount=(function(){ var last=location.pathname+location.hash; return f
 </script>
 <script data-goatcounter="https://wickeddossier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style id="bg-dim">:root{--bgdim:.08;--grounddim:.2}
-body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{filter:grayscale(1) sepia(1) hue-rotate(190deg) saturate(.5) brightness(.75)!important;z-index:-2!important}
+body:not(.on-home) .header-bg{display:none!important}
+body:not(.on-home) .footer-bg{filter:grayscale(1)!important;z-index:-2!important}
 body::before{background:radial-gradient(90% 70% at 50% 40%,#0a0d15 0%,#06080e 55%,#04050a 100%),#04050a!important}
 #vellum{opacity:var(--grounddim)!important}
 body::after{opacity:.1!important}
