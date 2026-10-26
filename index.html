@@ -731,6 +731,8 @@ body .pgbar-search::before,body.on-cerim .pgbar-search::before{color:#fff!import
 .cm-desc{grid-column:1/-1;grid-row:3;margin:0;font-size:12px!important;line-height:1.4!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-align:center}
 .cm-credit{display:none}
 .cm-midrow{grid-column:1/-1;grid-row:4;justify-content:center!important;text-align:center}
+.cm-slot{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cm-actbar{display:flex;justify-content:flex-end;gap:6px;align-items:center}
 .cm-front>.cm-foot-row{grid-column:1/-1;grid-row:5;margin-top:0!important;flex-wrap:wrap;position:relative;z-index:2}
 .cm-back>.cm-foot-row{margin-top:auto!important;flex-wrap:wrap;position:relative;z-index:2}
 .cm-back-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid rgba(var(--gold-rgb),.2)}
@@ -6657,9 +6659,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             }).join('')+'</span></div>';
           }).join('')+'</div>';
         }
-        function footHtml(r){ return '<div class="cm-foot-row"><span class="cm-who">'+(function(){ var av=r.user_id&&avatarCache[r.user_id], nm=r.author_name||'Anonymous'; return (av?'<img class="cm-who-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-who-av cm-who-ini">'+escH(nm.charAt(0).toUpperCase())+'</span>')+'<span class="cm-who-t"><span class="cm-by">by <b>'+authorHtml(r)+'</b></span><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span></span>'; })()+'</span><span class="cm-acts">'+
+        function footHtml(r){ return '<div class="cm-foot-row"><span class="cm-who">'+(function(){ var av=r.user_id&&avatarCache[r.user_id], nm=r.author_name||'Anonymous'; return (av?'<img class="cm-who-av" src="'+escH(av)+'" alt="" referrerpolicy="no-referrer">':'<span class="cm-who-av cm-who-ini">'+escH(nm.charAt(0).toUpperCase())+'</span>')+'<span class="cm-who-t"><span class="cm-by">by <b>'+authorHtml(r)+'</b></span><span class="cm-date">'+escH(fmtDate(r.published_at||r.updated_at))+'</span></span>'; })()+'</span></div>'; }
+        function actsHtml(r){ return '<div class="cm-actbar">'+
                 '<button type="button" class="cm-like'+(liked[r.id]?' on':'')+'" data-a="like" aria-pressed="'+(liked[r.id]?'true':'false')+'" title="Like this build"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-8.6C.9 9.2 2.4 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.6 0 5.1 3.7 3.3 6.9C19 16.4 12 21 12 21z"/></svg><span>'+r.likes+'</span></button>'+
-                '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></span></div>'; }
+                '<button type="button" class="cm-report" data-a="report" title="Report this build">Report</button></div>'; }
         function norm(t){ return (t||'').toLowerCase(); }
         function render(){
           if(!rows){ return; }
@@ -6684,7 +6687,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             var sm=summarize(r), it=sm.main;
             var ic=it?'<span class="m-ic" style="background-position:-'+(it.p?it.p[0]*48:0)+'px -'+(it.p?it.p[1]*48:0)+'px"></span>':'<span class="m-ic" style="background-image:none"></span>';
             var attrs=sm.attrs.slice(0,3).map(function(a){ return '<span>'+escH(a.n)+' <b>'+a.v+'</b></span>'; }).join('');
-            return '<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+((function(){ var g=gradeOf(r); return g!=null&&g.toFixed(1)==='10.0'; })()?' perfect':'')+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
+            return '<div class="cm-slot" data-id="'+escH(String(r.id))+'">'+actsHtml(r)+'<article class="cm-card g-'+(function(){ var g=gradeOf(r); return g==null?'none':tierOf(g).replace('g-',''); })()+((function(){ var g=gradeOf(r); return g!=null&&g.toFixed(1)==='10.0'; })()?' perfect':'')+'" data-id="'+escH(String(r.id))+'" tabindex="0" role="link" aria-label="Open build '+escH(r.name)+'">'+
               '<div class="cm-flip"><div class="cm-face cm-front">'+'<i class="cm-fog"></i><i class="cm-ember"></i>'+'<div class="cm-top">'+ic+'<div><div class="cm-name">'+escH(r.name)+'</div></div>'+(function(){ var g=gradeOf(r); return g==null?'':'<div class="cm-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div></div>'; })()+'</div>'+loadoutHtml(sm)+
               (r.description?'<p class="cm-desc">&ldquo;'+escH(r.description)+'&rdquo;</p>':'')+
               (function(){ var od=decodeBuild(r.code); return od&&od.cr&&od.cr.a?'<p class="cm-credit">'+escH(creditLine(od.cr))+'</p>':''; })()+
@@ -6692,7 +6695,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
               '<div class="cm-face cm-back">'+'<i class="cm-fog"></i><i class="cm-ember"></i>'+(function(){ var g=gradeOf(r), cs=r._gcats; return '<div class="cm-back-head"><span class="cm-back-title">Grade Breakdown</span>'+(g==null?'':'<div class="cm-grade '+tierOf(g)+'">'+g.toFixed(1)+'<small>/10</small></div>')+'</div>'+(cs&&cs.length?'<div class="cm-back-rows">'+cs.map(function(c){ return '<div class="cm-br"><span class="cm-br-l">'+escH(c.l)+'</span><span class="cm-br-s">'+c.s.toFixed(1)+'</span><span class="cm-br-track"><i class="'+tierOf(c.s)+'" style="width:'+Math.max(4,Math.min(100,c.s*10))+'%"></i></span></div>'; }).join('')+'</div>':'<p class="cm-back-none">No grade yet</p>'); })()+footHtml(r)+'</div></div>'+
               
 
-              '</article>';
+              '</article></div>';
         }
         // ---- author profile page (hash u/<user id> on /builds): name + bio from profiles (if the
         // author made one) and every build of theirs that's public. Private profiles never reach
@@ -6753,7 +6756,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code+'&cb='+encodeURIComponent(r.id); }
         function onListClick(e){
           var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); e.stopPropagation(); goProfile(al.getAttribute('data-u')); return; }
-          var card=e.target.closest('.cm-card'); if(!card) return;
+          var card=e.target.closest('.cm-card')||e.target.closest('.cm-slot'); if(!card) return;
+          if(!e.target.closest('.cm-card')&&!e.target.closest('button[data-a]')) return;
           var r=null; for(var i=0;i<(rows||[]).length;i++) if(String(rows[i].id)===card.getAttribute('data-id')) r=rows[i];
           if(!r) return;
           var b=e.target.closest('button[data-a]');
