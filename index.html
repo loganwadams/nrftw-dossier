@@ -699,6 +699,13 @@ body.on-arch .sect-head h2,body.on-arch .m-card-name,body.on-arch .m-cat-head h3
 body.on-arch .m-card-lv,body.on-arch .m-cat-head span{color:rgba(255,255,255,.7)!important}
 body.on-arch .m-cat-intro,body.on-arch .m-cat-intro strong,body.on-arch .m-cat-intro .cb-notice{color:#fff!important}
 body.on-arch .m-cat-intro .cb-notice strong{color:#8ecbe8!important}
+/* top bar and side menu: same look on every page as the home page */
+body .pgbar button,body .pgbar a,body.on-cerim .pgbar button,body.on-cerim .pgbar a{color:#fff!important;font-weight:400!important}
+body .pgbar button[aria-current="page"],body.on-cerim .pgbar button[aria-current="page"]{color:#c8a04a!important;font-weight:600!important}
+body .pgbar button.pg-cerim,body.on-cerim .pgbar button.pg-cerim{color:#8ecbe8!important}
+body .pgbar button.pg-cerim[aria-current="page"]{font-weight:600!important}
+body .pgbar-right .nav-acct>button,body .pgbar-right .nav-provs>button.nav-connect,body .pgbar-right .nav-provs,body .pgbar-right .pgbar-search,body.on-cerim .pgbar-right .nav-acct>button,body.on-cerim .pgbar-right .nav-provs>button.nav-connect,body.on-cerim .pgbar-right .pgbar-search,body .pgbar-right .nav-acct,body .pgbar-right .nav-acct *{color:#fff!important}
+body .pgbar-search::before,body.on-cerim .pgbar-search::before{color:#fff!important}
 .header-bg,body .header-bg,body:not(.on-home) .header-bg{display:none!important}
 body.on-arch footer .footer-bg,body.on-archive footer .footer-bg,body.on-vend footer .footer-bg{height:min(600px,75vh)!important}
 body.on-arch .footer-bg,body.on-arch footer .footer-bg,body.on-archive .footer-bg,body.on-vend .footer-bg,body.on-archive footer .footer-bg,body.on-vend footer .footer-bg{background-image:url(img/footer-scene-archive.webp)!important;filter:none!important;opacity:1!important}
