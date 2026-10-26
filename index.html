@@ -452,7 +452,6 @@ header.masthead form.search{display:none!important}
    hidden-by-default parts of .tt. */
 .ip-back{display:inline-flex;align-items:center;gap:6px;font-family:var(--data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);text-decoration:none;margin:0 0 22px}
 .ip-back:hover,.ip-back:focus-visible{color:var(--gold)}
-#ipBack.sect-back{margin:0 0 22px}
 .ip-body{max-width:1140px}
 .ip-tt{position:relative;opacity:1;pointer-events:auto;width:100%;max-width:460px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
 .ip-loading,.ip-error{color:var(--muted);font-size:14.5px}
@@ -3303,8 +3302,8 @@ footer li{color:#6f665b}
 <!-- /EDIT PROFILE -->
 <!-- ITEM PAGE -->
   <section id="item-page">
+    <a href="#" id="ipBack" class="sect-back">&larr; Archive</a>
     <div class="sect-head"><h2>Item</h2></div>
-    <p><a href="#" id="ipBack" class="sect-back">&larr; Archive</a></p>
     <div id="ipBody" class="ip-body"><p class="ip-loading">Loading item&hellip;</p></div>
   </section>
 <!-- /ITEM PAGE -->
@@ -7770,7 +7769,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // and returns there. Direct loads (no previous page of ours) fall back to the Archive.
   function ipFromLabel(){
     var h=''; try{ h=decodeURIComponent(window.__wdRawId()||''); }catch(e){}
-    if(h.indexOf(ITEM_HASH_PREFIX)===0){ var t=document.querySelector('#ipBody .tt-name,#ipBody .rn-name,#ipBody h1,#ipBody h2'); return (t&&t.textContent.trim())||'Back'; }
+    if(h.indexOf(ITEM_HASH_PREFIX)===0){ var t=document.querySelector('#item-page .sect-head h2'); return (t&&t.textContent.trim())||'Back'; }
     if(!h) return 'Home';
     var el=document.getElementById(h), t2=el&&(el.querySelector('h1,h2,h3')||(/^H[1-3]$/.test(el.tagName)?el:null));
     if(t2&&t2.textContent.trim()) return t2.textContent.replace(/\s*\d+\s*items?$/i,'').trim();
@@ -7779,10 +7778,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.__ipFrom=null;
   function ipSetBack(){
     var b=document.getElementById('ipBack'); if(!b) return;
-    b.textContent='\u2190 '+(window.__ipFrom?window.__ipFrom.label:'Archive');
+    var l=window.__ipFrom&&window.__ipFrom.label;
+    if(!l){ try{ l=sessionStorage.getItem('wd.ipFrom'); }catch(e){} }
+    b.textContent='\u2190 '+(l||'Archive');
   }
+  // Plain links to an item (set pieces, tooltip links, "used in" lists) navigate on their own, not
+  // through __gotoItem, so note where the click came from before they do.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href*="#item/"]'); if(!a||a.id==='ipBack') return;
+    var l=ipFromLabel(); window.__ipFrom={label:l,href:location.href};
+    try{ sessionStorage.setItem('wd.ipFrom',l); }catch(x){}
+  },true);
   window.__gotoItem=function(key){
     window.__ipFrom={label:ipFromLabel(),href:location.href};
+    try{ sessionStorage.setItem('wd.ipFrom',window.__ipFrom.label); }catch(e){}
     show('itempage','item-page');
     try{
       if(CAN_USE_CLEAN_URLS && history.pushState) history.pushState(null,'',itemFullUrl(key));
