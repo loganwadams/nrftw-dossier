@@ -8809,6 +8809,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       [5,18,8,34,0.19,1,1.5,2],[2,70,16,28,0.21,0,1.6,2],[3,4,44,30,0.19,1,1.5,2],[5,44,50,36,0.18,0,1.5,2],[2,76,58,28,0.20,1,1.6,2],[3,24,68,32,0.18,0,1.5,2],[5,58,88,34,0.19,1,1.5,2]
     ];
     var R={1:1.385,2:.733,3:.797,5:.509,6:1,7:1,8:1,9:1};
+    /* broad dark fog banks from the game's own UI smoke textures */
+    [['a',-10,0,125,.573,1,.0],['b',20,34,120,.573,1,.0],['c',-6,60,70,1.326,1,.0],['a',30,78,120,.573,1,.0]].forEach(function(q,i){
+      var el=document.createElement('i');
+      el.style.cssText='left:'+q[1]+'vw;top:'+q[2]+'%;width:'+q[3]+'vw;height:'+(q[3]*q[4])+'vw;opacity:1;background-image:url(img/fog-bank-'+q[0]+'.webp);filter:brightness(3.8) saturate(1.6);'+(i%2?'transform:scaleX(-1);':'')+'-webkit-mask-image:radial-gradient(closest-side,#000 35%,rgba(0,0,0,.5) 70%,transparent 100%);mask-image:radial-gradient(closest-side,#000 35%,rgba(0,0,0,.5) 70%,transparent 100%)';
+      host.appendChild(el);
+    });
     L.forEach(function(p){
       var el=document.createElement('i');
       el.style.cssText='left:'+p[1]+'vw;top:'+p[2]+'%;width:'+p[3]+'vw;height:'+(p[3]*R[p[0]])+'vw;opacity:'+p[4]+';background-image:url(img/smoke-'+p[0]+'.webp);filter:blur('+p[7]+'px) brightness('+p[6]+');'+(p[5]?'transform:scaleX(-1);':'');
