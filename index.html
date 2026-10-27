@@ -866,6 +866,7 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-hero .cb-sh-attr span{display:none}
 .cb-sh-hero .cb-sh-attr b{font:1.9rem/1 var(--display);color:#eadfc4}
 .cb-sh-hero .cb-sh-attr.hi b{color:#ffd56b}
+.cb-bm-msg.show{opacity:1;transform:none}
 .cb-sh-hero .cb-shared-btns .cb-tool{background:none!important;border:0!important;box-shadow:none!important;padding:6px!important;min-width:0;color:#d9c9a0}
 .cb-sh-hero .cb-shared-btns .cb-tool svg{width:28px;height:28px;margin:0}
 .cb-sh-hero .cb-shared-btns .cb-tool:hover{color:#ffd56b;background:none!important}
@@ -874,7 +875,7 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-hero #cbSharedSave svg{width:34px;height:34px;overflow:hidden;fill:transparent;transition:fill .18s,color .18s,transform .18s}
 .cb-sh-hero #cbSharedSave:hover svg,.cb-sh-hero #cbSharedSave:focus-visible svg{fill:currentColor;color:#ffd56b;transform:translateY(-1px)}
 .cb-sh-hero #cbSharedSave.is-on svg{fill:currentColor;color:#ffd56b}
-.cb-bm-msg{position:absolute;top:8px;right:72px;z-index:3;font:600 10.5px var(--data);letter-spacing:.2em;text-transform:uppercase;color:#ffd56b}
+.cb-bm-msg{position:absolute;top:34px;right:22px;z-index:4;opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .2s,transform .2s;background:#0d0b09;border:1px solid rgba(217,201,160,.4);padding:7px 12px;white-space:nowrap;font:600 10.5px var(--data);letter-spacing:.2em;text-transform:uppercase;color:#ffd56b}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6204,6 +6205,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(window.__cbAcct&&window.__cbAcct.saveShared) window.__cbAcct.saveShared(encodeBuild(oo),((CB_SHARED_INFO&&CB_SHARED_INFO.name)||(ti&&ti.textContent)||'Saved build').slice(0,60),function(ok,err){
           var m=document.getElementById('cbBmMsg'); if(!m){ m=document.createElement('span'); m.id='cbBmMsg'; m.className='cb-bm-msg'; sb.insertAdjacentElement('afterend',m); }
           if(ok){ sb.classList.add('is-on'); m.textContent='Bookmarked'; } else { m.textContent=err||'Could not save'; }
+          m.classList.remove('show'); void m.offsetWidth; m.classList.add('show'); clearTimeout(m._t); m._t=setTimeout(function(){ m.classList.remove('show'); },2500);
         });
       });
       if(!document.getElementById('cerim-builder').offsetParent) location.hash='#cerim-builder';
