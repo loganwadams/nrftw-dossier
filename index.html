@@ -824,11 +824,40 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 @keyframes cmPb{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes cmSpin{to{transform:rotate(360deg)}}
 @keyframes cmGp{50%{text-shadow:0 0 14px #fff2c8,0 0 36px rgba(255,200,90,1)}}
-/* Loadout on a shared build: real item cards with the build's choices applied */
-.cb-sh-grid{grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),420px))!important;gap:26px 22px!important;align-items:start}
-.cb-sh-card{min-width:0}
-.cb-sh-card .cb-sh-slot{margin:0 0 8px;color:rgba(255,255,255,.7)}
-.cb-sh-card .ip-tt{max-width:none}
+/* Loadout on a shared build: the Archive's square item tiles; hover shows the full card with the build's choices applied */
+.cb-sh-grid{grid-template-columns:repeat(auto-fill,176px)!important;gap:20px 16px!important;align-items:start}
+.cb-sh-item.sq{border:0!important;background:none!important;box-shadow:none!important;padding:0!important;display:flex;flex-direction:column;gap:6px}
+.cb-sh-item.sq:before{display:none}
+.cb-sq-lbl{font-family:var(--data);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.cb-sh-item.sq.is-exalted .m-card{box-shadow:0 0 0 1px rgba(242,195,92,.55),0 0 14px rgba(242,195,92,.3)}
+.cb-sh-grid .m-card{cursor:pointer;text-decoration:none;color:inherit}
+.cb-sh-grid .m-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;aspect-ratio:1/1;padding:12px 10px;min-height:0;overflow:hidden}
+.cb-sh-grid .m-card .m-ic{zoom:1.5;flex:none;margin:0 0 2px;border:0;background-color:transparent;background-image:url(img/items-sheet.webp)!important;-webkit-mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);mask-composite:intersect}
+.cb-sh-grid .m-card[data-rar]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-std-bg.webp)!important;background-size:auto,var(--bs,cover);background-position:center,var(--bp,center)}
+.cb-sh-grid .m-card:not([data-rar]){background-color:#06070a;background-repeat:no-repeat;background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-std-bg.webp);background-size:auto,var(--bs,cover);background-position:center,var(--bp,center)}
+.cb-sh-grid .m-card[data-rar=magical]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-mag-bg.webp)!important}
+.cb-sh-grid .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
+.cb-sh-grid .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
+.cb-sh-grid .m-card,.cb-sh-grid .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/bd-standard.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
+.cb-sh-grid .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/bd-common.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
+.cb-sh-grid .m-card[data-rar=magical]{background-image:url(img/card/bd-magical.webp)!important}
+.cb-sh-grid .m-card[data-rar=plagued]{background-image:url(img/card/bd-plagued.webp)!important}
+.cb-sh-grid .m-card[data-rar=unique]{background-image:url(img/card/bd-unique.webp)!important}
+.cb-sh-grid .m-card:nth-child(3n+2){--ga:135deg}.cb-sh-grid .m-card:nth-child(3n){--ga:225deg}.cb-sh-grid .m-card:nth-child(7n+4){--ga:0deg}
+.cb-sh-grid .m-card:nth-child(5n+1){--bs:cover;--bp:center}
+.cb-sh-grid .m-card:nth-child(5n+2){--bs:150% 150%;--bp:0 0}
+.cb-sh-grid .m-card:nth-child(5n+3){--bs:150% 150%;--bp:100% 0}
+.cb-sh-grid .m-card:nth-child(5n+4){--bs:150% 150%;--bp:0 100%}
+.cb-sh-grid .m-card:nth-child(5n+5){--bs:150% 150%;--bp:100% 100%}
+.cb-sh-grid .m-card{border-color:transparent!important;transition:filter .2s}
+.cb-sh-grid .m-card:hover,.cb-sh-grid .m-card.tt-open{filter:brightness(1.3) saturate(1.1)}
+.cb-sh-grid .m-card-name{display:block;max-width:100%;overflow-wrap:anywhere}
+.cb-sh-grid .m-card-lv{font-family:"Arcon","Marcellus",sans-serif;font-size:12px;letter-spacing:.08em}
+.cb-sh-grid .m-card-req{font-family:"Arcon","Marcellus",sans-serif;font-size:11px;letter-spacing:.06em;color:var(--gold);opacity:.85;min-height:1.2em}
+.cb-sh-grid .m-card-req.none{color:#8b8174;opacity:.7}
+.cb-sh-grid .m-card-req{display:flex;gap:12px;justify-content:center;align-items:center}
+.cb-sh-grid .m-card-req .rq{display:inline-flex;align-items:center;gap:4px}
+.cb-sh-grid .m-card-req b{font-weight:400;font-size:13px;letter-spacing:.04em}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6088,18 +6117,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(!ids.length) html+='<p class="note">No gear equipped in this build.</p>';
       html+='<div class="cb-sh-grid">';
       ids.forEach(function(id){
-        var key=equipped[id], item=cards[key], meta=slotEls[id], c2=item;
-        try{
-          var an=document.createElement('div'); an.className='cb-sh-item'; an.setAttribute('data-slot',id);
-          c2=(window.cbTipAdjust&&window.cbTipAdjust(an,item))||item;
-        }catch(err){ c2=item; }
-        var rar=c2.r||'standard';
-        var ic=c2.p?'<span class="tt-ic" style="background-position:-'+(c2.p[0]*64)+'px -'+(c2.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
-        var lvHtml=(c2.lv&&!/^\/item\/trinkets\//.test(key)&&window.lvFill)?'<div class="tt-lv">'+window.lvFill(c2.lv,c2.cr)+'<span>'+c2.lv+'</span></div>':'<div></div>';
-        html+='<div class="cb-sh-card" data-slot="'+id+'"><div class="cb-sh-slot">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</div>'+
-          '<div class="tt ip-tt r-'+rar+(c2.ex?' tt-ex'+(rar==='unique'?' tt-ex-un':''):'')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>'+
-          (c2.ex?'<div class="lay ex-t"></div><div class="lay ex-b"></div><div class="lay ex-r"></div><div class="tt-exlbl">Exalted</div>':'')+
-          '<div class="tt-head">'+ic+'<div><div class="tt-name">'+escH(c2.n)+'</div><div class="tt-type">'+(window.wdTorso?window.wdTorso(c2.t):escH(c2.t||''))+'</div></div>'+lvHtml+'</div>'+(c2.h||WDCARD.html(c2))+'</div></div>';
+        var key=equipped[id], item=cards[key], m=itemMeta[id], meta=slotEls[id];
+        var rar=m?m.rarity:(item.r||'standard');
+        var exd=!!(m&&(m.exalts||[]).some(function(n){ return n>0; }));
+        var req={}; try{ req=WDCARD.facts(item).req||{}; }catch(e){}
+        var rk=Object.keys(req);
+        var reqHtml='<span class="m-card-req'+(rk.length?'':' none')+'">'+rk.map(function(k){ return '<span class="rq">'+WDCARD.icon(k,true)+'<b>'+req[k]+'</b></span>'; }).join('')+'</span>';
+        html+='<div class="cb-sh-item sq'+(exd?' is-exalted':'')+'" data-slot="'+id+'"><span class="cb-sq-lbl">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</span>'+
+          '<span class="m-card'+(rar==='unique'?' m-card-uniq':'')+'" data-k="'+escH(key)+'" data-rar="'+rar+'" tabindex="0"><span class="m-ic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
+          '<span class="m-card-name">'+escH(item.n)+'</span><span class="m-card-lv">'+(m?'Lv '+m.level:(item.lv?'Lv '+item.lv:''))+'</span>'+reqHtml+'</span></div>';
       });
       box.innerHTML=html+'</div>';
       var side=document.getElementById('cbShSide');
