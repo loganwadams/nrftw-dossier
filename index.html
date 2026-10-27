@@ -5919,8 +5919,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         (g.worst.length?'<small>Costing you most: '+g.worst.join(', ')+'</small>':'<small>Nothing is dragging this build down.</small>')+'</div></div>'+
         '<div class="cb-grade-rows">'+g.cats.map(function(c){
           return '<div class="cb-grade-row"><span class="cb-grade-name">'+c.label+' <i>'+Math.round(c.w*100)+'%</i></span><span class="cb-grade-bar '+tierOf(c.score)+'"><span style="width:'+(c.score*10)+'%"></span></span><b>'+c.score.toFixed(1)+'</b><small>'+dmgEsc(c.why)+'</small></div>';
-        }).join('')+'</div>'+
-        '<p class="cb-grade-note">Graded on everything in the build &mdash; gear and rarity, requirements, damage attributes and bonuses (exalts included), armor and resistance amounts, load, Health and Stamina, attribute allocation, enchants, gems and facets (exalting gives a small boost, never a penalty), and how well the elements line up. It is not a meta tier list.</p>';
+        }).join('')+'</div>';
     }
     function computeReport(){
       var profile=computeProfile();
