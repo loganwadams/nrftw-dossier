@@ -951,6 +951,16 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 #cbShTop .cb-chip i{color:#d9d6cf}
 .cb-res-ic{width:20px;height:20px;object-fit:contain;align-self:center;flex:none}
 #cbShTop #cbProfileBars .attr:nth-child(6)>b{font-family:"Arcon","Marcellus",sans-serif!important;font-size:14.5px!important;text-transform:none!important;letter-spacing:.01em!important;font-weight:400!important;color:#f0e6cf!important}
+/* Shared build: the game's own underline sprite for every divider line */
+#cbShTop .cb-panel h3{position:relative}
+#cbShTop>.cb-panel h3{border-bottom:0!important}
+body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) center/100% 100% no-repeat;opacity:.9}
+#cbShTop #cbProfileBars .attr:has(.cb-chips){border-top:0!important;position:relative}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr{border-bottom:0!important;position:relative}
+#cbShTop>.cb-panel h3:after,#cbShTop #cbProfileBars .attr:has(.cb-chips):before,#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) center/100% 100% no-repeat;opacity:.9;pointer-events:none}
+#cbShTop>.cb-panel h3:after{bottom:-6px}
+#cbShTop #cbProfileBars .attr:has(.cb-chips):before{top:-6px}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{bottom:-6px}
 
 /* Item cards: type, colors and spacing taken from the in-game card */
 .wd-card{color:#cbcccd;font-size:14.5px}
