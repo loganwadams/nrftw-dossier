@@ -8086,10 +8086,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     return '<li class="ip-mat">'+ic+'<span class="ip-mn">'+m[0]+'</span><b>&times;'+pair[1]+'</b></li>';
   }
   function fmtMin(m){ if(m<1) return Math.round(m*60)+' sec'; return (m%1?String(+m.toFixed(2)):m)+' min'; }
-  function matsBlock(D,key){
+  function matsBlock(D,key,skipCrafted){
     if(!D) return ''; var e=D.it[key]||{};
     var h='';
-    if(e.c) h+='<div class="ip-craft"><h3>How It’s Crafted</h3><p class="ip-craft-station">Station: <b>'+e.c.s+'</b>'+(e.c.q?' &middot; makes '+e.c.q:'')+'</p><ul class="ip-mats">'+e.c.m.map(function(p){ return matChip(D,p); }).join('')+'</ul></div>';
+    if(e.c&&!skipCrafted) h+='<div class="ip-craft"><h3>How It’s Crafted</h3><p class="ip-craft-station">Station: <b>'+e.c.s+'</b>'+(e.c.q?' &middot; makes '+e.c.q:'')+'</p><ul class="ip-mats">'+e.c.m.map(function(p){ return matChip(D,p); }).join('')+'</ul></div>';
     var rf=D.rf&&D.rf[key];
     if(rf) h+='<div class="ip-craft"><h3>How It’s Refined</h3><p class="ip-craft-station">One input is refined into one of this item, at a refinery in your house:</p><table class="ip-upt"><thead><tr><th>Refinery</th><th>Input</th><th>Time</th></tr></thead><tbody>'+rf.map(function(r){ return '<tr><td>'+r[1]+'</td><td>'+r[0]+'</td><td>'+fmtMin(r[2])+'</td></tr>'; }).join('')+'</tbody></table></div>';
     var mc=D.mach&&D.mach[key];
@@ -8136,7 +8136,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return;
       }
       body.innerHTML='<div class="tt ip-tt r-'+(c.r||'standard')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div><div class="tt-head">'+ic+'<div><div class="tt-name">'+c.n+'</div><div class="tt-type">'+wdTorso(c.t)+'</div></div>'+((c.lv&&!/^\/item\/trinkets\//.test(key))?'<div class="tt-lv">'+lvFill(c.lv,c.cr)+'<span>'+c.lv+'</span></div>':'<div></div>')+'</div>'+WDCARD.html(c)+'</div><div id="ipMats"></div>';
-      loadCraft().then(function(D){ var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return; box.innerHTML=matsBlock(D,key)||(D?'':craftBlock(c)); }).catch(function(){ var box=document.getElementById('ipMats'); if(box) box.innerHTML=craftBlock(c); });
+      var hasOwnCraft=(c.s||[]).some(function(b){ return b.k==='craft'; });
+      loadCraft().then(function(D){
+        var box=document.getElementById('ipMats'); if(!box||document.getElementById('ipBody')!==body) return;
+        var e=D&&D.it[key];
+        if(hasOwnCraft&&e&&e.c&&e.c.s){
+          var h=body.querySelector('.wd-craft .wd-craft-h');
+          if(h&&!h.querySelector('.wd-craft-station')) h.insertAdjacentHTML('afterend','<p class="ip-craft-station wd-craft-station">Station: <b>'+e.c.s+'</b></p>');
+        }
+        box.innerHTML=matsBlock(D,key,hasOwnCraft)||(D?'':(hasOwnCraft?'':craftBlock(c)));
+      }).catch(function(){ var box=document.getElementById('ipMats'); if(box&&!hasOwnCraft) box.innerHTML=craftBlock(c); });
       var ipCard=body.querySelector('.ip-tt'); if(ipCard){  }
       if(h2) h2.textContent=c.n||'Item';
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
