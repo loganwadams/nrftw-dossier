@@ -824,6 +824,11 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 @keyframes cmPb{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes cmSpin{to{transform:rotate(360deg)}}
 @keyframes cmGp{50%{text-shadow:0 0 14px #fff2c8,0 0 36px rgba(255,200,90,1)}}
+/* Loadout on a shared build: real item cards with the build's choices applied */
+.cb-sh-grid{grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),420px))!important;gap:26px 22px!important;align-items:start}
+.cb-sh-card{min-width:0}
+.cb-sh-card .cb-sh-slot{margin:0 0 8px;color:rgba(255,255,255,.7)}
+.cb-sh-card .ip-tt{max-width:none}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6083,16 +6088,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(!ids.length) html+='<p class="note">No gear equipped in this build.</p>';
       html+='<div class="cb-sh-grid">';
       ids.forEach(function(id){
-        var item=cards[equipped[id]], m=itemMeta[id], meta=slotEls[id];
-        var rar=m?m.rarity:(item.r||'standard');
-        var rows='';
-        function row(k,list){ (list||[]).filter(Boolean).forEach(function(v){ rows+='<li><i>'+k+'</i><span>'+escH(v)+'</span></li>'; }); }
-        if(m){ row('Facet',m.facet?[m.facet]:[]); row('Rune',m.runes); row('Gem',m.gems); row('Enchant',m.enchants); }
-        var exd=!!(m&&(m.exalts||[]).some(function(n){ return n>0; }));
-        html+='<div class="cb-sh-item r-'+rar+(exd?' is-exalted':'')+'" data-slot="'+id+'"><div class="cb-sh-top"><span class="m-ic" data-k="'+equipped[id]+'" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span><div>'+
-          '<div class="cb-sh-slot">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</div>'+
-          '<div class="cb-sh-name r-'+rar+'">'+escH(item.n)+'</div>'+
-          '<div class="cb-sh-meta">'+escH(item.t||'')+(m?' &middot; '+CB_RARITY_NAME[rar]+' &middot; Upgrade '+m.level:'')+'</div></div></div>'+(rows?'<ul class="cb-sh-mods">'+rows+'</ul>':'')+'</div>';
+        var key=equipped[id], item=cards[key], meta=slotEls[id], c2=item;
+        try{
+          var an=document.createElement('div'); an.className='cb-sh-item'; an.setAttribute('data-slot',id);
+          c2=(window.cbTipAdjust&&window.cbTipAdjust(an,item))||item;
+        }catch(err){ c2=item; }
+        var rar=c2.r||'standard';
+        var ic=c2.p?'<span class="tt-ic" style="background-position:-'+(c2.p[0]*64)+'px -'+(c2.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
+        var lvHtml=(c2.lv&&!/^\/item\/trinkets\//.test(key)&&window.lvFill)?'<div class="tt-lv">'+window.lvFill(c2.lv,c2.cr)+'<span>'+c2.lv+'</span></div>':'<div></div>';
+        html+='<div class="cb-sh-card" data-slot="'+id+'"><div class="cb-sh-slot">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</div>'+
+          '<div class="tt ip-tt r-'+rar+(c2.ex?' tt-ex'+(rar==='unique'?' tt-ex-un':''):'')+'"><div class="lay bg"></div><div class="lay vein"></div><div class="lay top"></div><div class="lay shade"></div>'+
+          (c2.ex?'<div class="lay ex-t"></div><div class="lay ex-b"></div><div class="lay ex-r"></div><div class="tt-exlbl">Exalted</div>':'')+
+          '<div class="tt-head">'+ic+'<div><div class="tt-name">'+escH(c2.n)+'</div><div class="tt-type">'+(window.wdTorso?window.wdTorso(c2.t):escH(c2.t||''))+'</div></div>'+lvHtml+'</div>'+(c2.h||WDCARD.html(c2))+'</div></div>';
       });
       box.innerHTML=html+'</div>';
       var side=document.getElementById('cbShSide');
