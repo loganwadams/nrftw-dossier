@@ -2678,6 +2678,11 @@ body.on-cerim footer{z-index:auto}
 body.on-cerim footer .footer-bg{display:block!important;position:fixed;left:0;bottom:0;width:100%;margin-left:0!important;height:min(810px,100vh)}
 body.on-media .md-ev{background:linear-gradient(90deg,var(--edge),transparent) top/100% 1px no-repeat,linear-gradient(90deg,rgba(10,8,7,.6),rgba(10,8,7,.4) 55%,rgba(10,8,7,0))}
 body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{background:linear-gradient(90deg,var(--edge),transparent) top/100% 1px no-repeat,linear-gradient(90deg,rgba(232,134,58,.09),rgba(10,8,7,0))}
+/* Media art tiles: darkened until hovered, with the notched rule sliding in, like the Archive cards */
+.md-gal img{filter:brightness(.6) saturate(.88)!important;transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .3s!important}
+.md-gal a:hover img,.md-gal a:focus-visible img{filter:brightness(1)!important}
+.md-gal a:before{content:"";position:absolute;left:0;right:0;top:0;height:26px;z-index:3;background:#efe3c4;filter:drop-shadow(0 0 4px rgba(230,200,130,.55));opacity:0;transform:translateY(-140%);pointer-events:none;-webkit-mask:url(img/divider-notch.webp) center top/auto 100% no-repeat;mask:url(img/divider-notch.webp) center top/auto 100% no-repeat;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
+.md-gal a:hover:before,.md-gal a:focus-visible:before{opacity:1;transform:none}
 /* Media videos: same cards as Archive (frame, darkened until hover, shadowed white title); only the play button opens the popup */
 .md-tl{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
 body.on-media .md-ev,body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{display:flex;grid-template-columns:none;aspect-ratio:16/9;min-height:0;padding:20px 20px 16px;border:0;cursor:default}
@@ -2686,7 +2691,7 @@ body.on-media .md-ev,body.on-media .md-ev:hover,body.on-media .md-ev:focus-visib
 .md-ev h3,.md-ev .ar-k{opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s}
 .md-ev:hover h3,.md-ev:hover .ar-k,.md-ev:focus-within h3,.md-ev:focus-within .ar-k{opacity:1;transform:none}
 @media (hover:none){.md-ev h3,.md-ev .ar-k{opacity:1;transform:none}}
-.md-play{position:absolute!important;left:50%;top:50%;width:46px;height:46px;margin:-23px;z-index:2!important;border:1px solid rgba(255,255,255,.85);border-radius:50%;background:rgba(10,8,7,.5) no-repeat center/16px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M8 5v14l11-7z'/%3E%3C/svg%3E");transition:background-color .3s,transform .3s}
+.md-play{position:absolute!important;right:16px;bottom:14px;left:auto;top:auto;width:42px;height:42px;margin:0;z-index:2!important;border:1px solid rgba(255,255,255,.85);border-radius:50%;background:rgba(10,8,7,.5) no-repeat center/16px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M8 5v14l11-7z'/%3E%3C/svg%3E");transition:background-color .3s,transform .3s}
 .md-play:hover,.md-play:focus-visible{background-color:rgba(10,8,7,.85);transform:scale(1.08);outline:none}
 @media (max-width:860px){.md-tl{grid-template-columns:1fr}}
 
