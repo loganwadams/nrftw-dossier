@@ -961,6 +961,13 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 #cbShTop>.cb-panel h3:after{bottom:-6px}
 #cbShTop #cbProfileBars .attr:has(.cb-chips):before{top:-6px}
 #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{bottom:-6px}
+/* Community Builds page: same sprite line on the boards, card footers and card backs */
+.cm-board li{border-top:0!important;position:relative}
+.cm-foot-row{border-top:0!important;position:relative}
+.cm-back-head{background:none!important;position:relative}
+.cm-board li:not(:first-child):after,.cm-foot-row:before,.cm-back-head:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45);pointer-events:none}
+.cm-board li:not(:first-child):after,.cm-foot-row:before{top:-6px}
+.cm-back-head:after{bottom:-6px}
 
 /* Item cards: type, colors and spacing taken from the in-game card */
 .wd-card{color:#cbcccd;font-size:14.5px}
@@ -9226,7 +9233,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 <script>
 /* Dividers on shared builds: each line shows a random slice of the game's underline sprite, sometimes flipped, so they don't all look identical */
 (function(){
-  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head',busy=0;
+  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head',busy=0;
   function r(a,b){return a+Math.random()*(b-a)}
   function seed(){ busy=0;
     document.querySelectorAll(SEL).forEach(function(e){
