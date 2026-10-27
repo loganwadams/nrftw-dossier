@@ -2683,6 +2683,10 @@ body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{background:linear-
 .md-gal a:hover img,.md-gal a:focus-visible img{filter:brightness(1)!important}
 .md-gal a:before{content:"";position:absolute;left:0;right:0;top:0;height:26px;z-index:3;background:#efe3c4;filter:drop-shadow(0 0 4px rgba(230,200,130,.55));opacity:0;transform:translateY(-140%);pointer-events:none;-webkit-mask:url(img/divider-notch.webp) center top/auto 100% no-repeat;mask:url(img/divider-notch.webp) center top/auto 100% no-repeat;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
 .md-gal a:hover:before,.md-gal a:focus-visible:before{opacity:1;transform:none}
+.md-brand{position:static!important}
+.md-tl{margin-left:0!important}
+.md-sec:not(.md-sec-art){margin-top:0}
+.md-sec:not(.md-sec-art) .md-brand{width:auto!important;display:block!important}
 /* Media videos: same cards as Archive (frame, darkened until hover, shadowed white title); only the play button opens the popup */
 .md-tl{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
 body.on-media .md-ev,body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{display:flex;grid-template-columns:none;aspect-ratio:16/9;min-height:0;padding:20px 20px 16px;border:0;cursor:default}
@@ -3732,7 +3736,7 @@ footer li{color:#6f665b}
 <!-- VIDEOS -->
   <section id="videos">
     <div class="md" id="md">
-      <section class="md-sec"><div class="md-brand"><img src="img/brand/youtube-logo-gold.png" alt="YouTube"><div class="md-year" id="md-year"></div></div>
+      <section class="md-sec"><div class="md-brand"><img src="img/brand/youtube-logo-gold.png" alt="YouTube"></div>
       <div class="md-tl" id="md-tl"></div></section>
       <section class="md-sec md-sec-art"><div class="md-brand"><img src="img/brand/artstation-logo-gold.png" alt="ArtStation"></div>
       <div class="md-gal" id="md-gal"></div>
