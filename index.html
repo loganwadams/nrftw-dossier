@@ -1677,7 +1677,17 @@ section{padding-block:48px}
 .cb-notice{margin:0 0 14px;padding:12px 16px;border:1px solid rgba(var(--acc-b-rgb,142,203,232),.4);border-left:3px solid var(--acc-b,#8ecbe8);background:rgba(var(--acc-b-rgb,142,203,232),.07);color:#d9ccb0;font-size:14.5px;line-height:1.55;max-width:none}
 .cb-notice strong{color:var(--acc-b,#8ecbe8);font-weight:600;letter-spacing:.04em}
 .cb-note{font-size:14.5px;color:var(--muted);font-style:italic;margin:-6px 0 28px}
-.cb-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
+.cb-wrap{display:grid;grid-template-columns:1.15fr 1fr;gap:20px;align-items:start}
+.cb-wrap>.cb-stats-wide{grid-column:1/-1}
+.cb-eq-split{display:flex;gap:30px;align-items:flex-start;flex-wrap:nowrap}
+.cb-eq-split .cb-rows{flex:0 1 auto}
+.cb-eq-runes{flex:none}
+.cb-eq-runes .cb-cells{display:grid;grid-template-columns:repeat(2,58px);gap:8px;width:auto}
+.cb-eq-runes h5{margin:0 0 8px;font-family:var(--display);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone,#ece8df);font-weight:400}
+.cb-eq-runes .cb-hold-hint{display:none}
+body:not(.cb-shared) .cb-wrap #cbAttrs{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+body:not(.cb-shared) .cb-wrap #cbProfileBars{display:grid;grid-template-columns:1fr 1fr;gap:0 44px}
+.cb-wrap #cbProfileBars .attr:has(.cb-chips),.cb-wrap #cbProfileBars .attr.cb-wide{grid-column:1/-1}
 .cb-col{display:flex;flex-direction:column;gap:20px}
 .cb-panel{background:var(--panel);border:1px solid var(--edge);padding:20px 22px 24px;position:relative}
 .cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
@@ -2077,6 +2087,8 @@ body.cb-cfg-open,html:has(body.cb-cfg-open){overflow:hidden;overscroll-behavior:
 
 @media (max-width:820px){
   .cb-wrap{grid-template-columns:1fr}
+  .cb-eq-split{flex-wrap:wrap}
+  body:not(.cb-shared) .cb-wrap #cbAttrs,body:not(.cb-shared) .cb-wrap #cbProfileBars{grid-template-columns:1fr}
   .cb-slot{width:50px;height:50px}
   .cb-slot.cb-slot-sm{width:42px;height:42px}
   .cb-cells-2up{width:108px}
@@ -3745,24 +3757,26 @@ footer li{color:#6f665b}
           <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">42</strong>&nbsp;/&nbsp;<span id="cbPtsTotal">42</span></div>
           <div class="cb-attr-list" id="cbAttrs"></div>
         </div>
-        <div class="cb-panel">
-          <h3>Utility Runes</h3>
-          <p class="cb-hold-hint">Tap a slot to add a rune. Press and hold a rune to change or remove it.</p>
-          <div class="cb-cells" id="cbRuneCells"></div>
-        </div>
       </div>
 
       <div class="cb-col">
         <div class="cb-panel">
           <h3>Equipment</h3>
           <p class="cb-hold-hint">Tap an item for its details. Press and hold it to edit, change or remove it.</p>
-          <div class="cb-rows" id="cbRows"></div>
+          <div class="cb-eq-split">
+            <div class="cb-rows" id="cbRows"></div>
+            <div class="cb-eq-runes">
+              <h5>Utility Runes</h5>
+              <p class="cb-hold-hint">Tap a slot to add a rune. Press and hold a rune to change or remove it.</p>
+              <div class="cb-cells" id="cbRuneCells"></div>
+            </div>
+          </div>
         </div>
-        <div class="cb-panel">
-          <h3>Build Stats<span class="cb-profile-warn-chip" id="cbProfileWarnChip" hidden>&#9888; Mismatch</span></h3>
-          <div class="attrs" id="cbProfileBars"></div>
-          <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
-        </div>
+      </div>
+      <div class="cb-panel cb-stats-wide">
+        <h3>Build Stats<span class="cb-profile-warn-chip" id="cbProfileWarnChip" hidden>&#9888; Mismatch</span></h3>
+        <div class="attrs" id="cbProfileBars"></div>
+        <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
       </div>
     </div>
 
@@ -5384,8 +5398,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var h=rows.map(function(r){ return '<div class="attr" style="--accent:'+r[3]+'"><span>'+r[0]+'</span><span></span><b>'+r[1]+'</b></div>'; }).join('');
       var pct=Math.min(100,Math.round(cs.ratio*100));
       var loadColor=cs.ratio>=1?'var(--rust)':(cs.ratio>=.6?'var(--gold)':'var(--verdigris)');
-      h+='<div class="attr" style="--accent:'+loadColor+'"><span>Equip Load</span><span class="meter"><i style="width:'+pct+'%"></i></span><b>'+(Math.round(cs.weight*10)/10)+' / '+Math.round(cs.capacity)+'</b></div>';
-      h+='<div class="attr" style="--accent:'+loadColor+'"><span>Weight Class</span><span></span><b>'+cs.cls.name+' ('+Math.round(cs.ratio*100)+'%) &middot; Stamina Recovery &times;'+cs.cls.rec+'</b></div>';
+      h+='<div class="attr cb-wide" style="--accent:'+loadColor+'"><span>Equip Load</span><span class="meter"><i style="width:'+pct+'%"></i></span><b>'+(Math.round(cs.weight*10)/10)+' / '+Math.round(cs.capacity)+'</b></div>';
+      h+='<div class="attr cb-wide" style="--accent:'+loadColor+'"><span>Weight Class</span><span></span><b>'+cs.cls.name+' ('+Math.round(cs.ratio*100)+'%) &middot; Stamina Recovery &times;'+cs.cls.rec+'</b></div>';
       var ok=Object.keys(cs.other||{}).filter(function(k){ return cs.other[k]; });
       if(ok.length) h+='<div class="attr" style="--accent:var(--gold)"><span>Other Bonuses</span><span></span><b class="cb-chips">'+ok.map(function(k){ var v=Math.round(cs.other[k]*10)/10, nm=k.replace(' (flat)',''), cost=/Cost|Buildup/.test(nm), good=cost?v<0:v>0;
         return '<span class="cb-chip '+(good?'good':'bad')+'"><i>'+nm+'</i>'+(v>0?'+':'')+v+(/\(flat\)/.test(k)?'':'%')+'</span>'; }).join('')+'</b></div>';
