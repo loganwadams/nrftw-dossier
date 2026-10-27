@@ -273,8 +273,8 @@
 
 .m-card .rn-meta:empty{display:none}
 .tt.tt-rune.tt-rune-hi:after{background:var(--ra) center/contain no-repeat;width:300px;height:330px;margin-top:-180px}
-/* quick items: their cards are short, so centre the whole item art on the card */
-.tt.tt-rune.tt-rune-hi.tt-qhi:after{width:270px;height:270px;right:-24px;margin-top:-135px;opacity:.42}
+/* quick items: same placement as the rune art (as tall as the card, centred, a little bleeding off the right edge, ending where the Sell Value strip starts), a little stronger since the item art is paler */
+.tt.tt-rune.tt-rune-hi.tt-qhi:after{top:0;bottom:0;right:0;margin:0;width:auto;height:auto;aspect-ratio:1/1;transform:translateX(12%);opacity:.42;clip-path:inset(0 0 40px 0)}
 .tt-rn .rn-dia{display:grid;place-items:center}
 .tt-rn .rn-dia .wd-row{display:grid;place-items:center;width:100%;height:100%;line-height:0;margin:0;padding:0}
 .tt-rn .rn-dia .wd-ic{vertical-align:middle;margin:0;display:block}
