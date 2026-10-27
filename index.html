@@ -873,6 +873,8 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-hero #cbSharedSave{position:absolute;top:0;right:30px;z-index:3;padding:0!important;line-height:0}
 .cb-sh-hero #cbSharedSave svg{width:34px;height:34px;overflow:hidden;fill:transparent;transition:fill .18s,color .18s,transform .18s}
 .cb-sh-hero #cbSharedSave:hover svg,.cb-sh-hero #cbSharedSave:focus-visible svg{fill:currentColor;color:#ffd56b;transform:translateY(-1px)}
+.cb-sh-hero #cbSharedSave.is-on svg{fill:currentColor;color:#ffd56b}
+.cb-bm-msg{position:absolute;top:8px;right:72px;z-index:3;font:600 10.5px var(--data);letter-spacing:.2em;text-transform:uppercase;color:#ffd56b}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6198,7 +6200,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var oo=decodeBuild(code)||o, cr=oo.cr&&oo.cr.a?oo.cr:(CB_SHARED_INFO&&CB_SHARED_INFO.author_name?{n:CB_SHARED_INFO.name||'',a:CB_SHARED_INFO.author_name}:null);
         if(cr) oo.cr=cr;
         var ti=document.querySelector('#cbSharedBar .cb-sh-title');
-        if(window.__cbAcct&&window.__cbAcct.saveShared) window.__cbAcct.saveShared(encodeBuild(oo),((CB_SHARED_INFO&&CB_SHARED_INFO.name)||(ti&&ti.textContent)||'Saved build').slice(0,60));
+        var sb=document.getElementById('cbSharedSave'); if(!sb||sb.classList.contains('is-on')) return;
+        if(window.__cbAcct&&window.__cbAcct.saveShared) window.__cbAcct.saveShared(encodeBuild(oo),((CB_SHARED_INFO&&CB_SHARED_INFO.name)||(ti&&ti.textContent)||'Saved build').slice(0,60),function(ok,err){
+          var m=document.getElementById('cbBmMsg'); if(!m){ m=document.createElement('span'); m.id='cbBmMsg'; m.className='cb-bm-msg'; sb.insertAdjacentElement('afterend',m); }
+          if(ok){ sb.classList.add('is-on'); m.textContent='Bookmarked'; } else { m.textContent=err||'Could not save'; }
+        });
       });
       if(!document.getElementById('cerim-builder').offsetParent) location.hash='#cerim-builder';
     }
@@ -6409,23 +6415,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       };
 
       // Save a shared build straight into the signed-in user's My Builds.
-      window.__cbAcct.saveShared=function(code,name0){
+      window.__cbAcct.saveShared=function(code,name0,done){
         if(!user){ chooseSignIn(); return; }
-        openModal('Save build','<input type="text" id="cbSaveName" maxlength="60" aria-label="Build name" value="'+escH(name0)+'"><button type="button" class="cb-mbtn" id="cbSaveGo">Save</button><div class="cb-mmsg" role="status"></div>');
-        var inp=$('cbSaveName'); inp.focus(); inp.select();
-        function go(){
-          var name=inp.value.trim(); if(!name){ msg('Give the build a name.',1); return; }
-          msg('Saving\u2026');
-          client().then(function(c){ return c.from('builds').insert({name:name,code:code}).select('id,name').single(); })
-            .then(function(r){ if(r.error) throw r.error;
-              openModal('Saved','<p><strong>'+escH(name)+'</strong> is saved to your account.</p><div class="cb-prov"><button type="button" class="cb-mbtn" id="cbSvMy">Open My Builds</button><button type="button" class="cb-mbtn" id="cbSvOk">Done</button></div>');
-              $('cbSvOk').addEventListener('click',closeModal);
-              $('cbSvMy').addEventListener('click',function(){ listBuilds(); });
-            })
-            .catch(function(e){ msg(cleanErr(e),1); });
-        }
-        $('cbSaveGo').addEventListener('click',go);
-        inp.addEventListener('keydown',function(e){ if(e.key==='Enter') go(); });
+        client().then(function(c){ return c.from('builds').insert({name:name0,code:code}).select('id').single(); })
+          .then(function(r){ if(r.error) throw r.error; if(done) done(true); })
+          .catch(function(e){ if(done) done(false,cleanErr(e)); });
       };
 
       // ---- save
