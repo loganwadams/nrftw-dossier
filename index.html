@@ -6009,7 +6009,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       var gradeEl=document.getElementById('cbGrade');
       if(gradeEl){ if(report.grade){ gradeEl.innerHTML=gradeHtml(report.grade); gradeEl.hidden=false; } else { gradeEl.hidden=true; } }
-      CB_LAST_GRADE=report.grade||null; if(typeof paintShGrade==='function') paintShGrade();
       var gradeHead=document.getElementById('cbReportGrade');
       if(gradeHead){ if(report.grade){ gradeHead.className='cb-report-grade '+tierOf(report.grade.score); gradeHead.innerHTML='<small class="cb-grade-lbl">Build Grade</small>'+report.grade.score.toFixed(1)+'<small>/ 10</small>'; gradeHead.hidden=false; } else gradeHead.hidden=true; }
       if(report.empty){
@@ -6204,26 +6203,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(lay) lay.hidden=false;
     }
     var CB_SHARED_INFO=null;
-    var CB_LAST_GRADE=null;
-    function paintShGrade(){
-      var hero=document.getElementById('cbSharedBar'), g=CB_LAST_GRADE; if(!hero) return;
-      var box=document.getElementById('cbShGrade');
-      if(!box){ var at=hero.querySelector('.cb-sh-attrs'); if(!at) return; box=document.createElement('div'); box.id='cbShGrade'; box.className='cb-sh-gradebox'; at.insertAdjacentElement('afterend',box); }
-      if(!g){ box.hidden=true; return; }
-      box.hidden=false;
-      box.innerHTML='<div class="cb-shg-top"><span class="cb-shg-lbl">Build Grade</span><span class="cb-shg-num '+tierOf(g.score)+'">'+g.score.toFixed(1)+'<small>/ 10</small></span><span class="cb-shg-tier">'+g.label+'</span></div>'+
-        '<div class="cb-shg-rows">'+g.cats.map(function(c){ return '<div class="cb-shg-row"><span>'+c.label+'</span><span class="cb-grade-bar '+tierOf(c.score)+'"><span style="width:'+(c.score*10)+'%"></span></span><b>'+c.score.toFixed(1)+'</b></div>'; }).join('')+'</div>';
-    }
     function arrangeShTop(){
       var hero=document.getElementById('cbSharedBar'), stats=document.getElementById('cbProfileBars'); stats=stats&&stats.closest('.cb-panel');
       if(!hero||!stats) return;
       var top=document.getElementById('cbShTop');
       if(!top){ top=document.createElement('div'); top.id='cbShTop'; hero.parentNode.insertBefore(top,hero); }
       if(hero.parentNode!==top) top.appendChild(hero);
-      var right=document.getElementById('cbShRight');
-      if(!right){ right=document.createElement('div'); right.id='cbShRight'; top.appendChild(right); }
-      if(stats.parentNode!==right) right.appendChild(stats);
-      var lst=document.getElementById('cbSharedList'); if(lst&&lst.parentNode!==right) right.appendChild(lst);
+      if(stats.parentNode!==top) top.appendChild(stats);
     }
     function renderSharedHero(o){
       var hero=document.getElementById('cbSharedBar'); if(!hero) return;
@@ -6237,7 +6223,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
         '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave" title="Save build" aria-label="Save build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 -1v22l6-4 6 4V-1"/></svg></button><button type="button" class="cb-tool share" id="cbSharedCopy" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/></svg></button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
-      hero.hidden=false; arrangeShTop(); paintShGrade();
+      hero.hidden=false; arrangeShTop();
       if(o.cr&&o.cr.a){ var cl=document.createElement('p'); cl.className='cb-sh-community cb-credit-line'; cl.textContent=creditLine(o.cr); var row0=hero.querySelector('.cb-sh-titlerow'); if(row0) row0.insertAdjacentElement('afterend',cl); }
       // Opened from Community Builds: swap in the listing's own title, author and description.
       var cbId=null; try{ cbId=new URLSearchParams(location.search).get('cb'); }catch(e){}
