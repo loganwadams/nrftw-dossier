@@ -2694,6 +2694,11 @@ body.on-media .md-ev,body.on-media .md-ev:hover,body.on-media .md-ev:focus-visib
 .md-ev:before,.md-ev:hover:before,.md-ev:focus-visible:before{display:block;height:auto;width:auto;transform:none;box-shadow:none;left:0;top:0;right:0;bottom:0}
 .md-ev .ar-k{margin-top:auto}
 .md-date{font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-shadow:1px 1px 0 #000,2px 2px 2px #000,0 0 6px #000,0 0 12px rgba(0,0,0,.9)}
+.md-ev:hover .md-date,.md-ev:focus-within .md-date{opacity:0}
+.md-date{transition:opacity .3s}
+.md-ev h3{font-size:14px!important;line-height:1.25!important;letter-spacing:.05em!important;max-width:100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;margin-top:-1.6em;padding-bottom:2px}
+.md-ev h3{position:absolute!important;left:20px;right:20px;top:18px;margin:0}
+@media (hover:none){.md-ev .md-date{opacity:1}}
 .md-ev{gap:6px!important;align-items:flex-start!important;text-align:left!important}
 .md-ev h3,.md-ev .ar-k{opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s}
 .md-ev:hover h3,.md-ev:hover .ar-k,.md-ev:focus-within h3,.md-ev:focus-within .ar-k{opacity:1;transform:none}
