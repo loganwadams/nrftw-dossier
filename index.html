@@ -968,6 +968,15 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 .cm-board li:not(:first-child):after,.cm-foot-row:before,.cm-back-head:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45);pointer-events:none}
 .cm-board li:not(:first-child):after,.cm-foot-row:before{top:-6px}
 .cm-back-head:after{bottom:-6px}
+/* Cerim Builder: Level slider and Equip Load meter drawn as the game's line; the filled part follows the line's own pattern */
+#cerim-builder .meter{height:12px;border:0;background:rgba(255,255,255,.1);-webkit-mask:url(img/ui-underline.webp) 50% 50%/100% 100% no-repeat;mask:url(img/ui-underline.webp) 50% 50%/100% 100% no-repeat}
+#cerim-builder .meter i{background:var(--accent,#ece8df)!important}
+.cb-level-row input[type=range]{-webkit-appearance:none;appearance:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 .5 11.5 6 6 11.5.5 6z' fill='%23fff' stroke='%230b0c0e'/%3E%3C/svg%3E") var(--pct,50%) 50%/12px 12px no-repeat;height:22px;margin:0;cursor:pointer}
+.cb-level-row input[type=range]::-webkit-slider-runnable-track{height:12px;background:linear-gradient(90deg,#fff var(--pct,50%),rgba(255,255,255,.1) var(--pct,50%));-webkit-mask:url(img/ui-underline.webp) 50% 50%/100% 100% no-repeat;mask:url(img/ui-underline.webp) 50% 50%/100% 100% no-repeat}
+.cb-level-row input[type=range]::-moz-range-track{height:12px;background:linear-gradient(90deg,#fff var(--pct,50%),rgba(255,255,255,.1) var(--pct,50%));mask:url(img/ui-underline.webp) 50% 50%/100% 100% no-repeat}
+.cb-level-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:22px;margin-top:-5px;background:transparent;border:0}
+.cb-level-row input[type=range]::-moz-range-thumb{width:12px;height:22px;background:transparent;border:0}
+.cb-level-row input[type=range]:focus-visible{outline:1px solid #9fc8e8;outline-offset:3px}
 /* Cerim Builder top buttons: small-caps text */
 .cb-reset-wrap{gap:0 34px!important}
 .cb-reset-wrap .cb-tool{font-family:"Marcellus",var(--display)!important;font-variant:small-caps;font-size:18px!important;letter-spacing:.06em!important;text-transform:none!important;font-weight:400!important;padding:10px 4px!important;border:0!important;background:none!important;box-shadow:none!important;color:var(--bone)!important;position:relative;transform:none!important;transition:color .2s}
@@ -9262,6 +9271,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('resize',soon); window.addEventListener('hashchange',soon); window.addEventListener('popstate',soon); window.addEventListener('load',soon);
   var ps=history.pushState; history.pushState=function(){ var r=ps.apply(this,arguments); soon(); return r; };
   soon();
+})();
+</script>
+<script>
+/* Level slider: keep --pct in step with the value, however the value is set */
+(function(){
+  var el=document.getElementById('cbLevel'); if(!el) return;
+  function pct(){ var mn=+el.min||0,mx=+el.max||100; el.style.setProperty('--pct',((+el.value-mn)/(mx-mn)*100)+'%'); }
+  var d=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+  Object.defineProperty(el,'value',{get:function(){return d.get.call(this)},set:function(v){d.set.call(this,v);pct()},configurable:true});
+  el.addEventListener('input',pct); pct();
 })();
 </script>
 <script>
