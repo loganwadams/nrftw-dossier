@@ -7664,7 +7664,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var t=el();
       t.className='tt r-'+(c.r||'standard');
       var rk=(c.n||'').toLowerCase().replace(/[^a-z0-9]/g,''); if(c.t==='Rune'&&RUNE_HI.indexOf(rk)>-1){ t.style.setProperty('--ra','url(img/rune/'+rk+'.webp)'); t.classList.add('tt-rune-hi'); } else t.classList.remove('tt-rune-hi');
-      if((c.t==='Potion'||c.t==='Weapon Oil')&&window.__QUICK_HI.indexOf(rk)>-1){ t.style.setProperty('--ra','url(img/quick/'+rk+'.webp)'); t.classList.add('tt-rune-hi'); }
+      t.classList.remove('tt-qhi');
+      if((c.t==='Potion'||c.t==='Weapon Oil')&&window.__QUICK_HI.indexOf(rk)>-1){ t.style.setProperty('--ra','url(img/quick/'+rk+'.webp)'); t.classList.add('tt-rune-hi','tt-qhi'); }
       var WM_TYPES={Rune:1,Ember:1,Potion:1,'Weapon Oil':1};
       if(WM_TYPES[c.t]&&c.p){ t.classList.add('tt-rune'); t.style.setProperty('--rx',(-c.p[0]*300)+'px'); t.style.setProperty('--ry',(-c.p[1]*300)+'px'); }
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
@@ -8136,7 +8137,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
       var WM_TYPES={Rune:1,Ember:1,Potion:1,'Weapon Oil':1};
       var wmCls=(WM_TYPES[c.t]&&c.p)?' tt-rune':'', wmSty=(WM_TYPES[c.t]&&c.p)?' style="--rx:'+(-c.p[0]*300)+'px;--ry:'+(-c.p[1]*300)+'px"':'';
-      var qk=(c.n||'').toLowerCase().replace(/[^a-z0-9]/g,''); if(wmSty&&(c.t==='Potion'||c.t==='Weapon Oil')&&window.__QUICK_HI&&window.__QUICK_HI.indexOf(qk)>-1){ wmCls+=' tt-rune-hi'; wmSty=wmSty.slice(0,-1)+';--ra:url(img/quick/'+qk+'.webp)"'; }
+      var qk=(c.n||'').toLowerCase().replace(/[^a-z0-9]/g,''); if(wmSty&&(c.t==='Potion'||c.t==='Weapon Oil')&&window.__QUICK_HI&&window.__QUICK_HI.indexOf(qk)>-1){ wmCls+=' tt-rune-hi tt-qhi'; wmSty=wmSty.slice(0,-1)+';--ra:url(img/quick/'+qk+'.webp)"'; }
       if(c.t==='Rune'&&c.p&&!c.ex&&window.__runeCardFull){
         body.innerHTML='<div class="tt ip-tt tt-rn'+wmCls+' r-'+(c.r||'standard')+'"'+wmSty+'>'+window.__runeCardFull(c)+'</div><div id="ipMats"></div>';
         return;
