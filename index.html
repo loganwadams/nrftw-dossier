@@ -6925,7 +6925,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             if(srt==='grade'){ var ga=gradeOf(a), gb=gradeOf(b); if((gb==null?-1:gb)!==(ga==null?-1:ga)) return (gb==null?-1:gb)-(ga==null?-1:ga); }
             return (new Date(b.published_at||b.updated_at))-(new Date(a.published_at||a.updated_at));
           });
-          metaEl.innerHTML=rows.length?('<b>'+out.length+'</b> of '+rows.length+' build'+(rows.length===1?'':'s')):'';
+          metaEl.innerHTML='';
           if(!rows.length){ list.innerHTML='<p class="cm-empty">No builds have been published yet. Be the first: save a build in the Cerim Builder, then publish it from My Builds.</p>'; return; }
           if(!out.length){ list.innerHTML='<p class="cm-empty">No builds match those filters.</p>'; return; }
           list.innerHTML=out.map(cardHtml).join('');
