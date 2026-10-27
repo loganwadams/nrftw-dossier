@@ -6201,11 +6201,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var oo=decodeBuild(code)||o, cr=oo.cr&&oo.cr.a?oo.cr:(CB_SHARED_INFO&&CB_SHARED_INFO.author_name?{n:CB_SHARED_INFO.name||'',a:CB_SHARED_INFO.author_name}:null);
         if(cr) oo.cr=cr;
         var ti=document.querySelector('#cbSharedBar .cb-sh-title');
-        var sb=document.getElementById('cbSharedSave'); if(!sb||sb.classList.contains('is-on')) return;
-        if(window.__cbAcct&&window.__cbAcct.saveShared) window.__cbAcct.saveShared(encodeBuild(oo),((CB_SHARED_INFO&&CB_SHARED_INFO.name)||(ti&&ti.textContent)||'Saved build').slice(0,60),function(ok,err){
-          var m=document.getElementById('cbBmMsg'); if(!m){ m=document.createElement('span'); m.id='cbBmMsg'; m.className='cb-bm-msg'; sb.insertAdjacentElement('afterend',m); }
-          if(ok){ sb.classList.add('is-on'); m.textContent='Bookmarked'; } else { m.textContent=err||'Could not save'; }
-          m.classList.remove('show'); void m.offsetWidth; m.classList.add('show'); clearTimeout(m._t); m._t=setTimeout(function(){ m.classList.remove('show'); },2500);
+        var sb=document.getElementById('cbSharedSave'); if(!sb||sb._busy) return;
+        function pop(txt){ var m=document.getElementById('cbBmMsg'); if(!m){ m=document.createElement('span'); m.id='cbBmMsg'; m.className='cb-bm-msg'; sb.insertAdjacentElement('afterend',m); }
+          m.textContent=txt; m.classList.remove('show'); void m.offsetWidth; m.classList.add('show'); clearTimeout(m._t); m._t=setTimeout(function(){ m.classList.remove('show'); },2500); }
+        if(sb.classList.contains('is-on')){
+          if(!sb._id) return; sb._busy=true;
+          window.__cbAcct.unsaveShared(sb._id,function(ok,err){ sb._busy=false; if(ok){ sb.classList.remove('is-on'); sb._id=null; pop('Removed'); } else pop(err||'Could not remove'); });
+          return;
+        }
+        sb._busy=true;
+        if(window.__cbAcct&&window.__cbAcct.saveShared) window.__cbAcct.saveShared(encodeBuild(oo),((CB_SHARED_INFO&&CB_SHARED_INFO.name)||(ti&&ti.textContent)||'Saved build').slice(0,60),function(ok,err,id){ sb._busy=false;
+          if(ok===null) return; if(ok){ sb.classList.add('is-on'); sb._id=id; pop('Bookmarked'); } else pop(err||'Could not save');
         });
       });
       if(!document.getElementById('cerim-builder').offsetParent) location.hash='#cerim-builder';
@@ -6417,10 +6423,15 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       };
 
       // Save a shared build straight into the signed-in user's My Builds.
-      window.__cbAcct.saveShared=function(code,name0,done){
-        if(!user){ chooseSignIn(); return; }
-        client().then(function(c){ return c.from('builds').insert({name:name0,code:code}).select('id').single(); })
+      window.__cbAcct.unsaveShared=function(id,done){
+        client().then(function(c){ return c.from('builds').delete().eq('id',id); })
           .then(function(r){ if(r.error) throw r.error; if(done) done(true); })
+          .catch(function(e){ if(done) done(false,cleanErr(e)); });
+      };
+      window.__cbAcct.saveShared=function(code,name0,done){
+        if(!user){ chooseSignIn(); if(done) done(null); return; }
+        client().then(function(c){ return c.from('builds').insert({name:name0,code:code}).select('id').single(); })
+          .then(function(r){ if(r.error) throw r.error; if(done) done(true,null,r.data&&r.data.id); })
           .catch(function(e){ if(done) done(false,cleanErr(e)); });
       };
 
