@@ -2693,6 +2693,8 @@ body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{background:linear-
 body.on-media .md-ev,body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{display:flex;grid-template-columns:none;aspect-ratio:16/9;min-height:0;padding:20px 20px 16px;border:0;cursor:default}
 .md-ev:before,.md-ev:hover:before,.md-ev:focus-visible:before{display:block;height:auto;width:auto;transform:none;box-shadow:none;left:0;top:0;right:0;bottom:0}
 .md-ev .ar-k{margin-top:auto}
+.md-date{font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-shadow:1px 1px 0 #000,2px 2px 2px #000,0 0 6px #000,0 0 12px rgba(0,0,0,.9)}
+.md-ev{gap:6px!important;align-items:flex-start!important;text-align:left!important}
 .md-ev h3,.md-ev .ar-k{opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s}
 .md-ev:hover h3,.md-ev:hover .ar-k,.md-ev:focus-within h3,.md-ev:focus-within .ar-k{opacity:1;transform:none}
 @media (hover:none){.md-ev h3,.md-ev .ar-k{opacity:1;transform:none}}
@@ -7581,7 +7583,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   function tile(p){ return '<a'+(/lG1qeY|DLenYe/.test(p.url)?' class="md-crop"':'')+' href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.thumb+'" alt="" loading="lazy"><span>'+esc(clean(p.title))+'</span></a>'; }
   gal.innerHTML=A.slice(0,5).map(tile).join(''); gal2.innerHTML=A.slice(5).map(tile).join('');
-  tl.innerHTML=V.map(function(v){ var d=(v.date||'').split('-'); return '<div class="ar-card md-ev" data-y="'+(d[0]||'')+'" style="background:url('+v.thumb+') center/cover no-repeat"><h3>'+esc(v.title)+'</h3><span class="ar-k">'+esc(v.note||'')+(v.note&&d.length>2?' \u00b7 ':'')+(d.length>2?M[+d[1]-1]+' '+(+d[2]):'')+'</span><a class="md-play" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-t="'+esc(v.title)+'" aria-label="Play: '+esc(v.title)+'"></a></div>'; }).join('');
+  tl.innerHTML=V.map(function(v){ var d=(v.date||'').split('-'); return '<div class="ar-card md-ev" data-y="'+(d[0]||'')+'" style="background:url('+v.thumb+') center/cover no-repeat"><span class="md-date">'+(d.length>2?M[+d[1]-1]+' '+(+d[2])+', '+d[0]:'')+'</span><h3>'+esc(v.title)+'</h3><a class="md-play" href="https://www.youtube.com/watch?v='+v.id+'" data-id="'+v.id+'" data-t="'+esc(v.title)+'" aria-label="Play: '+esc(v.title)+'"></a></div>'; }).join('');
   var yearEl=document.getElementById('md-year'), brand=yearEl&&yearEl.parentNode, evs=[].slice.call(tl.querySelectorAll('.md-ev'));
   function setYear(){ if(!yearEl||!evs.length) return; var line=brand.getBoundingClientRect().bottom, y=evs[0].dataset.y; for(var i=0;i<evs.length;i++){ if(evs[i].getBoundingClientRect().bottom>line+8){ y=evs[i].dataset.y; break; } y=evs[i].dataset.y; } if(yearEl.textContent!==y) yearEl.textContent=y; }
   window.addEventListener('scroll',setYear,{passive:true}); window.addEventListener('resize',setYear); new MutationObserver(function(){ setTimeout(setYear,60); }).observe(document.body,{attributes:true,attributeFilter:['class']}); setYear(); setTimeout(setYear,400);
