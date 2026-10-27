@@ -968,6 +968,16 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 .cm-board li:not(:first-child):after,.cm-foot-row:before,.cm-back-head:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45);pointer-events:none}
 .cm-board li:not(:first-child):after,.cm-foot-row:before{top:-6px}
 .cm-back-head:after{bottom:-6px}
+/* Cerim Builder top buttons: small-caps text with diamond separators */
+.cb-reset-wrap{gap:0 28px!important}
+.cb-reset-wrap .cb-tool{font-family:"Marcellus",var(--display)!important;font-variant:small-caps;font-size:18px!important;letter-spacing:.06em!important;text-transform:none!important;font-weight:400!important;padding:10px 4px!important;border:0!important;background:none!important;box-shadow:none!important;color:var(--bone)!important;position:relative;transform:none!important;transition:color .2s}
+.cb-reset-wrap .cb-tool svg{display:none!important}
+.cb-reset-wrap .cb-tool.ghost{color:#8f897c!important}
+.cb-reset-wrap .cb-tool:hover,.cb-reset-wrap .cb-tool:focus-visible{color:#fff!important;filter:none!important}
+.cb-reset-wrap .cb-tool:after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:12px;background:url(img/ui-underline.webp) 50% 50%/100% 100% no-repeat;opacity:0;transition:opacity .25s}
+.cb-reset-wrap .cb-tool:hover:after,.cb-reset-wrap .cb-tool:focus-visible:after{opacity:.7}
+.cb-reset-wrap #cbShareBuild:before,.cb-reset-wrap #cbResetBuild:before{content:"\25C6";position:absolute;left:-18px;top:50%;transform:translateY(-50%);font-size:7px;color:#8f897c;pointer-events:none}
+.cb-reset-wrap:has(#cbAcctIn2[hidden]) #cbShareBuild:before{display:none}
 /* Vendor cards: line frame as a border image (their ::before is the map art) */
 .ar-card.vd-card{border:4px solid transparent;border-image:url(img/ui-frame.webp?v=2) 4/4px/0 stretch}
 /* Archive cards: the four-edge line border, drawn on the existing dark overlay layer */
