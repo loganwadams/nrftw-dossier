@@ -999,6 +999,7 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 /* Damage Output on a shared build: sprite lines under the header row and above the notes */
 #cbReport .cb-dmg-table thead th{border-bottom:0!important}
 #cbReport .cb-dmg-table thead tr{background:url(img/ui-underline.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 12px no-repeat}
+#cbReport .cb-dmg-notes{display:none!important}  /* Details toggle removed; markup kept for the analysis code */
 #cbReport .cb-dmg-notes{border-top:0;position:relative}
 #cbReport .cb-dmg-notes:before{content:"";position:absolute;left:0;right:0;top:-6px;height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45);pointer-events:none}
 /* Community Builds cards and boards: the game's thin bounty divider on all four edges */
@@ -1659,9 +1660,9 @@ section{padding-block:48px}
 .cb-dmg-final .cb-dmg-big{color:var(--gold);font-size:22px}
 .cb-dmg-bar{display:flex;height:7px;margin-top:7px;background:#241c16;border:1px solid #2e241b;overflow:hidden}
 .cb-dmg-bar i{display:block;height:100%}
-.cb-dmg-bar .b{background:#5d8bb5}
-.cb-dmg-bar .a{background:#f3efe6}
-.cb-dmg-bar .m{background:#4fd1c5}
+.cb-dmg-bar .b{background:#8f7bff}
+.cb-dmg-bar .a{background:#f2dc4b}
+.cb-dmg-bar .m{background:#33d6ff}
 .cb-dmg-row.cb-dmg-top td.cb-dmg-final::after{content:"Highest";display:inline-block;margin-top:5px;font-family:var(--data);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);border-radius:2px;padding:1px 6px}
 .cb-dmg-table td.cb-dmg-empty{text-align:center;color:var(--muted);font-family:var(--body);font-size:15px;padding:26px 12px}
 .cb-dmg-key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0 0;font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--w1,#8b8174)}
@@ -3821,7 +3822,7 @@ footer li{color:#6f665b}
           </table>
         </div>
         <div class="cb-dmg-key" id="cbDmgKey" hidden>
-          <span style="--k:#5d8bb5">Listed</span><span style="--k:#f3efe6">Stat scaling</span><span style="--k:#4fd1c5">Bonuses</span>
+          <span style="--k:#8f7bff">Listed</span><span style="--k:#f2dc4b">Stat scaling</span><span style="--k:#33d6ff">Bonuses</span>
         </div>
         <details class="cb-dmg-notes" id="cbDmgNotes" hidden>
           <summary>Details</summary>
