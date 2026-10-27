@@ -969,7 +969,7 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 .cm-board li:not(:first-child):after,.cm-foot-row:before{top:-6px}
 .cm-back-head:after{bottom:-6px}
 /* Vendor cards: line frame as a border image (their ::before is the map art) */
-.ar-card.vd-card{border:4px solid transparent;border-image:url(img/ui-frame.webp) 4/4px/0 stretch}
+.ar-card.vd-card{border:4px solid transparent;border-image:url(img/ui-frame.webp?v=2) 4/4px/0 stretch}
 /* Archive cards: the four-edge line border, drawn on the existing dark overlay layer */
 @property --ar-ov{syntax:"<number>";inherits:false;initial-value:.4}
 .ar-card:not(.vd-card)::before{opacity:1!important;--ar-ov:.4;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,linear-gradient(rgba(0,0,0,var(--ar-ov)),rgba(0,0,0,var(--ar-ov)))!important;transition:--ar-ov .3s}
