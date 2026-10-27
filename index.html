@@ -5922,7 +5922,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var hs=Math.max(0,(attrVals.health||10)-10)+Math.max(0,(attrVals.stamina||10)-10);
       var vit=spent>0?Math.min(1,hs/Math.max(1,spent*.2)):.5;
       var sus=(dmg.totals&&(dmg.totals.lifesteal>0||dmg.totals.thorns>0))?1:0;
-      out.push({id:'surv',label:'Survivability',w:.14,score:clamp(loadS*.55+10*vit*.35+sus*.5),why:cs.cls.name+' load ('+Math.round(cs.ratio*100)+'%)'+(vit<.6?'; few points in Health/Stamina.':'; Health and Stamina are covered.')+(sus?' Lifesteal or thorns on the gear.':'')});
+      out.push({id:'surv',label:'Survivability',w:.14,score:clamp(loadS*.55+10*vit*.35+sus*1),why:cs.cls.name+' load ('+Math.round(cs.ratio*100)+'%)'+(vit<.6?'; few points in Health/Stamina.':'; Health and Stamina are covered.')+(sus?' Lifesteal or thorns on the gear.':'')});
       // 5. Attribute allocation: points spent, and spent where the build can use them
       var useful={health:1,stamina:1,equipload:1}; rows.forEach(function(r){ (r.st.scales||[]).forEach(function(n){ useful[n.toLowerCase()]=1; }); });
       var wasted=0, wastedN=[]; Object.keys(attrVals).forEach(function(k){ var p=Math.max(0,attrVals[k]-10); if(p>0&&!useful[k]&&!(k==='focus'&&(rows.length===0||rows.some(function(r){ return /staff|wand|tome|catalyst/i.test(r.item.n); })))){ wasted+=p; wastedN.push(k); } });
