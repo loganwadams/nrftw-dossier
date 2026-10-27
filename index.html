@@ -1681,6 +1681,7 @@ section{padding-block:48px}
 .cb-wrap>.cb-class-wide{grid-column:1/-1;padding-bottom:18px}
 .cb-wrap>.cb-class-wide .cb-class-drop,.cb-wrap>.cb-class-wide .cb-class-selected{display:none}
 .cb-wrap>.cb-class-wide h3{margin-bottom:0}
+#cbProfileNote:empty{display:none}
 .cb-col{display:flex;flex-direction:column;gap:20px}
 .cb-panel{background:var(--panel);border:1px solid var(--edge);padding:20px 22px 24px;position:relative}
 .cb-panel h3{margin:0 0 18px;font-family:var(--display);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--edge);padding-bottom:10px}
@@ -5411,7 +5412,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       } else if(nothingInvested){
         note.textContent='Equip gear and spend attribute points above to see your stats.';
       } else {
-        note.textContent='Armor, weight and capacity use the game’s formulas.'+'';
+        note.textContent='';
       }
     }
 
