@@ -120,7 +120,7 @@
     var out=[], lastIc=null, reqN=0;
     (ps||[]).forEach(function(p){
       if('t' in p && Object.keys(p).length===1 && adj&&adj.statT&&lastIc&&adj.statT[lastIc]!=null&&/^\d/.test(p.t)){ out.push(esc(adj.statT[lastIc])); lastIc=null; }
-      else if('t' in p && Object.keys(p).length===1){ out.push(esc(p.t)); }
+      else if('t' in p && Object.keys(p).length===1){ if(out.length&&/^[,.;:!?](?!\d)/.test(p.t)) out[out.length-1]+=esc(p.t); else out.push(esc(p.t)); }
       else if('v' in p){ var v=p.v; if(!inl&&adj&&adj.stat&&lastIc&&adj.stat[lastIc]!=null){ v=adj.stat[lastIc]; } out.push('<b class="wd-num">'+esc(v)+'</b>'); }
       else if('r' in p){ out.push('<span class="wd-rng">(<b class="wd-num">'+esc(p.r[0])+'</b>–<b class="wd-num">'+esc(p.r[1])+'</b>)</span>'); }
       else if('ic' in p){ lastIc=String(p.ic).replace(/^fi-/,''); out.push(icon(p.ic,inl)); }
