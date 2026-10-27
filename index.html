@@ -3825,7 +3825,7 @@ footer li{color:#6f665b}
           <span style="--k:#8b8174">Listed</span><span style="--k:var(--gold)">Stat scaling</span><span style="--k:var(--verdigris)">Bonuses</span>
         </div>
         <details class="cb-dmg-notes" id="cbDmgNotes" hidden>
-          <summary>How these numbers are built</summary>
+          <summary>Details</summary>
           <div id="cbDmgNotesBody"></div>
         </details>
       </div>
@@ -5437,7 +5437,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // with, and its damage type. Attribute scaling and base damage by item level come from the
     // game's own balance data (see DMG_ATTR_CURVE and DMG_BASE_AT_L1), checked against in-game
     // readouts. Gem, facet and enchantment lines only count when they are plain, unconditional
-    // damage bonuses; anything conditional is listed under "How these numbers are built".
+    // damage bonuses; anything conditional is listed under "Details".
     // Attribute Bonus = Base x curve(points above 10). Curve points are [attribute points, fraction of Base].
     var DMG_ATTR_CURVE=[[0,0],[5,0.35],[10,0.65],[20,1.15],[80,3.55]];
     function dmgAttrFrac(pts){
