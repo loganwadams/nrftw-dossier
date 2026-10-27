@@ -1166,7 +1166,7 @@ body.on-cerim .pgbar-search:hover::before,body.on-cerim .pgbar-search:focus-visi
 body.on-cerim .pgbar-right .nav-acct>button:hover,body.on-cerim .pgbar-right .nav-provs>button.nav-connect:hover,body.on-cerim .pgbar-right .nav-provs.open>button.nav-connect{color:#f0f0f0}
 body.on-cerim .pgbar-search{color:#c8c8c8}
 body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/header-scene-cerim.webp);filter:brightness(.78)}
-#cerim-builder>.sect-head,#cerim-builder>.standfirst{display:none}
+#cerim-builder>.standfirst,#cerim-builder>.sect-head .coming-soon-badge{display:none}
 .ar-card .ar-go,#recipes .rc-jump,#infusions .cols2[data-m="intro:infusions"],#enchantments .cols2[data-m="intro:enchantments"],#infusions .inf-group-head>p{display:none}
 #infusions .inf-group{display:none}
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
@@ -2686,7 +2686,7 @@ body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{background:linear-
 .md-gal a:after{background:url(img/ui-border.webp) 50% 0/100% 4px no-repeat,url(img/ui-border.webp) 50% 100%/100% 4px no-repeat,url(img/ui-border-v.webp) 0 50%/4px 100% no-repeat,url(img/ui-border-v.webp) 100% 50%/4px 100% no-repeat,linear-gradient(transparent 55%,rgba(5,4,3,.82))!important}
 .md-brand{position:static!important}
 .md-tl{margin-left:0!important}
-.md-sec:not(.md-sec-art){margin-top:-44px}
+.md-sec:not(.md-sec-art){margin-top:-52px}
 .md-sec:not(.md-sec-art) .md-brand{width:auto!important;display:block!important}
 /* Media videos: same cards as Archive (frame, darkened until hover, shadowed white title); only the play button opens the popup */
 .md-tl{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
@@ -3743,6 +3743,7 @@ footer li{color:#6f665b}
 <!-- /ITEM PAGE -->
 <!-- VIDEOS -->
   <section id="videos">
+    <div class="sect-head"><h2>Media</h2></div>
     <div class="md" id="md">
       <section class="md-sec"><div class="md-brand"><img src="img/brand/youtube-logo-gold.png" alt="YouTube"></div>
       <div class="md-tl" id="md-tl"></div></section>
@@ -6449,7 +6450,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       CB_SHARED=true;
       document.body.classList.add('cb-shared');
       try{ document.title='Shared Cerim Build \u2014 Wicked Dossier'; }catch(e){}
-      var h=document.querySelector('#cerim-builder .sect-head'); if(h) h.style.display='none';
+      
       Array.prototype.forEach.call(document.querySelectorAll('.cb-attr-input'),function(i){ i.readOnly=true; i.tabIndex=-1; });
       var lv=document.getElementById('cbLevel'); if(lv) lv.disabled=true;
       [['Your Numbers','Key Numbers'],['Needs Attention','Gaps'],['Recommended Changes','Where It Could Improve']].forEach(function(p){ Array.prototype.forEach.call(document.querySelectorAll('#cbReport h3'),function(h){ if(h.textContent.trim()===p[0]) h.textContent=p[1]; }); });
