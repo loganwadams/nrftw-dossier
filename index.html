@@ -886,19 +886,29 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-hero .cb-sh-attrs{margin:20px 0 0!important}
 .cb-sh-hero .cb-shared-btns{margin-top:-40px!important}
 @media(max-width:1000px){.cb-sh-hero .cb-shared-btns{margin-top:10px!important}}
-.cb-sh-side .cb-panel h3{margin-bottom:16px}
-.cb-sh-side #cbProfileBars.attrs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:22px 30px!important}
-.cb-sh-side #cbProfileBars .attr{display:flex!important;flex-direction:column;align-items:flex-start!important;justify-content:flex-start;gap:5px;padding:0!important;border:0!important;min-width:0}
-.cb-sh-side #cbProfileBars .attr>span:first-child{font:600 10.5px var(--data)!important;letter-spacing:.2em!important;text-transform:uppercase!important;color:#8d8272}
-.cb-sh-side #cbProfileBars .attr>b{font:1.7rem/1.1 var(--display)!important;color:#eadfc4!important;letter-spacing:0;text-align:left}
-.cb-sh-side #cbProfileBars .attr:nth-child(5),.cb-sh-side #cbProfileBars .attr:nth-child(6){grid-column:span 2}
-.cb-sh-side #cbProfileBars .attr:nth-child(6)>b{font:600 13px/1.4 var(--data)!important;letter-spacing:.06em;text-transform:uppercase;color:#cfc3a6!important;padding-top:6px}
-.cb-sh-side #cbProfileBars .attr .meter{display:block;width:100%;order:2}
-.cb-sh-side #cbProfileBars .attr:nth-child(5)>b{order:3;font-size:1.3rem!important}
-.cb-sh-side #cbProfileBars .attr:has(.cb-chips){grid-column:1/-1;padding-top:14px!important;border-top:1px solid var(--edge)!important}
-.cb-sh-side #cbProfileBars .cb-chips{display:flex!important;flex-wrap:wrap;gap:8px 12px!important;font-family:var(--data)!important;font-size:13px!important}
-.cb-sh-side #cbProfileBars .cb-chip{padding:6px 12px!important;border:1px solid var(--edge)!important;background:rgba(255,255,255,.03)!important;font-size:12.5px!important}
-@media(max-width:700px){.cb-sh-side #cbProfileBars.attrs{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+#cbShTop .cb-panel h3{margin-bottom:16px}
+#cbShTop #cbProfileBars.attrs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:22px 30px!important}
+#cbShTop #cbProfileBars .attr{display:flex!important;flex-direction:column;align-items:flex-start!important;justify-content:flex-start;gap:5px;padding:0!important;border:0!important;min-width:0}
+#cbShTop #cbProfileBars .attr>span:first-child{font:600 10.5px var(--data)!important;letter-spacing:.2em!important;text-transform:uppercase!important;color:#8d8272}
+#cbShTop #cbProfileBars .attr>b{font:1.7rem/1.1 var(--display)!important;color:#eadfc4!important;letter-spacing:0;text-align:left}
+#cbShTop #cbProfileBars .attr:nth-child(5),#cbShTop #cbProfileBars .attr:nth-child(6){grid-column:span 2}
+#cbShTop #cbProfileBars .attr:nth-child(6)>b{font:600 13px/1.4 var(--data)!important;letter-spacing:.06em;text-transform:uppercase;color:#cfc3a6!important;padding-top:6px}
+#cbShTop #cbProfileBars .attr .meter{display:block;width:100%;order:2}
+#cbShTop #cbProfileBars .attr:nth-child(5)>b{order:3;font-size:1.3rem!important}
+#cbShTop #cbProfileBars .attr:has(.cb-chips){grid-column:1/-1;padding-top:14px!important;border-top:1px solid var(--edge)!important}
+#cbShTop #cbProfileBars .cb-chips{display:flex!important;flex-wrap:wrap;gap:8px 12px!important;font-family:var(--data)!important;font-size:13px!important}
+#cbShTop #cbProfileBars .cb-chip{padding:6px 12px!important;border:1px solid var(--edge)!important;background:rgba(255,255,255,.03)!important;font-size:12.5px!important}
+@media(max-width:700px){#cbShTop #cbProfileBars.attrs{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+#cbShTop{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:26px;align-items:stretch;margin:0 0 26px}
+#cbShTop>.cb-sh-hero{margin:0!important}
+#cbShTop>.cb-panel{margin:0!important}
+#cbShTop .cb-sh-hero .cb-sh-attrs{gap:14px 24px!important}
+#cbShTop .cb-sh-hero .cb-shared-btns{margin-top:18px!important}
+@media(max-width:1000px){#cbShTop{grid-template-columns:minmax(0,1fr)}}
+#cbShTop #cbProfileNote{display:none}
+#cbShTop>.cb-panel{padding:18px 22px}
+#cbShTop>.cb-sh-hero{display:flex;flex-direction:column}
+#cbShTop>.cb-sh-hero .cb-shared-btns{margin-top:auto!important;padding-top:16px}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6172,9 +6182,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var side=document.getElementById('cbShSide');
       var stats=document.getElementById('cbProfileBars'); stats=stats&&stats.closest('.cb-panel');
       if(side&&stats&&stats.parentNode!==side) side.appendChild(stats);
+      arrangeShTop();
       if(lay) lay.hidden=false;
     }
     var CB_SHARED_INFO=null;
+    function arrangeShTop(){
+      var hero=document.getElementById('cbSharedBar'), stats=document.getElementById('cbProfileBars'); stats=stats&&stats.closest('.cb-panel');
+      if(!hero||!stats) return;
+      var top=document.getElementById('cbShTop');
+      if(!top){ top=document.createElement('div'); top.id='cbShTop'; hero.parentNode.insertBefore(top,hero); }
+      if(hero.parentNode!==top) top.appendChild(hero);
+      if(stats.parentNode!==top) top.appendChild(stats);
+    }
     function renderSharedHero(o){
       var hero=document.getElementById('cbSharedBar'); if(!hero) return;
       var mainId=Object.keys(equipped).filter(function(id){ return cards&&cards[equipped[id]]; }).sort(slotOrder)[0];
@@ -6187,7 +6206,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
         '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave" title="Save build" aria-label="Save build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 -1v22l6-4 6 4V-1"/></svg></button><button type="button" class="cb-tool share" id="cbSharedCopy" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/></svg></button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
-      hero.hidden=false;
+      hero.hidden=false; arrangeShTop();
       if(o.cr&&o.cr.a){ var cl=document.createElement('p'); cl.className='cb-sh-community cb-credit-line'; cl.textContent=creditLine(o.cr); var row0=hero.querySelector('.cb-sh-titlerow'); if(row0) row0.insertAdjacentElement('afterend',cl); }
       // Opened from Community Builds: swap in the listing's own title, author and description.
       var cbId=null; try{ cbId=new URLSearchParams(location.search).get('cb'); }catch(e){}
