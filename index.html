@@ -6153,7 +6153,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
-        '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Open an editable copy</button><button type="button" class="cb-tool share" id="cbSharedCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
+        '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4z"/></svg>Save build</button><button type="button" class="cb-tool share" id="cbSharedCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy this link</button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
       hero.hidden=false;
       if(o.cr&&o.cr.a){ var cl=document.createElement('p'); cl.className='cb-sh-community cb-credit-line'; cl.textContent=creditLine(o.cr); var row0=hero.querySelector('.cb-sh-titlerow'); if(row0) row0.insertAdjacentElement('afterend',cl); }
       // Opened from Community Builds: swap in the listing's own title, author and description.
@@ -6187,18 +6187,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var url=base+'?s='+code;
         if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ say('Link copied'); },function(){ say('Copy failed'); }); else say('Copy failed');
       });
-      document.getElementById('cbSharedOpen').addEventListener('click',function(){
-        function go(){
-          var oo=decodeBuild(code)||o, cr=oo.cr&&oo.cr.a?oo.cr:(CB_SHARED_INFO&&CB_SHARED_INFO.author_name?{n:CB_SHARED_INFO.name||'',a:CB_SHARED_INFO.author_name}:null);
-          if(cr) oo.cr=cr;
-          location.href=base+'?b='+encodeBuild(oo)+'#cerim-builder';
-        }
-        var who=(o.cr&&o.cr.a)||(CB_SHARED_INFO&&CB_SHARED_INFO.author_name);
-        if(!who){ go(); return; }
-        var ov=document.createElement('div'); ov.className='cb-credit-ov';
-        ov.innerHTML='<div class="cb-credit-box" role="dialog" aria-modal="true"><h3>Before you edit this build</h3><p>This build was made by <b>'+escH(who)+'</b>. Your editable copy keeps their credit: if you save it and publish it, the Community Builds listing will say it is based on their build, and they will be credited as the original builder.</p><div class="cb-credit-btns"><button type="button" class="cb-tool primary" data-a="go">Got it, open my copy</button><button type="button" class="cb-tool" data-a="no">Cancel</button></div></div>';
-        document.body.appendChild(ov);
-        ov.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('[data-a]'); if(a&&a.dataset.a==='go'){ go(); } else if((a&&a.dataset.a==='no')||e.target===ov){ ov.remove(); } });
+      document.getElementById('cbSharedSave').addEventListener('click',function(){
+        var oo=decodeBuild(code)||o, cr=oo.cr&&oo.cr.a?oo.cr:(CB_SHARED_INFO&&CB_SHARED_INFO.author_name?{n:CB_SHARED_INFO.name||'',a:CB_SHARED_INFO.author_name}:null);
+        if(cr) oo.cr=cr;
+        var ti=document.querySelector('#cbSharedBar .cb-sh-title');
+        if(window.__cbAcct&&window.__cbAcct.saveShared) window.__cbAcct.saveShared(encodeBuild(oo),((CB_SHARED_INFO&&CB_SHARED_INFO.name)||(ti&&ti.textContent)||'Saved build').slice(0,60));
       });
       if(!document.getElementById('cerim-builder').offsetParent) location.hash='#cerim-builder';
     }
@@ -6406,6 +6399,26 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
         openPrivacy:function(){ $('cbAcctPriv').click(); }, editProfile:function(){ editProfile(); },
         onUser:function(f){ listeners.push(f); f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:avatarOf(user)||null}:null); }
+      };
+
+      // Save a shared build straight into the signed-in user's My Builds.
+      window.__cbAcct.saveShared=function(code,name0){
+        if(!user){ chooseSignIn(); return; }
+        openModal('Save build','<input type="text" id="cbSaveName" maxlength="60" aria-label="Build name" value="'+escH(name0)+'"><button type="button" class="cb-mbtn" id="cbSaveGo">Save</button><div class="cb-mmsg" role="status"></div>');
+        var inp=$('cbSaveName'); inp.focus(); inp.select();
+        function go(){
+          var name=inp.value.trim(); if(!name){ msg('Give the build a name.',1); return; }
+          msg('Saving\u2026');
+          client().then(function(c){ return c.from('builds').insert({name:name,code:code}).select('id,name').single(); })
+            .then(function(r){ if(r.error) throw r.error;
+              openModal('Saved','<p><strong>'+escH(name)+'</strong> is saved to your account.</p><div class="cb-prov"><button type="button" class="cb-mbtn" id="cbSvMy">Open My Builds</button><button type="button" class="cb-mbtn" id="cbSvOk">Done</button></div>');
+              $('cbSvOk').addEventListener('click',closeModal);
+              $('cbSvMy').addEventListener('click',function(){ listBuilds(); });
+            })
+            .catch(function(e){ msg(cleanErr(e),1); });
+        }
+        $('cbSaveGo').addEventListener('click',go);
+        inp.addEventListener('keydown',function(e){ if(e.key==='Enter') go(); });
       };
 
       // ---- save
