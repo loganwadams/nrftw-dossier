@@ -8652,9 +8652,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(o.crit!=null) b.push('Crit '+o.crit+'%'); if(o.armor!=null) b.push('Armor '+o.armor); if(o.weight!=null) b.push(o.weight+' wt');
     return b.join('  ·  '); }
   var EXAMPLES=[['req:dex','Weapons that require Dexterity'],['req:dex>=20','… with at least 20 Dex'],['req:str<=15 type:sword','Light-requirement swords'],['scales:int','Scale with Intelligence'],['scales:str,dex','Scale with Strength and Dexterity'],['type:bow lv>=5 sort:-dmg','Bows, best damage first'],['rarity:unique','Unique gear'],['school:fire','Fire damage weapons'],['armor>=300','Heavy armor'],['"stagger"','Exact phrase']];
-  function helpHTML(intro){ return '<div class="sr-help"><p>'+(intro||'Search by name or by what an item does &mdash; or filter by its stats. Click a line to try it:')+'</p>'+
-    EXAMPLES.map(function(e){ return '<button type="button" class="sr-ex" data-q="'+esc(e[0])+'"><code>'+esc(e[0])+'</code><span>'+esc(e[1])+'</span></button>'; }).join('')+
+  function helpHTML(intro,ex){ return '<div class="sr-help"><p>'+(intro||'Search by name or by what an item does &mdash; or filter by its stats. Click a line to try it:')+'</p>'+
+    (ex||EXAMPLES).map(function(e){ return '<button type="button" class="sr-ex" data-q="'+esc(e[0])+'"><code>'+esc(e[0])+'</code><span>'+esc(e[1])+'</span></button>'; }).join('')+
     '</div>'; }
+  window.__pgfHelp=helpHTML;
   function setQuery(q){ curInput.value=q; search(); curInput.focus(); }
   function render(q,words,P){ var list=curList; list.innerHTML=''; sel=-1;
     if(list===window.__srList){ var ch=document.createElement('div'); ch.className='sr-chips';
@@ -8749,7 +8750,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       kids.forEach(function(k){ if(k.classList.contains('m-cat-head')){ head=k; k._vis=0; hv.push(k); if(!k._orig) k._orig=k.querySelector('span').textContent; }
         else if(k.classList.contains('m-cat')){ var v=k.querySelectorAll('.m-card[data-k]:not(.pgf-hide)').length; k.classList.toggle('pgf-hide',!v); if(head) head._vis+=v; } });
       hv.forEach(function(h){ h.classList.toggle('pgf-hide',!h._vis); h.querySelector('span').textContent=h._vis+' of '+h._orig.replace(/\s*items?/,'')+' items'; });
-      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No items match — loosen a filter, or try <a data-q="req:dex">req:dex</a> / <a data-q="scales:int">scales:int</a>'; },{help:'Filter the Archive by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'}); })();
+      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No items match — loosen a filter, or try '+((window.__pgfEx||[['req:dex'],['scales:int']]).slice(0,2).map(function(e){ return '<a data-q="'+esc(e[0])+'">'+esc(e[0])+'</a>'; }).join(' / ')); },{help:'Filter the Archive by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'}); })();
   // Archive landing page: search every item; results appear here, grouped by collection
   (function(){ var sec=document.getElementById('archive'), cat=document.getElementById('catalog'); if(!sec||!cat) return;
     var grid=sec.querySelector('.ar-private'), res=document.createElement('div'); res.id='arResults'; res.hidden=true; sec.appendChild(res);
@@ -9173,6 +9174,22 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     'pool-armor-sets':{t:'Armor Sets',ids:['pool-armor-sets'],back:['armory','Armory']},
     'pool-throwable-items':{t:'Throwable Items',ids:['pool-throwable-items'],back:['armory','Armory']}
   };
+  var SUG={
+    'Weapons':null,'Armor':[['armor>=100','High armor'],['weight<10','Light pieces'],['poisedef>=10','Poise bonus'],['sort:-armor','Most armor first'],['"leather"','Exact phrase']],
+    'Shields':[['poise>=20','Hard-hitting bashes'],['weight<20','Lighter shields'],['sort:-weight','Heaviest first'],['rarity:unique','Unique shields'],['tower','By name']],
+    'Rings':[['silver','Anything silver'],['agility','Agility rings'],['rarity:unique','Unique rings'],['crow','By name']],
+    'Quivers':[['freezing','Freezing arrows'],['shocking','Shocking arrows'],['blasting','Blasting arrows']],
+    'Armor Sets':[['knight','Knight sets'],['armor>=100','High armor'],['weight<10','Light pieces'],['helm','Helmets']],
+    'Throwable Items':[['bomb','Bombs'],['flask','Flasks'],['plague','Plague damage'],['frost','Frost damage']],
+    'Runes':[['fire','Fire runes'],['lightning','Lightning runes'],['plague','Plague runes'],['whirl','Whirl attacks'],['dash','Dash runes'],['heal','Healing']],
+    'Ingredients & Food':[['soup','Soups'],['fish','Fish dishes'],['meat','Meat'],['herb','Herbs'],['pie','Pies']],
+    'Crafting Materials':[['ingot','Refined ingots'],['skull','Skulls'],['claw','Claws'],['planks','Planks'],['sap','Fuel saps']],
+    'Infusions':[['chipped','Chipped gems'],['mottled','Mottled gems'],['ruby','Rubies'],['shield emblem','Shield emblems']],
+    'Structures':[['table','Crafting tables'],['anvil','Anvils'],['stove','Stoves'],['bed','Beds'],['chair','Chairs'],['vase','Vases']],
+    'Readables':[['scroll','Scrolls'],['codex','Codexes'],['chronicle','Chronicles'],['tablet','Tablets']],
+    'Quick Items':[['vial','Vials'],['potion','Potions'],['oil','Weapon oils'],['repair','Repair powders'],['large','Large sizes']]
+  };
+  function sugFor(t){ var ex=SUG[t]; if(!ex) return null; return ex; }
   if(location.hash==='#infusions') location.replace('#pool-gems');
   if(location.hash==='#catalog') location.replace('#archive');
   window.addEventListener('hashchange',function(){ if(location.hash==='#infusions') location.replace('#pool-gems'); if(location.hash==='#catalog') location.replace('#archive'); });
@@ -9198,7 +9215,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     });
     cats.querySelectorAll('.cv-on.sub-collapsed .m-subcat-collapse').forEach(function(b){ b.click(); subOpened.push(b); });
     if(h2) h2.textContent=cfg.t;
-    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; inp.placeholder='Filter '+cfg.t.toLowerCase()+' \u2014 name, effect, or stats: req:dex  scales:int  lv>=5'; inp.setAttribute('aria-label',inp.placeholder); } pf.hidden=(cfg.t==='Embers'); }
+    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; var ex=sugFor(cfg.t); window.__pgfEx=ex; inp.placeholder='Filter '+cfg.t.toLowerCase()+' \u2014 '+(ex?'try: '+ex.slice(0,3).map(function(e){return e[0];}).join('  '):'name, effect, or stats: req:dex  scales:int  lv>=5'); inp.setAttribute('aria-label',inp.placeholder); var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter '+cfg.t.toLowerCase()+' by name or effect. Click a line to try it:',ex); } pf.hidden=(cfg.t==='Embers'); }
     if(intro) intro.innerHTML='<strong>'+count+' items</strong>'+(cfg.note||'');
     back.href='#'+cfg.back[0]; back.textContent='\u2190 '+cfg.back[1];
     document.title=cfg.t+' - Wicked Dossier \u00b7 No Rest for the Wicked';
@@ -9211,7 +9228,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     subOpened.forEach(function(b){ var c=b.closest('.m-cat'); if(c&&!c.classList.contains('sub-collapsed')) b.click(); }); subOpened=[];
     opened.forEach(function(b){ var h=b.closest('.m-cat-head'); if(h&&!h.classList.contains('collapsed')) b.click(); }); opened=[];
     if(h2) h2.textContent=h2Text; if(intro) intro.innerHTML=introText;
-    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp&&pf._ph){ inp.placeholder=pf._ph; inp.setAttribute('aria-label',pf._ph); } pf.hidden=false; }
+    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp&&pf._ph){ inp.placeholder=pf._ph; inp.setAttribute('aria-label',pf._ph); } window.__pgfEx=null; var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter the Archive by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'); pf.hidden=false; }
     back.href='#archive'; back.textContent='\u2190 Archive';
   }
   window.addEventListener('hashchange',function(){ setTimeout(run,0); });
