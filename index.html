@@ -949,7 +949,7 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cm-desc,.cb-sh-community{font-family:"Arcon","Marcellus",sans-serif!important;font-style:italic;color:#c9bca0!important}
 #cbShTop .cb-chip,#cbShTop .cb-chip i{font-family:"Arcon","Marcellus",sans-serif!important;font-size:14px!important;letter-spacing:.01em}
 #cbShTop .cb-chip i{color:#d9d6cf}
-.cb-res-ic{width:20px;height:20px;object-fit:contain;align-self:center;flex:none}
+.cb-res-ic{width:24px;height:24px;object-fit:contain;align-self:center;flex:none}
 #cbShTop #cbProfileBars .attr:nth-child(6)>b{font-family:"Arcon","Marcellus",sans-serif!important;font-size:14.5px!important;text-transform:none!important;letter-spacing:.01em!important;font-weight:400!important;color:#f0e6cf!important}
 /* Shared build: the game's own underline sprite for every divider line */
 #cbShTop .cb-panel h3{position:relative}
@@ -5402,7 +5402,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(ok.length) h+='<div class="attr" style="--accent:var(--gold)"><span>Other Bonuses</span><span></span><b class="cb-chips">'+ok.map(function(k){ var v=Math.round(cs.other[k]*10)/10, nm=k.replace(' (flat)',''), cost=/Cost|Buildup/.test(nm), good=cost?v<0:v>0;
         return '<span class="cb-chip '+(good?'good':'bad')+'"><i>'+nm+'</i>'+(v>0?'+':'')+v+(/\(flat\)/.test(k)?'':'%')+'</span>'; }).join('')+'</b></div>';
       var resKeys=Object.keys(cs.res);
-      if(resKeys.length) h+='<div class="attr" style="--accent:var(--c-plague)"><span>Resistances</span><span></span><b class="cb-chips">'+resKeys.map(function(k){ return '<span class="cb-chip good"><img class="cb-res-ic" src="img/ench/'+(k==='cold'?'ice':k)+'.webp" alt="" onerror="this.remove()"><i>'+RES_NAMES[k]+'</i>+'+cs.res[k]+'%</span>'; }).join('')+'</b></div>';
+      if(resKeys.length) h+='<div class="attr" style="--accent:var(--c-plague)"><span>Resistances</span><span></span><b class="cb-chips">'+resKeys.map(function(k){ return '<span class="cb-chip good"><img class="cb-res-ic" src="img/dmg/'+(k==='cold'?'ice':k)+'.webp" alt="" onerror="this.remove()"><i>'+RES_NAMES[k]+'</i>+'+cs.res[k]+'%</span>'; }).join('')+'</b></div>';
       wrap.innerHTML=h;
       clearSlotWarnings();
       (result.warnGroups||[]).forEach(function(g){ applySlotWarnings(g.ids,g.message); });
