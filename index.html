@@ -1642,7 +1642,7 @@ section{padding-block:48px}
 .cb-dmg-type.t-fire{color:#d8864a}
 .cb-dmg-type.t-ice{color:var(--c-frost)}
 .cb-dmg-type.t-lightning{color:#d8c66a}
-.cb-dmg-type.t-plague{color:#7862f5}
+.cb-dmg-type.t-plague{color:#7862f5;background-image:none;filter:none}
 .cb-dmg-type.t-bleed{color:#c0463a}
 .cb-dmg-type{display:inline-flex;align-items:center;gap:8px;border:0;padding:0;font-size:11px;letter-spacing:.1em}
 .cb-dmg-ic{width:22px;height:22px;object-fit:contain;flex:none}
@@ -5813,7 +5813,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             '<span class="cb-dmg-name r-'+rarity+'" data-k="'+dmgEsc(r.key)+'">'+dmgEsc(it.n)+'</span>'+
             '<small>'+dmgEsc(r.slot)+' · '+dmgEsc(it.t||'')+(((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv)?' · Upgrade '+dmgEsc((itemMeta[r.id]&&itemMeta[r.id].level)||it.lv):'')+'</small>'+
             '<small>'+critTxt+'</small>'+(r.reqTxt?'<small class="cb-dmg-warn">Under its requirement ('+dmgEsc(r.reqTxt)+') &mdash; damage reduced by a flat '+dmgFmt(r.reqPen||0)+'</small>':'')+'</div></div></td>'+
-          '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'"><img class="cb-dmg-ic" src="img/ench/'+dmgEsc(st.school)+'.webp" alt="" onerror="this.remove()">'+dmgEsc(st.schoolLabel)+'</span></td>'+
+          '<td class="cb-dmg-t"><span class="cb-dmg-type t-'+dmgEsc(st.school)+'"><img class="cb-dmg-ic" src="img/dmg/'+dmgEsc(st.school)+'.webp" alt="" onerror="this.remove()">'+dmgEsc(st.schoolLabel)+'</span></td>'+
           '<td>'+dmgFmt(st.base)+'</td>'+
           '<td>'+(r.attrBonus>0?'<span class="cb-dmg-gain">+'+dmgFmt(r.attrBonus)+'</span>':r.attrBonus<0?'<span class="cb-dmg-loss">&minus;'+dmgFmt(-r.attrBonus)+'</span>':'<span class="cb-dmg-none">&mdash;</span>')+
             (r.attrTxt.length?'<small>'+dmgEsc(r.attrTxt.join(' · '))+'</small>':'<small>no scaling</small>')+'</td>'+
