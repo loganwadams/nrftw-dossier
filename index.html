@@ -876,6 +876,11 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-hero #cbSharedSave:hover svg,.cb-sh-hero #cbSharedSave:focus-visible svg{fill:currentColor;color:#ffd56b;transform:translateY(-1px)}
 .cb-sh-hero #cbSharedSave.is-on svg{fill:currentColor;color:#ffd56b}
 .cb-bm-msg{position:absolute;top:34px;right:22px;z-index:4;opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .2s,transform .2s;background:#0d0b09;border:1px solid rgba(217,201,160,.4);padding:7px 12px;white-space:nowrap;font:600 10.5px var(--data);letter-spacing:.2em;text-transform:uppercase;color:#ffd56b}
+.cb-sh-hero .cb-shared-btns{display:flex;justify-content:flex-end;align-items:center;gap:6px!important;margin-top:4px}
+.cb-sh-hero .cb-sh-like{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--data)!important;letter-spacing:.04em}
+.cb-sh-hero .cb-sh-like svg{width:26px;height:26px;fill:transparent;stroke:currentColor;stroke-width:1.8;transition:fill .18s,color .18s}
+.cb-sh-hero .cb-sh-like:hover svg,.cb-sh-hero .cb-sh-like.on svg{fill:#e5604f;color:#e5604f}
+.cb-sh-hero .cb-sh-like.on{color:#e5604f}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6172,6 +6177,19 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(!info||!hero.isConnected) return;
         CB_SHARED_INFO=info;
         var ey=hero.querySelector('.cb-sh-eyebrow'), ti=hero.querySelector('.cb-sh-title'), su=hero.querySelector('.cb-sh-sub');
+        (function(){
+          var cp=hero.querySelector('#cbSharedCopy'); if(!cp||!window.__cbLikes) return;
+          var hb=document.createElement('button'); hb.type='button'; hb.className='cb-tool cb-sh-like'; hb.id='cbSharedLike'; hb.title='Like this build'; hb.setAttribute('aria-label','Like this build');
+          hb.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span>0</span>';
+          cp.insertAdjacentElement('beforebegin',hb);
+          var n=0, on=false, busy=false;
+          function paint(){ hb.classList.toggle('on',on); hb.setAttribute('aria-pressed',on?'true':'false'); hb.querySelector('span').textContent=n; }
+          function load(){ window.__cbLikes.info(cbId).then(function(r){ if(r){ n=r.likes; on=r.liked; paint(); } }); }
+          load(); if(window.__cbAcct&&window.__cbAcct.onUser) window.__cbAcct.onUser(function(u){ if(u) load(); });
+          hb.addEventListener('click',function(){ if(busy) return; busy=true;
+            window.__cbLikes.toggle(cbId,on,function(ok){ busy=false; if(ok){ if(on){ on=false; n=Math.max(0,n-1); } else { on=true; n++; } paint(); } });
+          });
+        })();
         if(ey) ey.innerHTML='<a href="/builds" class="cb-sh-backcm">&larr; Community Builds</a>';
         if(ti) ti.textContent=info.name||ti.textContent;
         var by=escH(info.author_name||'Anonymous'); if(info.user_id&&info.author_name) by='<a href="/profile/'+encodeURIComponent(info.author_name)+'">'+by+'</a>';
@@ -6415,6 +6433,19 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       window.__cbCommunityInfo=function(id){
         return client().then(function(c){ return c.from('community_builds').select('id,name,description,author_name,user_id').eq('id',id).maybeSingle(); })
           .then(function(r){ return (r&&r.data)||null; }).catch(function(){ return null; });
+      };
+      window.__cbLikes={
+        info:function(id){
+          return client().then(function(c){
+            return Promise.all([c.from('community_builds').select('likes').eq('id',id).maybeSingle(), user?c.from('build_likes').select('build_id').eq('build_id',id).eq('user_id',user.id):Promise.resolve({data:[]})]);
+          }).then(function(a){ return {likes:(a[0].data&&a[0].data.likes)||0, liked:!!(a[1].data&&a[1].data.length)}; }).catch(function(){ return null; });
+        },
+        toggle:function(id,on,done){
+          if(!user){ chooseSignIn(); if(done) done(null); return; }
+          client().then(function(c){ return on?c.from('build_likes').delete().eq('build_id',id).eq('user_id',user.id):c.from('build_likes').insert({build_id:id,user_id:user.id}); })
+            .then(function(x){ if(x.error) throw x.error; if(done) done(true); })
+            .catch(function(e){ if(done) done(false,cleanErr(e)); });
+        }
       };
       window.__cbAcct={
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
