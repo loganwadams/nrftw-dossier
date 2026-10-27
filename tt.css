@@ -274,7 +274,7 @@
 .m-card .rn-meta:empty{display:none}
 .tt.tt-rune.tt-rune-hi:after{background:var(--ra) center/contain no-repeat;width:300px;height:330px;margin-top:-180px}
 /* quick items: same size as the rune art (300 x 300, a little off the right edge), centred in the part of the card above the Sell Value strip and cut off exactly where that strip starts */
-.tt.tt-rune.tt-rune-hi.tt-qhi:after{top:0;bottom:40px;height:auto;margin-top:0;width:300px;right:-36px;background:var(--ra) center/300px 300px no-repeat;opacity:.42}
+.tt.tt-rune.tt-rune-hi.tt-qhi:after{top:0;bottom:40px;height:auto;margin-top:0;width:300px;right:-36px;background:var(--ra) center/300px auto no-repeat;opacity:.42}
 .tt-rn .rn-dia{display:grid;place-items:center}
 .tt-rn .rn-dia .wd-row{display:grid;place-items:center;width:100%;height:100%;line-height:0;margin:0;padding:0}
 .tt-rn .rn-dia .wd-ic{vertical-align:middle;margin:0;display:block}
