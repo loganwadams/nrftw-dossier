@@ -968,6 +968,12 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 .cm-board li:not(:first-child):after,.cm-foot-row:before,.cm-back-head:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45);pointer-events:none}
 .cm-board li:not(:first-child):after,.cm-foot-row:before{top:-6px}
 .cm-back-head:after{bottom:-6px}
+/* Vendor cards: line frame as a border image (their ::before is the map art) */
+.ar-card.vd-card{border:4px solid transparent;border-image:url(img/ui-frame.webp) 4/4px/0 stretch}
+/* Archive cards: the four-edge line border, drawn on the existing dark overlay layer */
+@property --ar-ov{syntax:"<number>";inherits:false;initial-value:.4}
+.ar-card:not(.vd-card)::before{opacity:1!important;--ar-ov:.4;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,linear-gradient(rgba(0,0,0,var(--ar-ov)),rgba(0,0,0,var(--ar-ov)))!important;transition:--ar-ov .3s}
+.ar-card:not(.vd-card):hover::before,.ar-card:not(.vd-card):focus-visible::before{--ar-ov:.05}
 /* Cerim Builder: same boxes and lines as the Community Builds page */
 #cerim-builder .cb-panel:not(#cbShTop>*),#cerim-builder .cb-picker{border:0;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#0b0c0e url(img/frame/bg-big.webp) var(--ul-x,50%) var(--ul-x,50%)/2400px auto no-repeat}
 #cerim-builder .cb-picker{position:relative}
@@ -9254,7 +9260,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 <script>
 /* Dividers on shared builds: each line shows a random slice of the game's underline sprite, sometimes flipped, so they don't all look identical */
 (function(){
-  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head,.cm-card,.cm-board,#cbReport .panel,#cbReport .cb-grade,.cb-dmg-table thead tr,.cb-dmg-notes,.cb-report-head,#cerim-builder .cb-panel,#cerim-builder .cb-picker,#cerim-builder .cb-panel h3,#cerim-builder .cb-attr-row,#cbShTop>.cb-sh-hero,#cbShTop>.cb-panel',busy=0;
+  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head,.cm-card,.cm-board,#cbReport .panel,#cbReport .cb-grade,.cb-dmg-table thead tr,.cb-dmg-notes,.cb-report-head,#cerim-builder .cb-panel,#cerim-builder .cb-picker,#cerim-builder .cb-panel h3,#cerim-builder .cb-attr-row,.ar-card:not(.vd-card),#cbShTop>.cb-sh-hero,#cbShTop>.cb-panel',busy=0;
   function r(a,b){return a+Math.random()*(b-a)}
   function seed(){ busy=0;
     document.querySelectorAll(SEL).forEach(function(e){
