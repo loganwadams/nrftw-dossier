@@ -523,7 +523,7 @@ header.masthead form.search{display:none!important}
 .cm-gear{display:flex;flex-wrap:wrap;gap:5px}.cm-gi{width:28px;height:28px;display:block;overflow:hidden;position:relative;background:rgba(0,0,0,.35);border:1px solid var(--edge);border-bottom:2px solid #5a5043}
 .cm-gi .m-ic{zoom:.583;margin:0;border:0;background-color:transparent;display:block}
 .cm-gi.r-magical{border-bottom-color:#5b8ef0}.cm-gi.r-plagued{border-bottom-color:#7862f5}.cm-gi.r-unique{border-bottom-color:#e0903a}
-.cm-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.cm-card:hover{border-color:var(--gold);}
 .cm-top{display:flex;gap:12px;align-items:center}
 .cm-top .m-ic{width:48px;height:48px;flex:none;border:1px solid var(--edge)}
 .cm-name{font-family:var(--display);font-size:24px;line-height:1.2;color:#efe3c8}
@@ -870,8 +870,8 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-hero .cb-shared-btns .cb-tool svg{width:28px;height:28px;margin:0}
 .cb-sh-hero .cb-shared-btns .cb-tool:hover{color:#ffd56b;background:none!important}
 .cb-sh-hero .cb-shared-btns{gap:18px}
-.cb-sh-hero #cbSharedSave{position:absolute;top:22px;right:26px;z-index:3;padding:8px!important}
-.cb-sh-hero #cbSharedSave svg{width:34px;height:34px;fill:transparent;transition:fill .18s,color .18s,transform .18s}
+.cb-sh-hero #cbSharedSave{position:absolute;top:0;right:30px;z-index:3;padding:0!important;line-height:0}
+.cb-sh-hero #cbSharedSave svg{width:34px;height:34px;overflow:hidden;fill:transparent;transition:fill .18s,color .18s,transform .18s}
 .cb-sh-hero #cbSharedSave:hover svg,.cb-sh-hero #cbSharedSave:focus-visible svg{fill:currentColor;color:#ffd56b;transform:translateY(-1px)}
 </style>
 </head><body>
@@ -6160,7 +6160,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
-        '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave" title="Save build" aria-label="Save build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4z"/></svg></button><button type="button" class="cb-tool share" id="cbSharedCopy" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/></svg></button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
+        '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave" title="Save build" aria-label="Save build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 -1v22l6-4 6 4V-1"/></svg></button><button type="button" class="cb-tool share" id="cbSharedCopy" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/></svg></button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
       hero.hidden=false;
       if(o.cr&&o.cr.a){ var cl=document.createElement('p'); cl.className='cb-sh-community cb-credit-line'; cl.textContent=creditLine(o.cr); var row0=hero.querySelector('.cb-sh-titlerow'); if(row0) row0.insertAdjacentElement('afterend',cl); }
       // Opened from Community Builds: swap in the listing's own title, author and description.
