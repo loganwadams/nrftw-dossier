@@ -2679,6 +2679,11 @@ body.on-cerim footer .footer-bg{display:block!important;position:fixed;left:0;bo
 body.on-media .md-ev{background:linear-gradient(90deg,var(--edge),transparent) top/100% 1px no-repeat,linear-gradient(90deg,rgba(10,8,7,.6),rgba(10,8,7,.4) 55%,rgba(10,8,7,0))}
 body.on-media .md-ev:hover,body.on-media .md-ev:focus-visible{background:linear-gradient(90deg,var(--edge),transparent) top/100% 1px no-repeat,linear-gradient(90deg,rgba(232,134,58,.09),rgba(10,8,7,0))}
 /* Media videos: each one is its own card; only the play button opens the popup */
+/* Media cards: darkened until hovered, like the Archive cards */
+.md-gal img{filter:brightness(.6) saturate(.88)!important;transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .3s!important}
+.md-gal a:hover img,.md-gal a:focus-visible img{filter:brightness(1)!important}
+.md-ev .md-th{filter:brightness(.6);transition:filter .3s}
+.md-ev:hover .md-th,.md-ev .md-th:focus-visible{filter:brightness(1)}
 .md-tl{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
 body.on-media .md-ev,body.on-media .md-ev:hover{display:flex;flex-direction:column;gap:0;padding:0;cursor:default;background:rgba(10,8,7,.62);border:1px solid var(--edge);transition:border-color .3s}
 .md-ev:before{display:none}
