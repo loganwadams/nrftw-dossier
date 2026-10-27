@@ -954,10 +954,10 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 /* Shared build: the game's own underline sprite for every divider line */
 #cbShTop .cb-panel h3{position:relative}
 #cbShTop>.cb-panel h3{border-bottom:0!important}
-body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) center/100% 100% no-repeat;opacity:.9}
+body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45)}
 #cbShTop #cbProfileBars .attr:has(.cb-chips){border-top:0!important;position:relative}
 #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr{border-bottom:0!important;position:relative}
-#cbShTop>.cb-panel h3:after,#cbShTop #cbProfileBars .attr:has(.cb-chips):before,#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) center/100% 100% no-repeat;opacity:.9;pointer-events:none}
+#cbShTop>.cb-panel h3:after,#cbShTop #cbProfileBars .attr:has(.cb-chips):before,#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{content:"";position:absolute;left:0;right:0;height:12px;background:url(img/ui-underline.webp) var(--ul-x,50%) 50%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,.45);pointer-events:none}
 #cbShTop>.cb-panel h3:after{bottom:-6px}
 #cbShTop #cbProfileBars .attr:has(.cb-chips):before{top:-6px}
 #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{bottom:-6px}
@@ -9221,6 +9221,24 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('resize',soon); window.addEventListener('hashchange',soon); window.addEventListener('popstate',soon); window.addEventListener('load',soon);
   var ps=history.pushState; history.pushState=function(){ var r=ps.apply(this,arguments); soon(); return r; };
   soon();
+})();
+</script>
+<script>
+/* Dividers on shared builds: each line shows a random slice of the game's underline sprite, sometimes flipped, so they don't all look identical */
+(function(){
+  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head',busy=0;
+  function r(a,b){return a+Math.random()*(b-a)}
+  function seed(){ busy=0;
+    document.querySelectorAll(SEL).forEach(function(e){
+      if(e.__ul) return; e.__ul=1;
+      e.style.setProperty('--ul-s',Math.round(r(100,230))+'%');
+      e.style.setProperty('--ul-x',Math.round(r(0,100))+'%');
+      e.style.setProperty('--ul-f',Math.random()<.5?-1:1);
+      e.style.setProperty('--ul-o',r(.3,.55).toFixed(2));
+    });
+  }
+  new MutationObserver(function(){ if(!busy){ busy=1; requestAnimationFrame(seed); } }).observe(document.documentElement,{childList:true,subtree:true});
+  seed();
 })();
 </script>
 </body></html>
