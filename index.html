@@ -926,6 +926,14 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 #cbShRight .cb-sh-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:16px 14px!important}
 #cbShRight .cb-sq-lbl{font-size:8.5px}
 #cbShRight .cb-sh-grid .m-card .m-ic{zoom:1.25}
+/* Header attributes: two-column ledger */
+#cbShTop .cb-sh-hero .cb-sh-attrs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 36px!important;margin:20px 0 0!important}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr{display:flex!important;align-items:center;gap:10px;padding:8px 0!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.08)!important;background:none!important}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr>div{display:flex!important;flex:1;justify-content:space-between;align-items:center}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr span{display:block!important;font:11px var(--data)!important;letter-spacing:.14em!important;text-transform:uppercase;color:#a89c88!important;margin:0!important}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr b{font:1.4rem/1 var(--display)!important}
+#cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr img{width:26px;height:26px}
+@media(max-width:560px){#cbShTop .cb-sh-hero .cb-sh-attrs{grid-template-columns:1fr!important}}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
