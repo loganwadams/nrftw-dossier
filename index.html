@@ -6123,7 +6123,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var req={}; try{ req=WDCARD.facts(item).req||{}; }catch(e){}
         var rk=Object.keys(req);
         var reqHtml='<span class="m-card-req'+(rk.length?'':' none')+'">'+rk.map(function(k){ return '<span class="rq">'+WDCARD.icon(k,true)+'<b>'+req[k]+'</b></span>'; }).join('')+'</span>';
-        html+='<div class="cb-sh-item sq'+(exd?' is-exalted':'')+'" data-slot="'+id+'"><span class="cb-sq-lbl">'+escH((meta.label||'')+(meta.ord?' '+meta.ord:''))+'</span>'+
+        html+='<div class="cb-sh-item sq'+(exd?' is-exalted':'')+'" data-slot="'+id+'"><span class="cb-sq-lbl">'+escH(({helm:'Head',chest:'Body',legs:'Legs',gloves:'Gloves'}[meta.cat])||((meta.label||'')+(meta.ord?' '+meta.ord:'')))+'</span>'+
           '<span class="m-card'+(rar==='unique'?' m-card-uniq':'')+'" data-k="'+escH(key)+'" data-rar="'+rar+'" tabindex="0"><span class="m-ic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>'+
           '<span class="m-card-name">'+escH(item.n)+'</span><span class="m-card-lv">'+(m?'Lv '+m.level:(item.lv?'Lv '+item.lv:''))+'</span>'+reqHtml+'</span></div>';
       });
