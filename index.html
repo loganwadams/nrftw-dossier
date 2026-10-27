@@ -858,6 +858,14 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-grid .m-card-req{display:flex;gap:12px;justify-content:center;align-items:center}
 .cb-sh-grid .m-card-req .rq{display:inline-flex;align-items:center;gap:4px}
 .cb-sh-grid .m-card-req b{font-weight:400;font-size:13px;letter-spacing:.04em}
+/* Shared build header: stats unboxed, icon with its number beside it */
+.cb-sh-hero .cb-sh-attrs{display:flex!important;flex-wrap:wrap;gap:14px 38px!important;border:0!important;background:none!important;margin:22px 0 26px!important;padding:0!important}
+.cb-sh-hero .cb-sh-attr{display:flex!important;align-items:center;gap:10px;border:0!important;background:none!important;padding:0!important;min-width:0}
+.cb-sh-hero .cb-sh-attr img{width:30px;height:30px;opacity:.9;filter:none}
+.cb-sh-hero .cb-sh-attr>div{display:block}
+.cb-sh-hero .cb-sh-attr span{display:none}
+.cb-sh-hero .cb-sh-attr b{font:1.9rem/1 var(--display);color:#eadfc4}
+.cb-sh-hero .cb-sh-attr.hi b{color:#ffd56b}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6140,7 +6148,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var item=mainId?cards[equipped[mainId]]:null, m=mainId?itemMeta[mainId]:null;
       var rar=m?m.rarity:'standard';
       var lvl=+o.lv||1;
-      var at=ATTRS.map(function(a){ var v=attrVals[a.id]; return '<div class="cb-sh-attr'+(v>10?' hi':'')+'"><img src="'+a.icon+'" alt="" loading="lazy"><div><span>'+escH(a.name)+'</span><b>'+v+'</b></div></div>'; }).join('');
+      var at=ATTRS.map(function(a){ var v=attrVals[a.id]; return '<div class="cb-sh-attr'+(v>10?' hi':'')+'" title="'+escH(a.name)+'"><img src="'+a.icon+'" alt="" loading="lazy"><div><span>'+escH(a.name)+'</span><b>'+v+'</b></div></div>'; }).join('');
       hero.innerHTML='<div class="cb-sh-eyebrow">Shared Cerim Build</div>'+
         '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
