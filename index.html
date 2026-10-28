@@ -8879,7 +8879,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       v.querySelectorAll('.m-pool p').forEach(function(p){ (p.textContent||'').replace(/Lv[\s\u00a0]*\d+/g,',').split(/[,\u00b7]/).forEach(add); });
       v.querySelectorAll('td,li').forEach(function(e){ add(e.textContent||''); });
       return (v._sold=out); }
-    mkBar(sec,'Filter vendors \u2014 by name, role, or what they sell (try req:dex)',function(P,meta){
+    mkBar(sec,'Search vendors',function(P,meta){
       function syncCards(){ vs.forEach(function(v){ var c=sec.querySelector('.vd-card[href="#'+v.id+'"]'); if(c) c.classList.toggle('pgf-hide',v.classList.contains('pgf-hide')); }); }
       vs.forEach(function(v){ var o=v.querySelector('.pgf-note'); if(o) o.remove(); });
       if(!P){ vs.forEach(function(v){ v.classList.remove('pgf-hide'); }); syncCards(); return; }
@@ -8902,7 +8902,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     sec.addEventListener('click',function(e){ var a=e.target.closest('.rc-jump a'); if(!a) return; var t=document.getElementById(a.getAttribute('data-rc')); if(t&&t.classList.contains('collapsed')) setHead(t,false); });
     if(window.__pgGoto){ var _g=window.__pgGoto; window.__pgGoto=function(id){ var el=document.getElementById(id); if(el&&sec.contains(el)){ if(el.classList.contains('rc-head')) setHead(el,false); else reveal(el); } return _g(id); }; }
     window.__rcReveal=reveal; sec.addEventListener('click',function(e){ var a=e.target.closest('.rc-jump a'); if(!a) return; e.preventDefault(); var t=document.getElementById(a.getAttribute('data-rc')); if(t){ if(t.classList.contains('collapsed')) t.querySelector('.m-cat-collapse').click(); t.scrollIntoView({block:'start'}); } }); var rs=[].slice.call(sec.querySelectorAll('table.m-recipes tbody tr'));
-    mkBar(sec,'Filter recipes \u2014 by result, material, type or station (try anvil, silver ingot, food)',function(P,meta){
+    mkBar(sec,'Search recipes',function(P,meta){
       sec.classList.toggle('pgf-on',!!P);
       if(!P){ rs.forEach(function(r){ r.classList.remove('pgf-hide'); }); sec.querySelectorAll('.rc-group,.rc-head').forEach(function(g){ g.classList.remove('pgf-hide'); }); return; }
       var n=0; rs.forEach(function(r){ var rec=r._rec||(r._rec={nk:norm(r.textContent+' '+(function(){ var g=r.closest('.rc-group'),h5=g&&g.querySelector('h5'),hd=g; while(hd&&!hd.classList.contains('rc-head')) hd=hd.previousElementSibling; return (h5?h5.firstChild.textContent:'')+' '+(hd?hd.querySelector('h3').textContent:''); })()),desc:null,ck:null}); var ok=!P.filters.length&&textOk(rec,P); r.classList.toggle('pgf-hide',!ok); if(ok) n++; });
@@ -8910,13 +8910,13 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       meta.innerHTML=n?('<b>'+n+'</b> recipe'+(n===1?'':'s')+' match'):'No recipes match'; }); })();
   // Infusions
   (function(){ var sec=document.getElementById('infusions'); if(!sec) return; var cs=[].slice.call(sec.querySelectorAll('.inf-card'));
-    mkBar(sec,'Filter infusions by name or effect',function(P,meta){
+    mkBar(sec,'Search infusions',function(P,meta){
       if(!P){ cs.forEach(function(c){ c.classList.remove('pgf-hide'); }); return; }
       var n=0; cs.forEach(function(c){ var r=c._rec||(c._rec={nk:norm(c.textContent),desc:null,ck:null}); var ok=!P.filters.length&&textOk(r,P); c.classList.toggle('pgf-hide',!ok); if(ok) n++; });
       meta.innerHTML=n?('<b>'+n+'</b> match'+(n===1?'':'es')):'No infusions match'; }); })();
   // Enchantments
   (function(){ var sec=document.getElementById('enchantments'); if(!sec) return; var es=[].slice.call(sec.querySelectorAll('.ench-item'));
-    mkBar(sec,'Filter enchantments by item or effect',function(P,meta){
+    mkBar(sec,'Search enchantments',function(P,meta){
       if(!P){ es.forEach(function(e){ e.classList.remove('pgf-hide'); e.querySelectorAll('li').forEach(function(l){ l.classList.remove('pgf-hide'); }); }); return; }
       var n=0; es.forEach(function(e){ var h=e.querySelector('h3'), r={nk:norm(h?h.textContent:''),desc:null,ck:null}, nameOk=!P.filters.length&&textOk(r,P), lis=[].slice.call(e.querySelectorAll('li')), any=false;
         lis.forEach(function(l){ var ok=!P.filters.length&&(nameOk&&!P.words.length?true:textOk({nk:norm((h?h.textContent:'')+' '+l.textContent),desc:null,ck:null},P)); l.classList.toggle('pgf-hide',!ok); if(ok) any=true; });
@@ -9316,7 +9316,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     });
     cats.querySelectorAll('.cv-on.sub-collapsed .m-subcat-collapse').forEach(function(b){ b.click(); subOpened.push(b); });
     if(h2) h2.textContent=cfg.t;
-    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; var ex=sugFor(cfg.t); window.__pgfEx=ex; inp.placeholder='Search the Archive'; inp.setAttribute('aria-label',inp.placeholder); var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter '+cfg.t.toLowerCase()+' by name or effect. Click a line to try it:',ex); } pf.hidden=(cfg.t==='Embers'); }
+    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; var ex=sugFor(cfg.t); window.__pgfEx=ex; inp.placeholder='Search '+cfg.t; inp.setAttribute('aria-label',inp.placeholder); var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter '+cfg.t.toLowerCase()+' by name or effect. Click a line to try it:',ex); } pf.hidden=(cfg.t==='Embers'); }
     if(intro) intro.innerHTML='<strong>'+count+' items</strong>'+(cfg.note||'');
     back.href='#'+cfg.back[0]; back.textContent='\u2190 '+cfg.back[1];
     document.title=cfg.t+' - Wicked Dossier \u00b7 No Rest for the Wicked';
