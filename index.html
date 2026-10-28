@@ -1817,6 +1817,7 @@ section{padding-block:48px}
 .cb-sh-attr img{width:30px;height:30px;object-fit:contain;flex:none;opacity:.45;filter:grayscale(.6)}
 .cb-sh-attr.hi img{opacity:1;filter:none}
 .cb-sh-titlerow{display:flex;align-items:center;gap:18px}
+.cb-sh-titlerow .cb-sh-gradebox{margin-left:auto;align-self:flex-start;text-align:right;flex:none}
 .cb-sh-wic{flex:none;transform:scale(1.25);margin:0 6px}
 .cb-sh-attr span{display:block;font-family:var(--data);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--w2,#7c7265);margin-bottom:3px}
 .cb-sh-attr b{font-family:var(--display);font-size:22px;font-weight:400;color:#6f675b}
@@ -1835,6 +1836,7 @@ section{padding-block:48px}
 .cb-sh-side .attrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0 48px}
 .cb-sh-side #cbProfileNote{display:none}
 @media(max-width:900px){.cb-sh-hero{padding:26px 20px 22px}}
+@media(max-width:560px){.cb-sh-titlerow{flex-wrap:wrap}.cb-sh-titlerow .cb-sh-gradebox{margin-left:0}}
 body.cb-shared .cb-reset-wrap,body.cb-shared .cb-slot-clear,body.cb-shared .cb-slot-edit,body.cb-shared .cb-stepper button,body.cb-shared #cerim-builder .standfirst,body.cb-shared #cerim-builder .cb-notice,body.cb-shared #cerim-builder .cb-note,body.cb-shared .cb-panel:has(#cbClassDrop),body.cb-shared .coming-soon-badge{display:none!important}
 body.cb-shared .cb-wrap{display:none}
 body.cb-shared .cb-sh-side .cb-panel{display:block}
@@ -6586,9 +6588,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var rar=m?m.rarity:'standard';
       var lvl=+o.lv||1;
       var at=ATTRS.map(function(a){ var v=attrVals[a.id]; return '<div class="cb-sh-attr'+(v>10?' hi':'')+'" title="'+escH(a.name)+'"><img src="'+a.icon+'" alt="" loading="lazy"><div><span>'+escH(a.name)+'</span><b>'+v+'</b></div></div>'; }).join('');
+      var shG=null; try{ var shRep=computeReport(); shG=(shRep&&shRep.grade)?shRep.grade.score:null; }catch(e){ shG=null; }
+      var shGradeHtml=shG==null?'':'<div class="cm-gradebox cb-sh-gradebox"><span class="cm-grade-lbl">Build Grade</span><div class="cm-grade '+tierOf(shG)+'">'+shG.toFixed(1)+'<small>/10</small></div></div>';
       hero.innerHTML='<div class="cb-sh-eyebrow">Shared Cerim Build</div>'+
         '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
-        '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
+        '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div>'+shGradeHtml+'</div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
         '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave" title="Save build" aria-label="Save build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 -1v22l6-4 6 4V-1"/></svg></button><button type="button" class="cb-tool share" id="cbSharedCopy" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/></svg></button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
       hero.hidden=false; arrangeShTop();
