@@ -799,6 +799,9 @@ body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .
 #edit-profile .ep-username{font-family:var(--display);font-variant:normal;font-size:23.5px;color:#fff;margin-top:2px}
 #edit-profile .ep-box p,#edit-profile .cb-pub-chk{font-family:var(--body);font-size:16px}
 #edit-profile .cb-tool{font-family:var(--display);font-variant:small-caps;text-transform:none;letter-spacing:.04em;font-size:17px;font-weight:400;padding:10px 22px}
+#edit-profile .cb-tool,#edit-profile .cb-tool.primary{border:0!important;padding:13px 26px;color:#ececec;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#101214 url(img/card-panel.webp) 50% 30%/125% auto!important;box-shadow:0 8px 18px -8px rgba(0,0,0,.7);transition:filter .2s,color .2s}
+#edit-profile .cb-tool.primary,#edit-profile .cb-tool.primary:hover{background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/card/bd-unique.webp) 50% 50%/100% 100% no-repeat,#4c3f22!important;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+#edit-profile .cb-tool:hover,#edit-profile .cb-tool.primary:hover,#edit-profile .cb-tool:focus-visible{color:#fff;filter:brightness(1.35)!important;border:0!important}
 #edit-profile .ep-del{font-family:var(--display);font-variant:small-caps;text-transform:none;letter-spacing:.04em;font-size:15.5px}
 #cmPfEdit{font-family:var(--display);font-variant:small-caps;text-transform:none;letter-spacing:.04em;font-size:17px;font-weight:400}
 #cmPfEdit{border:0!important;padding:13px 24px;color:#ececec;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#101214 url(img/card-panel.webp) 50% 30%/125% auto!important;box-shadow:0 8px 18px -8px rgba(0,0,0,.7);transition:filter .2s,color .2s}
@@ -9638,7 +9641,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 <script>
 /* Dividers on shared builds: each line shows a random slice of the game's underline sprite, sometimes flipped, so they don't all look identical */
 (function(){
-  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head,.cm-card,.cm-board,#cbReport .panel,#cbReport .cb-grade,.cb-dmg-table thead tr,.cb-dmg-notes,.cb-report-head,#cerim-builder .cb-panel,#cerim-builder .cb-picker,#cerim-builder .cb-panel h3,#cerim-builder .cb-attr-row,.ar-card:not(.vd-card),.md-gal a,#cmPfEdit,#cbShTop>.cb-sh-hero,#cbShTop>.cb-panel',busy=0;
+  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head,.cm-card,.cm-board,#cbReport .panel,#cbReport .cb-grade,.cb-dmg-table thead tr,.cb-dmg-notes,.cb-report-head,#cerim-builder .cb-panel,#cerim-builder .cb-picker,#cerim-builder .cb-panel h3,#cerim-builder .cb-attr-row,.ar-card:not(.vd-card),.md-gal a,#cmPfEdit,#epSave,#epView,#cbShTop>.cb-sh-hero,#cbShTop>.cb-panel',busy=0;
   function r(a,b){return a+Math.random()*(b-a)}
   function seed(){ busy=0;
     document.querySelectorAll(SEL).forEach(function(e){
