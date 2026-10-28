@@ -6610,6 +6610,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(o.cr&&o.cr.a){ var cl=document.createElement('p'); cl.className='cb-sh-community cb-credit-line'; cl.textContent=creditLine(o.cr); var row0=hero.querySelector('.cb-sh-titlerow'); if(row0) row0.insertAdjacentElement('afterend',cl); }
       // Opened from Community Builds: swap in the listing's own title, author and description.
       var cbId=null; try{ cbId=new URLSearchParams(location.search).get('cb'); }catch(e){}
+      // This page still is the Cerim Builder (the shared view lives in its markup), but a build
+      // opened from Community Builds should read and navigate as a subpage of that section, not
+      // as the builder itself: swap the page heading and the active chapter in the nav bar.
+      if(cbId){
+        var sh2=document.querySelector('#cerim-builder .sect-head'); if(sh2) sh2.style.display='none';
+        var barCerim=document.querySelector('.pgbar [data-chap="cerim-builder"]'), barBuilds=document.querySelector('.pgbar [data-chap="community-builds"]');
+        if(barCerim) barCerim.removeAttribute('aria-current');
+        if(barBuilds) barBuilds.setAttribute('aria-current','page');
+        try{ document.title='Shared Build — Community Builds — Wicked Dossier'; }catch(e){}
+      }
       if(cbId&&window.__cbCommunityInfo) window.__cbCommunityInfo(cbId).then(function(info){
         if(!info||!hero.isConnected) return;
         CB_SHARED_INFO=info;
