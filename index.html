@@ -1911,6 +1911,12 @@ body.cb-shared .cb-acct-hint{display:none!important}
 .cb-em input:focus{border-color:#d6d6d6}
 .cb-em .cb-em-go{padding:13px 14px;font-size:11px;text-align:center}
 .cb-em .cb-mmsg{margin:0;font-size:13px;line-height:1.4}
+.cb-tabs{display:flex;gap:0;margin:2px 0 12px;border-bottom:1px solid rgba(255,255,255,.16)}
+.cb-tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;color:#8f8f8f;font-family:var(--display);font-variant:small-caps;font-size:16px;padding:8px 6px;cursor:pointer;margin-bottom:-1px}
+.cb-tabs button.on{color:#fff;border-bottom-color:#d6d6d6}
+.cb-lnks{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px}
+.cb-lnk{background:none;border:0;padding:2px 0;color:#b9b9b9;font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}
+.cb-lnk:hover{color:#fff}
 .cb-or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:#8f8f8f;font-size:12px;text-transform:uppercase;letter-spacing:.14em}
 .cb-or:before,.cb-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.16)}
 .cb-em-note{margin:14px 0 0;font-size:12.5px;color:#8f8f8f}
@@ -6661,7 +6667,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         return loadLib().then(function(){
           if(!sb){
             sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{flowType:'pkce',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-            sb.auth.onAuthStateChange(function(ev,sess){ setUser(sess&&sess.user||null); });
+            sb.auth.onAuthStateChange(function(ev,sess){ setUser(sess&&sess.user||null); if(ev==='PASSWORD_RECOVERY') setTimeout(newPassword,0); });
           }
           return sb;
         });
@@ -6804,11 +6810,55 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           .then(function(r){ if(r&&r.error) throw r.error; msg.textContent='Check your inbox: we sent a sign-in link to '+em+'. Open it in this browser to finish. New here? The same link creates your account.'; msg.className='cb-mmsg'; })
           .catch(function(e){ btn.disabled=false; msg.textContent=cleanErr(e); msg.className='cb-mmsg err'; });
       }
-      function chooseSignIn(){
-        openModal('Sign in or sign up','<form class="cb-em" novalidate><label>Email address<input type="email" id="cbEmIn" autocomplete="email" placeholder="you@example.com" required></label><button type="submit" class="cb-mbtn cb-em-go">Email me a sign-in link</button><p class="cb-mmsg" id="cbEmMsg" role="status"></p></form><div class="cb-or"><span>or</span></div><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div><p class="cb-em-note">Signing in is optional and only lets you save builds and publish to the community. No password needed.</p>');
-        mB.querySelector('.cb-prov').addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(b){ closeModal(); signIn(b.dataset.p); } });
-        var f=mB.querySelector('.cb-em'); f.addEventListener('submit',function(e){ e.preventDefault(); emailSignIn($('cbEmIn').value,$('cbEmMsg'),f.querySelector('.cb-em-go')); });
+      function pwAuth(mode,email,pw,msg,btn){
+        var em=(email||'').trim();
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ msg.textContent='Enter a valid email address.'; msg.className='cb-mmsg err'; return; }
+        if(mode==='forgot'){
+          btn.disabled=true; msg.textContent='Sending…'; msg.className='cb-mmsg';
+          client().then(function(c){ return c.auth.resetPasswordForEmail(em,{redirectTo:location.origin+'/'}); })
+            .then(function(r){ if(r&&r.error) throw r.error; msg.textContent='If an account exists for '+em+', a reset link is on its way. Open it in this browser.'; })
+            .catch(function(e){ btn.disabled=false; msg.textContent=cleanErr(e); msg.className='cb-mmsg err'; });
+          return;
+        }
+        if(!pw){ msg.textContent='Enter your password.'; msg.className='cb-mmsg err'; return; }
+        if(mode==='up'&&pw.length<8){ msg.textContent='Use at least 8 characters for your password.'; msg.className='cb-mmsg err'; return; }
+        btn.disabled=true; msg.textContent=mode==='up'?'Creating account…':'Signing in…'; msg.className='cb-mmsg';
+        try{ var sec=$('cerim-builder'); sessionStorage.setItem('cbAfterAuth',(sec&&sec.offsetParent)?'builder':'home'); }catch(e){}
+        client().then(function(c){
+          return mode==='up'?c.auth.signUp({email:em,password:pw,options:{emailRedirectTo:location.origin+'/'}}):c.auth.signInWithPassword({email:em,password:pw});
+        }).then(function(r){
+          if(r&&r.error) throw r.error;
+          var d=(r&&r.data)||{};
+          if(mode==='up'&&d.user&&d.user.identities&&!d.user.identities.length){ btn.disabled=false; msg.textContent='That email already has an account. Sign in instead, or use Forgot password.'; msg.className='cb-mmsg err'; return; }
+          if(d.session){ closeModal(); return; }
+          msg.textContent='Almost done: we sent a confirmation link to '+em+'. Open it in this browser to finish creating your account.';
+        }).catch(function(e){ btn.disabled=false; var t=cleanErr(e); msg.textContent=/invalid login/i.test(t)?'Wrong email or password. If you signed up with Discord, Google or an email link, use that instead, or reset your password.':t; msg.className='cb-mmsg err'; });
+      }
+      function chooseSignIn(mode){
+        mode=(mode==='up'||mode==='forgot')?mode:'in';
+        var pwRow=mode==='forgot'?'':'<label>Password<input type="password" id="cbPwIn" autocomplete="'+(mode==='up'?'new-password':'current-password')+'" placeholder="'+(mode==='up'?'At least 8 characters':'Your password')+'" required></label>';
+        var go=mode==='up'?'Create account':(mode==='forgot'?'Send reset link':'Sign in');
+        var title=mode==='forgot'?'Reset your password':'Sign in or sign up';
+        var tabs=mode==='forgot'?'':'<div class="cb-tabs"><button type="button" data-m="in" class="'+(mode==='in'?'on':'')+'">Sign in</button><button type="button" data-m="up" class="'+(mode==='up'?'on':'')+'">Create account</button></div>';
+        var links=mode==='forgot'?'<button type="button" class="cb-lnk" data-m="in">Back to sign in</button>':(mode==='in'?'<button type="button" class="cb-lnk" data-m="forgot">Forgot password?</button>':'')+'<button type="button" class="cb-lnk" id="cbMagic">Email me a sign-in link instead</button>';
+        openModal(title,tabs+'<form class="cb-em" novalidate><label>Email address<input type="email" id="cbEmIn" autocomplete="email" placeholder="you@example.com" required></label>'+pwRow+'<button type="submit" class="cb-mbtn cb-em-go">'+go+'</button><p class="cb-mmsg" id="cbEmMsg" role="status"></p><div class="cb-lnks">'+links+'</div></form>'+(mode==='forgot'?'':'<div class="cb-or"><span>or</span></div><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div><p class="cb-em-note">Signing in is optional and only lets you save builds and publish to the community.</p>'));
+        var pv=mB.querySelector('.cb-prov'); if(pv) pv.addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(b){ closeModal(); signIn(b.dataset.p); } });
+        Array.prototype.forEach.call(mB.querySelectorAll('button[data-m]'),function(b){ b.addEventListener('click',function(){ chooseSignIn(b.dataset.m); }); });
+        var f=mB.querySelector('.cb-em'); f.addEventListener('submit',function(e){ e.preventDefault(); pwAuth(mode,$('cbEmIn').value,$('cbPwIn')?$('cbPwIn').value:'',$('cbEmMsg'),f.querySelector('.cb-em-go')); });
+        var mg=$('cbMagic'); if(mg) mg.addEventListener('click',function(){ emailSignIn($('cbEmIn').value,$('cbEmMsg'),f.querySelector('.cb-em-go')); });
         setTimeout(function(){ try{ $('cbEmIn').focus(); }catch(x){} },50);
+      }
+      function newPassword(){
+        openModal('Choose a new password','<form class="cb-em" novalidate><label>New password<input type="password" id="cbNp" autocomplete="new-password" placeholder="At least 8 characters" required></label><button type="submit" class="cb-mbtn cb-em-go">Save password</button><p class="cb-mmsg" id="cbNpMsg" role="status"></p></form>');
+        var f=mB.querySelector('.cb-em'), m=$('cbNpMsg'); f.addEventListener('submit',function(e){
+          e.preventDefault(); var p=$('cbNp').value;
+          if(p.length<8){ m.textContent='Use at least 8 characters.'; m.className='cb-mmsg err'; return; }
+          m.textContent='Saving…'; m.className='cb-mmsg';
+          client().then(function(c){ return c.auth.updateUser({password:p}); })
+            .then(function(r){ if(r&&r.error) throw r.error; closeModal(); try{ history.replaceState(null,'',location.pathname); }catch(x){} })
+            .catch(function(er){ m.textContent=cleanErr(er); m.className='cb-mmsg err'; });
+        });
+        setTimeout(function(){ try{ $('cbNp').focus(); }catch(x){} },50);
       }
       $('cbAcctHintIn').addEventListener('click',chooseSignIn);
       // A build opened from the Community page carries its listing id (?cb=): fetch the listing so
