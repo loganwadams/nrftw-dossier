@@ -768,6 +768,8 @@ body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .
 #edit-profile .cb-tool:hover{border-color:#fff;color:#fff;filter:none}
 #edit-profile .cb-tool.primary{background:rgba(255,255,255,.08);border-color:#d6d6d6;color:#fff;box-shadow:none}
 #edit-profile .cb-tool.primary:hover{background:rgba(255,255,255,.18);border-color:#fff;color:#fff}
+#edit-profile .ep-locked .ep-url{opacity:.75}
+#edit-profile .ep-locked input{cursor:default}
 #edit-profile .ep-del{color:#b98a82}
 #edit-profile .ep-box p{color:#d8d8d8}
 #edit-profile .cb-mbtn{background:rgba(255,255,255,.08);border:1px solid #d6d6d6;color:#fff}
@@ -6992,7 +6994,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           $('epName').textContent=p.display_name;
           var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; } else ai.hidden=true;
           $('epBio').value=p.bio||'';
-          $('epDiscordManual').value=p.discord_name||dn||'';
+          $('epDiscordManual').value=dn||p.discord_name||''; $('epDiscordManual').readOnly=!!dn; $('epDiscordManualRow').classList.toggle('ep-locked',!!dn);
           $('epTwitch').value=p.twitch||''; $('epYoutube').value=(p.youtube||'').replace(/^@/,''); $('epKick').value=p.kick||''; $('epSteam').value=p.steam||''; $('epReddit').value=p.reddit||'';
           $('epPublic').checked=p.is_public!==false;
           var v=$('epView'); v.hidden=p.is_public===false; v.href='/profile/'+encodeURIComponent(p.display_name||'');
@@ -7004,7 +7006,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           e.preventDefault();
           var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), m=$('epMsg');
           if(!nm){ registerUsername(fillProfilePage); return; }
-          var manualD=cleanHandle($('epDiscordManual').value,'discord'), linkD=!!dn&&!!manualD&&String(manualD).toLowerCase()===String(dn).toLowerCase();
+          var manualD=dn?String(dn).toLowerCase():cleanHandle($('epDiscordManual').value,'discord'), linkD=!!dn&&!!manualD&&String(manualD).toLowerCase()===String(dn).toLowerCase();
           if(manualD===false){ m.textContent='Enter just your Discord username (letters, numbers, dots, underscores).'; m.className='cb-mmsg err'; $('epDiscordManual').focus(); return; }
           var soc={twitch:cleanHandle($('epTwitch').value,'twitch'),youtube:cleanHandle($('epYoutube').value,'youtube'),kick:cleanHandle($('epKick').value,'kick'),steam:cleanHandle($('epSteam').value,'steam'),reddit:cleanHandle($('epReddit').value,'reddit')};
           var badK=Object.keys(soc).filter(function(k){ return soc[k]===false; })[0];
