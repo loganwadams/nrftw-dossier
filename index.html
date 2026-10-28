@@ -1724,7 +1724,7 @@ section{padding-block:48px}
 .cb-report-verdict.v-bad{color:var(--rust);border:1px solid var(--rust)}
 .cb-report-verdict.v-empty{color:var(--muted);border:1px solid var(--edge)}
 .cb-report-sub{font-size:14.5px;color:var(--muted);margin:12px 0 0}
-.cb-report-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cb-report-grid{display:none}
 @media (max-width:860px){.cb-report-grid{grid-template-columns:1fr}}
 .marks.recs li::before{background:var(--gold)}
 .marks li.cb-report-none{color:var(--muted);font-style:italic;padding-left:0}
@@ -4045,7 +4045,7 @@ footer li{color:#6f665b}
           <ul class="marks cons" id="cbReportCons"></ul>
         </div>
       </div>
-      <div class="panel">
+      <div class="panel" id="cbReportRecsPanel" hidden>
         <h3>Recommended Changes</h3>
         <ul class="marks recs" id="cbReportRecs"></ul>
       </div>
