@@ -777,9 +777,6 @@ body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .
 #edit-profile .ep-avwrap.noav .ep-avedit{opacity:1;background:none;font-size:14px;line-height:1.1;text-align:center;color:#b9b9b9;padding:0 8px}
 #edit-profile .ep-avwrap.noav:hover .ep-avedit{color:#fff}
 #edit-profile .ep-avwrap:hover .ep-avedit,#edit-profile .ep-avwrap:focus-within .ep-avedit{opacity:1}
-#edit-profile .ep-avrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:6px}
-#edit-profile .ep-avbtn{background:none;border:0;padding:2px 0;color:#b9b9b9;font-family:var(--body);font-size:13px;text-decoration:underline;cursor:pointer}
-#edit-profile .ep-avbtn:hover{color:#fff}
 #edit-profile .ep-locked input{cursor:default}
 #edit-profile .ep-del{color:#b98a82}
 #edit-profile .ep-box p{color:#d8d8d8}
@@ -3888,7 +3885,7 @@ footer li{color:#6f665b}
         <div class="ep-wrap">
       <div id="epSignedOut" class="ep-box" hidden><p>Log in to edit your profile.</p><button type="button" class="cb-mbtn" id="epSignIn">Login</button></div>
       <form id="epForm" class="ep-box" hidden>
-        <div class="ep-id"><span class="ep-avwrap"><img id="epAvatar" class="ep-avatar" alt="" hidden><span class="ep-avedit" aria-hidden="true">Edit</span></span><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><div class="ep-avrow"><button type="button" class="ep-avbtn" id="epAvReset" hidden>Use my login picture</button></div><input type="file" id="epAvFile" accept="image/*" hidden></div>
+        <div class="ep-id"><span class="ep-avwrap"><img id="epAvatar" class="ep-avatar" alt="" hidden><span class="ep-avedit" aria-hidden="true">Edit</span></span><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><input type="file" id="epAvFile" accept="image/*" hidden></div>
           <label class="ep-toggle" title="When off, your name on builds is plain text and your profile page is hidden"><span class="ep-toggle-l">Public profile</span><input type="checkbox" id="epPublic" checked><span class="ep-switch" aria-hidden="true"></span></label></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
         <div class="ep-socials">
@@ -7098,7 +7095,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var av=pickAvatar(), ai=$('epAvatar'), w=ai.parentNode, t=w.querySelector('.ep-avedit');
         if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; w.classList.remove('noav'); t.textContent='Edit'; }
         else { ai.hidden=true; ai.removeAttribute('src'); w.classList.add('noav'); t.textContent='Add photo'; }
-        $('epAvReset').hidden=!isCustomAv(myProfile&&myProfile.avatar_url);
       }
       var epForm=$('epForm'), epOut=$('epSignedOut');
       function fillProfilePage(){
@@ -7165,7 +7161,6 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(!/^image\//.test(f.type)||f.size>12*1024*1024){ m.textContent='Choose an image file under 12 MB.'; m.className='cb-mmsg err'; return; }
           squareThumb(f,function(d){ if(!d){ m.textContent='That image could not be read. Try a JPG or PNG.'; m.className='cb-mmsg err'; return; } saveAvatar(d,'Picture updated.'); });
         });
-        $('epAvReset').addEventListener('click',function(){ saveAvatar(avatarOf(user)||null,'Picture reset.'); });
         $('epDelAcct').addEventListener('click',function(){
           var b=this, m=$('epMsg');
           if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again \u2014 deletes your account, profile and all saved builds'; return; }
