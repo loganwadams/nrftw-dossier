@@ -8821,7 +8821,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     bars.push(api); return api; }
   window.__pgfClear=function(){ bars.forEach(function(b){ if(b.input.value) b.clear(); }); };
   function cardPass(P,el){ var k=el.getAttribute('data-k'), o=info&&info[k]; var r=el._rec||(el._rec={ck:k,label:txt(el.querySelector('.m-card-name')||el),nk:null,desc:null});
-    if(!r.nk) r.nk=norm(r.label+' '+(el._kind||''));
+    if(!r.nk) r.nk=norm(r.label+' '+(el._kind||'')+' '+txt(el));
     if(P.filters.length){ if(!o) return false; for(var i=0;i<P.filters.length;i++) if(!P.filters[i](o,r)) return false; }
     return textOk(r,P); }
   // Trove
