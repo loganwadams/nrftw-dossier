@@ -21,8 +21,9 @@
   // since with a <base> they'd otherwise navigate to "/#section" (a full reload).
   // Archive sub-pages live at /archive/<id> (e.g. /archive/pool-quick-items); the old /archive#<id> form still works.
   // __wdRawId() is the id of the section being asked for, from either form.
-  window.__wdRawId=function(){ var v=/^\/vendors\/([^\/]+)\/?$/.exec(location.pathname); if(v&&location.hash.length<2) return 'vendor-'+v[1]; var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
-  if(/^\/profile\//.test(location.pathname)||/^\/(archive|vendors)\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
+  window.__rcSlugs={'recipes-weapons':'weapons','recipes-off-hands':'shields-quivers','recipes-armors':'armors','recipes-tools':'tools','recipes-food':'food','recipes-quick-items':'quick-items','recipes-structures':'structures'}; window.__rcRev={}; for(var rk in window.__rcSlugs) window.__rcRev[window.__rcSlugs[rk]]=rk;
+  window.__wdRawId=function(){ var v=/^\/vendors\/([^\/]+)\/?$/.exec(location.pathname); if(v&&location.hash.length<2) return 'vendor-'+v[1]; var rcm=/^\/crafting-recipes\/([^\/]+)\/?$/.exec(location.pathname); if(rcm&&location.hash.length<2) return window.__rcRev[rcm[1]]||'recipes'; var m=/^\/archive\/([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
+  if(/^\/profile\//.test(location.pathname)||/^\/(archive|vendors|crafting-recipes)\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
   // A shared/community build (?s=...) is only ready once the item database has loaded; until
@@ -8017,7 +8018,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors)\/[^\/]+$/.test(p);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p);
   })();
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
@@ -8064,6 +8065,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function urlFor(group,id){
     // an Archive category (Quick Items, Runes, Weapons...) is a view of the item database but belongs to the Archive: /archive/<id>
     if(group==='vend' && id && /^vendor-/.test(id)) return '/vendors/'+id.slice(7);
+    if(id&&window.__rcSlugs[id]) return '/crafting-recipes/'+window.__rcSlugs[id];
     var ce=id&&document.getElementById(id); if(ce&&ce.classList&&ce.classList.contains('m-cat-head')) return '/archive/'+id.replace(/^pool-/,'');
     if(group in CLEAN_PATHS){
       var base=CLEAN_PATHS[group];
