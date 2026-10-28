@@ -6853,12 +6853,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       function chooseSignIn(mode){
         mode=(mode==='up'||mode==='forgot')?mode:'in';
-        var pwRow=mode==='forgot'?'':'<label>Password<input type="password" id="cbPwIn" autocomplete="'+(mode==='up'?'new-password':'current-password')+'" placeholder="'+(mode==='up'?'At least 8 characters':'Your password')+'" required></label>';
+        var pwRow=mode==='forgot'?'':'<label>Password<input type="password" id="cbPwIn" autocomplete="'+(mode==='up'?'new-password':'current-password')+'" required></label>';
         var go=mode==='up'?'Create account':(mode==='forgot'?'Send reset link':'Sign in');
         var title=mode==='forgot'?'Reset your password':'Sign in or sign up';
         var tabs=mode==='forgot'?'':'<div class="cb-tabs"><button type="button" data-m="in" class="'+(mode==='in'?'on':'')+'">Sign in</button><button type="button" data-m="up" class="'+(mode==='up'?'on':'')+'">Create account</button></div>';
         var links=mode==='forgot'?'<button type="button" class="cb-lnk" data-m="in">Back to sign in</button>':(mode==='in'?'<button type="button" class="cb-lnk" data-m="forgot">Forgot password?</button>':'')+'<button type="button" class="cb-lnk" id="cbMagic">Email me a sign-in link instead</button>';
-        openModal(title,tabs+'<form class="cb-em" novalidate><label>Email address<input type="email" id="cbEmIn" autocomplete="email" placeholder="you@example.com" required></label>'+pwRow+'<button type="submit" class="cb-mbtn cb-em-go">'+go+'</button><p class="cb-mmsg" id="cbEmMsg" role="status"></p><div class="cb-lnks">'+links+'</div></form>'+(mode==='forgot'?'':'<div class="cb-or"><span>or</span></div><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div><p class="cb-em-note">Signing in is optional and only lets you save builds and publish to the community.</p>'));
+        openModal(title,tabs+'<form class="cb-em" novalidate><label>Email address<input type="email" id="cbEmIn" autocomplete="email" required></label>'+pwRow+'<button type="submit" class="cb-mbtn cb-em-go">'+go+'</button><p class="cb-mmsg" id="cbEmMsg" role="status"></p><div class="cb-lnks">'+links+'</div></form>'+(mode==='forgot'?'':'<div class="cb-or"><span>or</span></div><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div><p class="cb-em-note">Signing in is optional and only lets you save builds and publish to the community.</p>'));
         var pv=mB.querySelector('.cb-prov'); if(pv) pv.addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(b){ closeModal(); signIn(b.dataset.p); } });
         Array.prototype.forEach.call(mB.querySelectorAll('button[data-m]'),function(b){ b.addEventListener('click',function(){ chooseSignIn(b.dataset.m); }); });
         var f=mB.querySelector('.cb-em'); f.addEventListener('submit',function(e){ e.preventDefault(); pwAuth(mode,$('cbEmIn').value,$('cbPwIn')?$('cbPwIn').value:'',$('cbEmMsg'),f.querySelector('.cb-em-go')); });
@@ -6866,7 +6866,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         setTimeout(function(){ try{ $('cbEmIn').focus(); }catch(x){} },50);
       }
       function newPassword(){
-        openModal('Choose a new password','<form class="cb-em" novalidate><label>New password<input type="password" id="cbNp" autocomplete="new-password" placeholder="At least 8 characters" required></label><button type="submit" class="cb-mbtn cb-em-go">Save password</button><p class="cb-mmsg" id="cbNpMsg" role="status"></p></form>');
+        openModal('Choose a new password','<form class="cb-em" novalidate><label>New password<input type="password" id="cbNp" autocomplete="new-password" required></label><button type="submit" class="cb-mbtn cb-em-go">Save password</button><p class="cb-mmsg" id="cbNpMsg" role="status"></p></form>');
         var f=mB.querySelector('.cb-em'), m=$('cbNpMsg'); f.addEventListener('submit',function(e){
           e.preventDefault(); var p=$('cbNp').value;
           if(p.length<8){ m.textContent='Use at least 8 characters.'; m.className='cb-mmsg err'; return; }
