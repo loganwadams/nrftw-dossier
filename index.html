@@ -6014,9 +6014,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(shEl){
         shEl.innerHTML=res.shieldRows.map(function(r){
           return r.txt ? '<span class="cb-dmg-warn">'+dmgEsc(r.name)+' &mdash; under its requirement ('+dmgEsc(r.txt)+'): shield armor '+r.armor+' &rarr; '+(Math.round(r.eff*10)/10)+' (&minus;80%)</span>'
-                       : dmgEsc(r.name)+' &mdash; shield armor '+r.armor+', requirement met';
-        }).map(function(t){ return '<div>'+t+'</div>'; }).join('');
-        shEl.hidden=!res.shieldRows.length;
+                       : '';
+        }).filter(Boolean).map(function(t){ return '<div>'+t+'</div>'; }).join('');
+        shEl.hidden=!shEl.innerHTML;
       }
       if(!res.rows.length){
         body.innerHTML='<tr><td colspan="8" class="cb-dmg-empty">No weapons selected'+(res.shields?' &mdash; a shield adds blocking, not attack damage.':'')+'</td></tr>';
