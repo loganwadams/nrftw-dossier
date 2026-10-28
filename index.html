@@ -710,7 +710,7 @@ body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .
 .rd-link{display:block;color:inherit;text-decoration:none}
 .m-card.rd-full,#catalog .m-card.rd-full{display:block!important;aspect-ratio:auto!important;-webkit-mask:none!important;mask:none!important;padding:0;border:0;background:none;min-height:0;aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none!important;cursor:pointer}
 .m-card.rd-full .ip-tt{max-width:none;text-align:left}
-#videos .sect-head h2,#cerim-builder>.sect-head h2{color:#fff!important}
+#videos .sect-head h2,#cerim-builder>.sect-head h2,#factions>.sect-head h2{color:#fff!important}
 body.on-arch .sect-head h2,body.on-arch .m-card-name,body.on-arch .m-cat-head h3,body.on-arch .m-cat h5{color:#fff!important}
 body.on-arch .m-card-lv,body.on-arch .m-cat-head span{color:rgba(255,255,255,.7)!important}
 body.on-arch .m-cat-intro,body.on-arch .m-cat-intro strong,body.on-arch .m-cat-intro .cb-notice{color:#fff!important}
@@ -2223,6 +2223,22 @@ a:hover{color:#dcb561}
 .cls-card.has-art h3{grid-column:1}.cls-card.has-art p{grid-column:1;grid-row:2}
 .fac .cls-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}@media (max-width:760px){.fac .cls-grid{grid-template-columns:1fr}}
 .cls-none{color:var(--muted);font-style:italic}
+/* Factions & Classes: roster, no cards. Banner + white name over the site underline rule, classes as ruled rows */
+#factions .factions{display:block}
+#factions .fac{margin:0;padding:30px 0 6px;border:0;background:none}
+#factions .fac-head{display:flex;align-items:center;gap:18px;padding:0 0 14px;margin:0 0 6px;background:url(img/ui-underline.webp) 50% 100%/100% 4px no-repeat;border:0}
+#factions .fac-head .fflag{height:74px;width:auto;margin:0;filter:drop-shadow(0 3px 8px #000)}
+#factions .fac-name{font-size:28px;color:#fff;text-shadow:1px 1px 0 #000,0 0 8px rgba(0,0,0,.8)}
+#factions .fac .cls-grid{display:block;margin:0}
+#factions .cls-card{display:grid;grid-template-columns:44px 190px 1fr;gap:0 16px;align-items:center;padding:12px 8px;border:0;background:linear-gradient(rgba(201,169,110,.12),rgba(201,169,110,.12)) 0 100%/100% 1px no-repeat;min-height:0;transition:background-color .3s}
+#factions .cls-card:hover{background-color:rgba(201,169,110,.07)}
+#factions .cls-card .cls-sigil{grid-row:auto;width:40px;height:40px}
+#factions .cls-card h3{font-size:17px;letter-spacing:.08em;text-transform:uppercase;color:#fff;text-shadow:1px 1px 0 #000,0 0 6px #000}
+#factions .cls-card p{grid-column:3;grid-row:auto;align-self:center;color:var(--bone);font-size:14px}
+#factions .cls-card.has-art{padding:12px 8px;min-height:0;grid-template-columns:44px 190px 1fr}
+#factions .cls-card.has-art .cls-art{position:static;grid-column:1;width:40px;height:40px;border-radius:50%;background-size:cover;background-position:center 12%;-webkit-mask-image:none;mask-image:none}
+#factions .cls-card.has-art h3{grid-column:2}#factions .cls-card.has-art p{grid-column:3;grid-row:auto}
+@media(max-width:760px){#factions .cls-card,#factions .cls-card.has-art{grid-template-columns:40px 1fr}#factions .cls-card p,#factions .cls-card.has-art p{grid-column:1/-1;margin-top:6px}#factions .cls-card.has-art h3{grid-column:2}}
 
 /* --- class spread ------------------------------------------------------- */
 #classes + .klass{border-top:none}
