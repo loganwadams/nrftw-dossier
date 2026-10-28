@@ -9489,7 +9489,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(back){ back.href=sel?'#recipes':'#archive'; back.textContent=sel?'\u2190 Crafting Recipes':'\u2190 Archive'; }
     if(changed) window.scrollTo(0,0);
   }
-  window.addEventListener('hashchange',function(){ setTimeout(apply,0); setTimeout(apply,120); }); window.addEventListener('popstate',function(){ setTimeout(apply,0); });
+  var topUntil=0; function toTop(){ if(Date.now()<topUntil&&sec.classList.contains('pg-on')&&window.scrollY>0&&!/^#?item\//.test(location.hash)) window.scrollTo(0,0); }
+  window.addEventListener('hashchange',function(){ topUntil=Date.now()+400; setTimeout(function(){ apply(); toTop(); },0); setTimeout(function(){ apply(); toTop(); },120); setTimeout(toTop,300); }); window.addEventListener('popstate',function(){ setTimeout(apply,0); });
   try{ new MutationObserver(function(){ apply(); }).observe(sec,{attributes:true,attributeFilter:['class']}); }catch(e){}
   setTimeout(apply,0); window.addEventListener('load',function(){ setTimeout(apply,200); });
 })();
