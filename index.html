@@ -8973,7 +8973,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function setQuery(q){ curInput.value=q; search(); curInput.focus(); }
   function render(q,words,P){ var list=curList; list.innerHTML=''; sel=-1;
     if(list===window.__srList){ var ch=document.createElement('div'); ch.className='sr-chips';
-      [['all','All'],['item','Items'],['ench','Enchants'],['inf','Infusions'],['vend','Vendors'],['page','Sections']].forEach(function(f){ var b=document.createElement('button'); b.type='button'; b.dataset.f=f[0]; b.textContent=f[1]; if(filt===f[0]) b.className='on'; ch.appendChild(b); });
+      [['all','All'],['item','Items'],['ench','Enchants'],['inf','Infusions'],['vend','Vendors']].forEach(function(f){ var b=document.createElement('button'); b.type='button'; b.dataset.f=f[0]; b.textContent=f[1]; if(filt===f[0]) b.className='on'; ch.appendChild(b); });
       list.appendChild(ch); }
     var lone=P&&!P.structured&&P.words.length===1&&attrOf(P.words[0]);
     if(lone){ var a=attrOf(P.words[0]), sg=document.createElement('div'); sg.className='sr-sugg'; sg.innerHTML='<span>Did you mean</span><button type="button" class="sr-ex-chip" data-q="req:'+P.words[0]+'">Requires '+ABBR[a]+'</button><button type="button" class="sr-ex-chip" data-q="scales:'+P.words[0]+'">Scales with '+ABBR[a]+'</button>'; list.appendChild(sg); }
@@ -9140,7 +9140,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // ---- mobile full-screen search ----
   var ov=document.createElement('div'); ov.className='sro'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Search');
   ov.innerHTML='<div class="sro-bar"><div class="sro-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Search the dossier" aria-label="Search" autocomplete="off" autocapitalize="off" enterkeyhint="search"></div><button type="button" class="sro-x">Cancel</button></div>'+
-    '<div class="sro-chips"><button data-f="all" class="on">All</button><button data-f="item">Items</button><button data-f="ench">Enchantments</button><button data-f="inf">Infusions</button><button data-f="vend">Vendors</button><button data-f="page">Sections</button></div><div class="sro-list sr-list on"></div>';
+    '<div class="sro-chips"><button data-f="all" class="on">All</button><button data-f="item">Items</button><button data-f="ench">Enchantments</button><button data-f="inf">Infusions</button><button data-f="vend">Vendors</button></div><div class="sro-list sr-list on"></div>';
   document.body.appendChild(ov);
   var ovIn=ov.querySelector('input'), ovList=ov.querySelector('.sro-list');
   function openOv(){ curInput=ovIn; curList=ovList; filt='all'; ov.querySelectorAll('.sro-chips button').forEach(function(b){ b.classList.toggle('on',b.dataset.f==='all'); });
