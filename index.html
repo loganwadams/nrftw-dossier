@@ -8102,7 +8102,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var url=urlFor(group,id);
     try{ if(CAN_USE_CLEAN_URLS && history.pushState) history.pushState(null,'',url); }catch(e){}
     if(window.__gcCount) window.__gcCount();
-    el.scrollIntoView({block:'start'});
+    if(el.tagName==='SECTION') window.scrollTo(0,0); else el.scrollIntoView({block:'start'});
     return true;
   };
   // dropdown item lists, one per chapter that has one: icon + name, each linking straight to that item.
@@ -8468,7 +8468,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     // should go to the true page top, same as activate() does for a tab click - not
     // scrollIntoView's target-plus-96px offset, which leaves a gap above it.
     function group_target(g){ return g==='cat'?'catalog':'vendors'; }
-    if(el && chap===GROUP_FIRST_CHAP[group] && !((group==='cat'||group==='vend') && el.id!==group_target(group))) window.scrollTo(0,0);
+    if(el && el.tagName==='SECTION') window.scrollTo(0,0);
+    else if(el && chap===GROUP_FIRST_CHAP[group] && !((group==='cat'||group==='vend') && el.id!==group_target(group))) window.scrollTo(0,0);
     else if(el) el.scrollIntoView({block:'start'});
     else window.scrollTo(0,0); }
   document.body.classList.add('paged');
