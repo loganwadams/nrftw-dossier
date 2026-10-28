@@ -1875,7 +1875,7 @@ body.cb-shared #cbLevel,body.cb-shared .cb-attr-input{pointer-events:none}
 .cb-share-btn{margin-left:10px;background:linear-gradient(180deg,#3f6c82,var(--c-storm));border-color:#6fa3bd;color:#e9f1f7}
 .cb-acct-btn{margin-left:10px;background:linear-gradient(180deg,#5b4a8f,#43366e);border-color:#8a78c9;color:#ece8fa}
 .cb-acct-out{margin-left:12px;background:none;border:0;color:var(--muted);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.cb-acct-hint{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+.cb-acct-hint{margin-left:6px;font-size:12.5px;color:var(--muted)}
 .cb-acct-link{background:none;border:0;padding:0;color:var(--acc-b,#8ecbe8);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 body.cb-shared .cb-acct-hint{display:none!important}
 .cb-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,4,3,.78);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow:auto}
@@ -3951,7 +3951,7 @@ footer li{color:#6f665b}
     <div class="sect-head"><h2>Cerim Builder</h2><span class="coming-soon-badge">Early Preview</span></div>
     <p class="standfirst">An interactive planner for building out a character &mdash; weapon, armor, infusions and rings, assembled on screen as you choose them, pulled from the same item data as the Archive.</p>
 
-    <div class="cb-reset-wrap"><span id="cbAcct" class="cb-acct"><span id="cbAcctIn2" hidden><button type="button" class="cb-tool primary" id="cbAcctSave" title="Save Build" aria-label="Save Build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg>Save Build</button></span></span><button type="button" class="cb-tool share" id="cbShareBuild"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy Build Link</button><button type="button" class="cb-tool ghost" id="cbResetBuild" title="Reset Build" aria-label="Reset Build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset Build</button><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
+    <div class="cb-reset-wrap"><span id="cbAcct" class="cb-acct"><span id="cbAcctIn2" hidden><button type="button" class="cb-tool primary" id="cbAcctSave" title="Save Build" aria-label="Save Build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg>Save Build</button></span></span><button type="button" class="cb-tool share" id="cbShareBuild"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Copy Build Link</button><button type="button" class="cb-tool ghost" id="cbResetBuild" title="Reset Build" aria-label="Reset Build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset Build</button><span class="cb-acct-hint" id="cbAcctHint"><button type="button" class="cb-acct-link" id="cbAcctHintIn">Login to save</button><button type="button" class="cb-acct-link" id="cbAcctPriv" hidden>Privacy</button></span><span class="cb-share-msg" id="cbShareMsg" role="status" aria-live="polite"></span></div>
 
     <div class="cb-sh-hero" id="cbSharedBar" hidden></div>
 
@@ -3997,7 +3997,6 @@ footer li{color:#6f665b}
 
     <div class="cb-sh-layout" id="cbShLayout" hidden><div class="cb-shared-list" id="cbSharedList"></div><aside class="cb-sh-side" id="cbShSide"></aside></div>
 
-    <p class="cb-acct-hint" id="cbAcctHint">Want to keep this build? <button type="button" class="cb-acct-link" id="cbAcctHintIn">Login</button> (optional &mdash; it only lets you save builds to your account). <button type="button" class="cb-acct-link" id="cbAcctPriv">Privacy</button></p>
     <div class="cb-modal" id="cbModal" hidden role="dialog" aria-modal="true" aria-labelledby="cbModalT"><div class="cb-modal-card"><button type="button" class="cb-modal-x" id="cbModalX" aria-label="Close">&times;</button><h3 id="cbModalT"></h3><div id="cbModalB"></div></div></div>
 
     <div id="cbManifest" hidden></div><!-- the old manifest list; kept as an inert hook for the editing code -->
