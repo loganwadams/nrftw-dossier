@@ -9490,6 +9490,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(changed) window.scrollTo(0,0);
   }
   var topUntil=0; function toTop(){ if(Date.now()<topUntil&&sec.classList.contains('pg-on')&&window.scrollY>0&&!/^#?item\//.test(location.hash)) window.scrollTo(0,0); }
+  if(!window.__wdNavPatched){ window.__wdNavPatched=1; ['pushState','replaceState'].forEach(function(fn){ var orig=history[fn]; history[fn]=function(){ var r=orig.apply(this,arguments); try{ window.dispatchEvent(new Event('wdnav')); }catch(e){} return r; }; }); }
+  window.addEventListener('wdnav',function(){ topUntil=Date.now()+400; setTimeout(function(){ apply(); toTop(); },0); setTimeout(function(){ apply(); toTop(); },120); });
+  sec.addEventListener('click',function(e){ if(e.target.closest('a.ar-card,.sect-back')){ topUntil=Date.now()+500; [0,60,200,400].forEach(function(t){ setTimeout(function(){ apply(); toTop(); },t); }); } });
   window.addEventListener('hashchange',function(){ topUntil=Date.now()+400; setTimeout(function(){ apply(); toTop(); },0); setTimeout(function(){ apply(); toTop(); },120); setTimeout(toTop,300); }); window.addEventListener('popstate',function(){ setTimeout(apply,0); });
   try{ new MutationObserver(function(){ apply(); }).observe(sec,{attributes:true,attributeFilter:['class']}); }catch(e){}
   setTimeout(apply,0); window.addEventListener('load',function(){ setTimeout(apply,200); });
