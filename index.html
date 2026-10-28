@@ -1943,6 +1943,8 @@ body.cb-shared .cb-acct-hint{display:none!important}
 .cb-prov .cb-mbtn{padding:13px 14px;font-size:11px;text-align:left}
 @media (max-width:760px){.nav-provs{display:flex;flex-direction:column;align-items:stretch;width:100%}.nav-provs>button.nav-connect{text-align:left;justify-content:flex-start}.nav-provs .nav-pmenu{position:static;box-shadow:none;border:0;padding:0 0 0 10px}}
 .nav-acct>button.nav-connect svg{width:18px;height:18px;flex:none;margin:-4px 0}
+.nav-uname{display:none}
+@media (max-width:760px){.nav-acct>button.has-avatar .nav-uname{display:inline-block;margin:0 10px;text-transform:none;letter-spacing:.03em;max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 .nav-acct-menu{position:absolute;right:0;top:100%;min-width:170px;background:var(--w6,#100d0b);border:1px solid var(--edge);box-shadow:0 10px 30px rgba(0,0,0,.6);padding:6px;display:none;flex-direction:column;z-index:60}
 .nav-acct.open .nav-acct-menu{display:flex}
 .nav-acct-menu button{appearance:none;background:none;border:0;text-align:left;color:var(--bone);font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:10px 12px;cursor:pointer}
@@ -9225,7 +9227,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     u=x;
     provs.style.display=x?'none':'';
     main.style.display=x?'':'none';
-    if(x){ main.className=x.avatar?'has-avatar':''; main.textContent=''; if(x.avatar){ var im=document.createElement('img'); im.className='nav-avatar'; im.src=x.avatar; im.alt=''; im.referrerPolicy='no-referrer'; main.appendChild(im); main.appendChild(document.createTextNode('▾')); } else main.appendChild(document.createTextNode(x.name+' ▾')); }
+    if(x){ main.className=x.avatar?'has-avatar':''; main.textContent=''; if(x.avatar){ var im=document.createElement('img'); im.className='nav-avatar'; im.src=x.avatar; im.alt=''; im.referrerPolicy='no-referrer'; main.appendChild(im); var un=document.createElement('span'); un.className='nav-uname'; un.textContent=x.name||''; main.appendChild(un); main.appendChild(document.createTextNode('▾')); } else main.appendChild(document.createTextNode(x.name+' ▾')); }
     main.setAttribute('aria-haspopup',x?'menu':'false');
   });
 })();
