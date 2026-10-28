@@ -522,10 +522,16 @@ header.masthead form.search{display:none!important}
 .cm-board .cm-board-by{color:#8b8174;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
 .cm-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
 .cm-tools .cm-q{flex:1 1 260px;max-width:420px}
-/* sort menu: no box, same line under it as the search field */
-.cm-tools select{border:0!important;border-radius:0!important;height:46px!important;padding:0 28px 0 4px!important;color:#fff!important;font-family:var(--display)!important;font-size:16px!important;letter-spacing:.02em!important;text-transform:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 4px center/12px 12px,linear-gradient(rgba(12,10,8,.55),rgba(12,10,8,.55)) 50% 100%/100% 4px no-repeat,url(img/ui-divider.webp) 50% 100%/100% 4px no-repeat!important}
-.cm-tools select option,.cm-tools select optgroup{background:#111!important;color:#fff!important}
-.cm-tools select option:checked,.cm-tools select option:hover{background:#2a2a2a!important;color:#fff!important}
+/* sort menu: same look and behavior as the account menu */
+.cm-tools select#cmSort{display:none!important}
+.cm-sort{position:relative;display:inline-flex;align-items:center;height:46px}
+.cm-sort>button{appearance:none;background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 4px;color:#fff;font:400 16px/1 var(--display);letter-spacing:.02em}
+.cm-sort>button svg{width:12px;height:12px;opacity:.85}
+.cm-sort-menu{position:absolute;right:-6px;top:calc(100% + 4px);display:none;flex-direction:column;align-items:flex-end;padding:8px 6px;z-index:60;white-space:nowrap}
+.cm-sort.open .cm-sort-menu{display:flex}
+.cm-sort-menu button{appearance:none;background:none;border:0;cursor:pointer;text-align:right;font:400 15px/1.2 var(--display);letter-spacing:.05em;color:#cfcfcf;padding:8px 12px;text-shadow:0 1px 6px rgba(0,0,0,.9);transition:color .25s,transform .3s cubic-bezier(.2,.7,.2,1)}
+.cm-sort-menu button:hover,.cm-sort-menu button:focus-visible,.cm-sort-menu button.on{color:#fff}
+.cm-sort-menu button:hover,.cm-sort-menu button:focus-visible{transform:translateX(-4px)}
 .cm-tools select{color-scheme:dark}.cm-tools select option,.cm-tools select optgroup{background:#17120f;color:#e9dcc0}.cm-tools select option:checked,.cm-tools select option:hover{background:#2b2113;color:var(--gold,#c9a24a)}
 .cm-tools select{height:42px;width:auto;appearance:none;-webkit-appearance:none;background:rgba(0,0,0,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a96e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/12px 12px;border:1px solid var(--edge);color:var(--bone);font-family:var(--data);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:0 30px 0 12px;cursor:pointer}
 .cm-meta{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174;margin:0 0 16px;min-height:14px}
@@ -7152,6 +7158,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         }
         window.__cmRefresh=function(){ rows=null; if(sec.classList.contains('pg-on')) load(true); };
         [qEl,sortEl].forEach(function(el){ el.addEventListener('input',render); el.addEventListener('change',render); });
+        (function(){ var box=document.createElement('span'); box.className='cm-sort';
+          var btn=document.createElement('button'); btn.type='button'; btn.setAttribute('aria-haspopup','menu');
+          var menu=document.createElement('span'); menu.className='cm-sort-menu';
+          function label(){ var o=sortEl.options[sortEl.selectedIndex]; btn.innerHTML=''; btn.appendChild(document.createTextNode(o?o.text:'')); btn.insertAdjacentHTML('beforeend','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'); [].forEach.call(menu.children,function(b){ b.classList.toggle('on',b.dataset.v===sortEl.value); }); }
+          [].forEach.call(sortEl.options,function(o){ var b=document.createElement('button'); b.type='button'; b.textContent=o.text; b.dataset.v=o.value; b.addEventListener('click',function(){ box.classList.remove('open'); sortEl.value=o.value; sortEl.dispatchEvent(new Event('change')); label(); }); menu.appendChild(b); });
+          box.appendChild(btn); box.appendChild(menu); sortEl.parentNode.insertBefore(box,sortEl.nextSibling); label();
+          btn.addEventListener('click',function(e){ e.stopPropagation(); box.classList.toggle('open'); });
+          document.addEventListener('click',function(){ box.classList.remove('open'); });
+          document.addEventListener('keydown',function(e){ if(e.key==='Escape') box.classList.remove('open'); });
+        })();
         function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code+'&cb='+encodeURIComponent(r.id); }
         function onListClick(e){
           var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); e.stopPropagation(); goProfile(al.getAttribute('data-u')); return; }
