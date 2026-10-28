@@ -9254,6 +9254,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     card.addEventListener('mouseenter',raise); card.addEventListener('mouseleave',lower);
     card.addEventListener('focus',raise); card.addEventListener('blur',lower);
   }
+  window.__arWire=wire;
   var inf=document.querySelector('.ar-card[href="#pool-gems"]'); if(inf) wire(inf,gemItems);
   var arm=document.querySelector('.ar-card[href="#armory"]'); if(arm) wire(arm,armoryItems);
   // Crafting Recipes: the two recipe icons, repeated in random order to fill the row
@@ -9468,6 +9469,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var grid=document.createElement('div'); grid.className='ar-grid rc-grid';
   [].forEach.call(jump.querySelectorAll('a[data-rc]'),function(a){ var sp=a.querySelector('span'), n=sp?sp.textContent:'', t=a.textContent.replace(n,'').trim(), c=document.createElement('a'); c.className='ar-card'; c.href='#'+a.getAttribute('data-rc'); c.innerHTML='<span class="ar-k">'+n+' recipes</span><h3>'+t+'</h3><span class="ar-go">Open</span>'; grid.appendChild(c); });
   jump.parentNode.insertBefore(grid,jump.nextSibling);
+  if(window.__arWire) [].forEach.call(grid.querySelectorAll('a.ar-card'),function(c){ var hid=c.getAttribute('href').slice(1);
+    window.__arWire(c,function(){ var head=document.getElementById(hid), out=[], n=head&&head.nextElementSibling;
+      while(n&&!n.classList.contains('rc-head')){ [].forEach.call(n.querySelectorAll('.rc-ic'),function(ic){ var m=/-(\d+)px\s+-?(\d+)px/.exec(ic.getAttribute('style')||''); if(m) out.push({p:[+m[1]/64,+m[2]/64]}); }); n=n.nextElementSibling; }
+      for(var q=out.length-1;q>0;q--){ var j=Math.floor(Math.random()*(q+1)), t=out[q]; out[q]=out[j]; out[j]=t; } return out.slice(0,10); }); });
   var h2=sec.querySelector('.sect-head h2'), back=sec.querySelector('.sect-back'), h2T=h2?h2.textContent:'', cur=null;
   [].slice.call(sec.children).forEach(function(e){ if(e.classList.contains('rc-head')){ cur=e.id; e.setAttribute('data-rcg',cur); } else if(e.classList.contains('rc-group')) e.setAttribute('data-rcg',cur); });
   var last=null;
