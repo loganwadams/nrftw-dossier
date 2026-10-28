@@ -770,7 +770,13 @@ body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .
 #edit-profile .cb-tool.primary:hover{background:rgba(255,255,255,.18);border-color:#fff;color:#fff}
 #edit-profile input:focus,#edit-profile input:focus-visible,#edit-profile textarea:focus,#edit-profile textarea:focus-visible{outline:0!important;box-shadow:none!important}
 #edit-profile .ep-locked .ep-url{opacity:.75}
-#edit-profile .ep-avatar{cursor:pointer}
+#edit-profile .ep-avwrap{position:relative;display:block;flex:none;width:64px;height:64px;border-radius:50%;overflow:hidden;cursor:pointer}
+#edit-profile .ep-avwrap .ep-avatar{display:block}
+#edit-profile .ep-avedit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);color:#fff;font-family:var(--display);font-variant:small-caps;font-size:17px;letter-spacing:.05em;opacity:0;transition:opacity .15s}
+#edit-profile .ep-avwrap.noav{background:rgba(0,0,0,.34);border:1px dashed rgba(255,255,255,.4)}
+#edit-profile .ep-avwrap.noav .ep-avedit{opacity:1;background:none;font-size:14px;line-height:1.1;text-align:center;color:#b9b9b9;padding:0 8px}
+#edit-profile .ep-avwrap.noav:hover .ep-avedit{color:#fff}
+#edit-profile .ep-avwrap:hover .ep-avedit,#edit-profile .ep-avwrap:focus-within .ep-avedit{opacity:1}
 #edit-profile .ep-avrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:6px}
 #edit-profile .ep-avbtn{background:none;border:0;padding:2px 0;color:#b9b9b9;font-family:var(--body);font-size:13px;text-decoration:underline;cursor:pointer}
 #edit-profile .ep-avbtn:hover{color:#fff}
@@ -3882,7 +3888,7 @@ footer li{color:#6f665b}
         <div class="ep-wrap">
       <div id="epSignedOut" class="ep-box" hidden><p>Log in to edit your profile.</p><button type="button" class="cb-mbtn" id="epSignIn">Login</button></div>
       <form id="epForm" class="ep-box" hidden>
-        <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><div class="ep-avrow"><button type="button" class="ep-avbtn" id="epAvBtn">Change picture</button><button type="button" class="ep-avbtn" id="epAvReset" hidden>Use my login picture</button></div><input type="file" id="epAvFile" accept="image/*" hidden></div>
+        <div class="ep-id"><span class="ep-avwrap"><img id="epAvatar" class="ep-avatar" alt="" hidden><span class="ep-avedit" aria-hidden="true">Edit</span></span><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><div class="ep-avrow"><button type="button" class="ep-avbtn" id="epAvReset" hidden>Use my login picture</button></div><input type="file" id="epAvFile" accept="image/*" hidden></div>
           <label class="ep-toggle" title="When off, your name on builds is plain text and your profile page is hidden"><span class="ep-toggle-l">Public profile</span><input type="checkbox" id="epPublic" checked><span class="ep-switch" aria-hidden="true"></span></label></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
         <div class="ep-socials">
@@ -7088,7 +7094,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var ids=(u&&u.identities)||[]; var d=ids.filter(function(i){ return i.provider==='discord'; })[0], im=(d&&d.identity_data)||{}; var m=(u&&u.user_metadata)||{};
         return d&&(d.id||im.provider_id||im.sub)||m.provider_id||m.sub||null;
       }
-      var EP_NOAV='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#2a2b2d"/><circle cx="32" cy="25" r="11" fill="#6b6c6f"/><path d="M10 58c2-14 12-20 22-20s20 6 22 20z" fill="#6b6c6f"/></svg>');
+      function setAvUI(){
+        var av=pickAvatar(), ai=$('epAvatar'), w=ai.parentNode, t=w.querySelector('.ep-avedit');
+        if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; w.classList.remove('noav'); t.textContent='Edit'; }
+        else { ai.hidden=true; ai.removeAttribute('src'); w.classList.add('noav'); t.textContent='Add photo'; }
+        $('epAvReset').hidden=!isCustomAv(myProfile&&myProfile.avatar_url);
+      }
       var epForm=$('epForm'), epOut=$('epSignedOut');
       function fillProfilePage(){
         if(!epForm) return;
@@ -7100,7 +7111,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           p=p||{};
           if(!p.display_name){ registerUsername(fillProfilePage); return; }
           $('epName').textContent=p.display_name;
-          var av=pickAvatar()||EP_NOAV, ai=$('epAvatar'); ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; $('epAvReset').hidden=!isCustomAv(p.avatar_url);
+          setAvUI();
           $('epBio').value=p.bio||'';
           $('epDiscordManual').value=dn||p.discord_name||''; $('epDiscordManual').readOnly=!!dn; $('epDiscordManualRow').classList.toggle('ep-locked',!!dn);
           $('epTwitch').value=p.twitch||''; $('epYoutube').value=(p.youtube||'').replace(/^@/,''); $('epKick').value=p.kick||''; $('epSteam').value=p.steam||''; $('epReddit').value=p.reddit||'';
@@ -7128,7 +7139,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         function saveAvatar(val,okMsg){
           var m=$('epMsg'); m.textContent='Saving\u2026'; m.className='cb-mmsg';
           client().then(function(c){ return c.from('profiles').update({avatar_url:val,updated_at:new Date().toISOString()}).eq('user_id',user.id); })
-            .then(function(x){ if(x.error) throw x.error; myProfile=Object.assign(myProfile||{},{avatar_url:val}); var av=pickAvatar(); $('epAvatar').src=av||EP_NOAV; $('epAvReset').hidden=!isCustomAv(val); notify(); m.textContent=okMsg; })
+            .then(function(x){ if(x.error) throw x.error; myProfile=Object.assign(myProfile||{},{avatar_url:val}); setAvUI(); notify(); m.textContent=okMsg; })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         }
         function squareThumb(file,done){
@@ -7148,8 +7159,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           im.onerror=function(){ URL.revokeObjectURL(url); done(null); };
           im.src=url;
         }
-        $('epAvBtn').addEventListener('click',function(){ $('epAvFile').click(); });
-        $('epAvatar').addEventListener('click',function(){ $('epAvFile').click(); });
+        $('epAvatar').parentNode.addEventListener('click',function(){ $('epAvFile').click(); });
         $('epAvFile').addEventListener('change',function(){
           var f=this.files&&this.files[0]; this.value=''; var m=$('epMsg'); if(!f) return;
           if(!/^image\//.test(f.type)||f.size>12*1024*1024){ m.textContent='Choose an image file under 12 MB.'; m.className='cb-mmsg err'; return; }
