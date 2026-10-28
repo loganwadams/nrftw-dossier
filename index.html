@@ -398,6 +398,11 @@ html.sro-open,html.sro-open body{overflow:hidden}
 .pgf-hide{display:none!important}
 .pgf-help{max-width:640px;margin:6px 0 0;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
 .pgf-help[hidden]{display:none}
+.pgf-help,#catalog .pgf-help,#archive .pgf-help{display:none!important}
+.pgf-field input{font-size:14px!important}
+.pgf-meta,.pgf-meta b,#arResults .ar-none{color:#cfcfcf!important;font-family:var(--display);font-size:14px;letter-spacing:.02em;text-transform:none}
+
+#catalog .pgf-help,#archive .pgf-help{display:none!important}
 /* in-page suggestion dropdown: site frame, dark ground, white text; only the example words stay gold */
 .pgf-help{border:0!important;background:linear-gradient(rgba(10,8,7,.94),rgba(10,8,7,.94)),var(--panel)!important;position:relative;padding:4px}
 .pgf-help::before{content:"";position:absolute;inset:0;pointer-events:none;background:url(img/ui-border.webp) 50% 0/100% 4px no-repeat,url(img/ui-border.webp) 50% 100%/100% 4px no-repeat,url(img/ui-border-v.webp) 0 50%/4px 100% no-repeat,url(img/ui-border-v.webp) 100% 50%/4px 100% no-repeat}
@@ -8666,7 +8671,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function attrOf(w){ return ATTRS[w]||null; }
   function parseQuery(raw){
     var P={words:[],phrases:[],neg:[],filters:[],chips:[],sort:null,autoSort:null,raw:raw,structured:false};
-    var toks=tok(prep(raw));
+    var toks=tok(prep(String(raw).replace(/\b(req|requires|requirement|requirements|needs|scales|scaling|type|slot|kind|rarity|school|element|name|text|sort)\s*:\s+/gi,'$1:')));
     function addF(fn,label,neg,sortField){ P.filters.push(neg?function(o,r){ return !fn(o,r); }:fn); P.chips.push((neg?'not ':'')+label); P.structured=true; if(sortField&&!P.autoSort) P.autoSort=sortField; }
     toks.forEach(function(t){ var f=t.field, op=t.op, v=t.val.replace(/^"|"$/g,'').trim(), neg=t.neg;
       // dex>=20  ->  requirement shorthand
@@ -8718,10 +8723,18 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 
   function lev(a,b){ if(Math.abs(a.length-b.length)>2) return 9; var p=[],i,j; for(j=0;j<=b.length;j++) p[j]=j;
     for(i=1;i<=a.length;i++){ var c=[i]; for(j=1;j<=b.length;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a.charAt(i-1)===b.charAt(j-1)?0:1)); p=c; } return p[b.length]; }
+  var SYN={cold:['ice','frost','freez'],ice:['cold','frost','freez'],frost:['ice','cold','freez'],freezing:['frost','ice','cold'],fire:['heat','flame','burn','blaz'],flame:['fire','heat'],heat:['fire','flame'],electric:['lightning','shock'],lightning:['electric','shock'],shock:['electric','lightning'],poison:['plague'],plague:['poison'],armour:['armor'],armor:['armour'],hp:['health'],health:['heal','vitality'],heal:['health'],healing:['heal','health'],stamina:['endurance'],bow:['ranged','arrow'],gun:['pistol','firearm'],sword:['blade'],staff:['wand','spell'],magic:['spell','wand','staff'],spell:['magic']};
+  function looseHit(w,r,hay){
+    if(w.length>3&&/s$/.test(w)&&hay.indexOf(w.slice(0,-1))>=0) return true;
+    if(w.length>4&&/(ing|ed)$/.test(w)&&hay.indexOf(w.replace(/(ing|ed)$/,''))>=0) return true;
+    var sy=SYN[w]; if(sy&&sy.some(function(x){ return hay.indexOf(x)>=0; })) return true;
+    var a=ATTRS[w]; if(!a&&w.length>=5){ Object.keys(ATTRS).forEach(function(k){ if(!a&&k.length>=5&&lev(w,k)<=1) a=ATTRS[k]; }); } var o=a&&r.ck&&info&&info[r.ck]; if(o&&((o.req&&a in o.req)||(o.scales&&o.scales.indexOf(a)>=0))) return true;
+    if(w.length>=4){ var nt=r.nk.split(/[^a-z0-9]+/).filter(Boolean), lim=w.length>6?2:1; if(nt.some(function(t){ return lev(w,t.slice(0,w.length+1))<=lim||lev(w,t)<=lim; })) return true; }
+    return false; }
   function textOk(r,P,fuzzy){ var hay=r.nk+' '+(r.desc?(r.nb||(r.nb=norm(r.desc))):((r.ck&&cardNorm&&cardNorm[r.ck])||''));
     for(var i=0;i<P.phrases.length;i++) if(hay.indexOf(P.phrases[i])<0) return false;
     for(i=0;i<P.neg.length;i++) if(hay.indexOf(P.neg[i])>=0) return false;
-    for(i=0;i<P.words.length;i++){ if(hay.indexOf(P.words[i])<0) return false; }
+    for(i=0;i<P.words.length;i++){ if(hay.indexOf(P.words[i])<0&&!looseHit(P.words[i],r,hay)) return false; }
     return true; }
   function fuzzyOk(r,P){ if(!P.words.length) return false; var nt=r.nk.split(/[^a-z0-9]+/).filter(Boolean);
     return P.words.every(function(w){ if(r.nk.indexOf(w)>=0) return true; if(w.length<4) return false; var lim=w.length>6?2:1;
@@ -8831,21 +8844,21 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var cards=[].slice.call(cats.querySelectorAll('.m-card[data-k]'));
     cards.forEach(function(c){ var h=c.closest('.m-cat'); h=h&&h.querySelector('h5'); c._kind=h?txt(h).replace(/\s*\d+$/,''):''; });
     var kids=[].slice.call(cats.children);
-    mkBar(cat,'Filter the Archive — name, effect, or stats: req:dex  scales:int  type:bow  lv>=5',function(P,meta){
+    mkBar(cat,'Search the Archive',function(P,meta){
       if(!P){ cats.classList.remove('pgf-on'); cards.forEach(function(c){ c.classList.remove('pgf-hide'); }); kids.forEach(function(k){ k.classList.remove('pgf-hide'); if(k.classList.contains('m-cat-head')&&k._orig) k.querySelector('span').textContent=k._orig; }); return; }
       cats.classList.add('pgf-on'); var n=0; cards.forEach(function(c){ var ok=(!document.body.classList.contains('cat-view')||!!c.closest('.cv-on'))&&cardPass(P,c); c.classList.toggle('pgf-hide',!ok); if(ok) n++; });
       var head=null, headVis=0, hv=[];
       kids.forEach(function(k){ if(k.classList.contains('m-cat-head')){ head=k; k._vis=0; hv.push(k); if(!k._orig) k._orig=k.querySelector('span').textContent; }
         else if(k.classList.contains('m-cat')){ var v=k.querySelectorAll('.m-card[data-k]:not(.pgf-hide)').length; k.classList.toggle('pgf-hide',!v); if(head) head._vis+=v; } });
       hv.forEach(function(h){ h.classList.toggle('pgf-hide',!h._vis); h.querySelector('span').textContent=h._vis+' of '+h._orig.replace(/\s*items?/,'')+' items'; });
-      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No items match — loosen a filter, or try '+((window.__pgfEx||[['req:dex'],['scales:int']]).slice(0,2).map(function(e){ return '<a data-q="'+esc(e[0])+'">'+esc(e[0])+'</a>'; }).join(' / ')); },{help:'Filter the Archive by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'}); })();
+      meta.innerHTML=n?('<b>'+n+'</b> item'+(n===1?'':'s')+' match'+(P.chips.length?' — '+P.chips.map(esc).join(' · '):'')):'No results found'; },{help:'Filter the Archive by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'}); })();
   // Archive landing page: search every item; results appear here, grouped by collection
   (function(){ var sec=document.getElementById('archive'), cat=document.getElementById('catalog'); if(!sec||!cat) return;
     var grid=sec.querySelector('.ar-private'), res=document.createElement('div'); res.id='arResults'; res.hidden=true; sec.appendChild(res);
     var cards=null;
     function all(){ if(!cards){ cards=[].slice.call(cat.querySelectorAll('.m-cats .m-card[data-k]')); cards.forEach(function(c){ var h=c.closest('.m-cat'); h=h&&h.querySelector('h5'); c._kind=h?txt(h).replace(/\s*\d+$/,''):''; }); } return cards; }
     function headOf(c){ var e=c.closest('.m-cat'); while(e&&!e.classList.contains('m-cat-head')) e=e.previousElementSibling; return e; }
-    mkBar(sec,'Search the Archive \u2014 name, effect, or stats: req:dex  scales:int  type:bow  lv>=5',function(P,meta){
+    mkBar(sec,'Search the Archive',function(P,meta){
       if(!P){ res.hidden=true; res.innerHTML=''; if(grid) grid.classList.remove('ar-hide'); return; }
       var hits=all().filter(function(c){ return cardPass(P,c); });
       var groups=[], map=new Map();
@@ -8856,7 +8869,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var box=document.createElement('div'); box.className='m-cards';
         g.els.slice(0,CAP-shown).forEach(function(c){ var k=c.cloneNode(true); k.classList.remove('pgf-hide'); box.appendChild(k); shown++; });
         res.appendChild(hd); res.appendChild(box); });
-      if(!hits.length) res.innerHTML='<p class="ar-none">No items match. Try a different name, or something like <a data-q="req:dex">req:dex</a>.</p>';
+      if(!hits.length) res.innerHTML='<p class="ar-none">No results found</p>';
       res.hidden=false; if(grid) grid.classList.add('ar-hide');
       meta.textContent=hits.length?(hits.length+' item'+(hits.length===1?'':'s')+' match'+(hits.length>shown?' \u2014 showing '+shown:'')):''; },{help:'Search every item in the Archive by name, what it does, or its stats. Click a line to try it:'}); })();
   // Vendors
@@ -9303,7 +9316,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     });
     cats.querySelectorAll('.cv-on.sub-collapsed .m-subcat-collapse').forEach(function(b){ b.click(); subOpened.push(b); });
     if(h2) h2.textContent=cfg.t;
-    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; var ex=sugFor(cfg.t); window.__pgfEx=ex; inp.placeholder='Filter '+cfg.t.toLowerCase()+' \u2014 '+(ex?'try: '+ex.slice(0,3).map(function(e){return e[0];}).join('  '):'name, effect, or stats: req:dex  scales:int  lv>=5'); inp.setAttribute('aria-label',inp.placeholder); var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter '+cfg.t.toLowerCase()+' by name or effect. Click a line to try it:',ex); } pf.hidden=(cfg.t==='Embers'); }
+    var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; var ex=sugFor(cfg.t); window.__pgfEx=ex; inp.placeholder='Search the Archive'; inp.setAttribute('aria-label',inp.placeholder); var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter '+cfg.t.toLowerCase()+' by name or effect. Click a line to try it:',ex); } pf.hidden=(cfg.t==='Embers'); }
     if(intro) intro.innerHTML='<strong>'+count+' items</strong>'+(cfg.note||'');
     back.href='#'+cfg.back[0]; back.textContent='\u2190 '+cfg.back[1];
     document.title=cfg.t+' - Wicked Dossier \u00b7 No Rest for the Wicked';
