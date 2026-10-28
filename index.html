@@ -2789,6 +2789,8 @@ body.on-archive:not(.ar-preview) footer a{pointer-events:auto}
 body.on-archive:not(.ar-preview) footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;font-size:11px;color:rgba(255,255,255,.45);text-shadow:0 1px 6px rgba(0,0,0,.9)}
 body.on-archive:not(.ar-preview) footer .legal-short a{color:var(--gold);text-decoration:none}
 .ar-intro{margin:0 0 22px;color:var(--muted);max-width:60ch}
+#recipes.rc-land .rc-head,#recipes.rc-land .rc-group,#recipes.rc-cat .rc-head,#recipes.rc-cat .rc-off,#recipes.rc-cat .rc-grid,#recipes.pgf-on .rc-grid{display:none!important}
+#recipes .rc-grid{margin-top:22px}
 .ar-grid{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
 .ar-card{position:relative;display:flex;flex-direction:column;gap:8px;min-height:190px;padding:23px 23px 19px;border:0;background:linear-gradient(180deg,var(--panel-2),var(--panel));color:inherit;text-decoration:none;overflow:hidden;transition:border-color .3s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
 /* category pages: a Trove category opened from an Archive or Armory card shows alone, under its own title */
@@ -9445,6 +9447,35 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   window.addEventListener('resize',soon); window.addEventListener('hashchange',function(){ setTimeout(soon,50); setTimeout(soon,500); }); window.addEventListener('load',soon);
   try{ new MutationObserver(soon).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']}); }catch(e){}
   soon();
+})();
+</script>
+<script>
+/* Crafting Recipes: collection cards, then one category at a time */
+(function(){
+  var sec=document.getElementById('recipes'); if(!sec) return;
+  var jump=sec.querySelector('.rc-jump'), heads=[].slice.call(sec.querySelectorAll('.rc-head')); if(!jump||!heads.length) return;
+  var grid=document.createElement('div'); grid.className='ar-grid rc-grid';
+  [].forEach.call(jump.querySelectorAll('a[data-rc]'),function(a){ var sp=a.querySelector('span'), n=sp?sp.textContent:'', t=a.textContent.replace(n,'').trim(), c=document.createElement('a'); c.className='ar-card'; c.href='#'+a.getAttribute('data-rc'); c.innerHTML='<span class="ar-k">'+n+' recipes</span><h3>'+t+'</h3><span class="ar-go">Open</span>'; grid.appendChild(c); });
+  jump.parentNode.insertBefore(grid,jump.nextSibling);
+  var h2=sec.querySelector('.sect-head h2'), back=sec.querySelector('.sect-back'), h2T=h2?h2.textContent:'', cur=null;
+  [].slice.call(sec.children).forEach(function(e){ if(e.classList.contains('rc-head')){ cur=e.id; e.setAttribute('data-rcg',cur); } else if(e.classList.contains('rc-group')) e.setAttribute('data-rcg',cur); });
+  var last=null;
+  function apply(){
+    if(!sec.classList.contains('pg-on')){ last=null; return; }
+    var id=''; try{ id=decodeURIComponent(window.__wdRawId()); }catch(e){}
+    var searching=sec.classList.contains('pgf-on'), sel=null; heads.forEach(function(h){ if(h.id===id) sel=h; });
+    var key=(sel?sel.id:'')+'|'+searching; if(key===last) return; var changed=(last||'').split('|')[0]!==(sel?sel.id:''); last=key;
+    sec.classList.toggle('rc-land',!sel&&!searching); sec.classList.toggle('rc-cat',!!sel&&!searching);
+    [].forEach.call(sec.querySelectorAll('[data-rcg]'),function(e){ e.classList.toggle('rc-off',!sel||e.getAttribute('data-rcg')!==sel.id); });
+    if(sel&&changed){ if(sel.classList.contains('collapsed')){ var b=sel.querySelector('.m-cat-collapse'); if(b) b.click(); }
+      [].forEach.call(sec.querySelectorAll('.rc-group[data-rcg="'+sel.id+'"].sub-collapsed .m-subcat-collapse'),function(b){ b.click(); }); }
+    if(h2) h2.textContent=sel?sel.querySelector('h3').textContent:h2T;
+    if(back){ back.href=sel?'#recipes':'#archive'; back.textContent=sel?'\u2190 Crafting Recipes':'\u2190 Archive'; }
+    if(changed) window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',function(){ setTimeout(apply,0); setTimeout(apply,120); }); window.addEventListener('popstate',function(){ setTimeout(apply,0); });
+  try{ new MutationObserver(function(){ apply(); }).observe(sec,{attributes:true,attributeFilter:['class']}); }catch(e){}
+  setTimeout(apply,0); window.addEventListener('load',function(){ setTimeout(apply,200); });
 })();
 </script>
 </body></html>
