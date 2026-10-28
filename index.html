@@ -770,6 +770,10 @@ body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .
 #edit-profile .cb-tool.primary:hover{background:rgba(255,255,255,.18);border-color:#fff;color:#fff}
 #edit-profile input:focus,#edit-profile input:focus-visible,#edit-profile textarea:focus,#edit-profile textarea:focus-visible{outline:0!important;box-shadow:none!important}
 #edit-profile .ep-locked .ep-url{opacity:.75}
+#edit-profile .ep-avatar{cursor:pointer}
+#edit-profile .ep-avrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:6px}
+#edit-profile .ep-avbtn{background:none;border:0;padding:2px 0;color:#b9b9b9;font-family:var(--body);font-size:13px;text-decoration:underline;cursor:pointer}
+#edit-profile .ep-avbtn:hover{color:#fff}
 #edit-profile .ep-locked input{cursor:default}
 #edit-profile .ep-del{color:#b98a82}
 #edit-profile .ep-box p{color:#d8d8d8}
@@ -3878,7 +3882,7 @@ footer li{color:#6f665b}
         <div class="ep-wrap">
       <div id="epSignedOut" class="ep-box" hidden><p>Log in to edit your profile.</p><button type="button" class="cb-mbtn" id="epSignIn">Login</button></div>
       <form id="epForm" class="ep-box" hidden>
-        <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div></div>
+        <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div><div class="ep-avrow"><button type="button" class="ep-avbtn" id="epAvBtn">Change picture</button><button type="button" class="ep-avbtn" id="epAvReset" hidden>Use my login picture</button></div><input type="file" id="epAvFile" accept="image/*" hidden></div>
           <label class="ep-toggle" title="When off, your name on builds is plain text and your profile page is hidden"><span class="ep-toggle-l">Public profile</span><input type="checkbox" id="epPublic" checked><span class="ep-switch" aria-hidden="true"></span></label></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
         <div class="ep-socials">
@@ -6707,7 +6711,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var m=(u&&u.user_metadata)||{};
         return m.full_name||m.name||m.user_name||((u&&u.email)||'').split('@')[0]||'Signed in';
       }
-      function notify(){ listeners.forEach(function(f){ try{ f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:avatarOf(user)||(myProfile&&myProfile.avatar_url)||null}:null); }catch(e){} }); }
+      function notify(){ listeners.forEach(function(f){ try{ f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:pickAvatar()}:null); }catch(e){} }); }
       var POP=false; try{ POP=!!(window.opener&&window.name==='wdAuth'); }catch(e){}
       // Hand the finished session to the window that opened this popup (same origin only) and close.
       function popReport(payload){
@@ -6722,7 +6726,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         notify();
         // First sign-in: every account registers a username before it can do anything public.
         if(u&&changed) loadMyProfile().then(function(p){
-          if(p&&p.display_name){ notify(); var av=avatarOf(u); if(av&&p.avatar_url!==av) client().then(function(c){ return c.from('profiles').update({avatar_url:av}).eq('user_id',u.id); }).catch(function(){}); return; }
+          if(p&&p.display_name){ notify(); var av=avatarOf(u); if(av&&p.avatar_url!==av&&!isCustomAv(p.avatar_url)) client().then(function(c){ return c.from('profiles').update({avatar_url:av}).eq('user_id',u.id); }).catch(function(){}); return; }
           registerUsername();
         });
         var back=null; try{ back=sessionStorage.getItem('cbAfterAuth'); }catch(e){}
@@ -6914,7 +6918,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       window.__cbAcct={
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
         openPrivacy:function(){ $('cbAcctPriv').click(); }, editProfile:function(){ editProfile(); }, openProfile:function(){ loadMyProfile().then(function(p){ var nm=p&&p.display_name; if(!nm){ editProfile(); return; } if(window.__pgGoto&&window.__cmGoProfile){ window.__pgGoto('community-builds'); window.__cmGoProfile(nm); } else location.href='/profile/'+encodeURIComponent(nm); }); },
-        onUser:function(f){ listeners.push(f); f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:avatarOf(user)||null}:null); }
+        onUser:function(f){ listeners.push(f); f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:pickAvatar()}:null); }
       };
 
       // Save a shared build straight into the signed-in user's My Builds.
@@ -7035,6 +7039,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       function loadMyProfile(){ if(!user) return Promise.resolve(null); return client().then(function(c){ return c.from('profiles').select('display_name,bio,is_public,discord_name,discord_id,avatar_url,twitch,youtube,kick,steam,reddit').eq('user_id',user.id).maybeSingle(); }).then(function(r){ myProfile=(r&&r.data)||null; return myProfile; }).catch(function(){ return null; }); }
       // Profile picture: whatever Google or Discord handed over at sign-in (user_metadata.avatar_url /
       // picture). Stored on the profile row so other visitors can see it on the author page.
+      function isCustomAv(v){ return typeof v==='string'&&v.indexOf('data:image/')===0; }
+      function pickAvatar(){ var mp=myProfile&&myProfile.avatar_url; return isCustomAv(mp)?mp:(avatarOf(user)||mp||null); }
       function avatarOf(u){ var m=(u&&u.user_metadata)||{}; return m.avatar_url||m.picture||null; }
       // ---- username registration: asked once, right after the first sign-in, and fixed after that.
       var USERNAME_RE=/^[A-Za-z0-9_]{3,20}$/;
@@ -7082,6 +7088,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var ids=(u&&u.identities)||[]; var d=ids.filter(function(i){ return i.provider==='discord'; })[0], im=(d&&d.identity_data)||{}; var m=(u&&u.user_metadata)||{};
         return d&&(d.id||im.provider_id||im.sub)||m.provider_id||m.sub||null;
       }
+      var EP_NOAV='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#2a2b2d"/><circle cx="32" cy="25" r="11" fill="#6b6c6f"/><path d="M10 58c2-14 12-20 22-20s20 6 22 20z" fill="#6b6c6f"/></svg>');
       var epForm=$('epForm'), epOut=$('epSignedOut');
       function fillProfilePage(){
         if(!epForm) return;
@@ -7093,7 +7100,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           p=p||{};
           if(!p.display_name){ registerUsername(fillProfilePage); return; }
           $('epName').textContent=p.display_name;
-          var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; } else ai.hidden=true;
+          var av=pickAvatar()||EP_NOAV, ai=$('epAvatar'); ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; $('epAvReset').hidden=!isCustomAv(p.avatar_url);
           $('epBio').value=p.bio||'';
           $('epDiscordManual').value=dn||p.discord_name||''; $('epDiscordManual').readOnly=!!dn; $('epDiscordManualRow').classList.toggle('ep-locked',!!dn);
           $('epTwitch').value=p.twitch||''; $('epYoutube').value=(p.youtube||'').replace(/^@/,''); $('epKick').value=p.kick||''; $('epSteam').value=p.steam||''; $('epReddit').value=p.reddit||'';
@@ -7114,10 +7121,41 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           $('epTwitch').value=soc.twitch||$('epTwitch').value; $('epYoutube').value=soc.youtube?soc.youtube.replace(/^@/,''):$('epYoutube').value; $('epKick').value=soc.kick||$('epKick').value; $('epSteam').value=soc.steam||$('epSteam').value; $('epReddit').value=soc.reddit||$('epReddit').value;
           if(badK){ m.textContent='Enter just your '+({twitch:'Twitch',youtube:'YouTube',kick:'Kick',steam:'Steam',reddit:'Reddit'})[badK]+' name (letters, numbers, dots, dashes, underscores).'; m.className='cb-mmsg err'; $('ep'+badK.charAt(0).toUpperCase()+badK.slice(1)).focus(); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:manualD||null,discord_id:linkD?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
-            .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:manualD||null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:manualD||null,discord_id:linkD?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:pickAvatar(),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+            .then(function(x){ if(x.error) throw x.error; myProfile=Object.assign(myProfile||{},{display_name:nm,bio:bio,is_public:pub,discord_name:manualD||null,avatar_url:pickAvatar()}); if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
+        function saveAvatar(val,okMsg){
+          var m=$('epMsg'); m.textContent='Saving\u2026'; m.className='cb-mmsg';
+          client().then(function(c){ return c.from('profiles').update({avatar_url:val,updated_at:new Date().toISOString()}).eq('user_id',user.id); })
+            .then(function(x){ if(x.error) throw x.error; myProfile=Object.assign(myProfile||{},{avatar_url:val}); var av=pickAvatar(); $('epAvatar').src=av||EP_NOAV; $('epAvReset').hidden=!isCustomAv(val); notify(); m.textContent=okMsg; })
+            .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
+        }
+        function squareThumb(file,done){
+          var url=URL.createObjectURL(file), im=new Image();
+          im.onload=function(){
+            try{
+              var sz=Math.min(im.naturalWidth,im.naturalHeight), out=[192,160,128], data='';
+              for(var i=0;i<out.length&&!data;i++){
+                var cv=document.createElement('canvas'); cv.width=cv.height=out[i]; var cx=cv.getContext('2d');
+                cx.drawImage(im,(im.naturalWidth-sz)/2,(im.naturalHeight-sz)/2,sz,sz,0,0,out[i],out[i]);
+                var d=cv.toDataURL('image/webp',.82); if(d.indexOf('data:image/webp')!==0) d=cv.toDataURL('image/jpeg',.82);
+                if(d.length<70000) data=d;
+              }
+              URL.revokeObjectURL(url); done(data||null);
+            }catch(e){ URL.revokeObjectURL(url); done(null); }
+          };
+          im.onerror=function(){ URL.revokeObjectURL(url); done(null); };
+          im.src=url;
+        }
+        $('epAvBtn').addEventListener('click',function(){ $('epAvFile').click(); });
+        $('epAvatar').addEventListener('click',function(){ $('epAvFile').click(); });
+        $('epAvFile').addEventListener('change',function(){
+          var f=this.files&&this.files[0]; this.value=''; var m=$('epMsg'); if(!f) return;
+          if(!/^image\//.test(f.type)||f.size>12*1024*1024){ m.textContent='Choose an image file under 12 MB.'; m.className='cb-mmsg err'; return; }
+          squareThumb(f,function(d){ if(!d){ m.textContent='That image could not be read. Try a JPG or PNG.'; m.className='cb-mmsg err'; return; } saveAvatar(d,'Picture updated.'); });
+        });
+        $('epAvReset').addEventListener('click',function(){ saveAvatar(avatarOf(user)||null,'Picture reset.'); });
         $('epDelAcct').addEventListener('click',function(){
           var b=this, m=$('epMsg');
           if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again \u2014 deletes your account, profile and all saved builds'; return; }
