@@ -3313,6 +3313,8 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 .cost .coin{width:15px;height:15px}
 .cost-tail{color:#8b8174;font-weight:400}
 @media (max-width:760px){.m-body{grid-template-columns:minmax(0,1fr)}.m-mats{white-space:normal}}
+table.m-recipes{border:0!important;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#0b0c0e url(img/frame/bg-big.webp) var(--ul-x,50%) var(--ul-x,50%)/2400px auto no-repeat!important;border-collapse:separate;border-spacing:0}
+table.m-recipes th:first-child,table.m-recipes td:first-child{padding-left:20px}table.m-recipes th:last-child,table.m-recipes td:last-child{padding-right:20px}
 @media (max-width:760px){.m-recipes{display:block;overflow-x:auto;max-width:100%}}
 .rc-jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}.rc-jump a{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid rgba(201,162,75,.35);padding:7px 12px;border-radius:2px}.rc-jump a:hover{background:rgba(201,162,75,.12)}.rc-jump a span{color:#8b8174;margin-left:4px}
 @media (min-width:761px){.m-recipes{table-layout:fixed;width:100%}.m-recipes th:nth-child(1){width:28%}.m-recipes th:nth-child(2){width:7%}.m-recipes th:nth-child(3){width:45%}.m-recipes .m-mats{white-space:normal}}
@@ -9661,7 +9663,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 <script>
 /* Dividers on shared builds: each line shows a random slice of the game's underline sprite, sometimes flipped, so they don't all look identical */
 (function(){
-  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head,.cm-card,.cm-board,#cbReport .panel,#cbReport .cb-grade,.cb-dmg-table thead tr,.cb-dmg-notes,.cb-report-head,#cerim-builder .cb-panel,#cerim-builder .cb-picker,#cerim-builder .cb-panel h3,#cerim-builder .cb-attr-row,.ar-card:not(.vd-card),.md-gal a,#cmPfEdit,#epSave,#epView,#cbShTop>.cb-sh-hero,#cbShTop>.cb-panel',busy=0;
+  var SEL='#cbShTop>.cb-panel h3,#cbShTop #cbProfileBars .attr,#cbShTop .cb-sh-attr,.cb-sh-head,.cm-board li,.cm-foot-row,.cm-back-head,.cm-card,.cm-board,#cbReport .panel,#cbReport .cb-grade,.cb-dmg-table thead tr,.cb-dmg-notes,.cb-report-head,#cerim-builder .cb-panel,#cerim-builder .cb-picker,#cerim-builder .cb-panel h3,#cerim-builder .cb-attr-row,.ar-card:not(.vd-card),.md-gal a,table.m-recipes,#cmPfEdit,#epSave,#epView,#cbShTop>.cb-sh-hero,#cbShTop>.cb-panel',busy=0;
   function r(a,b){return a+Math.random()*(b-a)}
   function seed(){ busy=0;
     document.querySelectorAll(SEL).forEach(function(e){
