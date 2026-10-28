@@ -3815,11 +3815,9 @@ footer li{color:#6f665b}
         <div class="ep-id"><img id="epAvatar" class="ep-avatar" alt="" hidden><div class="cb-pub-l">Username<div class="ep-username" id="epName"></div></div>
           <label class="ep-toggle" title="When off, your name on builds is plain text and your profile page is hidden"><span class="ep-toggle-l">Public profile</span><input type="checkbox" id="epPublic" checked><span class="ep-switch" aria-hidden="true"></span></label></div>
         <label class="cb-pub-l">About me <small>(optional, 300 characters)</small><textarea id="epBio" maxlength="300" placeholder="e.g. Parry enjoyer. Mostly NG+ boss builds."></textarea></label>
-        <label class="cb-pub-l cb-pub-chk" id="epDiscordRow"><input type="checkbox" id="epDiscord"> <span>Share my Discord profile <small>Adds a Discord icon next to your name that links to <b id="epDiscordName"></b></small></span></label>
-        <p class="ep-note" id="epDiscordNote" hidden>Signed in with Google? Add your Discord username under Links below; it shows as a Discord icon that reveals your username.</p>
         <div class="ep-socials">
           <div class="cb-pub-l ep-social-l">Links on your profile <small>(option &mdash; use only your name for each platform)</small></div>
-          <label class="cb-pub-l ep-social" id="epDiscordManualRow" hidden><span>Discord</span><span class="ep-url"><i>@</i><input type="text" id="epDiscordManual" maxlength="32" placeholder="yourusername" autocomplete="off" spellcheck="false"></span></label>
+          <label class="cb-pub-l ep-social" id="epDiscordManualRow"><span>Discord</span><span class="ep-url"><i>@</i><input type="text" id="epDiscordManual" maxlength="32" placeholder="yourusername" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>Twitch</span><span class="ep-url"><i>twitch.tv/</i><input type="text" id="epTwitch" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>YouTube</span><span class="ep-url"><i>youtube.com/@</i><input type="text" id="epYoutube" maxlength="40" placeholder="yourchannel" autocomplete="off" spellcheck="false"></span></label>
           <label class="cb-pub-l ep-social"><span>Kick</span><span class="ep-url"><i>kick.com/</i><input type="text" id="epKick" maxlength="40" placeholder="yourname" autocomplete="off" spellcheck="false"></span></label>
@@ -6969,15 +6967,14 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         epOut.hidden=!!user; epForm.hidden=!user;
         if(!user) return;
         var dn=discordName(user);
-        $('epDiscordRow').hidden=!dn; $('epDiscordNote').hidden=!!dn; $('epDiscordManualRow').hidden=!!dn; if(dn) $('epDiscordName').textContent=dn;
-        $('epMsg').textContent=''; var dl=$('epDelAcct'); if(dl){ dl.dataset.sure=''; dl.textContent='Delete my account'; }
+                $('epMsg').textContent=''; var dl=$('epDelAcct'); if(dl){ dl.dataset.sure=''; dl.textContent='Delete my account'; }
         loadMyProfile().then(function(p){
           p=p||{};
           if(!p.display_name){ registerUsername(fillProfilePage); return; }
           $('epName').textContent=p.display_name;
           var av=avatarOf(user)||p.avatar_url, ai=$('epAvatar'); if(av){ ai.referrerPolicy='no-referrer'; ai.src=av; ai.hidden=false; } else ai.hidden=true;
           $('epBio').value=p.bio||'';
-          $('epDiscord').checked=!!p.discord_name; $('epDiscordManual').value=dn?'':(p.discord_name||'');
+          $('epDiscordManual').value=p.discord_name||dn||'';
           $('epTwitch').value=p.twitch||''; $('epYoutube').value=(p.youtube||'').replace(/^@/,''); $('epKick').value=p.kick||''; $('epSteam').value=p.steam||''; $('epReddit').value=p.reddit||'';
           $('epPublic').checked=p.is_public!==false;
           var v=$('epView'); v.hidden=p.is_public===false; v.href='/profile/'+encodeURIComponent(p.display_name||'');
@@ -6987,17 +6984,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         $('epSignIn').addEventListener('click',chooseSignIn);
         epForm.addEventListener('submit',function(e){
           e.preventDefault();
-          var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), shareD=!!dn&&$('epDiscord').checked, m=$('epMsg');
+          var nm=(myProfile&&myProfile.display_name)||'', bio=$('epBio').value.trim(), pub=$('epPublic').checked, dn=discordName(user), m=$('epMsg');
           if(!nm){ registerUsername(fillProfilePage); return; }
-          var manualD=dn?null:cleanHandle($('epDiscordManual').value,'discord');
+          var manualD=cleanHandle($('epDiscordManual').value,'discord'), linkD=!!dn&&!!manualD&&String(manualD).toLowerCase()===String(dn).toLowerCase();
           if(manualD===false){ m.textContent='Enter just your Discord username (letters, numbers, dots, underscores).'; m.className='cb-mmsg err'; $('epDiscordManual').focus(); return; }
           var soc={twitch:cleanHandle($('epTwitch').value,'twitch'),youtube:cleanHandle($('epYoutube').value,'youtube'),kick:cleanHandle($('epKick').value,'kick'),steam:cleanHandle($('epSteam').value,'steam'),reddit:cleanHandle($('epReddit').value,'reddit')};
           var badK=Object.keys(soc).filter(function(k){ return soc[k]===false; })[0];
           $('epTwitch').value=soc.twitch||$('epTwitch').value; $('epYoutube').value=soc.youtube?soc.youtube.replace(/^@/,''):$('epYoutube').value; $('epKick').value=soc.kick||$('epKick').value; $('epSteam').value=soc.steam||$('epSteam').value; $('epReddit').value=soc.reddit||$('epReddit').value;
           if(badK){ m.textContent='Enter just your '+({twitch:'Twitch',youtube:'YouTube',kick:'Kick',steam:'Steam',reddit:'Reddit'})[badK]+' name (letters, numbers, dots, dashes, underscores).'; m.className='cb-mmsg err'; $('ep'+badK.charAt(0).toUpperCase()+badK.slice(1)).focus(); return; }
           m.textContent='Saving\u2026'; m.className='cb-mmsg';
-          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:dn?(shareD?dn:null):manualD,discord_id:(dn&&shareD)?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
-            .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:shareD?dn:null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
+          client().then(function(c){ return c.from('profiles').upsert({user_id:user.id,display_name:nm,bio:bio||null,discord_name:manualD||null,discord_id:linkD?discordId(user):null,twitch:soc.twitch,youtube:soc.youtube,kick:soc.kick,steam:soc.steam,reddit:soc.reddit,is_public:pub,avatar_url:avatarOf(user),updated_at:new Date().toISOString()},{onConflict:'user_id'}); })
+            .then(function(x){ if(x.error) throw x.error; myProfile={display_name:nm,bio:bio,is_public:pub,discord_name:manualD||null}; if(window.__cmRefresh) window.__cmRefresh(); m.textContent='Profile saved.'; var v=$('epView'); v.hidden=!pub; v.href='/profile/'+encodeURIComponent(nm); })
             .catch(function(err){ m.textContent=cleanErr(err); m.className='cb-mmsg err'; });
         });
         $('epDelAcct').addEventListener('click',function(){
