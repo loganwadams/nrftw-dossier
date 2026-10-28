@@ -1905,6 +1905,15 @@ body.cb-shared .cb-acct-hint{display:none!important}
 .nav-provs.open .nav-pmenu{display:flex}
 .nav-pmenu button{display:flex;align-items:center;gap:10px}
 .nav-pmenu svg{width:17px;height:17px;flex:none}
+.cb-em{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.cb-em label{display:flex;flex-direction:column;gap:6px;font-family:var(--display);font-variant:small-caps;font-size:15.5px;color:#8e8e90}
+.cb-em input{background:rgba(0,0,0,.4);border:1px solid #4a4a4a;color:#fff;font-family:var(--body);font-size:16px;padding:11px 12px;outline:0}
+.cb-em input:focus{border-color:#d6d6d6}
+.cb-em .cb-em-go{padding:13px 14px;font-size:11px;text-align:center}
+.cb-em .cb-mmsg{margin:0;font-size:13px;line-height:1.4}
+.cb-or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:#8f8f8f;font-size:12px;text-transform:uppercase;letter-spacing:.14em}
+.cb-or:before,.cb-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.16)}
+.cb-em-note{margin:14px 0 0;font-size:12.5px;color:#8f8f8f}
 .cb-prov{display:flex;flex-direction:column;gap:10px;margin-top:6px}
 .cb-prov .cb-mbtn{padding:13px 14px;font-size:11px;text-align:left}
 @media (max-width:760px){.nav-provs{display:flex;flex-direction:column;align-items:stretch;width:100%}.nav-provs>button.nav-connect{text-align:left;justify-content:flex-start}.nav-provs .nav-pmenu{position:static;box-shadow:none;border:0;padding:0 0 0 10px}}
@@ -6786,9 +6795,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       function signOut(){
         client().then(function(c){ return c.auth.signOut(); }).then(function(){ setUser(null); }).catch(function(){});
       }
+      function emailSignIn(email,msg,btn){
+        var em=(email||'').trim();
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ msg.textContent='Enter a valid email address.'; msg.className='cb-mmsg err'; return; }
+        btn.disabled=true; msg.textContent='Sending\u2026'; msg.className='cb-mmsg';
+        try{ var sec=$('cerim-builder'); sessionStorage.setItem('cbAfterAuth',(sec&&sec.offsetParent)?'builder':'home'); }catch(e){}
+        client().then(function(c){ return c.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.origin+'/',shouldCreateUser:true}}); })
+          .then(function(r){ if(r&&r.error) throw r.error; msg.textContent='Check your inbox: we sent a sign-in link to '+em+'. Open it in this browser to finish. New here? The same link creates your account.'; msg.className='cb-mmsg'; })
+          .catch(function(e){ btn.disabled=false; msg.textContent=cleanErr(e); msg.className='cb-mmsg err'; });
+      }
       function chooseSignIn(){
-        openModal('Sign in','<p>Choose how to sign in. It is optional and only lets you save builds to your account.</p><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div>');
+        openModal('Sign in or sign up','<form class="cb-em" novalidate><label>Email address<input type="email" id="cbEmIn" autocomplete="email" placeholder="you@example.com" required></label><button type="submit" class="cb-mbtn cb-em-go">Email me a sign-in link</button><p class="cb-mmsg" id="cbEmMsg" role="status"></p></form><div class="cb-or"><span>or</span></div><div class="cb-prov"><button type="button" class="cb-mbtn" data-p="discord">Continue with Discord</button><button type="button" class="cb-mbtn" data-p="google">Continue with Google</button></div><p class="cb-em-note">Signing in is optional and only lets you save builds and publish to the community. No password needed.</p>');
         mB.querySelector('.cb-prov').addEventListener('click',function(e){ var b=e.target.closest('button[data-p]'); if(b){ closeModal(); signIn(b.dataset.p); } });
+        var f=mB.querySelector('.cb-em'); f.addEventListener('submit',function(e){ e.preventDefault(); emailSignIn($('cbEmIn').value,$('cbEmMsg'),f.querySelector('.cb-em-go')); });
+        setTimeout(function(){ try{ $('cbEmIn').focus(); }catch(x){} },50);
       }
       $('cbAcctHintIn').addEventListener('click',chooseSignIn);
       // A build opened from the Community page carries its listing id (?cb=): fetch the listing so
@@ -9124,10 +9144,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   var pmenu=document.createElement('span'); pmenu.className='nav-acct-menu nav-pmenu';
   pmenu.innerHTML='<button type="button" data-p="discord">'+DISCORD_SVG+'<span>Discord</span></button><button type="button" data-p="google">'+GOOGLE_SVG+'<span>Google</span></button>';
   var conn=document.createElement('button'); conn.type='button'; conn.className='nav-connect'; conn.setAttribute('aria-haspopup','menu');
-  conn.innerHTML='<span>Connect with</span><svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  conn.innerHTML='<span>Sign in / Sign up</span>';
   var provs=document.createElement('span'); provs.className='nav-provs'; provs.appendChild(conn); provs.appendChild(pmenu);
   box.insertBefore(provs,box.firstChild);
-  conn.addEventListener('click',function(e){ e.stopPropagation(); provs.classList.toggle('open'); });
+  conn.addEventListener('click',function(e){ e.stopPropagation(); window.__cbAcct.chooseSignIn(); });
   pmenu.addEventListener('click',function(e){ var bt=e.target.closest('button[data-p]'); if(!bt) return; e.stopPropagation(); provs.classList.remove('open'); window.__cbAcct.signIn(bt.dataset.p); });
   main.addEventListener('click',function(e){ e.stopPropagation(); if(u) box.classList.toggle('open'); });
   document.addEventListener('click',function(){ box.classList.remove('open'); provs.classList.remove('open'); });
