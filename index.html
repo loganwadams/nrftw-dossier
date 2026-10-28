@@ -2868,6 +2868,12 @@ body.on-media .md-ev,body.on-media .md-ev:hover,body.on-media .md-ev:focus-visib
   footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;text-align:left;font-size:11px;color:rgba(255,255,255,.45);text-shadow:0 1px 6px rgba(0,0,0,.9);pointer-events:auto}
   footer .legal-short a{color:var(--gold);text-decoration:none}
 }
+@media (max-width:760px){
+  footer .src-toggle,footer .srcs,footer .legal:not(.legal-short){display:none!important}
+  footer .legal-short{display:block;margin:0!important;padding:0!important;border-top:0!important;text-align:left;font-size:11px;line-height:1.55;color:rgba(255,255,255,.45);text-shadow:0 1px 6px rgba(0,0,0,.9)}
+  footer .legal-short a{color:var(--gold);text-decoration:none}
+  body:not(.on-home) footer{padding-top:34px;padding-bottom:18px}
+}
 .pgbar .hm-rail{display:none}
 .ar-wip{display:flex;gap:30px;align-items:stretch;min-height:min(300px,34vh);margin:22px 0 0;padding:6px 0}
 .ar-rail{position:relative;flex:0 0 1px;background:linear-gradient(180deg,transparent,rgba(var(--gold-rgb),.55) 14%,rgba(var(--gold-rgb),.55) 86%,transparent)}
