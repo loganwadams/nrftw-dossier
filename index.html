@@ -3506,6 +3506,10 @@ footer li{color:#6f665b}
 #cerim-builder .cb-gp .cb-slot.filled{border:1px solid rgba(233,228,214,.3);background:rgba(8,9,14,.55)}
 
 #cerim-builder .cb-gp .cb-slot,#cerim-builder .cb-gp .cb-slot.filled{border:0}
+#cerim-builder .cb-gp .cb-slot.filled{background:none}
+#cerim-builder .cb-gp .cb-slot.filled:before{display:none}
+#cerim-builder .cb-gp .cb-slot.filled .m-ic{transform:scale(1.2);transition:filter .15s}
+#cerim-builder .cb-gp .cb-slot.filled:hover .m-ic{filter:brightness(1.25) drop-shadow(0 0 6px rgba(240,222,128,.55))}
 #cerim-builder .cb-gp .cb-slot:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:url(img/gm/divider.webp) 0 0/100% 3px no-repeat,url(img/gm/divider.webp) 0 100%/100% 3px no-repeat,url(img/gm/divider-v.webp) 0 0/2px 100% no-repeat,url(img/gm/divider-v.webp) 100% 0/2px 100% no-repeat;opacity:.75}
 #cerim-builder .cb-gp .cb-slot:hover:before,#cerim-builder .cb-gp .cb-slot:focus-visible:before{opacity:1;filter:url(#gmGold) brightness(1.15)}
 #cerim-builder .cb-gp .cb-slot:hover .cb-slot-plus,#cerim-builder .cb-gp .cb-slot:focus-visible .cb-slot-plus{opacity:1;filter:url(#gmGold) brightness(1.15)}
