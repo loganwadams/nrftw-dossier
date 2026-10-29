@@ -10010,7 +10010,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(!top||!dmg||dmg.hidden||!rep||rep.hidden||!root.offsetParent||!dmg.offsetHeight){ box.classList.remove('on'); return; }
       var r=root.getBoundingClientRect(), t=top.getBoundingClientRect(), d=dmg.getBoundingClientRect(), p=rep.getBoundingClientRect();
       var padX=20, padT=18, padB=18;
-      box.style.left=(p.left-r.left-padX)+'px'; box.style.width=(p.width+padX*2)+'px';
+      var left=p.left-padX, right=p.right+padX;
+      try{ var nl=1e9; Array.prototype.forEach.call(document.querySelectorAll('.pgbar-row'),function(n){ var nr=n.getBoundingClientRect(); if(nr.width&&nr.height&&nr.left>left+200) nl=Math.min(nl,nr.left); }); if(nl<1e9) right=Math.min(right,nl-18); }catch(e){}
+      box.style.left=(left-r.left)+'px'; box.style.width=Math.max(0,right-left)+'px';
       box.style.top=(t.top-r.top-padT)+'px'; box.style.height=(d.bottom-t.top+padT+padB)+'px';
       box.classList.add('on');
     }
