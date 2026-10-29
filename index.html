@@ -3332,8 +3332,8 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 @media (max-width:760px){.m-body{grid-template-columns:minmax(0,1fr)}.m-mats{white-space:normal}}
 table.m-recipes{border:0!important;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#0b0c0e url(img/frame/bg-tile.webp) 50% 0/2400px auto repeat-y!important;border-collapse:separate;border-spacing:0}
 table.m-recipes th:first-child,table.m-recipes td:first-child{padding-left:20px}table.m-recipes th:last-child,table.m-recipes td:last-child{padding-right:20px}table.m-recipes td,table.m-recipes td.m-mats{color:#fff}
-table.m-recipes .rc-mat{display:inline-flex;align-items:center;gap:6px;margin:3px 16px 3px 0;white-space:nowrap}
-table.m-recipes .rc-mat .tt-ic,table.m-recipes .rc-st .tt-ic{zoom:.4;flex:none;margin:0;background-color:transparent;border:0}
+table.m-recipes .rc-mat,.merchant td.m-mats .rc-mat{display:inline-flex;align-items:center;gap:6px;margin:3px 16px 3px 0;white-space:nowrap}
+table.m-recipes .rc-mat .tt-ic,table.m-recipes .rc-st .tt-ic,.merchant td.m-mats .rc-mat .tt-ic{zoom:.4;flex:none;margin:0;background-color:transparent;border:0}
 table.m-recipes .rc-st{display:inline-flex;align-items:center;gap:8px}
 table.m-recipes .m-mats{white-space:normal}
 table.m-recipes th,table.m-recipes td{border-top:0!important;border-bottom:0!important}
@@ -9782,6 +9782,23 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var m=td[2], parts=m.textContent.split(/,\s*/);
         m.innerHTML=parts.map(function(t){ var x=/^(\d+\s*[\u00d7x])\s*(.+)$/.exec(t.trim()); var n=x?x[2]:t.trim(); return '<span class="rc-mat">'+ic(n)+'<span>'+esc(t.trim())+'</span></span>'; }).join('');
         var st=td[3].textContent.trim(); var stIc=ic(st); if(!stIc){ var base=st.split(' / ').pop(); var hit=Object.keys(by).filter(function(n){ return n.slice(-base.length)===base; })[0]; if(hit) stIc=ic(hit); } td[3].innerHTML='<span class="rc-st">'+stIc+'<span>'+esc(st)+'</span></span>';
+      });
+    }).catch(function(){});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
+})();
+</script>
+<script>
+(function(){
+  function go(){
+    var cells=document.querySelectorAll('.merchant td.m-mats'); if(!cells.length||!window.__ttLoad) return;
+    window.__ttLoad().then(function(db){
+      var by={}; Object.keys(db).forEach(function(k){ var c=db[k]; if(c&&c.n&&c.p&&!by[c.n]) by[c.n]=c.p; });
+      function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+      [].forEach.call(cells,function(td){
+        if(td.getAttribute('data-ic')) return; td.setAttribute('data-ic','1');
+        var parts=td.textContent.split(/\s+(?=\d+\s*\u00d7)/).map(function(t){return t.trim();}).filter(Boolean);
+        td.innerHTML=parts.map(function(t){ var x=/^(\d+\s*\u00d7)\s*(.+)$/.exec(t); var n=x?x[2]:t; var p=by[n]; var ic=p?'<span class="tt-ic" style="background-position:-'+(p[0]*64)+'px -'+(p[1]*64)+'px"></span>':''; return '<span class="rc-mat">'+ic+'<span>'+esc(t)+'</span></span>'; }).join('');
       });
     }).catch(function(){});
   }
