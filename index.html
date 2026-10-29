@@ -962,11 +962,11 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-grid .m-card[data-rar=magical]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-mag-bg.webp)!important}
 .cb-sh-grid .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
 .cb-sh-grid .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
-.cb-sh-grid .m-card,.cb-sh-grid .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/bd-standard.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
-.cb-sh-grid .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/bd-common.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
-.cb-sh-grid .m-card[data-rar=magical]{background-image:url(img/card/bd-magical.webp)!important}
-.cb-sh-grid .m-card[data-rar=plagued]{background-image:url(img/card/bd-plagued.webp)!important}
-.cb-sh-grid .m-card[data-rar=unique]{background-image:url(img/card/bd-unique.webp)!important}
+.cb-sh-grid .m-card,.cb-sh-grid .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
+.cb-sh-grid .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
+.cb-sh-grid .m-card[data-rar=magical]{background-image:url(img/card/rl-mag-bg.webp)!important}
+.cb-sh-grid .m-card[data-rar=plagued]{background-image:url(img/card/rl-pl-bg.webp)!important}
+.cb-sh-grid .m-card[data-rar=unique]{background-image:url(img/card/rl-un-bg.webp)!important}
 .cb-sh-grid .m-card:nth-child(3n+2){--ga:135deg}.cb-sh-grid .m-card:nth-child(3n){--ga:225deg}.cb-sh-grid .m-card:nth-child(7n+4){--ga:0deg}
 .cb-sh-grid .m-card:nth-child(5n+1){--bs:cover;--bp:center}
 .cb-sh-grid .m-card:nth-child(5n+2){--bs:150% 150%;--bp:0 0}
@@ -3313,12 +3313,12 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-card[data-rar=plagued],#arResults .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
 #catalog .m-card[data-rar=unique],#arResults .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
 /* item cards: the game's own boxed slot frame, one per rarity */
-#catalog .m-card,#arResults .m-card,#catalog .m-card[data-rar],#arResults .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/bd-standard.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
+#catalog .m-card,#arResults .m-card,#catalog .m-card[data-rar],#arResults .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
 /* common items: the item panel's smoky backdrop with a thin frame in its own grey-blue */
-#catalog .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]),#arResults .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/bd-common.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
-#catalog .m-card[data-rar=magical],#arResults .m-card[data-rar=magical]{background-image:url(img/card/bd-magical.webp)!important}
-#catalog .m-card[data-rar=plagued],#arResults .m-card[data-rar=plagued]{background-image:url(img/card/bd-plagued.webp)!important}
-#catalog .m-card[data-rar=unique],#arResults .m-card[data-rar=unique]{background-image:url(img/card/bd-unique.webp)!important}
+#catalog .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]),#arResults .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
+#catalog .m-card[data-rar=magical],#arResults .m-card[data-rar=magical]{background-image:url(img/card/rl-mag-bg.webp)!important}
+#catalog .m-card[data-rar=plagued],#arResults .m-card[data-rar=plagued]{background-image:url(img/card/rl-pl-bg.webp)!important}
+#catalog .m-card[data-rar=unique],#arResults .m-card[data-rar=unique]{background-image:url(img/card/rl-un-bg.webp)!important}
 #catalog .m-card:nth-child(3n+2),#arResults .m-card:nth-child(3n+2){--ga:135deg}#catalog .m-card:nth-child(3n){--ga:225deg}#catalog .m-card:nth-child(7n+4){--ga:0deg}
 #catalog .m-card:nth-child(5n+1),#arResults .m-card:nth-child(5n+1){--bs:cover;--bp:center}
 #catalog .m-card:nth-child(5n+2),#arResults .m-card:nth-child(5n+2){--bs:150% 150%;--bp:0 0}
@@ -3334,10 +3334,10 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-setcard-pieces .m-card,#arResults .m-setcard-pieces .m-card{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;column-gap:10px;justify-content:normal;text-align:left;overflow:visible;padding:6px 10px 6px 6px;min-height:44px;border-color:rgba(190,196,205,.16)!important;background:rgba(0,0,0,.22)!important}
 #catalog .m-setcard-pieces .m-card:hover,#arResults .m-setcard-pieces .m-card:hover{filter:brightness(1.3)}
 #catalog .m-setcard-pieces .m-card .m-ic,#arResults .m-setcard-pieces .m-card .m-ic{zoom:1;margin:0;border:1px solid rgba(190,196,205,.12);-webkit-mask:none;mask:none;background-size:1536px,100% 100%!important;background-repeat:no-repeat!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=standard],#arResults .m-setcard-pieces .m-ic[data-slot=standard]{background-image:url(img/items-sheet.webp),url(img/card/bd-standard.webp)!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=magical],#arResults .m-setcard-pieces .m-ic[data-slot=magical]{background-image:url(img/items-sheet.webp),url(img/card/bd-magical.webp)!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=plagued],#arResults .m-setcard-pieces .m-ic[data-slot=plagued]{background-image:url(img/items-sheet.webp),url(img/card/bd-plagued.webp)!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=unique],#arResults .m-setcard-pieces .m-ic[data-slot=unique]{background-image:url(img/items-sheet.webp),url(img/card/bd-unique.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=standard],#arResults .m-setcard-pieces .m-ic[data-slot=standard]{background-image:url(img/items-sheet.webp),url(img/card/rl-std-bg.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=magical],#arResults .m-setcard-pieces .m-ic[data-slot=magical]{background-image:url(img/items-sheet.webp),url(img/card/rl-mag-bg.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=plagued],#arResults .m-setcard-pieces .m-ic[data-slot=plagued]{background-image:url(img/items-sheet.webp),url(img/card/rl-pl-bg.webp)!important}
+#catalog .m-setcard-pieces .m-ic[data-slot=unique],#arResults .m-setcard-pieces .m-ic[data-slot=unique]{background-image:url(img/items-sheet.webp),url(img/card/rl-un-bg.webp)!important}
 #catalog .m-setcard-pieces .m-card-req,#arResults .m-setcard-pieces .m-card-req{display:none}
 #catalog .m-card-name,#arResults .m-card-name{display:block;max-width:100%;overflow-wrap:anywhere}
 #catalog .m-card-lv,#arResults .m-card-lv{font-family:"Arcon","Marcellus",sans-serif;font-size:12px;letter-spacing:.08em}
@@ -3547,11 +3547,11 @@ footer li{color:#6f665b}
 #cerim-builder .cb-gp .cb-slot,#cerim-builder .cb-gp .cb-slot.filled{border:0}
 #cerim-builder .cb-gp .cb-slot.filled{background:rgba(8,9,14,.55);overflow:visible}
 #cerim-builder .cb-gp .cb-slot.filled .cb-slot-lv{z-index:4}
-/* rarity slots wear the game's own inventory frames (the same bd-*.webp the item cards use), so a magical item sits in the blue box, a plagued one in the magenta box and a unique in the gold box, exactly as in the inventory screen */
+/* rarity slots wear the card art (the same rl-*-bg.webp the item cards use), so a magical item sits in the blue box, a plagued one in the magenta box and a unique in the gold box, exactly as in the inventory screen */
 #cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-color:#0a0d12;background-size:100% 100%;background-position:center;background-repeat:no-repeat;box-shadow:none}
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag{background-image:url(img/card/bd-magical.webp)}
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag{background-image:url(img/card/bd-plagued.webp)}
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-image:url(img/card/bd-unique.webp)}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag{background-image:url(img/card/rl-mag-bg.webp)}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag{background-image:url(img/card/rl-pl-bg.webp)}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-image:url(img/card/rl-un-bg.webp)}
 #cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag:before,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag:before,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq:before{display:none}
 #cerim-builder .cb-gp .cb-slot.filled .m-ic{position:relative;z-index:3;transform:scale(1.2);transition:filter .15s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
 #cerim-builder .cb-gp .cb-slot.filled:hover .m-ic{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,255,255,.5))}
@@ -9560,7 +9560,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     var r=c.r||'standard', pos=el.style.backgroundPosition||'0px 0px';
     el.setAttribute('data-slot',r);
     var cardEl=el.closest&&el.closest('.m-card'); if(cardEl&&!cardEl.getAttribute('data-rar')) cardEl.setAttribute('data-rar',r);
-    el.style.backgroundImage=SHEET+', url(img/card/bd-'+r+'.webp)';
+    el.style.backgroundImage=SHEET+', url(img/card/'+({standard:'rl-std-bg',common:'rl-std-bg',magical:'rl-mag-bg',plagued:'rl-pl-bg',unique:'rl-un-bg'}[r]||'rl-std-bg')+'.webp)';
     el.style.backgroundSize='1536px auto, 100% 100%';
     el.style.backgroundPosition=pos+', 0 0';
     el.style.backgroundRepeat='no-repeat';
