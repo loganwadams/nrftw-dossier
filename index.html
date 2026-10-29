@@ -3370,7 +3370,7 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 .cost .coin{width:15px;height:15px}
 .cost-tail{color:#8b8174;font-weight:400}
 @media (max-width:760px){.m-body{grid-template-columns:minmax(0,1fr)}.m-mats{white-space:normal}}
-table.m-recipes{border:0!important;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,var(--rcbg,rgba(2,2,3,.88) url(img/frame/bg-tile-gray.webp) 50% 0/2400px auto repeat-y)!important;border-collapse:separate;border-spacing:0}
+table.m-recipes{border:0!important;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,var(--rcbg,rgba(2,2,3,.88) url(img/frame/bg-tall-gray.webp) 50% 0/2400px auto repeat-y)!important;border-collapse:separate;border-spacing:0}
 table.m-recipes th:first-child,table.m-recipes td:first-child{padding-left:20px}table.m-recipes th:last-child,table.m-recipes td:last-child{padding-right:20px}table.m-recipes td,table.m-recipes td.m-mats{color:#fff}
 table.m-recipes .rc-mat,.merchant td.m-mats .rc-mat{display:inline-flex;align-items:center;gap:6px;margin:3px 16px 3px 0;white-space:nowrap}
 table.m-recipes .rc-mat .tt-ic,table.m-recipes .rc-st .tt-ic,.merchant td.m-mats .rc-mat .tt-ic{zoom:.4;flex:none;margin:0;background-color:transparent;border:0}
@@ -10045,13 +10045,12 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 })();
 </script>
 <script>
-/* crafting recipe tables: layer the smoke at random sizes and offsets so it never visibly repeats */
+/* crafting recipe tables: one very tall, unrepeated smoke image at a random offset per table */
 (function(){
   function r(a,b){ return Math.round(a+Math.random()*(b-a)); }
   function paint(t){
     if(t.getAttribute('data-rcbg')) return; t.setAttribute('data-rcbg','1');
-    var L=[]; for(var i=0;i<3;i++){ L.push('url(img/frame/bg-tile-gray-lite.webp) '+r(0,100)+'% '+r(0,3000)+'px/'+r(1900,3400)+'px auto repeat-y'); }
-    L.push('rgba(2,2,3,.9) url(img/frame/bg-tile-gray.webp) 50% '+r(0,3000)+'px/2400px auto repeat-y');
+    var L=['rgba(2,2,3,.88) url(img/frame/bg-tall-gray.webp) 50% '+r(0,9000)+'px/2400px auto repeat-y'];
     t.style.setProperty('--rcbg',L.join(','));
   }
   function go(){ [].forEach.call(document.querySelectorAll('table.m-recipes'),paint); }
