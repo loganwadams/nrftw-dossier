@@ -3615,6 +3615,11 @@ body.cb-shared #cbShTop .cb-stats-col #cbProfileNote{display:none}
 #cerim-builder .cb-wrap>.cb-stats-col{grid-column:2/4;grid-row:1}
 #cerim-builder .cb-wrap>.cb-col-equip{grid-column:2/4;grid-row:2}
 }
+/* shared build view: box starts below the back link; hero and loadout get side padding */
+body.cb-shared #cbShTop{padding:34px 48px 0!important;margin-top:34px;box-sizing:border-box}
+body:not(.cb-shared) #cerim-builder .cb-reset-wrap{margin-top:33px!important}
+body.cb-shared #cbShLayout{padding:0 48px!important;box-sizing:border-box}
+body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
 </style>
 
 <canvas id="embers" aria-hidden="true"></canvas>
@@ -10024,6 +10029,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var left=p.left, right=p.right;
       
       box.style.left=(left-r.left)+'px'; box.style.width=Math.max(0,right-left)+'px';
+      var sh=document.body.classList.contains('cb-shared')&&document.getElementById('cbShTop'); if(sh) t=sh.getBoundingClientRect();
       box.style.top=(t.top-r.top-padT)+'px'; box.style.height=(d.bottom-t.top+padT+padB)+'px';
       box.classList.add('on');
     }
