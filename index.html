@@ -1209,6 +1209,14 @@ body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background
 #cbMegaBox{position:absolute;z-index:-1;pointer-events:none;display:none;box-sizing:border-box}
 #cbMegaBox.on{display:block}
 #cbReport #cbDmg{margin-bottom:48px}
+@media (min-width:1101px){
+#cerim-builder .cb-wrap{grid-template-columns:minmax(300px,.8fr) minmax(300px,.9fr) minmax(300px,1fr)!important}
+#cerim-builder .cb-wrap>.cb-col-equip{grid-column:2!important;grid-row:1/3!important}
+#cerim-builder .cb-wrap>.cb-stats-col{grid-column:3!important;grid-row:1/3!important}
+body:not(.cb-shared) #cerim-builder .cb-gmstats .gm-cols{grid-template-columns:minmax(0,1fr)!important;gap:26px!important}
+body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #cerim-builder .cb-gmstats section+section{border-left:0!important;padding-left:0!important}
+}
+@media (min-width:1101px){body:not(.cb-shared) #cerim-builder .cb-gmstats section:before,body:not(.cb-shared) #cerim-builder .cb-gmstats section:after{display:none!important}}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
