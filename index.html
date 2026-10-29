@@ -515,6 +515,14 @@ header.masthead form.search{display:none!important}
 .ip-upt th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:4px 8px;border-bottom:1px solid var(--edge)}
 .ip-upt td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
 .ip-upt td:first-child{white-space:nowrap}
+#ipMats .ip-craft,.ip-craft{border:0!important;padding:24px 26px;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#0b0c0e url(img/frame/bg-tile.webp) 50% 0/2400px auto repeat-y!important}
+.ip-upt th,.ip-upt td{border-bottom:0!important}
+.ip-upt thead,.ip-upt tbody{display:block}
+.ip-upt tr{display:grid;grid-template-columns:84px 1fr;position:relative;align-items:center}
+.ip-upt thead tr{padding-bottom:6px}
+.ip-upt tr:after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;background:url(img/ui-underline-dim.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 100% no-repeat;transform:scaleX(var(--ul-f,1));opacity:var(--ul-o,1);pointer-events:none}
+.ip-upt tbody tr{padding:6px 0 4px}
+.ip-upt tbody tr:last-child:after{display:none}
 .ip-craft-unknown{margin:0;font-size:13px;font-style:italic;color:var(--muted)}
 /* Community Builds page */
 .cm-boards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:0 0 22px}
@@ -8581,6 +8589,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(h&&!h.querySelector('.wd-craft-station')) h.insertAdjacentHTML('afterend','<p class="ip-craft-station wd-craft-station">Station: <b>'+e.c.s+'</b></p>');
         }
         box.innerHTML=matsBlock(D,key,hasOwnCraft)||(D?'':(hasOwnCraft?'':craftBlock(c)));
+        [].forEach.call(box.querySelectorAll('.ip-upt tr,.ip-craft'),function(e){ e.style.setProperty('--ul-s',(100+Math.random()*170)+'%'); e.style.setProperty('--ul-x',(Math.random()*100)+'%'); e.style.setProperty('--ul-f',Math.random()<.5?-1:1); e.style.setProperty('--ul-o',(.6+Math.random()*.4).toFixed(2)); });
       }).catch(function(){ var box=document.getElementById('ipMats'); if(box&&!hasOwnCraft) box.innerHTML=craftBlock(c); });
       var ipCard=body.querySelector('.ip-tt'); if(ipCard){  }
       if(h2) h2.textContent=c.n||'Item';
