@@ -5333,10 +5333,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var n=e.target; if(!(n.classList&&n.classList.contains('cb-ench-num'))) return;
       e.stopPropagation();
       var fill=n.closest('.cb-ench-fill'), inp=fill.parentNode.querySelector('.cb-detail-ench'); if(!inp) return;
-      // a unique item's own rolled number always lands on the top of its range
+      // a unique item's own rolled number stays if it is inside its range; outside it snaps to the top
       try{ if(fill.classList.contains('cb-fill-locked')&&n.value!==''&&!isNaN(+n.value)){
         var urg=((OWN_RNG[equipped[inp.dataset.id]]||[])[+inp.dataset.i]||'').match(/\d+(?:\.\d+)?/g);
-        if(urg&&urg.length){ var uhi=urg[urg.length-1]; if(parseFloat(n.value)!==parseFloat(uhi)){ n.value=uhi; n.classList.add('cb-need'); setTimeout(function(){ n.classList.remove('cb-need'); },1400); } }
+        if(urg&&urg.length){ var uhi=urg[urg.length-1], ulo=urg[0], uv=parseFloat(n.value); if(uv<parseFloat(ulo)||uv>parseFloat(uhi)){ n.value=uhi; n.classList.add('cb-need'); setTimeout(function(){ n.classList.remove('cb-need'); },1400); } }
       } }catch(x){}
       inp.value=assembleFill(fill);
       inp.dispatchEvent(new Event('change',{bubbles:true})); // stores, clamps to the allowed range and refreshes the manifest
