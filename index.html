@@ -6436,7 +6436,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       }
       // the damage table is its own section of the analysis; a fault in it must never take the rest
       // of the report down with it
-      try{ renderDamageBreakdown(!report.empty); }
+      try{ renderDamageBreakdown(true); }
       catch(err){ var dbox=document.getElementById('cbDmg'); if(dbox) dbox.hidden=true; if(window.console) console.error('Damage breakdown failed',err); }
       if(CB_SHARED) sharedVoice();
     }
