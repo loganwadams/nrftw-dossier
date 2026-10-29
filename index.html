@@ -1217,7 +1217,8 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats .gm-cols{grid-template-columns:m
 body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #cerim-builder .cb-gmstats section+section{border-left:0!important;padding-left:0!important}
 }
 @media (min-width:1101px){body:not(.cb-shared) #cerim-builder .cb-gmstats section:before,body:not(.cb-shared) #cerim-builder .cb-gmstats section:after{display:none!important}}
-@media (min-width:1101px){#cerim-builder .cb-reset-wrap,#cerim-builder .cb-wrap,#cbReport #cbDmg{padding-right:48px;box-sizing:border-box}}
+@media (min-width:1101px){#cerim-builder .cb-reset-wrap,#cerim-builder .cb-wrap,#cbReport #cbDmg{padding-left:48px;padding-right:48px;box-sizing:border-box}}
+@media (min-width:1101px){#cbReport #cbDmg{padding-left:12px!important;padding-right:12px!important}#cbReport #cbDmg>h3{padding:0 36px!important}#cbReport #cbDmg .panel{padding:0 36px!important}}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10019,8 +10020,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(!top||!dmg||dmg.hidden||!rep||rep.hidden||!root.offsetParent||!dmg.offsetHeight){ box.classList.remove('on'); return; }
       var r=root.getBoundingClientRect(), t=top.getBoundingClientRect(), d=dmg.getBoundingClientRect(), p=rep.getBoundingClientRect();
       var padX=44, padT=34, padB=34;
-      var left=Math.max(12,p.left-padX), right=p.right+8;
-      try{ var nl=1e9; Array.prototype.forEach.call(document.querySelectorAll('.pgbar-row'),function(n){ var nr=n.getBoundingClientRect(); if(nr.width&&nr.height&&nr.left>left+200) nl=Math.min(nl,nr.left); }); if(nl<1e9) right=Math.min(right,nl-18); }catch(e){}
+      var left=p.left, right=p.right;
+      
       box.style.left=(left-r.left)+'px'; box.style.width=Math.max(0,right-left)+'px';
       box.style.top=(t.top-r.top-padT)+'px'; box.style.height=(d.bottom-t.top+padT+padB)+'px';
       box.classList.add('on');
