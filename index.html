@@ -2923,6 +2923,7 @@ body.on-archive:not(.ar-preview) footer .legal-short a{color:var(--gold);text-de
 #recipes.rc-land .rc-head,#recipes.rc-land .rc-group,#recipes.rc-cat .rc-head,#recipes.rc-cat .rc-off,#recipes.rc-cat .rc-grid,#recipes.pgf-on .rc-grid{display:none!important}
 #recipes .rc-grid{margin-top:22px}
 .ar-grid{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
+@media (min-width:1100px){.ar-grid:not(.rc-grid){grid-template-columns:repeat(4,1fr)}.ar-grid:not(.rc-grid) .ar-card{min-height:250px}.ar-grid:not(.rc-grid) .ar-card.vd-card{min-height:230px}}
 .ar-card{position:relative;display:flex;flex-direction:column;gap:8px;min-height:190px;padding:23px 23px 19px;border:0;background:linear-gradient(180deg,var(--panel-2),var(--panel));color:inherit;text-decoration:none;overflow:hidden;transition:border-color .3s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
 /* category pages: a Trove category opened from an Archive or Armory card shows alone, under its own title */
 #catalog .cv-back,.sect-back{display:inline-block;margin:0 0 14px;font-family:var(--display);font-size:15px;letter-spacing:.06em;color:var(--gold);text-decoration:none;text-shadow:0 1px 2px #000}
