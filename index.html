@@ -8279,7 +8279,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // read as "Infusions" in the title (not the generic "Gear"), and viewing either one by its
   // dropdown link or a direct #hash should still light up the Gear tab as the active button.
   CHAP_TITLE['gear']='Archive';
-  var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',systems:'factions'};
+  var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',recipes:'gear',systems:'factions'};
   function show(group,chap){ current=group; currentChap=chap;
     document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'||group==='builds'); document.body.classList.toggle('on-builds',group==='builds'); document.body.classList.toggle('on-armory',group==='armory'); document.body.classList.toggle('on-vend',group==='vend'); document.body.classList.toggle('on-arch',['archive','vend','gear','enchant','cat','recipes','armory','itempage'].indexOf(group)>-1); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
     var navId=CHAP_NAV_ALIAS[chap]||chap;
