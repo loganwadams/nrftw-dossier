@@ -1188,6 +1188,9 @@ body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background
 #cerim-builder .cb-gp .cb-slot.filled:not(.cb-slot-mag):not(.cb-slot-plag):not(.cb-slot-uniq):before{display:none!important}
 /* the icon carried its own standard-rarity frame image that sat on top of the slot's rarity background */
 #cerim-builder .cb-gp .cb-slot.filled .cb-slot-main.m-ic{background-image:url(img/items-sheet.webp)!important;background-color:transparent!important}
+/* plagued (not exalted) cards: the game's veined border wraps the top corners and hangs outside the card */
+.tt.r-plagued:not(.tt-ex){overflow:visible}
+.tt.r-plagued:not(.tt-ex) .vein{inset:-22px -30px auto -30px;height:auto;aspect-ratio:873/427;background:url(img/card/rl-pl-vein.webp) center top/100% 100% no-repeat;opacity:1;filter:brightness(2.2) saturate(1.4);pointer-events:none}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
