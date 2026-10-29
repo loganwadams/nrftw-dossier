@@ -3508,9 +3508,12 @@ footer li{color:#6f665b}
 #cerim-builder .cb-gp .cb-slot,#cerim-builder .cb-gp .cb-slot.filled{border:0}
 #cerim-builder .cb-gp .cb-slot.filled{background:rgba(8,9,14,.55);overflow:visible}
 #cerim-builder .cb-gp .cb-slot.filled .cb-slot-lv{z-index:4}
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag{background:linear-gradient(rgba(35,85,125,.55),rgba(25,60,95,.35)),rgba(8,9,14,.55);box-shadow:inset 0 0 0 1px rgba(70,140,200,.75)}
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag{background:linear-gradient(rgba(120,25,65,.7),rgba(95,20,50,.5)),rgba(8,9,14,.55);box-shadow:inset 0 0 0 1px rgba(190,70,115,.8)}
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background:linear-gradient(rgba(110,22,25,.65),rgba(80,16,18,.45)),rgba(8,9,14,.55);box-shadow:inset 0 0 0 1px rgba(170,55,60,.7)}
+/* rarity slots wear the game's own inventory frames (the same bd-*.webp the item cards use), so a magical item sits in the blue box, a plagued one in the magenta box and a unique in the gold box, exactly as in the inventory screen */
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-color:#0a0d12;background-size:100% 100%;background-position:center;background-repeat:no-repeat;box-shadow:none}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag{background-image:url(img/card/bd-magical.webp)}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag{background-image:url(img/card/bd-plagued.webp)}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-image:url(img/card/bd-unique.webp)}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag:before,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag:before,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq:before{display:none}
 #cerim-builder .cb-gp .cb-slot.filled .m-ic{position:relative;z-index:3;transform:scale(1.2);transition:filter .15s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
 #cerim-builder .cb-gp .cb-slot.filled:hover .m-ic{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,255,255,.5))}
 #cerim-builder .cb-gp .cb-slot:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:url(img/gm/divider.webp) 0 0/100% 3px no-repeat,url(img/gm/divider.webp) 0 100%/100% 3px no-repeat,url(img/gm/divider-v.webp) 0 0/2px 100% no-repeat,url(img/gm/divider-v.webp) 100% 0/2px 100% no-repeat;opacity:.75}
