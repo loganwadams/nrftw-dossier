@@ -128,6 +128,8 @@
       else if('sc' in p){ out.push('<span class="wd-school '+esc(p.sc)+'">'+esc(p.t)+'</span>'); }
       else if('b' in p){ out.push('<strong class="wd-kw">'+esc(p.b)+'</strong>'); }
       else if('link' in p){ out.push(linkHtml(p.link)); }
+      else if('gic' in p){ out.push('<span class="wd-gem-ic" style="background-position:'+(-p.gic[0]*28)+'px '+(-p.gic[1]*28)+'px"></span>'); }
+      else if('h' in p){ out.push('<span class="wd-gem-fx">'+p.h+'</span>'); }
       else if('br' in p){ out.push('<br>'); }
       else if('src' in p){ out.push(srcChip(p.src)); }
     });
@@ -1194,6 +1196,11 @@ body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background
 .tt{background:#0f1318!important;box-shadow:0 18px 50px rgba(0,0,0,.6)!important}
 .tt .shade{background:none!important}
 .tt.r-magical .lay.bg{filter:brightness(1.7) saturate(1.1)}
+.wd-card .wd-gems .wd-slot:not(.empty){display:flex;align-items:center;gap:8px}
+.wd-gem-ic{display:block;flex:0 0 28px;width:28px;height:28px;background:url(img/items-sheet.webp) no-repeat;background-size:896px auto}
+.wd-gem-fx{min-width:0}
+.wd-gem-fx b{color:#fff;font-weight:700}
+.wd-gem-fx .ek-n{font-weight:400;color:inherit}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -5959,7 +5966,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(gi>-1 && (m.gems||[]).length){
         var items=[], empty=0, gidx={}; Object.keys(cards||{}).forEach(function(k){ if(k.indexOf('/item/gem/')===0) gidx[dmgNorm(cards[k].n)]=k; });
         (m.gems||[]).forEach(function(g){ var nm=String(g||'').trim(); if(!nm){ empty++; return; }
-          var k=gidx[dmgNorm(nm)], gc=k&&cards[k]; items.push({parts:gc?[{link:{key:k,name:gc.n,pos:gc.p?[-gc.p[0]*18,-gc.p[1]*18]:null,rar:gc.r}}]:[{t:nm}]}); });
+          var k=gidx[dmgNorm(nm)], gc=k&&cards[k]; var gx=null; try{ var gl=gemSlotLabel(id), gii=gemIndex()[nm.toLowerCase()]; gx=gii&&gii.fx[gl]; }catch(err){}
+          items.push({parts:gc?(gc.p?[{gic:gc.p}].concat(gx?[{h:gemTextHtml(gx)}]:[{t:gc.n}]):[{link:{key:k,name:gc.n,rar:gc.r}}]):[{t:nm}]}); });
         if(empty) items.push({empty:empty});
         s[gi]=Object.assign({},s[gi],{items:items});
       }
