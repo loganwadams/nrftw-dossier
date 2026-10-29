@@ -1131,7 +1131,7 @@ body .cb-sh-head:after{height:12px;background:url(img/ui-underline.webp) var(--u
 /* Shared build page: same four-edge line on the hero, stats, analysis, damage and notes cards */
 body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,#0b0c0e url(img/frame/bg.webp) center top/max(100%,588px) auto repeat-y!important}
 #cbReport .panel{border:0;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,rgba(2,2,3,.88) url(img/frame/bg-big-gray.webp) var(--ul-x,50%) var(--ul-x,50%)/2400px auto no-repeat}
-#cbReport .cb-grade{border:0;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,rgba(2,2,3,.88) url(img/frame/bg-big-gray.webp) var(--ul-x,50%) var(--ul-x,50%)/2400px auto no-repeat}
+#cbReport .cb-grade,#cbMegaBox{border:0;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,rgba(2,2,3,.88) url(img/frame/bg-big-gray.webp) var(--ul-x,50%) var(--ul-x,50%)/2400px auto no-repeat}
 
 /* Item cards: type, colors and spacing taken from the in-game card */
 .wd-card{color:#cbcccd;font-size:14.5px}
@@ -1205,6 +1205,10 @@ body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background
 #cbReport .cb-report-head{height:60px;margin:0;padding:0 24px;align-items:center;flex-wrap:nowrap;position:relative;z-index:3;pointer-events:none}
 #cbReport .cb-report-head h3.cb-report-grade{align-self:center}
 #cbReport #cbGrade:not([hidden]){margin-top:-60px;padding-top:68px!important}
+#cerim-builder{position:relative;isolation:isolate}
+#cbMegaBox{position:absolute;z-index:-1;pointer-events:none;display:none;box-sizing:border-box}
+#cbMegaBox.on{display:block}
+#cbReport #cbDmg{margin-bottom:48px}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9992,6 +9996,29 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 <script>
 (function(){
   function go(){ [].forEach.call(document.querySelectorAll('.ench-cols,.ench-col'),function(e){ e.style.setProperty('--ul-s',(100+Math.random()*120)+'%'); e.style.setProperty('--ul-x',(Math.random()*100)+'%'); }); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
+})();
+</script>
+<script>
+/* one dark box from the Login to save row down to the bottom of the Damage Output section */
+(function(){
+  function go(){
+    var root=document.getElementById('cerim-builder'); if(!root) return;
+    var box=document.getElementById('cbMegaBox'); if(!box){ box=document.createElement('div'); box.id='cbMegaBox'; root.insertBefore(box,root.firstChild); }
+    function place(){
+      var top=root.querySelector('.cb-reset-wrap'), dmg=document.getElementById('cbDmg'), rep=document.getElementById('cbReport');
+      if(!top||!dmg||dmg.hidden||!rep||rep.hidden||!root.offsetParent||!dmg.offsetHeight){ box.classList.remove('on'); return; }
+      var r=root.getBoundingClientRect(), t=top.getBoundingClientRect(), d=dmg.getBoundingClientRect(), p=rep.getBoundingClientRect();
+      var padX=20, padT=18, padB=18;
+      box.style.left=(p.left-r.left-padX)+'px'; box.style.width=(p.width+padX*2)+'px';
+      box.style.top=(t.top-r.top-padT)+'px'; box.style.height=(d.bottom-t.top+padT+padB)+'px';
+      box.classList.add('on');
+    }
+    place();
+    try{ var ro=new ResizeObserver(place); ro.observe(root); ro.observe(document.body); }catch(e){}
+    try{ new MutationObserver(function(){ requestAnimationFrame(place); }).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','class','style']}); }catch(e){}
+    window.addEventListener('resize',place); window.addEventListener('load',place);
+  }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
 })();
 </script>
