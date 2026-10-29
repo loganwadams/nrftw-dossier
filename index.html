@@ -3447,6 +3447,117 @@ footer li{color:#6f665b}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
+
+/* Character column, in the game's own character-screen style: open text on the scene, no panel frame */
+#cerim-builder .cb-panel.cb-gm{background:none!important;border:0!important;box-shadow:none!important;padding:8px 0 0!important}
+#cerim-builder .cb-panel.cb-gm>h3{display:none}
+#cerim-builder .cb-gm .cb-level-row{gap:12px;margin-bottom:14px}
+#cerim-builder .cb-gm .cb-level-row label{font:600 11px/1 "Marcellus",var(--display);letter-spacing:.12em;color:#e9e4d6}
+#cerim-builder .cb-gm .cb-level-row span{font-size:30px;color:#f1ede2}
+#cerim-builder .cb-gm .cb-points{display:flex;align-items:center;gap:14px;margin:0 0 22px;font:600 12px/1 "Marcellus",var(--display);letter-spacing:.1em;color:#f1ede2}
+#cerim-builder .cb-gm .cb-points strong{font-size:22px;color:#f1ede2;order:2}
+#cerim-builder .cb-gm .cb-points #cbPtsTotal,#cerim-builder .cb-gm .cb-points .cb-pts-sep{display:none}
+#cerim-builder .cb-gm .cb-attr-row{padding:7px 4px;gap:10px;border:0}
+#cerim-builder .cb-gm .cb-attr-row:after{display:none!important}
+#cerim-builder .cb-gm .cb-attr-icon{width:18px;height:18px;opacity:.8;filter:grayscale(1) brightness(1.15)}
+#cerim-builder .cb-gm .cb-attr-name{font:400 14px/1 "Marcellus",var(--display);letter-spacing:.06em;text-transform:uppercase;color:#a9a597}
+#cerim-builder .cb-gm .cb-attr-row:hover .cb-attr-name,#cerim-builder .cb-gm .cb-attr-row:focus-within .cb-attr-name{color:#f1ede2}
+#cerim-builder .cb-gm .cb-stepper{gap:6px}
+#cerim-builder .cb-gm .cb-stepper input{width:34px;background:none;border:0;color:#d8d4c6;font:400 17px/1 var(--display);text-align:right;padding:0}
+#cerim-builder .cb-gm .cb-stepper button{width:26px;height:26px;border:0;background:none;font-size:0;position:relative;padding:0;color:#e6d59a}
+#cerim-builder .cb-gm .cb-stepper button:before{content:"";position:absolute;inset:0;background:var(--ar) center/contain no-repeat;filter:url(#gmGold)}
+#cerim-builder .cb-gm .cb-stepper button[data-d="1"]{--ar:url(img/gm/tri-right.webp)}
+#cerim-builder .cb-gm .cb-stepper button[data-d="-1"]{--ar:url(img/gm/tri-left.webp)}
+#cerim-builder .cb-gm .cb-stepper button:hover:not(:disabled){color:#fff}
+#cerim-builder .cb-gm .cb-stepper button:disabled{opacity:.25}
+#cerim-builder .cb-gm .cb-attr-row{background:transparent;transition:background .12s}
+#cerim-builder .cb-gm .cb-attr-row:hover,#cerim-builder .cb-gm .cb-attr-row:focus-within{background:url(img/gm/row-select.webp) center/100% 100% no-repeat}
+#cerim-builder .cb-gm .cb-attr-row:hover .cb-attr-icon,#cerim-builder .cb-gm .cb-attr-row:focus-within .cb-attr-icon{opacity:1;filter:none}
+#cerim-builder .cb-gm .cb-points strong{color:#f1ede2}
+#cerim-builder .cb-gm .cb-points:before,#cerim-builder .cb-gm .cb-points:after{content:"";width:16px;height:16px;background:url(img/gm/tri-right.webp) center/contain no-repeat;filter:url(#gmGold)}
+#cerim-builder .cb-gm .cb-points:before{order:1;background-image:url(img/gm/tri-left.webp)}
+#cerim-builder .cb-gm .cb-points:after{order:3}
+
+#cerim-builder .cb-panel.cb-stats-col{background:none!important;border:0!important;box-shadow:none!important;padding:8px 0 0!important}
+#cerim-builder .cb-stats-col>h3{display:none}
+#cerim-builder .cb-gmstats .gm-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+#cerim-builder .cb-gmstats section{padding:0 22px;position:relative}
+#cerim-builder .cb-gmstats section+section:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:url(img/gm/divider.webp) center/100% 100% no-repeat;transform:rotate(90deg);transform-origin:center;width:100%;height:4px;top:auto}
+#cerim-builder .cb-gmstats section+section{border-left:1px solid rgba(233,228,214,.22)}
+#cerim-builder .cb-gmstats section+section:before{display:none}
+#cerim-builder .cb-gmstats h4{margin:0 0 10px;font:400 14px/1 "Marcellus",var(--display);letter-spacing:.06em;text-transform:uppercase;color:#e9e4d6}
+#cerim-builder .cb-gmstats .gm-row{display:flex;justify-content:space-between;gap:16px;padding:6px 0;font:400 15px/1.2 var(--body,inherit);color:#e9e4d6}
+#cerim-builder .cb-gmstats .gm-row b{font-weight:400;font-variant-numeric:tabular-nums;color:#e9e4d6}
+#cerim-builder .cb-gmstats .gm-row b.gm-gold{color:#e0cf8a}
+#cerim-builder .cb-gmstats .gm-none{color:#8d897c;font-size:14px;padding:6px 0}
+#cerim-builder .cb-gmstats .gm-bar{height:2px;margin-top:8px;background:rgba(233,228,214,.18);position:relative}
+#cerim-builder .cb-gmstats .gm-bar i{position:absolute;left:0;top:0;bottom:0;background:#e0cf8a}
+#cerim-builder .cb-gmstats .gm-other{padding:18px 22px 0}
+@media (max-width:760px){#cerim-builder .cb-gmstats .gm-cols{grid-template-columns:1fr;gap:18px}#cerim-builder .cb-gmstats section+section{border-left:0}}
+
+
+/* Equipment and Utility Runes in the game's open-text style */
+#cerim-builder .cb-panel.cb-gp{background:none!important;border:0!important;box-shadow:none!important;padding:8px 22px 0!important}
+#cerim-builder .cb-panel.cb-gp>h3{margin:0 0 12px;font:400 14px/1 "Marcellus",var(--display);letter-spacing:.06em;text-transform:uppercase;color:#e9e4d6}
+#cerim-builder .cb-panel.cb-gp>h3:after{display:none!important}
+#cerim-builder .cb-gp .cb-hold-hint{color:#8d897c}
+#cerim-builder .cb-gp .cb-slot{border:1px solid rgba(233,228,214,.2);background:rgba(8,9,14,.55)}
+#cerim-builder .cb-gp .cb-slot:hover,#cerim-builder .cb-gp .cb-slot:focus-visible{border:0;background:rgba(8,9,14,.55) url(img/gm/slot-select.webp) center/100% 100% no-repeat}
+#cerim-builder .cb-gp .cb-slot.filled{border:1px solid rgba(233,228,214,.3);background:rgba(8,9,14,.55)}
+#cerim-builder .cb-gp .cb-slot.filled:hover{border:0;background:rgba(8,9,14,.55) url(img/gm/slot-select.webp) center/100% 100% no-repeat}
+#cerim-builder .cb-gp .cb-slot-plus{color:#cfc9b6;opacity:.45}
+#cerim-builder .cb-gp .cb-row-icon img{filter:grayscale(1) brightness(1.15)}
+
+/* Damage Output as the game's weapon table: no panel, italic headers over a single hairline */
+#cbReport #cbDmg>h3{margin:0 0 14px;font:400 14px/1 "Marcellus",var(--display);letter-spacing:.06em;text-transform:uppercase;color:#e9e4d6}
+#cbReport #cbDmg .panel{background:none!important;border:0!important;box-shadow:none!important;padding:0 22px!important}
+#cbReport #cbDmg .panel:before,#cbReport #cbDmg .panel:after{display:none!important}
+#cbReport #cbDmg .cb-dmg-table thead th{font:italic 400 15px/1.2 "Marcellus",var(--display)!important;letter-spacing:.02em!important;text-transform:none!important;color:#9c988a!important;padding:8px 14px;background:none!important}
+#cbReport #cbDmg .cb-dmg-table thead tr{background:none!important;border-bottom:1px solid rgba(233,228,214,.28)}
+#cbReport #cbDmg .cb-dmg-table td.cb-dmg-derived,#cbReport #cbDmg .cb-dmg-table thead th.cb-dmg-derived{background:none!important}
+#cbReport #cbDmg .cb-dmg-table td{color:#e9e4d6!important;font-size:16px;border-color:transparent!important}
+#cbReport #cbDmg .cb-dmg-name{font:italic 400 17px/1.2 "Marcellus",var(--display);letter-spacing:.03em;color:#e9e4d6}
+#cbReport #cbDmg .cb-dmg-empty{color:#8d897c!important;font-style:italic}
+
+/* Community Builds view of someone else's build, in the game's character-screen style */
+body.cb-shared #cbShTop{gap:10px 30px;align-items:start}
+body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background:none!important;border:0!important;box-shadow:none!important;padding:8px 0 0!important}
+body.cb-shared #cbShTop>.cb-panel>h3{display:none}
+body.cb-shared #cbShTop .cb-sh-eyebrow{display:none}
+body.cb-shared #cbShTop .cb-sh-titlerow{display:flex;align-items:center;gap:16px;margin:0 0 4px}
+body.cb-shared #cbShTop .cb-sh-wic{display:none}
+body.cb-shared #cbShTop .cb-sh-pt{position:relative;flex:none;width:104px;height:104px;margin-right:4px}
+body.cb-shared #cbShTop .cb-sh-pt:before{content:"";position:absolute;inset:0;background:url(img/gm/portrait-diamond.webp) center/100% 100% no-repeat}
+body.cb-shared #cbShTop .cb-sh-pt:after{content:"";position:absolute;inset:-6px;background:url(img/gm/portrait-glow.webp) center/100% 100% no-repeat;opacity:.7}
+body.cb-shared #cbShTop .cb-sh-pt .m-ic{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(1.05);background-color:transparent;border:0;z-index:1}
+body.cb-shared #cbShTop .cb-sh-pt b{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);z-index:2;font:400 26px/1 var(--display);color:#f1ede2;text-shadow:0 1px 3px #000}
+body.cb-shared #cbShTop .cb-sh-user{font:400 21px/1.2 "Marcellus",var(--display);letter-spacing:.02em;color:#f1ede2}
+body.cb-shared #cbShTop .cb-sh-user a{color:inherit;text-decoration:none}
+body.cb-shared #cbShTop .cb-sh-user a:hover{text-decoration:underline}
+body.cb-shared #cbShTop .cb-sh-titlerow .cb-sh-title{font-size:15px!important;color:#b9b5a6!important;margin-top:4px}
+body.cb-shared #cbShTop .cb-sh-titlerow .cb-sh-sub{display:none}
+body.cb-shared #cbShTop .cb-sh-title{font:400 22px/1.2 "Marcellus",var(--display)!important;font-variant:normal!important;letter-spacing:.02em;color:#f1ede2!important;margin:0}
+body.cb-shared #cbShTop .cb-sh-title *{font:inherit!important;font-variant:normal!important}
+body.cb-shared #cbShTop .cb-sh-sub{font:400 15px/1.3 var(--body,inherit)!important;color:#c9c5b6!important}
+body.cb-shared #cbShTop .cb-sh-hero .cb-sh-attrs{display:flex!important;flex-direction:column;gap:0!important;margin:26px 0 0!important}
+body.cb-shared #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr{padding:9px 30px!important;gap:10px;border:0!important}
+body.cb-shared #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr:after{display:none!important}
+body.cb-shared #cbShTop .cb-sh-attr img{width:18px;height:18px;opacity:.85;filter:grayscale(1) brightness(1.15)}
+body.cb-shared #cbShTop .cb-sh-attr>div{display:flex;flex:1;justify-content:space-between;align-items:center;gap:12px}
+body.cb-shared #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr span{font:400 14px/1 "Marcellus",var(--display)!important;font-variant:normal!important;letter-spacing:.06em!important;text-transform:uppercase!important;color:#a9a597!important}
+body.cb-shared #cbShTop .cb-sh-attr b{font:400 17px/1 var(--display)!important;color:#d8d4c6!important}
+body.cb-shared #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr.hi{background:url(img/gm/row-select.webp) center/100% 100% no-repeat!important}
+body.cb-shared #cbShTop .cb-sh-hero .cb-sh-attrs .cb-sh-attr.hi span,body.cb-shared #cbShTop .cb-sh-attr.hi b{color:#f1ede2!important}
+body.cb-shared #cbShTop .cb-sh-attr.hi img{opacity:1;filter:none}
+body.cb-shared #cbShTop #cbProfileBars.cb-gmstats{display:block!important;grid-template-columns:none!important;gap:0!important;width:100%}
+body.cb-shared #cbShTop #cbProfileBars.cb-gmstats .gm-cols{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+body.cb-shared #cbShTop .cb-stats-col #cbProfileNote{display:none}
+@media (min-width:1101px){
+#cerim-builder .cb-wrap{grid-template-columns:minmax(300px,.8fr) 1.1fr 1.1fr;align-items:start}
+#cerim-builder .cb-wrap>.cb-col-char{grid-column:1;grid-row:1/3}
+#cerim-builder .cb-wrap>.cb-stats-col{grid-column:2/4;grid-row:1}
+#cerim-builder .cb-wrap>.cb-col-equip{grid-column:2/4;grid-row:2}
+}
 </style>
 
 <canvas id="embers" aria-hidden="true"></canvas>
@@ -4009,22 +4120,23 @@ footer li{color:#6f665b}
         </div>
         <p class="cb-class-selected" id="cbClassSelected">Classes haven&rsquo;t been introduced to the game yet &mdash; the builder is class-agnostic until they arrive.</p>
       </div>
-      <div class="cb-col">
-        <div class="cb-panel">
+      <div class="cb-col cb-col-char">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="gmGold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.93 0 0 0 0  0 0.87 0 0 0  0 0 0.5 0 0  0 0 0 1 0"/></filter></svg>
+        <div class="cb-panel cb-gm">
           <h3>Character</h3>
           <div class="cb-level-row"><label>Level</label><input type="range" id="cbLevel" min="1" max="30" value="15"><span id="cbLevelVal">15</span></div>
-          <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">42</strong>&nbsp;/&nbsp;<span id="cbPtsTotal">42</span></div>
+          <div class="cb-points" id="cbPoints">Attribute Points &nbsp;<strong id="cbPtsLeft">42</strong><span class="cb-pts-sep">&nbsp;/&nbsp;</span><span id="cbPtsTotal">42</span></div>
           <div class="cb-attr-list" id="cbAttrs"></div>
         </div>
       </div>
 
-      <div class="cb-col">
-        <div class="cb-panel">
+      <div class="cb-col cb-col-equip">
+        <div class="cb-panel cb-gp">
           <h3>Equipment</h3>
           <p class="cb-hold-hint">Tap an item for its details. Press and hold it to edit, change or remove it.</p>
           <div class="cb-rows" id="cbRows"></div>
         </div>
-        <div class="cb-panel">
+        <div class="cb-panel cb-gp">
           <h3>Utility Runes</h3>
           <p class="cb-hold-hint">Tap a slot to add a rune. Press and hold a rune to change or remove it.</p>
           <div class="cb-row"><div class="cb-row-icon is-rune" title="Utility Rune"><img src="img/rune-type-utility.webp" alt="" loading="lazy" decoding="async"></div><div class="cb-cells" id="cbRuneCells"></div></div>
@@ -5657,6 +5769,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var loadColor=cs.ratio>=1?'var(--rust)':(cs.ratio>=.6?'var(--gold)':'var(--verdigris)');
       h+='<div class="attr cb-wide" style="--accent:'+loadColor+'"><span>Equip Load</span><span class="meter"><i style="width:'+pct+'%"></i></span><b>'+(Math.round(cs.weight*10)/10)+' / '+Math.round(cs.capacity)+'</b></div>';
       h+='<div class="attr cb-wide" style="--accent:'+loadColor+'"><span>Weight Class</span><span></span><b>'+cs.cls.name+' ('+Math.round(cs.ratio*100)+'%) &middot; Stamina Recovery &times;'+cs.cls.rec+'</b></div>';
+      var hBefore=h.length;
       var ok=Object.keys(cs.other||{}).filter(function(k){ return cs.other[k]; });
       if(ok.length){
         var gHtml=[], bHtml=[];
@@ -5665,9 +5778,19 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           (good?gHtml:bHtml).push(c); });
         h+='<div class="attr" style="--accent:var(--gold)"><span>Other Bonuses</span><span></span><b class="cb-chips cb-split"><span class="cb-split-col cb-split-good">'+gHtml.join('')+'</span><span class="cb-split-col cb-split-bad">'+bHtml.join('')+'</span></b></div>';
       }
+      var otherH=h.slice(hBefore);
       var resKeys=Object.keys(cs.res);
       if(resKeys.length) h+='<div class="attr" style="--accent:var(--c-plague)"><span>Resistances</span><span></span><b class="cb-chips">'+resKeys.map(function(k){ return '<span class="cb-chip good"><img class="cb-res-ic" src="img/dmg/'+(k==='cold'?'ice':k)+'.webp" alt="" onerror="this.remove()" loading="lazy" decoding="async"><i>'+RES_NAMES[k]+'</i>+'+cs.res[k]+'%</span>'; }).join('')+'</b></div>';
-      wrap.innerHTML=h;
+      {
+        var fmt=function(n){ return (Math.round(n*10)/10); };
+        var RN={fire:'Fire',cold:'Ice',lightning:'Lightning',plague:'Plague'};
+        function gr(l,v,x){ return '<div class="gm-row"><span>'+l+'</span><b'+(x?' class="'+x+'"':'')+'>'+v+'</b></div>'; }
+        var gen=gr('Hit Points',cs.health)+gr('Stamina Points',cs.stamina)+gr('Focus Points',cs.focus)+gr('Armor',cs.armor);
+        var def=resKeys.length?resKeys.map(function(k){ return gr((RN[k]||(k.charAt(0).toUpperCase()+k.slice(1)))+' Resistance',fmt(cs.res[k])+'%'); }).join(''):'<div class="gm-none">No resistances yet</div>';
+        var wgt=gr('Equip Load',fmt(cs.capacity))+gr('Current Weight',fmt(cs.weight))+gr('Weight Class',cs.cls.name+' ('+Math.round(cs.ratio*100)+'%)','gm-gold')+'<div class="gm-bar"><i style="width:'+pct+'%"></i></div>';
+        wrap.className='attrs cb-gmstats';
+        wrap.innerHTML='<div class="gm-cols"><section><h4>General</h4>'+gen+'</section><section><h4>Defense</h4>'+def+'</section><section><h4>Weight</h4>'+wgt+'</section></div>'+(otherH?'<div class="gm-other">'+otherH+'</div>':'');
+      }
       clearSlotWarnings();
       (result.warnGroups||[]).forEach(function(g){ applySlotWarnings(g.ids,g.message); });
       var warnChip=document.getElementById('cbProfileWarnChip');
@@ -6628,7 +6751,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       var lvl=+o.lv||1;
       var at=ATTRS.map(function(a){ var v=attrVals[a.id]; return '<div class="cb-sh-attr'+(v>10?' hi':'')+'" title="'+escH(a.name)+'"><img src="'+a.icon+'" alt="" loading="lazy"><div><span>'+escH(a.name)+'</span><b>'+v+'</b></div></div>'; }).join('');
       hero.innerHTML='<div class="cb-sh-eyebrow">Shared Cerim Build</div>'+
-        '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
+        '<div class="cb-sh-titlerow">'+(item?'<span class="m-ic cb-sh-wic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<span class="cb-sh-pt">'+(item?'<span class="m-ic" style="background-position:-'+(item.p?item.p[0]*48:0)+'px -'+(item.p?item.p[1]*48:0)+'px"></span>':'')+'<b>'+lvl+'</b></span><div><div class="cb-sh-user">Shared build</div><h2 class="cb-sh-title">'+(item?'<span class="r-'+rar+'">'+escH(item.n)+'</span> build':'Cerim build')+'</h2>'+
         '<div class="cb-sh-sub">Level '+lvl+' &middot; view only</div></div></div>'+
         '<div class="cb-sh-attrs">'+at+'</div>'+
         '<div class="cb-shared-btns"><button type="button" class="cb-tool primary" id="cbSharedSave" title="Save build" aria-label="Save build"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 -1v22l6-4 6 4V-1"/></svg></button><button type="button" class="cb-tool share" id="cbSharedCopy" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/></svg></button><span class="cb-share-msg" id="cbSharedMsg" role="status" aria-live="polite"></span></div>';
@@ -6669,6 +6792,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         if(ti) ti.textContent=info.name||ti.textContent;
         var by=escH(info.author_name||'Anonymous'); if(info.user_id&&info.author_name) by='<a href="/profile/'+encodeURIComponent(info.author_name)+'">'+by+'</a>';
         if(su) su.innerHTML='by '+by+' &middot; Level '+lvl+' &middot; view only';
+        var us=hero.querySelector('.cb-sh-user'); if(us) us.innerHTML=by;
         if(info.description){ var d=document.createElement('p'); d.className='cb-sh-community'; d.textContent='\u201c'+info.description+'\u201d'; var row=hero.querySelector('.cb-sh-titlerow'); if(row) row.insertAdjacentElement('afterend',d); }
         try{ document.title=(info.name||'Shared Cerim Build')+' \u2014 Community Builds \u2014 Wicked Dossier'; }catch(e){}
       });
