@@ -22,7 +22,7 @@
   // Archive sub-pages live at /archive/<id> (e.g. /archive/pool-quick-items); the old /archive#<id> form still works.
   // __wdRawId() is the id of the section being asked for, from either form.
   window.__rcSlugs={'recipes-weapons':'weapons','recipes-off-hands':'shields-quivers','recipes-armors':'armor','recipes-tools':'tools','recipes-food':'food','recipes-quick-items':'quick-items','recipes-structures':'structures'}; window.__rcRev={}; for(var rk in window.__rcSlugs) window.__rcRev[window.__rcSlugs[rk]]=rk; window.__rcRev['armors']='recipes-armors';
-  window.__wdRawId=function(){ var v=/^\/vendors\/([^\/]+)\/?$/.exec(location.pathname); if(v&&location.hash.length<2) return 'vendor-'+v[1]; var rcm=/^\/crafting-recipes\/([^\/]+)\/?$/.exec(location.pathname); if(rcm&&location.hash.length<2) return window.__rcRev[rcm[1]]||'recipes'; var m=/^\/archive\/(?:armory\/)?([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; if(m[1]==='furniture') m[1]='structures'; if(m[1]==='infusions'||m[1]==='gems') return 'pool-gems'; if(m[1]==='resources') m[1]='crafting-materials'; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
+  window.__wdRawId=function(){ var v=/^\/vendors\/([^\/]+)\/?$/.exec(location.pathname); if(v&&location.hash.length<2) return 'vendor-'+v[1]; var rcm=/^\/crafting-recipes\/([^\/]+)\/?$/.exec(location.pathname); if(rcm&&location.hash.length<2) return window.__rcRev[rcm[1]]||'recipes'; var m=/^\/archive\/(?:armory\/)?([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; if(m[1]==='crafting-recipes') return 'recipes'; if(m[1]==='furniture') m[1]='structures'; if(m[1]==='infusions'||m[1]==='gems') return 'pool-gems'; if(m[1]==='resources') m[1]='crafting-materials'; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
   if(/^\/profile\//.test(location.pathname)||/^\/(archive|vendors|crafting-recipes)\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
@@ -8266,8 +8266,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   // Every top-level section gets a clean path. A group's first chapter is the bare path
   // (/factions, /items = Infusions); later chapters in a shared page hang a hash off it
   // (/items#enchantments). Old /#factions and /#infusions links still resolve via the hash.
-  var CLEAN_PATHS={world:'/factions', gear:'/items', enchant:'/archive/enchantments', archive:'/archive', vend:'/vendors', cat:'/trove', recipes:'/crafting-recipes', armory:'/archive/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
-  var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk; PATH_TO_GROUP['/enchantments']='enchant'; PATH_TO_GROUP['/armory']='armory';
+  var CLEAN_PATHS={world:'/factions', gear:'/items', enchant:'/archive/enchantments', archive:'/archive', vend:'/vendors', cat:'/trove', recipes:'/archive/crafting-recipes', armory:'/archive/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
+  var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk; PATH_TO_GROUP['/enchantments']='enchant'; PATH_TO_GROUP['/armory']='armory'; PATH_TO_GROUP['/crafting-recipes']='recipes';
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the
   // live site, but not inside the sandboxed preview, which serves this same page from a
