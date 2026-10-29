@@ -4628,7 +4628,7 @@ body.cb-shared #cbShTop .cb-stats-col #cbProfileNote{display:none}
       });
       wrap.addEventListener('input',function(e){
         var inp=e.target; if(!inp.classList.contains('cb-attr-input')) return;
-        var clean=inp.value.replace(/\D/g,'').slice(0,2);
+        var clean=inp.value.replace(/\D/g,'').slice(0,3);
         if(clean!==inp.value) inp.value=clean;
       });
       wrap.addEventListener('change',function(e){
@@ -5449,7 +5449,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           if(!ure.test(e.target.value)) e.target.value=utpl;
         }
         if(group==='enchants'){
-          var pl=e.target.getAttribute('data-pool')||'weapon_melee', fixed=clampEnchantText(e.target.value,pl);
+          var pl=e.target.getAttribute('data-pool')||'weapon_melee', fixed=e.target.getAttribute('data-ulock')?e.target.value:clampEnchantText(e.target.value,pl); // an item's own enchant is clamped to its own range elsewhere, not the general pool's
           if(fixed!==e.target.value){ e.target.value=fixed; e.target.classList.add('cb-need'); setTimeout(function(){ e.target.classList.remove('cb-need'); },1400); }
           var lim=enchLimits(e.target.value,pl); e.target.title=lim?('Allowed range: '+lim.rng):'';
           if(!e.target.dataset.edit) refreshFill(e.target);
