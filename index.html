@@ -1183,6 +1183,9 @@ body.cb-shared #cbShTop>.cb-sh-hero,body.cb-shared #cbShTop>.cb-panel{background
 .tt .wd-h,.tt .wd-k,.wd-card .wd-h,.wd-card .wd-k,.wd-craft-h,.wd-research-k{font-size:15px}
 .tt .wd-info .wd-k{font-family:var(--body);font-variant:normal;text-transform:uppercase;font-size:16px;letter-spacing:.02em;color:#a6a6a5}
 .wd-card .wd-row:has(.wd-ic[data-ic="StatCritical"]){font-size:16px}
+/* common items: no box behind the icon */
+#cerim-builder .cb-gp .cb-slot.filled:not(.cb-slot-mag):not(.cb-slot-plag):not(.cb-slot-uniq){background:none!important;box-shadow:none!important}
+#cerim-builder .cb-gp .cb-slot.filled:not(.cb-slot-mag):not(.cb-slot-plag):not(.cb-slot-uniq):before{display:none!important}
 </style>
 </head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
