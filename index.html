@@ -1221,6 +1221,12 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 @media (min-width:1101px){#cbReport #cbDmg{padding-left:12px!important;padding-right:12px!important}#cbReport #cbDmg>h3{padding:0 36px!important}#cbReport #cbDmg .panel{padding:0 36px!important}}
 #cbReport .cb-dmg-wtxt small{display:none!important}
 #cerim-builder .cb-gmstats h4,body.cb-shared #cbShTop .cb-gmstats h4{color:#c8a04a!important}
+/* square item cards: icon and level in the same place on every card */
+.cb-sh-grid .m-card:not(.m-setcard):not(.rd-full),#catalog .m-card:not(.m-setcard):not(.rd-full),#arResults .m-card:not(.m-setcard):not(.rd-full){position:relative!important;justify-content:flex-start!important;padding:16px 10px 10px!important;gap:4px!important}
+.cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-ic,#catalog .m-card:not(.m-setcard):not(.rd-full)>.m-ic,#arResults .m-card:not(.m-setcard):not(.rd-full)>.m-ic{margin:10px auto 6px!important;flex:none!important;-webkit-mask:none!important;mask:none!important}
+.cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-card-lv,#catalog .m-card:not(.m-setcard):not(.rd-full) .m-card-lv,#arResults .m-card:not(.m-setcard):not(.rd-full) .m-card-lv{position:absolute!important;top:8px!important;left:10px!important;margin:0!important;color:#cfc7b4!important}
+.cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-card-name,#catalog .m-card:not(.m-setcard):not(.rd-full) .m-card-name,#arResults .m-card:not(.m-setcard):not(.rd-full) .m-card-name{font-size:15px!important;line-height:1.2!important;min-height:2.4em!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;text-align:center!important}
+.cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-card-req,#catalog .m-card:not(.m-setcard):not(.rd-full) .m-card-req,#arResults .m-card:not(.m-setcard):not(.rd-full) .m-card-req{margin-top:auto!important}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -10161,6 +10167,39 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     if(document.readyState!=='loading') setTimeout(obs,400); else document.addEventListener('DOMContentLoaded',function(){setTimeout(obs,400)});}
   window.addEventListener('resize',fit);
   if(document.readyState!=='loading') setTimeout(fit,300); else document.addEventListener('DOMContentLoaded',function(){setTimeout(fit,300)});
+})();
+</script>
+<script>
+/* square item cards: scale each icon to the same visual size and centre it */
+(function(){
+  var CELL=48, FIT=40, cache={}, data=null, loading=false, queue=false;
+  function load(cb){
+    if(data) return cb(); if(loading) return; loading=true;
+    var im=new Image(); im.onload=function(){
+      try{var c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;var x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0);data={ctx:x,w:im.naturalWidth};cb();}catch(e){}
+    }; im.src='img/items-sheet.webp';
+  }
+  function box(col,row){
+    var k=col+','+row; if(cache[k]) return cache[k];
+    var f=data.w/1536, C=Math.round(CELL*f), d;
+    try{d=data.ctx.getImageData(Math.round(col*CELL*f),Math.round(row*CELL*f),C,C).data}catch(e){return null}
+    var x0=C,y0=C,x1=-1,y1=-1;
+    for(var y=0;y<C;y++)for(var x=0;x<C;x++){ if(d[(y*C+x)*4+3]>40){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; } }
+    return cache[k]= x1<0?null:{x:x0/f,y:y0/f,w:(x1-x0+1)/f,h:(y1-y0+1)/f};
+  }
+  function fix(){
+    queue=false;
+    [].forEach.call(document.querySelectorAll('.cb-sh-grid .m-card:not(.m-setcard) .m-ic:not([data-nrm]),#catalog .m-card:not(.m-setcard)>.m-ic:not([data-nrm]),#arResults .m-card:not(.m-setcard)>.m-ic:not([data-nrm])'),function(el){
+      var bp=(el.style.backgroundPosition||'').split(',')[0].match(/-?\d+(?:\.\d+)?/g); if(!bp||bp.length<2) return;
+      var col=Math.round(-bp[0]/CELL), row=Math.round(-bp[1]/CELL); if(col<0||row<0) return;
+      var b=box(col,row); el.setAttribute('data-nrm','1'); if(!b) return;
+      var k=Math.min(1.7,FIT/Math.max(b.w,b.h)), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      el.style.transform='translate('+(-(cx-CELL/2)*k).toFixed(2)+'px,'+(-(cy-CELL/2)*k).toFixed(2)+'px) scale('+k.toFixed(3)+')';
+    });
+  }
+  function sched(){ if(queue) return; queue=true; requestAnimationFrame(function(){ load(fix); }); }
+  function start(){ sched(); new MutationObserver(sched).observe(document.body,{childList:true,subtree:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
 </body></html>
