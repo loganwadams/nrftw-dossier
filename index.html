@@ -10100,4 +10100,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
 })();
 </script>
+<script>
+/* vendor stock headers: show the area name instead of "Random stock" */
+(function(){
+  function go(){
+    [].forEach.call(document.querySelectorAll('.merchant .m-sb>h4'),function(h){
+      var sp=h.querySelector('span'); if(!sp||!/^random stock/i.test(h.textContent)) return;
+      var n=sp.textContent.split('\u00b7')[0].trim(); if(!n) return;
+      h.textContent=n;
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
+})();
+</script>
 </body></html>
