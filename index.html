@@ -1324,6 +1324,17 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .mb-editm input{display:block;margin:6px 0 0!important;font-family:var(--body);font-size:15px;letter-spacing:0;text-transform:none}
 .mb-editm .cb-modal-card{max-width:500px}
 .mb-editm .mb-cf-act{gap:12px;flex-wrap:wrap}
+@media (min-width:1101px) and (max-width:1439px){
+#cerim-builder .cb-wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:40px!important}
+#cerim-builder .cb-wrap>.cb-col-char{grid-column:1!important;grid-row:1!important}
+#cerim-builder .cb-wrap>.cb-col-equip{grid-column:2!important;grid-row:1!important}
+#cerim-builder .cb-wrap>.cb-stats-col{grid-column:1/-1!important;grid-row:2!important}
+}
+@media (max-width:900px){
+#cerim-builder .cb-wrap{grid-template-columns:minmax(0,1fr)!important}
+#cerim-builder .cb-wrap>.cb-col-char,#cerim-builder .cb-wrap>.cb-col-equip,#cerim-builder .cb-wrap>.cb-stats-col{grid-column:1!important;grid-row:auto!important}
+}
+@media (max-width:1100px){#cerim-builder .cb-wrap{padding-left:20px;padding-right:20px;box-sizing:border-box}}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
