@@ -1237,6 +1237,8 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .merchant .vd-inv .m-sb>h4{display:none!important}
 .merchant .m-body:has(>.vd-side){grid-template-columns:minmax(0,1fr) 480px;column-gap:28px;grid-template-areas:'tx mp' 'wr mp';grid-template-rows:auto 1fr;align-items:start}
 .merchant .m-body:has(>.vd-side)>.m-text,.merchant .m-body:has(>.vd-side)>.m-text p{max-width:none!important}
+.merchant .m-body:has(>.vd-side)>.m-text~.m-text{grid-area:wr}
+.merchant:has(>.m-body>.vd-side)>.m-top,.merchant:has(>.m-body>.vd-side)>.m-stack{margin-right:508px}
 .merchant .m-body:has(>.vd-side)>.m-text{grid-area:tx}
 .merchant .m-body:has(>.vd-side)>.m-wares{grid-area:wr}
 }
