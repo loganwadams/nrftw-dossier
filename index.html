@@ -1226,6 +1226,7 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .merchant .m-head .m-loc{display:none!important}
 .merchant .m-sb:has(>.m-pool)>h4{display:none!important}
 .merchant .m-sb>h4.m-area{font-family:var(--display)!important;font-weight:400!important;font-size:24px!important;letter-spacing:0!important;text-transform:none!important;color:var(--gold)!important;margin:4px 0 10px!important}
+#cbProfileNote:empty{display:none!important}
 .merchant .m-head:has(~.m-body>.vd-side){margin-right:508px}
 .merchant .m-head:has(~.m-body>.vd-side) .m-meta{margin-right:0}
 .merchant .m-head .m-meta{margin-left:auto;text-align:right;display:flex;flex-direction:column;gap:6px;font-family:var(--data);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
@@ -4236,7 +4237,7 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
       <div class="cb-panel cb-stats-col">
         <h3>Build Stats<span class="cb-profile-warn-chip" id="cbProfileWarnChip" hidden>&#9888; Mismatch</span></h3>
         <div class="attrs" id="cbProfileBars"></div>
-        <p class="note" id="cbProfileNote">Equip gear and spend attribute points above to see where this build leans.</p>
+        <p class="note" id="cbProfileNote"></p>
       </div>
     </div>
 
@@ -5897,7 +5898,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(result.mismatch){
         note.textContent=result.mismatch;
       } else if(nothingInvested){
-        note.textContent='Equip gear and spend attribute points above to see your stats.';
+        note.textContent='';
       } else {
         note.textContent='';
       }
