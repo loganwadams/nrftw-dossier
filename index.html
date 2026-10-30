@@ -1226,16 +1226,19 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .merchant .m-head .m-loc{display:none!important}
 .merchant .m-sb:has(>.m-pool)>h4{display:none!important}
 .merchant .m-sb>h4.m-area{font-family:var(--display)!important;font-weight:400!important;font-size:24px!important;letter-spacing:0!important;text-transform:none!important;color:var(--gold)!important;margin:4px 0 10px!important}
-.merchant .m-head:has(~.m-body>.vd-map) .m-meta{margin-right:508px}
-.merchant .m-body>.vd-map{position:relative;z-index:3}
+.merchant .m-head:has(~.m-body>.vd-side) .m-meta{margin-right:508px}
 .merchant .m-head .m-meta{margin-left:auto;text-align:right;display:flex;flex-direction:column;gap:6px;font-family:var(--data);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
-.merchant .m-body>.vd-map:hover .vd-cap{font-size:8px!important}
-.merchant .m-body>.vd-map,.merchant .m-body>.vd-map:hover{transition:none!important}
-.merchant .m-body>.vd-map{--t:1!important;--W:480px;position:relative;top:auto;right:auto;margin:0;z-index:1;grid-area:mp;justify-self:end}
-.merchant .m-body:has(>.vd-map){grid-template-columns:minmax(0,1fr) 480px;column-gap:28px;grid-template-areas:'tx mp' 'wr mp';grid-template-rows:auto 1fr;align-items:start}
-.merchant .m-body:has(>.vd-map)>.m-text,.merchant .m-body:has(>.vd-map)>.m-text p{max-width:none!important}
-.merchant .m-body:has(>.vd-map)>.m-text{grid-area:tx}
-.merchant .m-body:has(>.vd-map)>.m-wares{grid-area:wr}
+.merchant .vd-map:hover .vd-cap{font-size:8px!important}
+.merchant .vd-map,.merchant .vd-map:hover{transition:none!important}
+.merchant .vd-side .vd-map{--t:1!important;--W:480px;position:relative;top:auto;right:auto;margin:0;z-index:1}
+.merchant .vd-side{grid-area:mp;justify-self:end;width:480px;position:relative;z-index:3}
+.merchant .vd-side .m-sb{margin:0}
+.merchant .vd-inv>h4.m-area{margin:26px 0 8px!important;font-size:20px!important}
+.merchant .vd-inv .m-sb>h4{display:none!important}
+.merchant .m-body:has(>.vd-side){grid-template-columns:minmax(0,1fr) 480px;column-gap:28px;grid-template-areas:'tx mp' 'wr mp';grid-template-rows:auto 1fr;align-items:start}
+.merchant .m-body:has(>.vd-side)>.m-text,.merchant .m-body:has(>.vd-side)>.m-text p{max-width:none!important}
+.merchant .m-body:has(>.vd-side)>.m-text{grid-area:tx}
+.merchant .m-body:has(>.vd-side)>.m-wares{grid-area:wr}
 }
 .ar-card.vd-card::after{top:-4px;left:-4px;right:-4px}
 .merchant td.m-mats{white-space:normal!important}
@@ -10082,7 +10085,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
   function go(){
     [].forEach.call(document.querySelectorAll('.merchant'),function(m){
       var map=m.querySelector(':scope>.vd-map'), t=m.querySelector('.m-body');
-      if(map&&t) t.appendChild(map);
+      if(!map||!t) return;
+      var side=document.createElement('div'); side.className='vd-side'; side.appendChild(map); t.appendChild(side);
+      var order=[], groups={};
+      [].forEach.call(m.querySelectorAll('.m-sb'),function(sb){
+        if(!sb.querySelector(':scope>.m-pool')) return;
+        var area=((sb.getAttribute('data-m')||'').split(':')[2])||'';
+        if(!groups[area]){groups[area]=document.createElement('div');groups[area].className='vd-inv';
+          var h=document.createElement('h4');h.className='m-area';h.textContent=area+' Inventory';groups[area].appendChild(h);order.push(area)}
+        groups[area].appendChild(sb);
+      });
+      order.forEach(function(a){side.appendChild(groups[a])});
     });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
@@ -10122,7 +10135,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 (function(){
   function fit(){
     [].forEach.call(document.querySelectorAll('.merchant'),function(m){
-      var map=m.querySelector(':scope>.m-body>.vd-map'), h=m.querySelector(':scope>.m-head'); if(!map||!h) return;
+      var map=m.querySelector(':scope>.m-body>.vd-side'), h=m.querySelector(':scope>.m-head'); if(!map||!h) return;
       map.style.marginTop='0';
       var d=map.getBoundingClientRect().top-h.getBoundingClientRect().top;
       map.style.marginTop=(-d)+'px';
