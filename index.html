@@ -1311,6 +1311,13 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #my-builds .mb-card .cb-bl-act .danger,#my-builds .mb-card .cb-bl-act .danger .mb-lab{color:#9a9a9c}
 #my-builds .mb-card .cb-bl-act .danger:hover,#my-builds .mb-card .cb-bl-act .danger:hover .mb-lab{color:#fff}
 @media (hover:none){#my-builds .mb-card .cb-bl-act{opacity:1;background:linear-gradient(transparent 55%,rgba(0,0,0,.9))}}
+.mb-confirm{z-index:9500;align-items:center!important}
+.mb-confirm .cb-modal-card{max-width:440px}
+.mb-confirm h3{font-family:var(--display);font-size:22px;color:#fff;margin:0 0 12px}
+.mb-confirm p{color:#d8d8d8;font-size:14px}
+.mb-cf-act{display:flex;justify-content:flex-end;gap:14px;margin-top:20px}
+.mb-confirm .cb-mbtn{min-width:96px;padding:11px 18px!important;font-size:11px!important;color:#fff}
+.mb-confirm .mb-cf-ok{color:#c8a04a}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -7364,7 +7371,16 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         del:'<path d="M3.5 6.5h17"/><path d="M9 6.5V4h6v2.5"/><path d="M5.5 6.5l1 14h11l1-14"/><path d="M10 10.5v6M14 10.5v6"/>'
       };
       var MB_TT={ren:'Edit name & description',desc:'Edit description',link:'Copy share link',pub:'Publish to Community',unpub:'Unpublish',del:'Delete'};
-      var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
+            function siteConfirm(title,text,ok){ return new Promise(function(res){
+        var m=document.createElement('div'); m.className='cb-modal mb-confirm'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+        m.innerHTML='<div class="cb-modal-card"><h3></h3><p></p><div class="mb-cf-act"><button type="button" class="cb-mbtn" data-r="0">Cancel</button><button type="button" class="cb-mbtn mb-cf-ok" data-r="1"></button></div></div>';
+        m.querySelector('h3').textContent=title; m.querySelector('p').textContent=text; m.querySelector('.mb-cf-ok').textContent=ok||'OK';
+        function done(v){ document.removeEventListener('keydown',kd,true); m.remove(); res(v); }
+        function kd(e){ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(false); } }
+        m.addEventListener('click',function(e){ var b=e.target.closest('button[data-r]'); if(b) done(b.getAttribute('data-r')==='1'); else if(e.target===m) done(false); });
+        document.addEventListener('keydown',kd,true); document.body.appendChild(m); m.querySelector('.cb-mbtn').focus();
+      }); }
+var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       function mbBtn(a,cls){ return '<button type="button" data-a="'+a+'"'+(cls?' class="'+cls+'"':'')+' title="'+MB_TT[a]+'" aria-label="'+MB_TT[a]+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MB_IC[a]+'</svg><span class="mb-lab">'+MB_LB[a]+'</span></button>'; }
       function mbActs(r){ return mbBtn('ren')+mbBtn('link')+mbBtn('del','danger'); }
       var mbPage=null;
@@ -7393,7 +7409,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var T=mbPage||mB; T.innerHTML=h;
         var el=T.querySelector('.cb-empty-link');
         if(el) el.addEventListener('click',function(e){ e.preventDefault(); closeModal(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
-        if(mbPage){ var openCard=function(e){ var cd=e.target.closest('.mb-card .cm-card'); if(!cd||(e.type==='keydown'&&e.key!=='Enter')) return; var li0=cd.closest('li'), r0=rows[+li0.getAttribute('data-i')]; if(!r0) return; e.preventDefault(); e.stopPropagation(); if(!window.confirm('Replace your current build in the Cerim Builder with \u201c'+r0.name+'\u201d?')) return; var o0=decodeBuild(r0.code); if(!o0){ msg('That saved build could not be read.',1); return; } applyBuild(o0); saveBuildSoon(); if(window.__pgGoto) window.__pgGoto('cerim-builder'); }; T.addEventListener('click',openCard,true); T.addEventListener('keydown',openCard,true); }
+        if(mbPage){ var openCard=function(e){ var cd=e.target.closest('.mb-card .cm-card'); if(!cd||(e.type==='keydown'&&e.key!=='Enter')) return; var li0=cd.closest('li'), r0=rows[+li0.getAttribute('data-i')]; if(!r0) return; e.preventDefault(); e.stopPropagation(); siteConfirm('Load build','Replace your current build in the Cerim Builder with \u201c'+r0.name+'\u201d?','Load').then(function(y){ if(!y) return; var o0=decodeBuild(r0.code); if(!o0){ msg('That saved build could not be read.',1); return; } applyBuild(o0); saveBuildSoon(); if(window.__pgGoto) window.__pgGoto('cerim-builder'); }); }; T.addEventListener('click',openCard,true); T.addEventListener('keydown',openCard,true); }
         T.querySelector('.cb-bl')&&T.querySelector('.cb-bl').addEventListener('click',function(e){
           var b=e.target.closest('button[data-a]'); if(!b) return;
           var li=b.closest('li'), r=rows[+li.getAttribute('data-i')], a=b.getAttribute('data-a'), c;
@@ -7448,10 +7464,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
             client().then(function(c){ return c.from('builds').update({is_public:false}).eq('id',r.id); })
               .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
           }else if(a==='del'){
-            if(mbPage){ if(!window.confirm('Delete \u201c'+r.name+'\u201d?')) return; if(!window.confirm('This cannot be undone. Delete this build for good?')) return; }
-            else if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again to delete'; return; }
+            if(!mbPage&&b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Click again to delete'; return; }
+            (mbPage?siteConfirm('Delete build','Delete \u201c'+r.name+'\u201d from My Builds?','Delete').then(function(y){ return y?siteConfirm('Are you sure?','This cannot be undone. Delete this build for good?','Delete for good'):false; }):Promise.resolve(true)).then(function(go){ if(!go) return;
             client().then(function(c){ return c.from('builds').delete().eq('id',r.id); })
-              .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
+              .then(function(x){ if(x.error) throw x.error; listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); }); });
           }
         });
       }
