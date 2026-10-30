@@ -1223,7 +1223,11 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #cerim-builder .cb-gmstats h4,body.cb-shared #cbShTop .cb-gmstats h4{color:#c8a04a!important}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
-.merchant .m-text>.vd-map{--t:1!important;--W:480px;position:relative;top:auto;right:auto;margin:16px 0 0;z-index:1}
+.merchant .m-body>.vd-map{--t:1!important;--W:480px;position:relative;top:auto;right:auto;margin:0;z-index:1;grid-area:mp;justify-self:end}
+.merchant .m-body:has(>.vd-map){grid-template-columns:minmax(0,1fr) 480px;column-gap:28px;grid-template-areas:'tx mp' 'wr wr'}
+.merchant .m-body:has(>.vd-map)>.m-text,.merchant .m-body:has(>.vd-map)>.m-text p{max-width:none!important}
+.merchant .m-body:has(>.vd-map)>.m-text{grid-area:tx}
+.merchant .m-body:has(>.vd-map)>.m-wares{grid-area:wr}
 }
 .ar-card.vd-card::after{top:-4px;left:-4px;right:-4px}
 .merchant td.m-mats{white-space:normal!important}
@@ -10065,11 +10069,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 })();
 </script>
 <script>
-/* vendor pages: move the map under the description so it sits open in the left column */
+/* vendor pages: move the map at the top of the right column so it sits open */
 (function(){
   function go(){
     [].forEach.call(document.querySelectorAll('.merchant'),function(m){
-      var map=m.querySelector(':scope>.vd-map'), t=m.querySelector('.m-body>.m-text');
+      var map=m.querySelector(':scope>.vd-map'), t=m.querySelector('.m-body');
       if(map&&t) t.appendChild(map);
     });
   }
