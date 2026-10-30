@@ -1319,6 +1319,11 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .mb-cf-act{display:flex;justify-content:flex-end;gap:14px;margin-top:20px}
 .mb-confirm .cb-mbtn{min-width:96px;padding:11px 18px!important;font-size:11px!important;color:#fff}
 .mb-confirm .mb-cf-ok{color:#c8a04a}
+.mb-editm label{display:block;font-family:var(--data);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#d8d8d8;margin:0 0 14px}
+.mb-editm label small{letter-spacing:.04em;text-transform:none;font-size:12px;color:#9a9a9c}
+.mb-editm input{display:block;margin:6px 0 0!important;font-family:var(--body);font-size:15px;letter-spacing:0;text-transform:none}
+.mb-editm .cb-modal-card{max-width:500px}
+.mb-editm .mb-cf-act{gap:12px;flex-wrap:wrap}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -7372,7 +7377,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         del:'<path d="M3.5 6.5h17"/><path d="M9 6.5V4h6v2.5"/><path d="M5.5 6.5l1 14h11l1-14"/><path d="M10 10.5v6M14 10.5v6"/>'
       };
       var MB_TT={ren:'Edit name & description',desc:'Edit description',link:'Copy share link',pub:'Publish to Community',unpub:'Unpublish',del:'Delete'};
-            function siteConfirm(title,text,ok){ return new Promise(function(res){
+            function siteEdit(r){ return new Promise(function(res){
+        var m=document.createElement('div'); m.className='cb-modal mb-confirm mb-editm'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+        m.innerHTML='<div class="cb-modal-card"><h3>Edit build</h3><label>Name<input type="text" class="mb-in-name" maxlength="60"></label><label>Description <small>(optional, 160 characters)</small><input type="text" class="mb-in-desc" maxlength="160" placeholder="One line about the build"></label><div class="mb-cf-act"><button type="button" class="cb-mbtn" data-r="0">Cancel</button><button type="button" class="cb-mbtn" data-r="2">Edit in Builder</button><button type="button" class="cb-mbtn mb-cf-ok" data-r="1">Save</button></div></div>';
+        var ni=m.querySelector('.mb-in-name'), di=m.querySelector('.mb-in-desc'); ni.value=r.name||''; di.value=r.description||'';
+        function done(v){ document.removeEventListener('keydown',kd,true); m.remove(); res(v); }
+        function save(){ var nv=ni.value.trim(); if(!nv){ ni.focus(); return; } done({name:nv,desc:di.value.trim()}); }
+        function kd(e){ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(null); } else if(e.key==='Enter'&&e.target.tagName==='INPUT'){ e.preventDefault(); save(); } }
+        m.addEventListener('click',function(e){ var b=e.target.closest('button[data-r]'); if(b){ var k=b.getAttribute('data-r'); if(k==='1') save(); else if(k==='2') done({load:true}); else done(null); } else if(e.target===m) done(null); });
+        document.addEventListener('keydown',kd,true); document.body.appendChild(m); ni.focus(); ni.select();
+      }); }
+      function siteConfirm(title,text,ok){ return new Promise(function(res){
         var m=document.createElement('div'); m.className='cb-modal mb-confirm'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
         m.innerHTML='<div class="cb-modal-card"><h3></h3><p></p><div class="mb-cf-act"><button type="button" class="cb-mbtn" data-r="0">Cancel</button><button type="button" class="cb-mbtn mb-cf-ok" data-r="1"></button></div></div>';
         m.querySelector('h3').textContent=title; m.querySelector('p').textContent=text; m.querySelector('.mb-cf-ok').textContent=ok||'OK';
@@ -7422,18 +7437,12 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
             var url=location.href.split('#')[0].split('?')[0]+'?s='+r.code;
             (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(url):Promise.reject()).then(function(){ msg('Share link copied.'); },function(){ msg('Copy failed.',1); });
           }else if(a==='ren'&&mbPage){
-            var box=li.querySelector('.cb-bl-name'); if(!box) return;
-            box.innerHTML='<span class="mb-edit"><input type="text" class="mb-in-name" maxlength="60" value="'+escH(r.name)+'" aria-label="Build name" placeholder="Build name"><input type="text" class="mb-in-desc" maxlength="160" value="'+escH(r.description||'')+'" aria-label="Build description" placeholder="One line about the build (160 characters)"><span class="mb-edit-act"><button type="button" class="mb-save">Save</button><button type="button" class="mb-cancel">Cancel</button></span></span>';
-            var ni=box.querySelector('.mb-in-name'), di2=box.querySelector('.mb-in-desc'); ni.focus(); ni.select();
-            function saveBoth(){
-              var nv=ni.value.trim(), dv=di2.value.trim(); if(!nv){ ni.focus(); return; }
-              if(nv===r.name&&dv===(r.description||'')){ paint(rows); return; }
-              client().then(function(c){ return c.from('builds').update({name:nv,description:dv||null,updated_at:new Date().toISOString()}).eq('id',r.id); })
+            siteEdit(r).then(function(v){ if(!v) return;
+              if(v.load){ var o1=decodeBuild(r.code); if(!o1){ msg('That saved build could not be read.',1); return; } applyBuild(o1); saveBuildSoon(); if(window.__pgGoto) window.__pgGoto('cerim-builder'); return; }
+              if(v.name===r.name&&v.desc===(r.description||'')) return;
+              client().then(function(c){ return c.from('builds').update({name:v.name,description:v.desc||null,updated_at:new Date().toISOString()}).eq('id',r.id); })
                 .then(function(x){ if(x.error) throw x.error; if(r.is_public&&window.__cmRefresh) window.__cmRefresh(); listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
-            }
-            box.querySelector('.mb-save').addEventListener('click',function(ev){ ev.stopPropagation(); saveBoth(); });
-            box.querySelector('.mb-cancel').addEventListener('click',function(ev){ ev.stopPropagation(); paint(rows); });
-            box.addEventListener('keydown',function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); saveBoth(); } if(ev.key==='Escape'){ ev.stopPropagation(); paint(rows); } });
+            });
           }else if(a==='ren'){
             var nm=li.querySelector('.cb-bl-name');
             nm.innerHTML='<input type="text" maxlength="60" value="'+escH(r.name)+'" aria-label="New name">';
