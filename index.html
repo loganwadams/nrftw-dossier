@@ -10142,6 +10142,10 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     });
   }
   window.addEventListener('load',function(){setTimeout(fit,50)});
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){setTimeout(fit,50)});
+  if(window.ResizeObserver){var ro=new ResizeObserver(function(){fit()});
+    var obs=function(){[].forEach.call(document.querySelectorAll('.merchant>.m-head,.merchant>.m-body'),function(e){ro.observe(e)})};
+    if(document.readyState!=='loading') setTimeout(obs,400); else document.addEventListener('DOMContentLoaded',function(){setTimeout(obs,400)});}
   window.addEventListener('resize',fit);
   if(document.readyState!=='loading') setTimeout(fit,300); else document.addEventListener('DOMContentLoaded',function(){setTimeout(fit,300)});
 })();
