@@ -962,8 +962,8 @@ body::before{background:radial-gradient(90% 70% at 50% 40%,#0c0c0c 0%,#080808 55
 .cb-sh-grid .m-card[data-rar=magical]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-mag-bg.webp)!important}
 .cb-sh-grid .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
 .cb-sh-grid .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
-.cb-sh-grid .m-card,.cb-sh-grid .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
-.cb-sh-grid .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
+.cb-sh-grid .m-card,.cb-sh-grid .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/rl-std-bg.webp)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+.cb-sh-grid .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/rl-std-bg.webp)!important;background-size:cover!important;background-position:center!important;box-shadow:none}
 .cb-sh-grid .m-card[data-rar=magical]{background-image:url(img/card/rl-mag-bg.webp)!important}
 .cb-sh-grid .m-card[data-rar=plagued]{background-image:url(img/card/rl-pl-bg.webp)!important}
 .cb-sh-grid .m-card[data-rar=unique]{background-image:url(img/card/rl-un-bg.webp)!important}
@@ -3346,9 +3346,9 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-card[data-rar=plagued],#arResults .m-card[data-rar=plagued]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-pl-bg.webp)!important}
 #catalog .m-card[data-rar=unique],#arResults .m-card[data-rar=unique]{background-image:linear-gradient(var(--ga,180deg),rgba(0,0,0,.28),rgba(0,0,0,0) 70%),url(img/card/rl-un-bg.webp)!important}
 /* item cards: the game's own boxed slot frame, one per rarity */
-#catalog .m-card,#arResults .m-card,#catalog .m-card[data-rar],#arResults .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
+#catalog .m-card,#arResults .m-card,#catalog .m-card[data-rar],#arResults .m-card[data-rar]{background-color:#0a0d12;background-image:url(img/card/rl-std-bg.webp)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
 /* common items: the item panel's smoky backdrop with a thin frame in its own grey-blue */
-#catalog .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]),#arResults .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/rl-std-bg.webp)!important;background-size:100% 100%!important;background-position:center!important;box-shadow:none}
+#catalog .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]),#arResults .m-card:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:url(img/card/rl-std-bg.webp)!important;background-size:cover!important;background-position:center!important;box-shadow:none}
 #catalog .m-card[data-rar=magical],#arResults .m-card[data-rar=magical]{background-image:url(img/card/rl-mag-bg.webp)!important}
 #catalog .m-card[data-rar=plagued],#arResults .m-card[data-rar=plagued]{background-image:url(img/card/rl-pl-bg.webp)!important}
 #catalog .m-card[data-rar=unique],#arResults .m-card[data-rar=unique]{background-image:url(img/card/rl-un-bg.webp)!important}
@@ -3581,7 +3581,7 @@ footer li{color:#6f665b}
 #cerim-builder .cb-gp .cb-slot.filled{background:rgba(8,9,14,.55);overflow:visible}
 #cerim-builder .cb-gp .cb-slot.filled .cb-slot-lv{z-index:4}
 /* rarity slots wear the card art (the same rl-*-bg.webp the item cards use), so a magical item sits in the blue box, a plagued one in the magenta box and a unique in the gold box, exactly as in the inventory screen */
-#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-color:#0a0d12;background-size:100% 100%;background-position:center;background-repeat:no-repeat;box-shadow:none}
+#cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag,#cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-color:#0a0d12;background-size:cover;background-position:center;background-repeat:no-repeat;box-shadow:none}
 #cerim-builder .cb-gp .cb-slot.filled.cb-slot-mag{background-image:url(img/card/rl-mag-bg.webp)}
 #cerim-builder .cb-gp .cb-slot.filled.cb-slot-plag{background-image:url(img/card/rl-pl-bg.webp)}
 #cerim-builder .cb-gp .cb-slot.filled.cb-slot-uniq{background-image:url(img/card/rl-un-bg.webp)}
