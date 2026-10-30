@@ -1227,6 +1227,15 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-card-lv,#catalog .m-card:not(.m-setcard):not(.rd-full) .m-card-lv,#arResults .m-card:not(.m-setcard):not(.rd-full) .m-card-lv{position:absolute!important;top:8px!important;left:10px!important;margin:0!important;color:#cfc7b4!important}
 .cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-card-name,#catalog .m-card:not(.m-setcard):not(.rd-full) .m-card-name,#arResults .m-card:not(.m-setcard):not(.rd-full) .m-card-name{font-size:15px!important;line-height:1.2!important;min-height:2.4em!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;text-align:center!important}
 .cb-sh-grid .m-card:not(.m-setcard):not(.rd-full) .m-card-req,#catalog .m-card:not(.m-setcard):not(.rd-full) .m-card-req,#arResults .m-card:not(.m-setcard):not(.rd-full) .m-card-req{margin-top:auto!important}
+/* login modal: lines use the same grainy divider as the build stats */
+.cb-modal .cb-mbtn,.cb-modal .cb-mbtn:hover{border:0!important;position:relative}
+.cb-modal .cb-mbtn::after{content:"";position:absolute;inset:0;pointer-events:none;background:url(img/gm/divider.webp) center top/100% 4px no-repeat,url(img/gm/divider.webp) center bottom/100% 4px no-repeat,url(img/gm/divider-v.webp) left top/2px 100% no-repeat,url(img/gm/divider-v.webp) right top/2px 100% no-repeat}
+.cb-modal .cb-mbtn:hover::after{filter:brightness(1.5)}
+.cb-modal .cb-tabs{border-bottom:0!important;position:relative}
+.cb-modal .cb-tabs::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:url(img/gm/divider.webp) center/100% 100% no-repeat;opacity:.7;pointer-events:none}
+.cb-modal .cb-tabs button,.cb-modal .cb-tabs button.on{border-bottom:0!important;position:relative}
+.cb-modal .cb-tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:url(img/gm/divider.webp) center/100% 100% no-repeat;filter:brightness(1.8);z-index:2}
+.cb-modal .cb-or:before,.cb-modal .cb-or:after{height:4px!important;background:url(img/gm/divider.webp) center/100% 100% no-repeat!important}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
