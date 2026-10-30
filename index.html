@@ -1275,6 +1275,13 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #my-builds .mb-grid .cb-bl-act button::after{display:none!important}
 #my-builds .mb-grid .cb-bl-act{gap:6px 0}
 #my-builds .mb-grid .cb-bl-act button{margin-right:0;padding-right:18px}
+#my-builds .mb-grid .cb-bl-act{display:flex;flex-wrap:nowrap;gap:4px;margin-top:12px}
+#my-builds .mb-grid .cb-bl-act button{padding:8px 10px!important;margin:0!important;color:#d8d8d8;display:inline-flex;align-items:center;justify-content:center;line-height:0}
+#my-builds .mb-grid .cb-bl-act button:hover{color:#c8a04a}
+#my-builds .mb-grid .cb-bl-act .danger{margin-left:auto!important;color:#8e8e90}
+#my-builds .mb-grid .cb-bl-act .danger:hover{color:#fff}
+#my-builds .mb-grid .cb-bl-act button[data-sure="1"]{line-height:1.2;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+#my-builds .mb-grid .cm-card{cursor:pointer}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -7319,6 +7326,17 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
 
       // ---- my builds
       function fmtDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return ''; } }
+      var MB_IC={
+        ren:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+        desc:'<path d="M4 6h16M4 11h16M4 16h10"/>',
+        link:'<circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6"/>',
+        pub:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/>',
+        unpub:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/><path d="M4 4l16 16"/>',
+        del:'<path d="M3.5 6.5h17"/><path d="M9 6.5V4h6v2.5"/><path d="M5.5 6.5l1 14h11l1-14"/><path d="M10 10.5v6M14 10.5v6"/>'
+      };
+      var MB_TT={ren:'Rename',desc:'Edit description',link:'Copy share link',pub:'Publish to Community',unpub:'Unpublish',del:'Delete'};
+      function mbBtn(a,cls){ return '<button type="button" data-a="'+a+'"'+(cls?' class="'+cls+'"':'')+' title="'+MB_TT[a]+'" aria-label="'+MB_TT[a]+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MB_IC[a]+'</svg></button>'; }
+      function mbActs(r){ return mbBtn('ren')+mbBtn('desc')+mbBtn('link')+(r.is_public?mbBtn('unpub'):mbBtn('pub'))+mbBtn('del','danger'); }
       var mbPage=null;
       function listBuilds(){
         mbPage=$('mbBody');
@@ -7337,7 +7355,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           rows.forEach(function(r,i){
             var cardH=''; if(mbPage&&window.__cmCardHtml){ try{ cardH='<div class="mb-card">'+window.__cmCardHtml({id:r.id,name:r.name,code:r.code,description:r.description,author_name:r.author_name||'',published_at:r.published_at,updated_at:r.updated_at,user_id:(user&&user.id)||null,likes:0})+'</div><div class="mb-state">'+(r.is_public?'<span class="cb-bl-pub">Public</span>':'<span class="mb-priv">Private</span>')+'</div>'; }catch(er){ cardH=''; } }
             h+='<li data-i="'+i+'">'+cardH+'<div class="cb-bl-name">'+escH(r.name)+(r.is_public?' <span class="cb-bl-pub" title="Listed on the Community Builds page">Public</span>':'')+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+(r.description?' &middot; &ldquo;'+escH(r.description)+'&rdquo;':'')+'</div><div class="cb-bl-act">'+
-              '<button type="button" data-a="load">Load</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="desc">Edit description</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button></div></li>';
+              (mbPage?mbActs(r):'<button type="button" data-a="load">Load</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="desc">Edit description</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button>')+'</div></li>';
           });
           h+='</ul>';
         }
@@ -7345,6 +7363,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         var T=mbPage||mB; T.innerHTML=h;
         var el=T.querySelector('.cb-empty-link');
         if(el) el.addEventListener('click',function(e){ e.preventDefault(); closeModal(); var nb=document.querySelector('.pgbar [data-chap="cerim-builder"]'); if(nb) nb.click(); else location.href='/cerim-builder'; });
+        if(mbPage){ var openCard=function(e){ var cd=e.target.closest('.mb-card .cm-card'); if(!cd||(e.type==='keydown'&&e.key!=='Enter')) return; var li0=cd.closest('li'), r0=rows[+li0.getAttribute('data-i')]; if(!r0) return; e.preventDefault(); e.stopPropagation(); if(!window.confirm('Replace your current build in the Cerim Builder with \u201c'+r0.name+'\u201d?')) return; var o0=decodeBuild(r0.code); if(!o0){ msg('That saved build could not be read.',1); return; } applyBuild(o0); saveBuildSoon(); if(window.__pgGoto) window.__pgGoto('cerim-builder'); }; T.addEventListener('click',openCard,true); T.addEventListener('keydown',openCard,true); }
         T.querySelector('.cb-bl')&&T.querySelector('.cb-bl').addEventListener('click',function(e){
           var b=e.target.closest('button[data-a]'); if(!b) return;
           var li=b.closest('li'), r=rows[+li.getAttribute('data-i')], a=b.getAttribute('data-a'), c;
