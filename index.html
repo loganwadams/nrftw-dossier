@@ -1297,6 +1297,18 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #my-builds .mb-toggle.on .mb-sw{border-color:#c8a04a;background:rgba(200,160,74,.22)}
 #my-builds .mb-toggle.on .mb-sw i{transform:translateX(18px);background:#c8a04a}
 #my-builds .mb-toggle:hover .mb-sw{border-color:#c8a04a}
+#my-builds .mb-card{position:relative}
+#my-builds .mb-card .cb-bl-act{position:absolute!important;inset:0;margin:0!important;z-index:5;pointer-events:none;opacity:0;transition:opacity .18s;background:rgba(0,0,0,.88);display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:34px}
+#my-builds .mb-card:hover .cb-bl-act,#my-builds .mb-card:focus-within .cb-bl-act{opacity:1}
+#my-builds .mb-card .cb-bl-act button{pointer-events:auto;display:flex!important;flex-direction:column;align-items:center;gap:8px;line-height:1!important;padding:8px!important;color:#fff}
+#my-builds .mb-card .cb-bl-act button svg{width:30px;height:30px}
+#my-builds .mb-card .cb-bl-act .mb-lab{font-family:var(--data);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#d8d8d8}
+#my-builds .mb-card .cb-bl-act button:hover,#my-builds .mb-card .cb-bl-act button:hover .mb-lab{color:#c8a04a}
+#my-builds .mb-card .cb-bl-act .danger{position:absolute;right:12px;bottom:10px;margin:0!important;padding:6px!important}
+#my-builds .mb-card .cb-bl-act .danger svg{width:22px;height:22px}
+#my-builds .mb-card .cb-bl-act .danger,#my-builds .mb-card .cb-bl-act .danger .mb-lab{color:#9a9a9c}
+#my-builds .mb-card .cb-bl-act .danger:hover,#my-builds .mb-card .cb-bl-act .danger:hover .mb-lab{color:#fff}
+@media (hover:none){#my-builds .mb-card .cb-bl-act{opacity:1;background:linear-gradient(transparent 55%,rgba(0,0,0,.9))}}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -7350,7 +7362,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         del:'<path d="M3.5 6.5h17"/><path d="M9 6.5V4h6v2.5"/><path d="M5.5 6.5l1 14h11l1-14"/><path d="M10 10.5v6M14 10.5v6"/>'
       };
       var MB_TT={ren:'Edit name & description',desc:'Edit description',link:'Copy share link',pub:'Publish to Community',unpub:'Unpublish',del:'Delete'};
-      function mbBtn(a,cls){ return '<button type="button" data-a="'+a+'"'+(cls?' class="'+cls+'"':'')+' title="'+MB_TT[a]+'" aria-label="'+MB_TT[a]+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MB_IC[a]+'</svg></button>'; }
+      var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
+      function mbBtn(a,cls){ return '<button type="button" data-a="'+a+'"'+(cls?' class="'+cls+'"':'')+' title="'+MB_TT[a]+'" aria-label="'+MB_TT[a]+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MB_IC[a]+'</svg><span class="mb-lab">'+MB_LB[a]+'</span></button>'; }
       function mbActs(r){ return mbBtn('ren')+mbBtn('link')+mbBtn('del','danger'); }
       var mbPage=null;
       function listBuilds(){
@@ -7368,9 +7381,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         else{
           h+='<ul class="cb-bl'+(mbPage?' mb-grid':'')+'">';
           rows.forEach(function(r,i){
-            var cardH=''; if(mbPage&&window.__cmCardHtml){ try{ cardH='<div class="mb-card">'+window.__cmCardHtml({id:r.id,name:r.name,code:r.code,description:r.description,author_name:r.author_name||'',published_at:r.published_at,updated_at:r.updated_at,user_id:(user&&user.id)||null,likes:0})+'</div><div class="mb-state"><button type="button" role="switch" aria-checked="'+(r.is_public?'true':'false')+'" data-a="'+(r.is_public?'unpub':'pub')+'" class="mb-toggle'+(r.is_public?' on':'')+'" title="'+(r.is_public?'Listed on Community Builds - click to unpublish':'Not listed - click to publish to Community Builds')+'"><span class="mb-sw"><i></i></span><span class="mb-sw-l">Public</span></button></div>'; }catch(er){ cardH=''; } }
-            h+='<li data-i="'+i+'">'+cardH+'<div class="cb-bl-name">'+escH(r.name)+(r.is_public?' <span class="cb-bl-pub" title="Listed on the Community Builds page">Public</span>':'')+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+(r.description?' &middot; &ldquo;'+escH(r.description)+'&rdquo;':'')+'</div><div class="cb-bl-act">'+
-              (mbPage?mbActs(r):'<button type="button" data-a="load">Load</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="desc">Edit description</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button>')+'</div></li>';
+            var cardH=''; if(mbPage&&window.__cmCardHtml){ try{ cardH='<div class="mb-card">'+window.__cmCardHtml({id:r.id,name:r.name,code:r.code,description:r.description,author_name:r.author_name||'',published_at:r.published_at,updated_at:r.updated_at,user_id:(user&&user.id)||null,likes:0})+'<div class="cb-bl-act">'+mbActs(r)+'</div></div><div class="mb-state"><button type="button" role="switch" aria-checked="'+(r.is_public?'true':'false')+'" data-a="'+(r.is_public?'unpub':'pub')+'" class="mb-toggle'+(r.is_public?' on':'')+'" title="'+(r.is_public?'Listed on Community Builds - click to unpublish':'Not listed - click to publish to Community Builds')+'"><span class="mb-sw"><i></i></span><span class="mb-sw-l">Public</span></button></div>'; }catch(er){ cardH=''; } }
+            h+='<li data-i="'+i+'">'+cardH+'<div class="cb-bl-name">'+escH(r.name)+(r.is_public?' <span class="cb-bl-pub" title="Listed on the Community Builds page">Public</span>':'')+'</div><div class="cb-bl-date">Updated '+escH(fmtDate(r.updated_at))+(r.description?' &middot; &ldquo;'+escH(r.description)+'&rdquo;':'')+'</div>'+(mbPage&&cardH?'':'<div class="cb-bl-act">')+
+              (mbPage?(cardH?'':mbActs(r)):'<button type="button" data-a="load">Load</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="desc">Edit description</button><button type="button" data-a="link">Copy share link</button>'+(r.is_public?'<button type="button" data-a="unpub">Unpublish</button>':'<button type="button" data-a="pub">Publish to Community</button>')+'<button type="button" data-a="del" class="danger">Delete</button>')+(mbPage&&cardH?'':'</div>')+'</li>';
           });
           h+='</ul>';
         }
