@@ -1223,6 +1223,8 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #cerim-builder .cb-gmstats h4,body.cb-shared #cbShTop .cb-gmstats h4{color:#c8a04a!important}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
+.merchant .m-body>.vd-map:hover .vd-cap{font-size:8px!important}
+.merchant .m-body>.vd-map,.merchant .m-body>.vd-map:hover{transition:none!important}
 .merchant .m-body>.vd-map{--t:1!important;--W:480px;position:relative;top:auto;right:auto;margin:0;z-index:1;grid-area:mp;justify-self:end}
 .merchant .m-body:has(>.vd-map){grid-template-columns:minmax(0,1fr) 480px;column-gap:28px;grid-template-areas:'tx mp' 'wr wr'}
 .merchant .m-body:has(>.vd-map)>.m-text,.merchant .m-body:has(>.vd-map)>.m-text p{max-width:none!important}
