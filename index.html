@@ -1282,6 +1282,14 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #my-builds .mb-grid .cb-bl-act .danger:hover{color:#fff}
 #my-builds .mb-grid .cb-bl-act button[data-sure="1"]{line-height:1.2;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#fff}
 #my-builds .mb-grid .cm-card{cursor:pointer}
+#my-builds .mb-grid .cb-bl-name:has(.mb-edit){display:block;margin:12px 0 0}
+#my-builds .mb-edit{display:flex;flex-direction:column;gap:8px}
+#my-builds .mb-edit input{width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:0;border-bottom:2px solid #c8a04a;color:#fff;padding:6px 8px;font-family:var(--body);font-size:14px;min-width:0}
+#my-builds .mb-edit .mb-in-name{font-family:var(--display);font-size:18px}
+#my-builds .mb-edit-act{display:flex;gap:16px}
+#my-builds .mb-edit-act button{border:0;background:none;color:#d8d8d8;font-family:var(--data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:4px 0;cursor:pointer}
+#my-builds .mb-edit-act .mb-save{color:#c8a04a}
+#my-builds .mb-edit-act button:hover{color:#fff}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -7334,9 +7342,9 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         unpub:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/><path d="M4 4l16 16"/>',
         del:'<path d="M3.5 6.5h17"/><path d="M9 6.5V4h6v2.5"/><path d="M5.5 6.5l1 14h11l1-14"/><path d="M10 10.5v6M14 10.5v6"/>'
       };
-      var MB_TT={ren:'Rename',desc:'Edit description',link:'Copy share link',pub:'Publish to Community',unpub:'Unpublish',del:'Delete'};
+      var MB_TT={ren:'Edit name & description',desc:'Edit description',link:'Copy share link',pub:'Publish to Community',unpub:'Unpublish',del:'Delete'};
       function mbBtn(a,cls){ return '<button type="button" data-a="'+a+'"'+(cls?' class="'+cls+'"':'')+' title="'+MB_TT[a]+'" aria-label="'+MB_TT[a]+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MB_IC[a]+'</svg></button>'; }
-      function mbActs(r){ return mbBtn('ren')+mbBtn('desc')+mbBtn('link')+(r.is_public?mbBtn('unpub'):mbBtn('pub'))+mbBtn('del','danger'); }
+      function mbActs(r){ return mbBtn('ren')+mbBtn('link')+(r.is_public?mbBtn('unpub'):mbBtn('pub'))+mbBtn('del','danger'); }
       var mbPage=null;
       function listBuilds(){
         mbPage=$('mbBody');
@@ -7374,6 +7382,19 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
           }else if(a==='link'){
             var url=location.href.split('#')[0].split('?')[0]+'?s='+r.code;
             (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(url):Promise.reject()).then(function(){ msg('Share link copied.'); },function(){ msg('Copy failed.',1); });
+          }else if(a==='ren'&&mbPage){
+            var box=li.querySelector('.cb-bl-name'); if(!box) return;
+            box.innerHTML='<span class="mb-edit"><input type="text" class="mb-in-name" maxlength="60" value="'+escH(r.name)+'" aria-label="Build name" placeholder="Build name"><input type="text" class="mb-in-desc" maxlength="160" value="'+escH(r.description||'')+'" aria-label="Build description" placeholder="One line about the build (160 characters)"><span class="mb-edit-act"><button type="button" class="mb-save">Save</button><button type="button" class="mb-cancel">Cancel</button></span></span>';
+            var ni=box.querySelector('.mb-in-name'), di2=box.querySelector('.mb-in-desc'); ni.focus(); ni.select();
+            function saveBoth(){
+              var nv=ni.value.trim(), dv=di2.value.trim(); if(!nv){ ni.focus(); return; }
+              if(nv===r.name&&dv===(r.description||'')){ paint(rows); return; }
+              client().then(function(c){ return c.from('builds').update({name:nv,description:dv||null,updated_at:new Date().toISOString()}).eq('id',r.id); })
+                .then(function(x){ if(x.error) throw x.error; if(r.is_public&&window.__cmRefresh) window.__cmRefresh(); listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
+            }
+            box.querySelector('.mb-save').addEventListener('click',function(ev){ ev.stopPropagation(); saveBoth(); });
+            box.querySelector('.mb-cancel').addEventListener('click',function(ev){ ev.stopPropagation(); paint(rows); });
+            box.addEventListener('keydown',function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); saveBoth(); } if(ev.key==='Escape'){ ev.stopPropagation(); paint(rows); } });
           }else if(a==='ren'){
             var nm=li.querySelector('.cb-bl-name');
             nm.innerHTML='<input type="text" maxlength="60" value="'+escH(r.name)+'" aria-label="New name">';
