@@ -1224,6 +1224,8 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
+.merchant .m-sb:has(>.m-pool)>h4{display:none!important}
+.merchant .m-sb>h4.m-area{font-family:var(--display)!important;font-weight:400!important;font-size:24px!important;letter-spacing:0!important;text-transform:none!important;color:var(--gold)!important;margin:4px 0 10px!important}
 .merchant .m-head:has(~.m-body>.vd-map) .m-meta{margin-right:508px}
 .merchant .m-body>.vd-map{position:relative;z-index:3}
 .merchant .m-head .m-meta{margin-left:auto;text-align:right;display:flex;flex-direction:column;gap:6px;font-family:var(--data);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
@@ -10109,7 +10111,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     [].forEach.call(document.querySelectorAll('.merchant .m-sb>h4'),function(h){
       var sp=h.querySelector('span'); if(!sp||!/^random stock/i.test(h.textContent)) return;
       var n=sp.textContent.split('\u00b7')[0].trim(); if(!n) return;
-      h.textContent=n;
+      h.textContent=n; h.className='m-area';
     });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
