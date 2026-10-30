@@ -7459,7 +7459,10 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
             di.addEventListener('keydown',function(ev){ if(ev.key==='Enter') dcommit(); if(ev.key==='Escape'){ ev.stopPropagation(); ddone=true; paint(rows); } });
             di.addEventListener('blur',dcommit);
           }else if(a==='pub'){
-            publishBuild(r);
+            if(mbPage&&r.published_at&&authorName()){
+              client().then(function(c){ return c.from('builds').update({is_public:true,author_name:authorName(),published_at:new Date().toISOString()}).eq('id',r.id); })
+                .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
+            }else publishBuild(r);
           }else if(a==='unpub'){
             client().then(function(c){ return c.from('builds').update({is_public:false}).eq('id',r.id); })
               .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); listBuilds(); }).catch(function(e){ msg(cleanErr(e),1); });
