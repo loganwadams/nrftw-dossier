@@ -1387,6 +1387,12 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .merchant .mp-detail .mp-mat::after{content:"";position:absolute;left:27px;top:16px;width:57px;height:57px;box-sizing:border-box;transform:rotate(45deg);border:2px solid #cfc7ad;pointer-events:none}
 body.on-home .pgbar-logo{display:none!important}
 @media (max-width:760px){.merchant .m-body:has(>.vd-side){display:block!important}.merchant .m-body>.vd-side{width:auto;max-width:100%;margin:0 0 18px}.merchant .vd-side .vd-map{--W:100%!important}.merchant .vd-side .vd-mapbox{width:100%!important;height:auto!important}}
+@media (max-width:760px){html body.cb-shared #cbShTop #cbProfileBars.cb-gmstats .gm-cols{grid-template-columns:minmax(0,1fr)!important;gap:18px!important}
+html body.cb-shared #cbShTop .cb-gmstats section+section{border-left:0!important;padding-left:0!important}
+html body.cb-shared #cbShTop .cb-gmstats .gm-row{gap:12px}
+html #cbShTop #cbProfileBars .cb-chips.cb-split{grid-template-columns:minmax(0,1fr)!important;gap:6px 0!important;width:100%}
+html #cbShTop #cbProfileBars .cb-split-col{width:100%}
+html #cbShTop #cbProfileBars .cb-split .cb-chip{white-space:normal}}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
