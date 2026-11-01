@@ -1393,6 +1393,15 @@ html body.cb-shared #cbShTop .cb-gmstats .gm-row{gap:12px}
 html #cbShTop #cbProfileBars .cb-chips.cb-split{grid-template-columns:minmax(0,1fr)!important;gap:6px 0!important;width:100%}
 html #cbShTop #cbProfileBars .cb-split-col{width:100%}
 html #cbShTop #cbProfileBars .cb-split .cb-chip{white-space:normal}}
+@media (max-width:760px){html body.cb-shared #cbShTop{position:relative}
+html body.cb-shared #cbShTop>.cb-sh-hero{position:static!important}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns{position:absolute!important;top:12px;right:14px;margin:0!important;padding:0!important;display:flex!important;flex-direction:row!important;align-items:center;justify-content:flex-end;gap:2px!important;width:auto;z-index:5}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns #cbSharedLike{order:1}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns #cbSharedCopy{order:2}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns #cbSharedSave{order:3;position:static!important;right:auto!important;top:auto!important}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns .cb-share-msg{display:none}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns{flex-wrap:nowrap!important;white-space:nowrap}
+html body.cb-shared #cbShTop .cb-sh-hero .cb-shared-btns .cb-tool{width:auto!important;flex:none!important;margin:0!important}}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
