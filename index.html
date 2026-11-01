@@ -1386,6 +1386,7 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 .merchant .mp-detail .mp-mat b{font-family:var(--display);font-size:19px;color:#f4eedb;margin-top:2px}
 .merchant .mp-detail .mp-mat::after{content:"";position:absolute;left:27px;top:16px;width:57px;height:57px;box-sizing:border-box;transform:rotate(45deg);border:2px solid #cfc7ad;pointer-events:none}
 body.on-home .pgbar-logo{display:none!important}
+@media (max-width:760px){.merchant .m-body:has(>.vd-side){display:block!important}.merchant .m-body>.vd-side{width:auto;max-width:100%;margin:0 0 18px}.merchant .vd-side .vd-map{--W:100%!important}.merchant .vd-side .vd-mapbox{width:100%!important;height:auto!important}}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
 .merchant .m-head .m-loc{display:none!important}
@@ -10373,6 +10374,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     [].forEach.call(document.querySelectorAll('.merchant'),function(m){
       var map=m.querySelector(':scope>.m-body>.vd-side'), h=m.querySelector(':scope>.m-head'); if(!map||!h) return;
       map.style.marginTop='0';
+      if(window.innerWidth<=760) return;
       var d=map.getBoundingClientRect().top-h.getBoundingClientRect().top;
       map.style.marginTop=(-d)+'px';
     });
