@@ -10159,6 +10159,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   function align(){
     var l=document.querySelector('footer .legal-short'); if(!l||!l.offsetParent&&getComputedStyle(l).display==='none') return;
     l.style.setProperty('margin-left','0px','important');
+    if(window.innerWidth<=760) return;
     var t=null;
     if(document.body.classList.contains('on-home')) t=document.querySelector('.hero-kicker');
     else{ var hs=document.querySelectorAll('.pg-on h2,[data-page].pg-on .sect-head h2'); for(var i=0;i<hs.length;i++){ if(hs[i].getClientRects().length){ t=hs[i]; break; } } }
