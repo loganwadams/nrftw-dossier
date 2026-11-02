@@ -22,6 +22,8 @@ PAGES = {
               'Every No Rest for the Wicked item in one place: weapons, armor, shields, runes, gems, ingredients and crafting recipes, with stats, sources, crafting and upgrade materials.'),
     'vendors': ('Vendors — No Rest for the Wicked Merchants & Stock | Wicked Dossier',
                 'Every vendor in No Rest for the Wicked, what they sell, their prices and where to find them in Sacrament and Marin Village.'),
+    'bosses': ('Bosses \u2014 No Rest for the Wicked Boss Drops | Wicked Dossier',
+               'Every boss in No Rest for the Wicked with its variants and the drops decoded from the game files.'),
     'bounties': ('Bounties \u2014 No Rest for the Wicked Captain Randolph | Wicked Dossier',
                  'Every bounty Captain Randolph offers in No Rest for the Wicked, with the game\'s own briefing for each.'),
     'challenges': ('Challenges \u2014 No Rest for the Wicked Captain Randolph | Wicked Dossier',
