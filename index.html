@@ -10147,7 +10147,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     cats.querySelectorAll('.cv-on.sub-collapsed .m-subcat-collapse').forEach(function(b){ b.click(); subOpened.push(b); });
     if(h2) h2.textContent=cfg.t;
     var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp){ if(window.__pgfClear) window.__pgfClear(); if(!pf._ph) pf._ph=inp.placeholder; var ex=sugFor(cfg.t); window.__pgfEx=ex; inp.placeholder='Search '+cfg.t; inp.setAttribute('aria-label',inp.placeholder); var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter '+cfg.t.toLowerCase()+' by name or effect. Click a line to try it:',ex); } pf.hidden=(cfg.t==='Embers'); }
-    if(intro) intro.innerHTML='<strong>'+count+' items</strong>'+(cfg.note||'');
+    if(intro){ intro.innerHTML=(cfg.note||''); intro.style.display=cfg.note?'':'none'; }
     back.href='#'+cfg.back[0]; back.textContent='\u2190 '+cfg.back[1];
     document.title=cfg.t+' - Wicked Dossier \u00b7 No Rest for the Wicked';
     window.scrollTo(0,0);
@@ -10158,7 +10158,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     cats.querySelectorAll('.cv-on,.cv-solo').forEach(function(e){ e.classList.remove('cv-on','cv-solo'); });
     subOpened.forEach(function(b){ var c=b.closest('.m-cat'); if(c&&!c.classList.contains('sub-collapsed')) b.click(); }); subOpened=[];
     opened.forEach(function(b){ var h=b.closest('.m-cat-head'); if(h&&!h.classList.contains('collapsed')) b.click(); }); opened=[];
-    if(h2) h2.textContent=h2Text; if(intro) intro.innerHTML=introText;
+    if(h2) h2.textContent=h2Text; if(intro){ intro.innerHTML=introText; intro.style.display=''; }
     var pf=cat.querySelector('.pg-filter'); if(pf){ var inp=pf.querySelector('input'); if(inp&&pf._ph){ inp.placeholder=pf._ph; inp.setAttribute('aria-label',pf._ph); } window.__pgfEx=null; var hp=pf.querySelector('.pgf-help'); if(hp&&window.__pgfHelp) hp.innerHTML=window.__pgfHelp('Filter the Archive by an item&rsquo;s name, what it does, or its stats. Click a line to try it:'); pf.hidden=false; }
     back.href='#archive'; back.textContent='\u2190 Archive';
   }
