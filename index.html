@@ -666,12 +666,24 @@ header.masthead form.search{display:none!important}
 #community-builds .sect-head{flex-wrap:wrap;align-items:center;gap:14px 22px}#community-builds .sect-head .cm-tools{margin:0;flex:1 1 360px;justify-content:flex-end}
 @media (max-width:760px){.cm-grid{grid-template-columns:1fr}}
 @media (max-width:600px){.cm-grid{grid-template-columns:1fr}.cm-tools select{flex:1 1 45%}}
-.fm-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.fm-cat{display:block;padding:18px 20px;border:1px solid var(--edge);background:rgba(0,0,0,.2);text-decoration:none;transition:border-color .15s,background .15s}
-.fm-cat:hover{border-color:var(--gold-dim);background:rgba(0,0,0,.3)}
-.fm-cat h4{margin:0 0 6px;color:var(--gold);font-family:var(--data);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
-.fm-cat p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
-.fm-cat .fm-cat-count{display:block;margin-top:10px;font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8174}
+.fm-cats{display:flex;flex-direction:column;border:1px solid var(--edge)}
+.fm-cat{display:grid;grid-template-columns:48px 1fr auto;gap:18px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--edge);background:rgba(0,0,0,.18);text-decoration:none;transition:background .15s}
+.fm-cat:last-child{border-bottom:none}
+.fm-cat:nth-child(even){background:rgba(255,255,255,.015)}
+.fm-cat:hover{background:rgba(var(--gold-rgb),.06)}
+.fm-cat-icon{width:44px;height:44px;border-radius:50%;background:rgba(var(--gold-rgb),.12);border:1px solid var(--gold-dim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--data);font-size:15px;letter-spacing:.02em}
+.fm-cat-main h4{margin:0 0 4px;color:var(--gold);font-family:var(--data);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.fm-cat-main p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+.fm-cat-count{text-align:center;min-width:72px;font-family:var(--data);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8b8174}
+.fm-cat-count b{display:block;font-size:18px;color:var(--bone);font-weight:500;letter-spacing:0;margin-bottom:2px}
+.fm-cat-latest{display:none;min-width:220px;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)}
+.fm-cat-latest img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none}
+.fm-cat-latest .fm-cat-latest-av{width:30px;height:30px;border-radius:50%;background:rgba(var(--gold-rgb),.12);border:1px solid var(--gold-dim);flex:none;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--data);font-size:12px}
+.fm-cat-latest-txt{min-width:0}
+.fm-cat-latest-txt b{display:block;color:var(--bone);font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.fm-cat-latest-txt span{display:block;color:var(--muted);font-size:11.5px}
+.fm-cat-latest-txt span a{color:var(--gold-dim)}
+@media (min-width:860px){.fm-cat{grid-template-columns:48px 1fr auto auto}.fm-cat-latest{display:flex}}
 .fm-thread-list{display:flex;flex-direction:column;gap:1px;background:var(--edge);border:1px solid var(--edge);margin-top:14px}
 .fm-thread-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#0b0c0e;text-decoration:none;color:var(--bone)}
 .fm-thread-row:hover{background:rgba(255,255,255,.03)}
@@ -8121,18 +8133,44 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         return client().then(function(c){ return c.from('forum_categories').select('id,slug,name,description,sort_order').order('sort_order'); })
           .then(function(r){ if(r.error) throw r.error; cats=r.data||[]; return cats; });
       }
+      function catIcon(name){ return esc((name||'?').trim().charAt(0).toUpperCase()); }
       function renderCats(){
         if(!cats||!cats.length){ $('fmCats').innerHTML='<p class="ip-loading">No categories yet.</p>'; return; }
         $('fmCats').innerHTML=cats.map(function(c){
-          return '<a class="fm-cat" href="#" data-id="'+c.id+'"><h4>'+esc(c.name)+'</h4><p>'+esc(c.description||'')+'</p><span class="fm-cat-count" data-count="'+c.id+'">&hellip;</span></a>';
+          return '<a class="fm-cat" href="#" data-id="'+c.id+'">'
+            +'<span class="fm-cat-icon">'+catIcon(c.name)+'</span>'
+            +'<span class="fm-cat-main"><h4>'+esc(c.name)+'</h4><p>'+esc(c.description||'')+'</p></span>'
+            +'<span class="fm-cat-count" data-count="'+c.id+'"><b>&hellip;</b>posts</span>'
+            +'<span class="fm-cat-latest" data-latest="'+c.id+'"></span>'
+            +'</a>';
         }).join('');
         $('fmCats').querySelectorAll('.fm-cat').forEach(function(a){
           a.addEventListener('click',function(e){ e.preventDefault(); openCat(cats.filter(function(c){ return String(c.id)===a.dataset.id; })[0]); });
         });
-        client().then(function(c){ return c.from('forum_threads').select('category_id'); }).then(function(r){
-          var counts={}; (r.data||[]).forEach(function(t){ counts[t.category_id]=(counts[t.category_id]||0)+1; });
-          cats.forEach(function(c){ var el=$('fmCats').querySelector('[data-count="'+c.id+'"]'); if(el) el.textContent=(counts[c.id]||0)+' thread'+(counts[c.id]===1?'':'s'); });
-        }).catch(function(){});
+        client().then(function(c){ return c.from('forum_threads').select('id,category_id,title,author_id,last_activity_at,reply_count').order('last_activity_at',{ascending:false}); })
+          .then(function(r){
+            var rows=r.data||[];
+            var postCounts={}, latest={};
+            rows.forEach(function(t){
+              postCounts[t.category_id]=(postCounts[t.category_id]||0)+1+(t.reply_count||0);
+              if(!latest[t.category_id]) latest[t.category_id]=t;
+            });
+            cats.forEach(function(c){
+              var el=$('fmCats').querySelector('[data-count="'+c.id+'"]');
+              if(el) el.innerHTML='<b>'+(postCounts[c.id]||0)+'</b>post'+((postCounts[c.id]||0)===1?'':'s');
+            });
+            var latestThreads=Object.keys(latest).map(function(k){ return latest[k]; });
+            return names(latestThreads.map(function(t){ return t.author_id; })).then(function(){
+              cats.forEach(function(c){
+                var t=latest[c.id], el=$('fmCats').querySelector('[data-latest="'+c.id+'"]');
+                if(!el) return;
+                if(!t){ el.innerHTML=''; return; }
+                var w=who(t.author_id);
+                el.innerHTML=(w.avatar?'<img src="'+esc(w.avatar)+'" alt="">':'<span class="fm-cat-latest-av">'+catIcon(w.name)+'</span>')
+                  +'<span class="fm-cat-latest-txt"><b>'+esc(t.title)+'</b><span>Posted by <a href="#">'+esc(w.name)+'</a> '+timeAgo(t.last_activity_at)+'</span></span>';
+              });
+            });
+          }).catch(function(){});
       }
 
       function openCat(cat){
