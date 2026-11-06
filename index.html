@@ -666,6 +666,27 @@ header.masthead form.search{display:none!important}
 #community-builds .sect-head{flex-wrap:wrap;align-items:center;gap:14px 22px}#community-builds .sect-head .cm-tools{margin:0;flex:1 1 360px;justify-content:flex-end}
 @media (max-width:760px){.cm-grid{grid-template-columns:1fr}}
 @media (max-width:600px){.cm-grid{grid-template-columns:1fr}.cm-tools select{flex:1 1 45%}}
+.fm-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.fm-cat{display:block;padding:18px 20px;border:1px solid var(--edge);background:rgba(0,0,0,.2);text-decoration:none;transition:border-color .15s,background .15s}
+.fm-cat:hover{border-color:var(--gold-dim);background:rgba(0,0,0,.3)}
+.fm-cat h4{margin:0 0 6px;color:var(--gold);font-family:var(--data);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.fm-cat p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+.fm-cat .fm-cat-count{display:block;margin-top:10px;font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8174}
+.fm-thread-list{display:flex;flex-direction:column;gap:1px;background:var(--edge);border:1px solid var(--edge);margin-top:14px}
+.fm-thread-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#0b0c0e;text-decoration:none;color:var(--bone)}
+.fm-thread-row:hover{background:rgba(255,255,255,.03)}
+.fm-thread-row .fm-tr-title{font-size:15px;color:var(--bone)}
+.fm-thread-row .fm-tr-meta{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174;white-space:nowrap}
+.fm-post{padding:16px 18px;border:1px solid var(--edge);background:rgba(0,0,0,.2);margin-bottom:12px}
+.fm-post .fm-p-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b8174}
+.fm-post .fm-p-head b{color:var(--gold);font-weight:600;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13.5px}
+.fm-post .fm-p-body{color:var(--bone);font-size:14.5px;line-height:1.65;white-space:pre-wrap}
+.fm-post .fm-p-del{margin-left:auto;background:none;border:0;color:#8b8174;cursor:pointer;font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
+.fm-post .fm-p-del:hover{color:#c75c5c}
+.fm-op{background:rgba(var(--gold-rgb),.06)}
+.fm-reply textarea,.fm-new textarea,.fm-new input[type=text]{display:block;width:100%;box-sizing:border-box;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);font-family:var(--body);font-size:14px;padding:9px 10px}
+.fm-reply textarea{min-height:90px;resize:vertical;margin-bottom:10px}
+.fm-new textarea{min-height:160px;resize:vertical}
 </style><!-- /IP:css -->
 <script>document.addEventListener('DOMContentLoaded',function(){ document.querySelectorAll('.src-item[data-src]').forEach(function(el){ el.innerHTML=WDCARD.src(el.getAttribute('data-src')); }); });</script>
 <!-- SRCKEY:css --><style>
@@ -4387,6 +4408,32 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
     </div>
   </section>
 <!-- /COMMUNITY BUILDS -->
+<!-- FORUM -->
+  <section id="forum">
+    <div class="sect-head"><h2>Forum</h2></div>
+    <div id="fmCats" class="fm-cats"><p class="ip-loading">Loading&hellip;</p></div>
+    <div id="fmThreads" class="fm-threads" hidden>
+      <button type="button" class="cb-tool" id="fmBackCats">&larr; Back to Forum</button>
+      <div class="sect-head"><h3 id="fmCatTitle"></h3><button type="button" class="cb-tool primary" id="fmNewThreadBtn">New Thread</button></div>
+      <div id="fmThreadList" class="fm-thread-list"></div>
+    </div>
+    <div id="fmThread" class="fm-thread" hidden>
+      <button type="button" class="cb-tool" id="fmBackThreads">&larr; Back</button>
+      <div id="fmThreadHead" class="fm-post fm-op"></div>
+      <div id="fmPosts" class="fm-posts"></div>
+      <form id="fmReplyForm" class="fm-reply" hidden><textarea id="fmReplyBody" maxlength="10000" placeholder="Write a reply&hellip;" required></textarea><div class="ep-actions"><button type="submit" class="cb-tool primary">Reply</button><span class="cb-mmsg" id="fmReplyMsg" role="status"></span></div></form>
+      <p id="fmReplySignIn" class="ip-loading" hidden><a href="#" id="fmReplySignInLink">Log in</a> to reply.</p>
+    </div>
+    <div id="fmNewThread" class="fm-new" hidden>
+      <button type="button" class="cb-tool" id="fmNewCancel">&larr; Cancel</button>
+      <form id="fmNewForm">
+        <label class="cb-pub-l">Title<input type="text" id="fmNewTitle" maxlength="150" required></label>
+        <label class="cb-pub-l">Message<textarea id="fmNewBody" maxlength="10000" required></textarea></label>
+        <div class="ep-actions"><button type="submit" class="cb-tool primary">Post thread</button><span class="cb-mmsg" id="fmNewMsg" role="status"></span></div>
+      </form>
+    </div>
+  </section>
+<!-- /FORUM -->
 <!-- EDIT PROFILE -->
   <section id="edit-profile">
     <div class="sect-head"><h2>Edit Profile</h2></div>
@@ -7465,7 +7512,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       window.__cbAcct={
         signIn:signIn, chooseSignIn:chooseSignIn, signOut:signOut, openList:function(){ listBuilds(); },
         openPrivacy:function(){ $('cbAcctPriv').click(); }, editProfile:function(){ editProfile(); }, openProfile:function(){ loadMyProfile().then(function(p){ var nm=p&&p.display_name; if(!nm){ editProfile(); return; } if(window.__pgGoto&&window.__cmGoProfile){ window.__pgGoto('community-builds'); window.__cmGoProfile(nm); } else location.href='/profile/'+encodeURIComponent(nm); }); },
-        onUser:function(f){ listeners.push(f); f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:pickAvatar()}:null); }
+        onUser:function(f){ listeners.push(f); f(user?{name:(myProfile&&myProfile.display_name)||niceName(user),avatar:pickAvatar()}:null); },
+        client:client, userId:function(){ return user&&user.id||null; }
       };
 
       // Save a shared build straight into the signed-in user's My Builds.
@@ -8030,6 +8078,172 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         if(sec.classList.contains('pg-on')){ load(false); syncHash(); }
         listeners.push(function(){ if(rows){ loadLiked().then(render); } });
       })();
+    })();
+
+    // ---- Forum. Reuses the exact same Supabase client/session as the account system above
+    // (never creates its own GoTrue client - two clients with detectSessionInUrl on the same
+    // page can race and break the Discord sign-in redirect).
+    (function forum(){
+      var $=function(i){ return document.getElementById(i); };
+      var sec=$('forum'); if(!sec||!window.__cbAcct) return;
+      var client=window.__cbAcct.client;
+      var user=null, cats=null, profCache={};
+      window.__cbAcct.onUser(function(u){ user=u; });
+      function names(ids){
+        var need=ids.filter(function(id){ return id&&!profCache[id]; });
+        if(!need.length) return Promise.resolve();
+        return client().then(function(c){ return c.from('profiles').select('user_id,display_name,avatar_url').in('user_id',need); })
+          .then(function(r){ (r.data||[]).forEach(function(p){ profCache[p.user_id]={name:p.display_name||'Wanderer',avatar:p.avatar_url||''}; }); })
+          .catch(function(){});
+      }
+      function who(id){ return profCache[id]||{name:'Wanderer',avatar:''}; }
+      function timeAgo(iso){
+        var s=(Date.now()-new Date(iso).getTime())/1000;
+        if(s<60) return 'just now';
+        if(s<3600) return Math.floor(s/60)+'m ago';
+        if(s<86400) return Math.floor(s/3600)+'h ago';
+        if(s<2592000) return Math.floor(s/86400)+'d ago';
+        return new Date(iso).toLocaleDateString();
+      }
+      function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+      var view='cats', curCat=null, curThread=null;
+      function showView(v){
+        view=v;
+        $('fmCats').hidden=v!=='cats';
+        $('fmThreads').hidden=v!=='threads';
+        $('fmThread').hidden=v!=='thread';
+        $('fmNewThread').hidden=v!=='new';
+        window.scrollTo(0,0);
+      }
+
+      function loadCats(){
+        return client().then(function(c){ return c.from('forum_categories').select('id,slug,name,description,sort_order').order('sort_order'); })
+          .then(function(r){ if(r.error) throw r.error; cats=r.data||[]; return cats; });
+      }
+      function renderCats(){
+        if(!cats||!cats.length){ $('fmCats').innerHTML='<p class="ip-loading">No categories yet.</p>'; return; }
+        $('fmCats').innerHTML=cats.map(function(c){
+          return '<a class="fm-cat" href="#" data-id="'+c.id+'"><h4>'+esc(c.name)+'</h4><p>'+esc(c.description||'')+'</p><span class="fm-cat-count" data-count="'+c.id+'">&hellip;</span></a>';
+        }).join('');
+        $('fmCats').querySelectorAll('.fm-cat').forEach(function(a){
+          a.addEventListener('click',function(e){ e.preventDefault(); openCat(cats.filter(function(c){ return String(c.id)===a.dataset.id; })[0]); });
+        });
+        client().then(function(c){ return c.from('forum_threads').select('category_id'); }).then(function(r){
+          var counts={}; (r.data||[]).forEach(function(t){ counts[t.category_id]=(counts[t.category_id]||0)+1; });
+          cats.forEach(function(c){ var el=$('fmCats').querySelector('[data-count="'+c.id+'"]'); if(el) el.textContent=(counts[c.id]||0)+' thread'+(counts[c.id]===1?'':'s'); });
+        }).catch(function(){});
+      }
+
+      function openCat(cat){
+        if(!cat) return;
+        curCat=cat;
+        $('fmCatTitle').textContent=cat.name;
+        $('fmThreadList').innerHTML='<p class="ip-loading">Loading threads&hellip;</p>';
+        showView('threads');
+        client().then(function(c){ return c.from('forum_threads').select('id,title,author_id,created_at,last_activity_at,reply_count').eq('category_id',cat.id).order('last_activity_at',{ascending:false}); })
+          .then(function(r){
+            if(r.error) throw r.error;
+            var rows=r.data||[];
+            if(!rows.length){ $('fmThreadList').innerHTML='<p class="ip-loading">No threads yet &mdash; start the first one.</p>'; return; }
+            return names(rows.map(function(t){ return t.author_id; })).then(function(){
+              $('fmThreadList').innerHTML=rows.map(function(t){
+                var w=who(t.author_id);
+                return '<a class="fm-thread-row" href="#" data-id="'+t.id+'"><span class="fm-tr-title">'+esc(t.title)+'</span><span class="fm-tr-meta">'+esc(w.name)+' &middot; '+(t.reply_count||0)+' repl'+(t.reply_count===1?'y':'ies')+' &middot; '+timeAgo(t.last_activity_at)+'</span></a>';
+              }).join('');
+              $('fmThreadList').querySelectorAll('.fm-thread-row').forEach(function(a){
+                a.addEventListener('click',function(e){ e.preventDefault(); openThread(rows.filter(function(t){ return t.id===a.dataset.id; })[0]); });
+              });
+            });
+          }).catch(function(e){ $('fmThreadList').innerHTML='<p class="ip-error">Could not load threads ('+esc(e&&e.message||e)+').</p>'; });
+      }
+
+      function postHtml(authorId,createdAt,body,canDel,delId){
+        var w=who(authorId);
+        return '<div class="fm-p-head">'+(w.avatar?'<img src="'+esc(w.avatar)+'" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover">':'')+'<b>'+esc(w.name)+'</b><span>'+timeAgo(createdAt)+'</span>'+(canDel?'<button type="button" class="fm-p-del" data-del="'+esc(delId)+'">Delete</button>':'')+'</div><div class="fm-p-body">'+esc(body)+'</div>';
+      }
+
+      function openThread(t){
+        if(!t) return;
+        curThread=t;
+        $('fmThreadHead').innerHTML='<p class="ip-loading">Loading&hellip;</p>';
+        $('fmPosts').innerHTML='';
+        showView('thread');
+        client().then(function(c){ return c.from('forum_threads').select('id,title,body,author_id,created_at').eq('id',t.id).maybeSingle(); })
+          .then(function(r){
+            if(r.error||!r.data) throw (r.error||new Error('Thread not found'));
+            var th=r.data;
+            return names([th.author_id]).then(function(){
+              $('fmThreadHead').innerHTML='<h3 style="margin:0 0 10px;color:var(--bone);font-size:19px">'+esc(th.title)+'</h3>'+postHtml(th.author_id,th.created_at,th.body,user&&th.author_id===myId(),th.id+':thread');
+              wireDelButtons($('fmThreadHead'));
+            });
+          })
+          .then(function(){ return client().then(function(c){ return c.from('forum_posts').select('id,body,author_id,created_at').eq('thread_id',t.id).order('created_at'); }); })
+          .then(function(r){
+            if(r.error) throw r.error;
+            var rows=r.data||[];
+            return names(rows.map(function(p){ return p.author_id; })).then(function(){
+              $('fmPosts').innerHTML=rows.map(function(p){ return '<div class="fm-post">'+postHtml(p.author_id,p.created_at,p.body,user&&p.author_id===myId(),p.id+':post')+'</div>'; }).join('');
+              wireDelButtons($('fmPosts'));
+            });
+          })
+          .then(function(){
+            $('fmReplyForm').hidden=!user;
+            $('fmReplySignIn').hidden=!!user;
+          })
+          .catch(function(e){ $('fmThreadHead').innerHTML='<p class="ip-error">Could not load thread ('+esc(e&&e.message||e)+').</p>'; });
+      }
+
+      function myId(){ return window.__cbAcct.userId(); }
+
+      function wireDelButtons(root){
+        root.querySelectorAll('[data-del]').forEach(function(btn){
+          btn.addEventListener('click',function(){
+            if(!window.siteConfirm){ doDel(btn.dataset.del); return; }
+            window.siteConfirm('Delete this?','This cannot be undone.','Delete').then(function(y){ if(y) doDel(btn.dataset.del); });
+          });
+        });
+      }
+      function doDel(key){
+        var parts=key.split(':'), id=parts[0], kind=parts[1];
+        client().then(function(c){ return kind==='thread'?c.from('forum_threads').delete().eq('id',id):c.from('forum_posts').delete().eq('id',id); })
+          .then(function(r){ if(r.error) throw r.error; if(kind==='thread') openCat(curCat); else openThread(curThread); })
+          .catch(function(){});
+      }
+
+      $('fmBackCats').addEventListener('click',function(){ showView('cats'); });
+      $('fmBackThreads').addEventListener('click',function(){ openCat(curCat); });
+      $('fmNewCancel').addEventListener('click',function(){ showView('threads'); });
+      $('fmNewThreadBtn').addEventListener('click',function(){
+        if(!user){ if(window.__cbAcct) window.__cbAcct.chooseSignIn(); return; }
+        $('fmNewTitle').value=''; $('fmNewBody').value=''; $('fmNewMsg').textContent='';
+        showView('new');
+      });
+      $('fmReplySignInLink').addEventListener('click',function(e){ e.preventDefault(); if(window.__cbAcct) window.__cbAcct.chooseSignIn(); });
+
+      $('fmNewForm').addEventListener('submit',function(e){
+        e.preventDefault();
+        var title=$('fmNewTitle').value.trim(), body=$('fmNewBody').value.trim();
+        if(!title||!body) return;
+        $('fmNewMsg').textContent='Posting…'; $('fmNewMsg').className='cb-mmsg';
+        client().then(function(c){ return c.from('forum_threads').insert({category_id:curCat.id,title:title,body:body}).select('id,title,author_id,created_at,last_activity_at,reply_count').single(); })
+          .then(function(r){ if(r.error) throw r.error; showView('threads'); openThread(r.data); })
+          .catch(function(e2){ $('fmNewMsg').textContent=(e2&&e2.message)||'Could not post.'; $('fmNewMsg').className='cb-mmsg err'; });
+      });
+
+      $('fmReplyForm').addEventListener('submit',function(e){
+        e.preventDefault();
+        var body=$('fmReplyBody').value.trim(); if(!body) return;
+        $('fmReplyMsg').textContent='Posting…'; $('fmReplyMsg').className='cb-mmsg';
+        client().then(function(c){ return c.from('forum_posts').insert({thread_id:curThread.id,body:body}); })
+          .then(function(r){ if(r.error) throw r.error; $('fmReplyBody').value=''; $('fmReplyMsg').textContent=''; openThread(curThread); })
+          .catch(function(e2){ $('fmReplyMsg').textContent=(e2&&e2.message)||'Could not post.'; $('fmReplyMsg').className='cb-mmsg err'; });
+      });
+
+      var loaded=false;
+      function ensureLoaded(){ if(loaded) return; loaded=true; loadCats().then(renderCats).catch(function(e){ $('fmCats').innerHTML='<p class="ip-error">Could not load the forum ('+esc(e&&e.message||e)+').</p>'; }); }
+      new MutationObserver(function(){ if(sec.classList.contains('pg-on')) ensureLoaded(); }).observe(sec,{attributes:true,attributeFilter:['class']});
+      if(sec.classList.contains('pg-on')) ensureLoaded();
     })();
 
     loadCards().then(restoreBuild);
@@ -8781,6 +8995,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     {id:'vid',   ids:['videos']},
     {id:'cerim', ids:['cerim-builder']},
     {id:'builds', ids:['community-builds']},
+    {id:'forum', ids:['forum']},
     {id:'profile', ids:['edit-profile']},
     {id:'mybuilds', ids:['my-builds']},
     {id:'itempage', ids:['item-page']}
@@ -8803,6 +9018,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     {id:'armory',     num:'',   label:'Armory', group:'armory', target:'armory', tag:['armory'], hidden:true},
     {id:'videos',       num:'08', label:'Media', group:'vid', target:'videos', tag:['videos'], cls:'pg-videos', aria:'Media'},
     {id:'community-builds', num:'09', label:'Community Builds', group:'builds', target:'community-builds', tag:['community-builds'], cls:'pg-videos', aria:'Community Builds'},
+    {id:'forum', num:'', label:'Forum', group:'forum', target:'forum', tag:['forum'], cls:'pg-videos', aria:'Forum'},
     {id:'cerim-builder', num:'10', label:'Cerim Builder', group:'cerim', target:'cerim-builder', tag:['cerim-builder'], cls:'pg-cerim', aria:'Cerim Builder'},
     {id:'edit-profile', num:'', label:'Edit Profile', group:'profile', target:'edit-profile', tag:['edit-profile'], hidden:true},
     {id:'my-builds', num:'', label:'My Builds', group:'mybuilds', target:'my-builds', tag:['my-builds'], hidden:true},
@@ -8813,7 +9029,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // Every top-level section gets a clean path. A group's first chapter is the bare path
   // (/factions, /items = Infusions); later chapters in a shared page hang a hash off it
   // (/items#enchantments). Old /#factions and /#infusions links still resolve via the hash.
-  var CLEAN_PATHS={world:'/factions', gear:'/items', enchant:'/archive/enchantments', archive:'/archive', vend:'/vendors', bosses:'/bosses', bounties:'/bounties', challenges:'/challenges', cat:'/trove', recipes:'/archive/crafting-recipes', armory:'/archive/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds'};
+  var CLEAN_PATHS={world:'/factions', gear:'/items', enchant:'/archive/enchantments', archive:'/archive', vend:'/vendors', bosses:'/bosses', bounties:'/bounties', challenges:'/challenges', cat:'/trove', recipes:'/archive/crafting-recipes', armory:'/archive/armory', vid:'/media', cerim:'/cerim-builder', builds:'/builds', forum:'/forum'};
   var PATH_TO_GROUP={}; for(var cpk in CLEAN_PATHS) PATH_TO_GROUP[CLEAN_PATHS[cpk]]=cpk; PATH_TO_GROUP['/enchantments']='enchant'; PATH_TO_GROUP['/armory']='armory'; PATH_TO_GROUP['/crafting-recipes']='recipes';
   // Every URL this router writes is root-absolute ("/", "/cerim-builder", ...), which only
   // resolves correctly when the page is actually served from the domain root - true on the
