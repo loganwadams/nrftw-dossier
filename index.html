@@ -693,6 +693,7 @@ header.masthead form.search{display:none!important}
 .fm-post .fm-p-del{margin-left:auto;background:none;border:0;color:#8b8174;cursor:pointer;font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
 .fm-post .fm-p-del:hover{color:#c75c5c}
 .fm-op{background:rgba(var(--gold-rgb),.06)}
+#fmThreadTitle{margin:14px 0 22px;padding-bottom:12px;border-bottom:1px solid var(--edge)}
 .fm-reply textarea,.fm-new textarea,.fm-new input[type=text]{display:block;width:100%;box-sizing:border-box;background:rgba(0,0,0,.35);border:1px solid var(--edge);color:var(--bone);font-family:var(--body);font-size:14px;padding:9px 10px}
 .fm-reply textarea{min-height:90px;resize:vertical;margin-bottom:10px}
 .fm-new textarea{min-height:160px;resize:vertical}
@@ -4429,7 +4430,8 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
       <div id="fmThreadList" class="fm-thread-list"></div>
     </div>
     <div id="fmThread" class="fm-thread" hidden>
-      <button type="button" class="cb-tool" id="fmBackThreads">&larr; Back</button>
+      <a href="#" id="fmBackThreads" class="sect-back">&larr; Back</a>
+      <h2 id="fmThreadTitle"></h2>
       <div id="fmThreadHead" class="fm-post fm-op"></div>
       <div id="fmPosts" class="fm-posts"></div>
       <form id="fmReplyForm" class="fm-reply" hidden><textarea id="fmReplyBody" maxlength="10000" placeholder="Write a reply&hellip;" required></textarea><div class="ep-actions"><button type="submit" class="cb-tool primary">Reply</button><span class="cb-mmsg" id="fmReplyMsg" role="status"></span></div></form>
@@ -8207,18 +8209,24 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         return '<div class="fm-p-head">'+(w.avatar?'<img src="'+esc(w.avatar)+'" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover">':'')+'<b>'+esc(w.name)+'</b><span>'+timeAgo(createdAt)+'</span>'+(canDel?'<button type="button" class="fm-p-del" data-del="'+esc(delId)+'">Delete</button>':'')+'</div><div class="fm-p-body">'+esc(body)+'</div>';
       }
 
-      function openThread(t){
+      function openThread(t,opts){
         if(!t) return;
         curThread=t;
         $('fmThreadHead').innerHTML='<p class="ip-loading">Loading&hellip;</p>';
+        $('fmThreadTitle').textContent='';
         $('fmPosts').innerHTML='';
         showView('thread');
+        if(curCat) $('fmBackThreads').textContent='← Back to '+curCat.name;
+        if((!opts||opts.push!==false)&&curCat){
+          try{ if(window.__wdCleanUrls&&history.pushState) history.pushState(null,'','/forum/'+encodeURIComponent(curCat.slug)+'/'+encodeURIComponent(t.id)); }catch(e){}
+        }
         client().then(function(c){ return c.from('forum_threads').select('id,title,body,author_id,created_at').eq('id',t.id).maybeSingle(); })
           .then(function(r){
             if(r.error||!r.data) throw (r.error||new Error('Thread not found'));
             var th=r.data;
             return names([th.author_id]).then(function(){
-              $('fmThreadHead').innerHTML='<h3 style="margin:0 0 10px;color:var(--bone);font-size:19px">'+esc(th.title)+'</h3>'+postHtml(th.author_id,th.created_at,th.body,user&&th.author_id===myId(),th.id+':thread');
+              $('fmThreadTitle').textContent=th.title;
+              $('fmThreadHead').innerHTML=postHtml(th.author_id,th.created_at,th.body,user&&th.author_id===myId(),th.id+':thread');
               wireDelButtons($('fmThreadHead'));
             });
           })
@@ -8251,7 +8259,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       function doDel(key){
         var parts=key.split(':'), id=parts[0], kind=parts[1];
         client().then(function(c){ return kind==='thread'?c.from('forum_threads').delete().eq('id',id):c.from('forum_posts').delete().eq('id',id); })
-          .then(function(r){ if(r.error) throw r.error; if(kind==='thread') openCat(curCat,{push:false}); else openThread(curThread); })
+          .then(function(r){ if(r.error) throw r.error; if(kind==='thread') openCat(curCat,{push:false}); else openThread(curThread,{push:false}); })
           .catch(function(){});
       }
 
@@ -8260,7 +8268,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         showView('cats');
         try{ if(window.__wdCleanUrls&&history.pushState) history.pushState(null,'','/forum'); }catch(err){}
       });
-      $('fmBackThreads').addEventListener('click',function(){ openCat(curCat,{push:false}); });
+      $('fmBackThreads').addEventListener('click',function(e){ e.preventDefault(); openCat(curCat,{push:true}); });
       $('fmNewCancel').addEventListener('click',function(){ showView('threads'); });
       $('fmNewThreadBtn').addEventListener('click',function(){
         if(!user){ if(window.__cbAcct) window.__cbAcct.chooseSignIn(); return; }
@@ -8284,7 +8292,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         var body=$('fmReplyBody').value.trim(); if(!body) return;
         $('fmReplyMsg').textContent='Posting…'; $('fmReplyMsg').className='cb-mmsg';
         client().then(function(c){ return c.from('forum_posts').insert({thread_id:curThread.id,body:body}); })
-          .then(function(r){ if(r.error) throw r.error; $('fmReplyBody').value=''; $('fmReplyMsg').textContent=''; openThread(curThread); })
+          .then(function(r){ if(r.error) throw r.error; $('fmReplyBody').value=''; $('fmReplyMsg').textContent=''; openThread(curThread,{push:false}); })
           .catch(function(e2){ $('fmReplyMsg').textContent=(e2&&e2.message)||'Could not post.'; $('fmReplyMsg').className='cb-mmsg err'; });
       });
 
@@ -8298,6 +8306,21 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
           if(!cats) return false;
           var cat=cats.filter(function(c){ return c.slug===slug; })[0];
           if(cat) openCat(cat,{push:false}); else showView('cats');
+          return true;
+        }
+        if(attempt()) return;
+        ensureLoaded();
+        var iv=setInterval(function(){ if(attempt()) clearInterval(iv); },120);
+        setTimeout(function(){ clearInterval(iv); },5000);
+      };
+
+      window.__fmOpenThreadUrl=function(slug,threadId){
+        function attempt(){
+          if(!cats) return false;
+          var cat=cats.filter(function(c){ return c.slug===slug; })[0];
+          if(!cat){ showView('cats'); return true; }
+          curCat=cat;
+          openThread({id:threadId},{push:false});
           return true;
         }
         if(attempt()) return;
@@ -9102,7 +9125,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p) || /^\/archive\/armory\/[^\/]+$/.test(p) || /^\/forum\/[^\/]+$/.test(p);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p) || /^\/archive\/armory\/[^\/]+$/.test(p) || /^\/forum\/[^\/]+(\/[^\/]+)?$/.test(p);
   })();
   window.__wdCleanUrls=CAN_USE_CLEAN_URLS;
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
@@ -9550,6 +9573,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     // Author profile pages: /profile/<username> (and the older #u/<username> hash form).
     var pm=/^\/profile\/([^\/]+)\/?$/.exec(location.pathname);
     if(rawHash.indexOf('u/')===0||(pm&&!rawHash)){ show('builds','community-builds'); if(window.__cmProfile) window.__cmProfile(); window.scrollTo(0,0); return; }
+    // Forum thread deep link: /forum/<slug>/<threadId>
+    var fmt=/^\/forum\/([^\/]+)\/([^\/]+)\/?$/.exec(location.pathname);
+    if(fmt){ show('forum','forum'); if(window.__fmOpenThreadUrl) window.__fmOpenThreadUrl(decodeURIComponent(fmt[1]),decodeURIComponent(fmt[2])); window.scrollTo(0,0); return; }
     // Forum category deep link: /forum/<slug>
     var fmm=/^\/forum\/([^\/]+)\/?$/.exec(location.pathname);
     if(fmm){ show('forum','forum'); if(window.__fmOpenSlug) window.__fmOpenSlug(decodeURIComponent(fmm[1])); window.scrollTo(0,0); return; }
