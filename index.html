@@ -670,7 +670,8 @@ header.masthead form.search{display:none!important}
 .fm-cat{display:grid;grid-template-columns:1fr auto auto;gap:18px;align-items:center;padding:16px 22px;border:0;background:url(img/ui-border.webp) var(--ul-x,50%) 0/var(--ul-s,100%) 4px no-repeat,url(img/ui-border.webp) var(--ul-x,50%) 100%/var(--ul-s,100%) 4px no-repeat,url(img/ui-border-v.webp) 0 var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,url(img/ui-border-v.webp) 100% var(--ul-x,50%)/4px var(--ul-s,100%) no-repeat,rgba(2,2,3,.88) url(img/frame/bg-big-gray.webp) var(--ul-x,50%) var(--ul-x,50%)/2400px auto no-repeat;text-decoration:none;transition:box-shadow .15s}
 .fm-cat-main h4{margin:0 0 4px;font:400 15px/1.2 var(--display);letter-spacing:.05em;text-transform:none;color:var(--gold)}
 .fm-cat-main p{margin:0;color:#fff;font-size:13.5px;line-height:1.5}
-.fm-cat-count{text-align:center;min-width:64px;font-family:var(--data);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8b8174}
+.fm-cat-counts{display:flex;align-items:center;gap:22px}
+.fm-cat-count{text-align:center;min-width:56px;font-family:var(--data);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8b8174}
 .fm-cat-count b{display:block;font-size:19px;color:var(--bone);font-weight:400;letter-spacing:0;margin-bottom:3px;font-family:var(--body)}
 .fm-cat-latest{display:none;min-width:220px;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);padding-left:20px;border-left:1px solid rgba(var(--gold-rgb),.14)}
 .fm-cat-latest img{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:none}
@@ -8138,7 +8139,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         $('fmCats').innerHTML=cats.map(function(c){
           return '<a class="fm-cat" href="#" data-id="'+c.id+'">'
             +'<span class="fm-cat-main"><h4>'+esc(c.name)+'</h4><p>'+esc(c.description||'')+'</p></span>'
-            +'<span class="fm-cat-count" data-count="'+c.id+'"><b>&hellip;</b>posts</span>'
+            +'<span class="fm-cat-counts" data-count="'+c.id+'"><span class="fm-cat-count"><b>&hellip;</b>threads</span><span class="fm-cat-count"><b>&hellip;</b>replies</span></span>'
             +'<span class="fm-cat-latest" data-latest="'+c.id+'"></span>'
             +'</a>';
         }).join('');
@@ -8148,14 +8149,18 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         client().then(function(c){ return c.from('forum_threads').select('id,category_id,title,author_id,last_activity_at,reply_count').order('last_activity_at',{ascending:false}); })
           .then(function(r){
             var rows=r.data||[];
-            var postCounts={}, latest={};
+            var threadCounts={}, replyCounts={}, latest={};
             rows.forEach(function(t){
-              postCounts[t.category_id]=(postCounts[t.category_id]||0)+1+(t.reply_count||0);
+              threadCounts[t.category_id]=(threadCounts[t.category_id]||0)+1;
+              replyCounts[t.category_id]=(replyCounts[t.category_id]||0)+(t.reply_count||0);
               if(!latest[t.category_id]) latest[t.category_id]=t;
             });
             cats.forEach(function(c){
               var el=$('fmCats').querySelector('[data-count="'+c.id+'"]');
-              if(el) el.innerHTML='<b>'+(postCounts[c.id]||0)+'</b>post'+((postCounts[c.id]||0)===1?'':'s');
+              if(el){
+                var th=threadCounts[c.id]||0, rp=replyCounts[c.id]||0;
+                el.innerHTML='<span class="fm-cat-count"><b>'+th+'</b>thread'+(th===1?'':'s')+'</span><span class="fm-cat-count"><b>'+rp+'</b>repl'+(rp===1?'y':'ies')+'</span>';
+              }
             });
             var latestThreads=Object.keys(latest).map(function(k){ return latest[k]; });
             return names(latestThreads.map(function(t){ return t.author_id; })).then(function(){
