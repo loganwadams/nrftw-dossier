@@ -4418,11 +4418,11 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
 <!-- /COMMUNITY BUILDS -->
 <!-- FORUM -->
   <section id="forum">
-    <div class="sect-head"><h2>Forum</h2></div>
+    <div class="sect-head" id="fmHead"><h2>Forum</h2></div>
     <div id="fmCats" class="fm-cats"><p class="ip-loading">Loading&hellip;</p></div>
     <div id="fmThreads" class="fm-threads" hidden>
-      <button type="button" class="cb-tool" id="fmBackCats">&larr; Back to Forum</button>
-      <div class="sect-head"><h3 id="fmCatTitle"></h3><button type="button" class="cb-tool primary" id="fmNewThreadBtn">New Thread</button></div>
+      <a href="#" id="fmBackCats" class="sect-back">&larr; Back to Forum</a>
+      <div class="sect-head"><h2 id="fmCatTitle"></h2><button type="button" class="cb-tool primary" id="fmNewThreadBtn">New Thread</button></div>
       <div id="fmThreadList" class="fm-thread-list"></div>
     </div>
     <div id="fmThread" class="fm-thread" hidden>
@@ -8118,6 +8118,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       var view='cats', curCat=null, curThread=null;
       function showView(v){
         view=v;
+        $('fmHead').hidden=v!=='cats';
         $('fmCats').hidden=v!=='cats';
         $('fmThreads').hidden=v!=='threads';
         $('fmThread').hidden=v!=='thread';
@@ -8168,12 +8169,15 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
           }).catch(function(){});
       }
 
-      function openCat(cat){
+      function openCat(cat,opts){
         if(!cat) return;
         curCat=cat;
         $('fmCatTitle').textContent=cat.name;
         $('fmThreadList').innerHTML='<p class="ip-loading">Loading threads&hellip;</p>';
         showView('threads');
+        if(!opts||opts.push!==false){
+          try{ if(window.__wdCleanUrls&&history.pushState) history.pushState(null,'','/forum/'+encodeURIComponent(cat.slug)); }catch(e){}
+        }
         client().then(function(c){ return c.from('forum_threads').select('id,title,author_id,created_at,last_activity_at,reply_count').eq('category_id',cat.id).order('last_activity_at',{ascending:false}); })
           .then(function(r){
             if(r.error) throw r.error;
@@ -8240,12 +8244,16 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       function doDel(key){
         var parts=key.split(':'), id=parts[0], kind=parts[1];
         client().then(function(c){ return kind==='thread'?c.from('forum_threads').delete().eq('id',id):c.from('forum_posts').delete().eq('id',id); })
-          .then(function(r){ if(r.error) throw r.error; if(kind==='thread') openCat(curCat); else openThread(curThread); })
+          .then(function(r){ if(r.error) throw r.error; if(kind==='thread') openCat(curCat,{push:false}); else openThread(curThread); })
           .catch(function(){});
       }
 
-      $('fmBackCats').addEventListener('click',function(){ showView('cats'); });
-      $('fmBackThreads').addEventListener('click',function(){ openCat(curCat); });
+      $('fmBackCats').addEventListener('click',function(e){
+        e.preventDefault();
+        showView('cats');
+        try{ if(window.__wdCleanUrls&&history.pushState) history.pushState(null,'','/forum'); }catch(err){}
+      });
+      $('fmBackThreads').addEventListener('click',function(){ openCat(curCat,{push:false}); });
       $('fmNewCancel').addEventListener('click',function(){ showView('threads'); });
       $('fmNewThreadBtn').addEventListener('click',function(){
         if(!user){ if(window.__cbAcct) window.__cbAcct.chooseSignIn(); return; }
@@ -8277,6 +8285,19 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       function ensureLoaded(){ if(loaded) return; loaded=true; loadCats().then(renderCats).catch(function(e){ $('fmCats').innerHTML='<p class="ip-error">Could not load the forum ('+esc(e&&e.message||e)+').</p>'; }); }
       new MutationObserver(function(){ if(sec.classList.contains('pg-on')) ensureLoaded(); }).observe(sec,{attributes:true,attributeFilter:['class']});
       if(sec.classList.contains('pg-on')) ensureLoaded();
+
+      window.__fmOpenSlug=function(slug){
+        function attempt(){
+          if(!cats) return false;
+          var cat=cats.filter(function(c){ return c.slug===slug; })[0];
+          if(cat) openCat(cat,{push:false}); else showView('cats');
+          return true;
+        }
+        if(attempt()) return;
+        ensureLoaded();
+        var iv=setInterval(function(){ if(attempt()) clearInterval(iv); },120);
+        setTimeout(function(){ clearInterval(iv); },5000);
+      };
     })();
 
     loadCards().then(restoreBuild);
@@ -9074,8 +9095,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p) || /^\/archive\/armory\/[^\/]+$/.test(p);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p) || /^\/archive\/armory\/[^\/]+$/.test(p) || /^\/forum\/[^\/]+$/.test(p);
   })();
+  window.__wdCleanUrls=CAN_USE_CLEAN_URLS;
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
   CHAPS.forEach(function(c){ c.tag.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-chap',c.id); }); });
   document.querySelectorAll('article.klass').forEach(function(a){ a.setAttribute('data-page','world'); a.setAttribute('data-chap','classes'); });
@@ -9521,6 +9543,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     // Author profile pages: /profile/<username> (and the older #u/<username> hash form).
     var pm=/^\/profile\/([^\/]+)\/?$/.exec(location.pathname);
     if(rawHash.indexOf('u/')===0||(pm&&!rawHash)){ show('builds','community-builds'); if(window.__cmProfile) window.__cmProfile(); window.scrollTo(0,0); return; }
+    // Forum category deep link: /forum/<slug>
+    var fmm=/^\/forum\/([^\/]+)\/?$/.exec(location.pathname);
+    if(fmm){ show('forum','forum'); if(window.__fmOpenSlug) window.__fmOpenSlug(decodeURIComponent(fmm[1])); window.scrollTo(0,0); return; }
     var h=decodeURIComponent(rawHash); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
     // No hash match: check whether the pathname itself names one of the clean-path pages
