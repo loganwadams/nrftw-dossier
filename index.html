@@ -3625,13 +3625,6 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 #catalog .m-setcard,#arResults .m-setcard,.m-setcard{border:0!important;padding:14px 4px 10px!important;box-shadow:none!important;background:none!important}
 #catalog .m-card.m-setcard:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]),#arResults .m-card.m-setcard:not([data-rar=magical]):not([data-rar=plagued]):not([data-rar=unique]){background-image:none!important;background-color:transparent!important}
 .m-setcard::before,.m-setcard:hover::before{display:none!important}
-#catalog .m-setcard-pieces .m-card,#arResults .m-setcard-pieces .m-card{aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none;display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;column-gap:10px;justify-content:normal;text-align:left;overflow:visible;padding:6px 10px 6px 6px;min-height:44px;border-color:rgba(190,196,205,.16)!important;background:rgba(0,0,0,.22)!important}
-#catalog .m-setcard-pieces .m-card:hover,#arResults .m-setcard-pieces .m-card:hover{filter:brightness(1.3)}
-#catalog .m-setcard-pieces .m-card .m-ic,#arResults .m-setcard-pieces .m-card .m-ic{zoom:1;margin:0;border:1px solid rgba(190,196,205,.12);-webkit-mask:none;mask:none;background-size:1536px,100% 100%!important;background-repeat:no-repeat!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=standard],#arResults .m-setcard-pieces .m-ic[data-slot=standard]{background-image:url(img/items-sheet.webp),url(img/card/rl-std-bg.webp)!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=magical],#arResults .m-setcard-pieces .m-ic[data-slot=magical]{background-image:url(img/items-sheet.webp),url(img/card/rl-mag-bg.webp)!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=plagued],#arResults .m-setcard-pieces .m-ic[data-slot=plagued]{background-image:url(img/items-sheet.webp),url(img/card/rl-pl-bg.webp)!important}
-#catalog .m-setcard-pieces .m-ic[data-slot=unique],#arResults .m-setcard-pieces .m-ic[data-slot=unique]{background-image:url(img/items-sheet.webp),url(img/card/rl-un-bg.webp)!important}
 #catalog .m-setcard-pieces .m-card-req,#arResults .m-setcard-pieces .m-card-req{display:none}
 #catalog .m-card-name,#arResults .m-card-name{display:block;max-width:100%;overflow-wrap:anywhere}
 #catalog .m-card-lv,#arResults .m-card-lv{font-family:"Arcon","Marcellus",sans-serif;font-size:12px;letter-spacing:.08em}
@@ -3648,8 +3641,7 @@ em.m-inline-item:hover,em.m-inline-item:focus-visible{color:var(--gold);border-b
 .m-setcard:hover::before,.m-setcard.tt-open::before{border-color:transparent}
 .m-setcard-head{display:flex;align-items:baseline;justify-content:flex-start;gap:12px;margin-bottom:10px;padding-bottom:8px;position:relative;padding-left:8px}
 .m-setcard-name{font-family:var(--display);font-size:16.5px;letter-spacing:.03em;color:#f2f2f0}
-.m-setcard-pieces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px} /* fixed two-up: an odd last piece keeps the same width as the others */
-.m-setcard-pieces .m-card{min-width:0;min-height:44px;padding:4px 8px 4px 4px;cursor:pointer;background:rgba(0,0,0,.3)}
+.m-setcard-pieces{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
 .m-setcard-src{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(var(--gold-rgb),.1)}
 .m-setcard-src .wd-src{font-size:11px}
 
@@ -10285,6 +10277,24 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       });
       watch();
     }).catch(function(){});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+})();
+</script>
+<script>
+(function(){
+  // Armor set pieces don't carry their own level badge in the markup (the set header already shows it);
+  // give each piece card the same badge so it matches the look of a normal item card.
+  function run(){
+    document.querySelectorAll('.m-setcard').forEach(function(sc){
+      var headLv=sc.querySelector('.m-setcard-head .m-card-lv'); if(!headLv) return;
+      sc.querySelectorAll('.m-setcard-pieces .m-card').forEach(function(card){
+        if(card.querySelector('.m-card-lv')) return;
+        var sp=document.createElement('span'); sp.className='m-card-lv'; sp.textContent=headLv.textContent;
+        var nameEl=card.querySelector('.m-card-name');
+        if(nameEl) nameEl.insertAdjacentElement('afterend',sp); else card.appendChild(sp);
+      });
+    });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
 })();
