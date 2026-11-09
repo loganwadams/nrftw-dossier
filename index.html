@@ -23,13 +23,13 @@
   // __wdRawId() is the id of the section being asked for, from either form.
   window.__rcSlugs={'recipes-weapons':'weapons','recipes-off-hands':'shields-quivers','recipes-armors':'armor','recipes-tools':'tools','recipes-food':'food','recipes-quick-items':'quick-items','recipes-structures':'structures'}; window.__rcRev={}; for(var rk in window.__rcSlugs) window.__rcRev[window.__rcSlugs[rk]]=rk; window.__rcRev['armors']='recipes-armors';
   window.__wdRawId=function(){ var v=/^\/vendors\/([^\/]+)\/?$/.exec(location.pathname); if(v&&location.hash.length<2) return 'vendor-'+v[1]; var rcm=/^\/crafting-recipes\/([^\/]+)\/?$/.exec(location.pathname); if(rcm&&location.hash.length<2) return window.__rcRev[rcm[1]]||'recipes'; var m=/^\/archive\/(?:armory\/)?([^\/]+)\/?$/.exec(location.pathname); if(location.hash.length>1) return location.hash.slice(1); if(!m) return ''; if(m[1]==='crafting-recipes') return 'recipes'; if(m[1]==='furniture') m[1]='structures'; if(m[1]==='infusions'||m[1]==='gems') return 'pool-gems'; if(m[1]==='resources') m[1]='crafting-materials'; var d=document.getElementById('pool-'+m[1]); return d?'pool-'+m[1]:m[1]; };
-  if(/^\/profile\//.test(location.pathname)||/^\/(archive|vendors|crafting-recipes)\/[^\/]+\/?$/.test(location.pathname)||/^\/archive\/armory\/[^\/]+\/?$/.test(location.pathname)||/^\/forum\/[^\/]+(\/[^\/]+)?\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
+  if(/^\/profile\//.test(location.pathname)||/^\/(archive|vendors|crafting-recipes)\/[^\/]+\/?$/.test(location.pathname)||/^\/archive\/armory\/[^\/]+\/?$/.test(location.pathname)||/^\/forum\/[^\/]+(\/[^\/]+)?\/?$/.test(location.pathname)||/^\/builds\/[^\/]+\/?$/.test(location.pathname)||/^\/(archive|trove|vendors|factions|items|enchantments|crafting-recipes|armory|media|cerim-builder|builds)?\/?$/.test(location.pathname)&&/^https?:$/.test(location.protocol)){
     var b=document.createElement('base'); b.href='/'; document.head.appendChild(b);
   }
-  // A shared/community build (?s=...) is only ready once the item database has loaded; until
-  // then keep the content hidden (see the body:not(.paged) rule) rather than showing the empty
-  // builder in the meantime. restoreBuild() clears the flag if the link turns out not to be one.
-  if(/[?&]s=/.test(location.search)) document.documentElement.classList.add('cb-shared-pending');
+  // A shared/community build (?s=... or /builds/<id>) is only ready once the item database has
+  // loaded; until then keep the content hidden (see the body:not(.paged) rule) rather than showing
+  // the empty builder in the meantime. restoreBuild()/__cbOpenSharedId() clears the flag once resolved.
+  if(/[?&]s=/.test(location.search)||/^\/builds\/[^\/]+\/?$/.test(location.pathname)) document.documentElement.classList.add('cb-shared-pending');
   // Sign-in popup: this window was opened by the site itself to run the Google/Discord handshake
   // (see signIn in the account module). Show only a "finishing sign-in" note; it closes itself.
   try{ if(window.opener&&window.name==='wdAuth'){ document.documentElement.classList.add('auth-popup'); document.addEventListener('DOMContentLoaded',function(){ var n=document.createElement('div'); n.className='auth-popup-note'; n.textContent='Finishing sign-in\u2026'; document.body.appendChild(n); }); } }catch(e){}
@@ -7213,7 +7213,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
         try{ document.title=(info.name||'Shared Cerim Build')+' \u2014 Community Builds \u2014 Wicked Dossier'; }catch(e){}
       });
     }
-    function enterSharedMode(code,o){
+    function enterSharedMode(code,o,shareId){
       CB_SHARED=true;
       document.body.classList.add('cb-shared');
       try{ document.title='Shared Cerim Build \u2014 Wicked Dossier'; }catch(e){}
@@ -7223,11 +7223,11 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       [['Your Numbers','Key Numbers'],['Needs Attention','Gaps'],['Recommended Changes','Where It Could Improve']].forEach(function(p){ Array.prototype.forEach.call(document.querySelectorAll('#cbReport h3'),function(h){ if(h.textContent.trim()===p[0]) h.textContent=p[1]; }); });
       applyBuild(o); renderSharedList(); renderSharedHero(o);
       try{ renderReport(); }catch(err){ if(window.console) console.error('Shared analysis failed',err); }
-      var base=location.href.split('#')[0].split('?')[0];
+      var base=location.origin+(shareId?('/builds/'+encodeURIComponent(shareId)):location.href.split('#')[0].split('?')[0].slice(location.origin.length));
       var cp=document.getElementById('cbSharedCopy'), msg=document.getElementById('cbSharedMsg');
       function say(t){ msg.textContent=t; setTimeout(function(){ msg.textContent=''; },3500); }
       cp.addEventListener('click',function(){
-        var url=base+'?s='+code;
+        var url=shareId?base:(base+'?s='+code);
         if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ say('Link copied'); },function(){ say('Copy failed'); }); else say('Copy failed');
       });
       document.getElementById('cbSharedSave').addEventListener('click',function(){
@@ -7251,8 +7251,8 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
     }
     function restoreBuild(){
       try{
-        var sc=new URLSearchParams(location.search).get('s'), so=sc&&decodeBuild(sc);
-        if(so){ enterSharedMode(sc,so); document.documentElement.classList.remove('cb-shared-pending'); return; }
+        var qs=new URLSearchParams(location.search), sc=qs.get('s'), so=sc&&decodeBuild(sc);
+        if(so){ enterSharedMode(sc,so,qs.get('cb')||null); document.documentElement.classList.remove('cb-shared-pending'); return; }
       }catch(e){}
       document.documentElement.classList.remove('cb-shared-pending');
       var o=null, fromLink=false;
@@ -7260,6 +7260,20 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(!o){ try{ var t=localStorage.getItem(CB_STORE_KEY); if(t) o=decodeBuild(t); }catch(e){} }
       if(o){ applyBuild(o); if(fromLink) saveBuildSoon(); }
     }
+    // Opened via the short community-build link (/builds/<id>): look the saved code up in
+    // Supabase instead of carrying the whole encoded build in the URL.
+    window.__cbOpenSharedId=function(id){
+      loadCards().then(function(){
+        if(!window.__cbAcct||!window.__cbAcct.client){ document.documentElement.classList.remove('cb-shared-pending'); return; }
+        window.__cbAcct.client().then(function(c){ return c.from('community_builds').select('code').eq('id',id).maybeSingle(); })
+          .then(function(r){
+            var code=r&&r.data&&r.data.code, o=code&&decodeBuild(code);
+            document.documentElement.classList.remove('cb-shared-pending');
+            if(o) enterSharedMode(code,o,id);
+          })
+          .catch(function(){ document.documentElement.classList.remove('cb-shared-pending'); });
+      });
+    };
     (function wireShare(){
       var btn=document.getElementById('cbShareBuild'), msg=document.getElementById('cbShareMsg');
       if(!btn) return;
@@ -8043,7 +8057,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
           document.addEventListener('click',function(){ box.classList.remove('open'); });
           document.addEventListener('keydown',function(e){ if(e.key==='Escape') box.classList.remove('open'); });
         })();
-        function open(r){ var base=location.origin+'/cerim-builder'; location.href=base+'?s='+r.code+'&cb='+encodeURIComponent(r.id); }
+        function open(r){ location.href=location.origin+'/builds/'+encodeURIComponent(r.id); }
         function onListClick(e){
           var al=e.target.closest('a[data-u]'); if(al){ e.preventDefault(); e.stopPropagation(); goProfile(al.getAttribute('data-u')); return; }
           var card=e.target.closest('.cm-card')||e.target.closest('.cm-slot'); if(!card) return;
@@ -9574,6 +9588,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     // Forum category deep link: /forum/<slug>
     var fmm=/^\/forum\/([^\/]+)\/?$/.exec(location.pathname);
     if(fmm){ show('forum','forum'); if(window.__fmOpenSlug) window.__fmOpenSlug(decodeURIComponent(fmm[1])); window.scrollTo(0,0); return; }
+    // Community build share link: /builds/<id>
+    var bld=/^\/builds\/([^\/]+)\/?$/.exec(location.pathname);
+    if(bld){ show('cerim','cerim-builder'); if(window.__cbOpenSharedId) window.__cbOpenSharedId(decodeURIComponent(bld[1])); return; }
     var h=decodeURIComponent(rawHash); var el=h?document.getElementById(h):null;
     var group=el?pageOf(el):null, chap=el?chapOf(el):null;
     // No hash match: check whether the pathname itself names one of the clean-path pages
