@@ -9134,7 +9134,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // reflects where the page actually started out.
   var CAN_USE_CLEAN_URLS=(function(){
     var p=location.pathname.replace(/\/$/,'')||'/';
-    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p) || /^\/archive\/armory\/[^\/]+$/.test(p) || /^\/forum\/[^\/]+(\/[^\/]+)?$/.test(p);
+    return p==='/' || (p in PATH_TO_GROUP) || /^\/profile\//.test(p) || /^\/(archive|vendors|crafting-recipes)\/[^\/]+$/.test(p) || /^\/archive\/armory\/[^\/]+$/.test(p) || /^\/forum\/[^\/]+(\/[^\/]+)?$/.test(p) || /^\/builds\/[^\/]+$/.test(p);
   })();
   window.__wdCleanUrls=CAN_USE_CLEAN_URLS;
   GROUPS.forEach(function(g){ g.ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('data-page',g.id); }); });
