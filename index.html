@@ -1617,11 +1617,11 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 #infusions .inf-group{display:none}
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
 .inf-gemgrid .ip-tt{max-width:none}
-#emberCards,#ringCards,#quiverCards,#throwCards{display:none}
-body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards,body.cat-view #catalog[data-cv="Rings"] .m-cats>#ringCards,body.cat-view #catalog[data-cv="Quivers"] .m-cats>#quiverCards,body.cat-view #catalog[data-cv="Throwable Items"] .m-cats>#throwCards{display:flex!important;gap:22px;align-items:flex-start}
+#emberCards,#ringCards,#quiverCards,#throwCards,#quickCards{display:none}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards,body.cat-view #catalog[data-cv="Rings"] .m-cats>#ringCards,body.cat-view #catalog[data-cv="Quivers"] .m-cats>#quiverCards,body.cat-view #catalog[data-cv="Throwable Items"] .m-cats>#throwCards,body.cat-view #catalog[data-cv="Quick Items"] .m-cats>#quickCards{display:flex!important;gap:22px;align-items:flex-start}
 .inf-gemgrid .em-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:22px}
 .inf-gemgrid .rd-link:hover .ip-tt,.inf-gemgrid .rd-link:focus-visible .ip-tt{filter:brightness(1.12)}
-body.cat-view #catalog[data-cv="Embers"] .m-cats>#pool-embers+.m-cat,body.cat-view #catalog[data-cv="Rings"] .m-cats>#pool-rings+.m-cat,body.cat-view #catalog[data-cv="Quivers"] .m-cats>#pool-quivers+.m-cat,body.cat-view #catalog[data-cv="Throwable Items"] .m-cats>#pool-throwable-items+.m-cat{display:none!important}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#pool-embers+.m-cat,body.cat-view #catalog[data-cv="Rings"] .m-cats>#pool-rings+.m-cat,body.cat-view #catalog[data-cv="Quivers"] .m-cats>#pool-quivers+.m-cat,body.cat-view #catalog[data-cv="Throwable Items"] .m-cats>#pool-throwable-items+.m-cat,body.cat-view #catalog[data-cv="Quick Items"] .m-cats>#pool-quick-items+.m-cat{display:none!important}
 .ar-card>*:not(.ar-gems){position:relative;z-index:1}
 .ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
 .ar-gems img{position:absolute;bottom:0;width:84px;height:84px;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
@@ -10507,7 +10507,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
 </script>
 <script>
 (function(){
-  // Embers, Rings, Quivers and Throwable Items: each is a small enough category that every item
+  // Embers, Rings, Quivers, Throwable Items and Quick Items: each is a small enough category that every item
   // is shown as its own full item card, in a column-balanced (masonry) layout rather than a grid,
   // so a card with a longer description doesn't stretch every other card in its row to match it.
   function buildMasonry(poolId,hostId){
@@ -10547,6 +10547,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   buildMasonry('pool-rings','ringCards');
   buildMasonry('pool-quivers','quiverCards');
   buildMasonry('pool-throwable-items','throwCards');
+  buildMasonry('pool-quick-items','quickCards');
 })();
 </script>
 <script>
