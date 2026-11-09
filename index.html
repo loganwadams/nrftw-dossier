@@ -7159,7 +7159,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       if(hero.parentNode!==top) top.appendChild(hero);
       if(stats.parentNode!==top) top.appendChild(stats);
     }
-    function renderSharedHero(o){
+    function renderSharedHero(o,shareId){
       var hero=document.getElementById('cbSharedBar'); if(!hero) return;
       var mainId=Object.keys(equipped).filter(function(id){ return cards&&cards[equipped[id]]; }).sort(slotOrder)[0];
       var item=mainId?cards[equipped[mainId]]:null, m=mainId?itemMeta[mainId]:null;
@@ -7174,7 +7174,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       hero.hidden=false; arrangeShTop();
       if(o.cr&&o.cr.a){ var cl=document.createElement('p'); cl.className='cb-sh-community cb-credit-line'; cl.textContent=creditLine(o.cr); var row0=hero.querySelector('.cb-sh-titlerow'); if(row0) row0.insertAdjacentElement('afterend',cl); }
       // Opened from Community Builds: swap in the listing's own title, author and description.
-      var cbId=null; try{ cbId=new URLSearchParams(location.search).get('cb'); }catch(e){}
+      var cbId=shareId||null; try{ if(!cbId) cbId=new URLSearchParams(location.search).get('cb'); }catch(e){}
       // This page still is the Cerim Builder (the shared view lives in its markup), but a build
       // opened from Community Builds should read and navigate as a subpage of that section, not
       // as the builder itself: swap the page heading and the active chapter in the nav bar.
@@ -7221,7 +7221,7 @@ var FACET_DATA=[{"n":"Frantic","it":32,"m":[[45,1,0.1],[21,1,-0.2]],"inf":null,"
       Array.prototype.forEach.call(document.querySelectorAll('.cb-attr-input'),function(i){ i.readOnly=true; i.tabIndex=-1; });
       var lv=document.getElementById('cbLevel'); if(lv) lv.disabled=true;
       [['Your Numbers','Key Numbers'],['Needs Attention','Gaps'],['Recommended Changes','Where It Could Improve']].forEach(function(p){ Array.prototype.forEach.call(document.querySelectorAll('#cbReport h3'),function(h){ if(h.textContent.trim()===p[0]) h.textContent=p[1]; }); });
-      applyBuild(o); renderSharedList(); renderSharedHero(o);
+      applyBuild(o); renderSharedList(); renderSharedHero(o,shareId);
       try{ renderReport(); }catch(err){ if(window.console) console.error('Shared analysis failed',err); }
       var base=location.origin+(shareId?('/builds/'+encodeURIComponent(shareId)):location.href.split('#')[0].split('?')[0].slice(location.origin.length));
       var cp=document.getElementById('cbSharedCopy'), msg=document.getElementById('cbSharedMsg');
