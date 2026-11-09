@@ -772,7 +772,7 @@ body:not(.on-home) .footer-bg,body:not(.on-home) footer .footer-bg{filter:graysc
 body.on-cerim .footer-bg,body.on-cerim footer .footer-bg{filter:none!important;opacity:1!important}
 body.on-cerim .header-bg,body.on-builds .header-bg,body:not(.on-home).on-cerim .header-bg,body:not(.on-home).on-builds .header-bg{display:none!important}
 .vd-card h3,.vd-card .ar-k,.vd-card .vd-loc,.vd-card:hover .ar-k,.vd-card:hover .vd-loc,.vd-card:focus-visible .ar-k,.vd-card:focus-visible .vd-loc{color:#fff!important}
-#catalog .m-cat[data-m="mcat:readables:0"] .m-cards,.m-cat[data-m="mcat:readables:0"] .m-cards,#catalog .m-cat[data-m="mcat:rings:0"] .m-cards,.m-cat[data-m="mcat:rings:0"] .m-cards,#catalog .m-cat[data-m="mcat:quivers:0"] .m-cards,.m-cat[data-m="mcat:quivers:0"] .m-cards,#catalog .m-cat[data-m="mcat:throwable-items:0"] .m-cards,.m-cat[data-m="mcat:throwable-items:0"] .m-cards{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))!important;gap:18px!important;align-items:start}
+#catalog .m-cat[data-m="mcat:readables:0"] .m-cards,.m-cat[data-m="mcat:readables:0"] .m-cards{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))!important;gap:18px!important;align-items:start}
 .rd-link{display:block;color:inherit;text-decoration:none}
 .m-card.rd-full,#catalog .m-card.rd-full{display:block!important;aspect-ratio:auto!important;-webkit-mask:none!important;mask:none!important;padding:0;border:0;background:none;min-height:0;aspect-ratio:auto;-webkit-mask:none;mask:none;filter:none!important;cursor:pointer}
 .m-card.rd-full .ip-tt{max-width:none;text-align:left}
@@ -1617,11 +1617,11 @@ body.on-cerim .header-bg,body.on-builds .header-bg{background-image:url(img/head
 #infusions .inf-group{display:none}
 .inf-gemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:22px;align-items:start}
 .inf-gemgrid .ip-tt{max-width:none}
-#emberCards{display:none}
-body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards{display:flex!important;gap:22px;align-items:flex-start}
-#emberCards .em-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:22px}
-#emberCards .rd-link:hover .ip-tt,#emberCards .rd-link:focus-visible .ip-tt{filter:brightness(1.12)}
-body.cat-view #catalog[data-cv="Embers"] .m-cats>#pool-embers+.m-cat{display:none!important}
+#emberCards,#ringCards,#quiverCards,#throwCards{display:none}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#emberCards,body.cat-view #catalog[data-cv="Rings"] .m-cats>#ringCards,body.cat-view #catalog[data-cv="Quivers"] .m-cats>#quiverCards,body.cat-view #catalog[data-cv="Throwable Items"] .m-cats>#throwCards{display:flex!important;gap:22px;align-items:flex-start}
+.inf-gemgrid .em-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:22px}
+.inf-gemgrid .rd-link:hover .ip-tt,.inf-gemgrid .rd-link:focus-visible .ip-tt{filter:brightness(1.12)}
+body.cat-view #catalog[data-cv="Embers"] .m-cats>#pool-embers+.m-cat,body.cat-view #catalog[data-cv="Rings"] .m-cats>#pool-rings+.m-cat,body.cat-view #catalog[data-cv="Quivers"] .m-cats>#pool-quivers+.m-cat,body.cat-view #catalog[data-cv="Throwable Items"] .m-cats>#pool-throwable-items+.m-cat{display:none!important}
 .ar-card>*:not(.ar-gems){position:relative;z-index:1}
 .ar-gems{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:0}
 .ar-gems img{position:absolute;bottom:0;width:84px;height:84px;transform:translateY(130%) rotate(var(--rot,0deg));opacity:0;transition:transform .7s cubic-bezier(.2,.8,.25,1.05),opacity .5s ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7))}
@@ -9467,9 +9467,8 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
       document.title=(c.n?c.n+' - ':'')+BASE_TITLE;
     }).catch(function(){ if(document.getElementById('ipBody')===body) body.innerHTML='<p class="ip-error">Couldn’t load that item’s data.</p>'; });
   }
-  // Small categories (readables, rings, quivers, throwable items): few enough items that the page
-  // shows each one's full card in place of the small tile (same card as its own item page).
-  ['readables','rings','quivers','throwable-items'].forEach(function(catId){
+  // Readables: only nine, so the page shows each one's full card in place of the small tile (same card as its own item page).
+  ['readables'].forEach(function(catId){
     var done=false;
     function fill(){
       if(done||!window.__ttLoad) return;
@@ -10508,14 +10507,17 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
 </script>
 <script>
 (function(){
-  // Embers page: there are only a few, so each one is shown as its full item card.
+  // Embers, Rings, Quivers and Throwable Items: each is a small enough category that every item
+  // is shown as its own full item card, in a column-balanced (masonry) layout rather than a grid,
+  // so a card with a longer description doesn't stretch every other card in its row to match it.
+  function buildMasonry(poolId,hostId){
   function build(){
-    var head=document.getElementById('pool-embers'); if(!head||!window.__ttLoad) return;
+    var head=document.getElementById(poolId); if(!head||!window.__ttLoad) return;
     var keys=[], n=head.nextElementSibling;
     while(n&&!n.classList.contains('m-cat-head')){ n.querySelectorAll('.m-card[data-k]').forEach(function(c){ keys.push(c.getAttribute('data-k')); }); n=n.nextElementSibling; }
     if(!keys.length) return;
     window.__ttLoad().then(function(db){
-      var host=document.createElement('div'); host.className='inf-gemgrid'; host.id='emberCards';
+      var host=document.createElement('div'); host.className='inf-gemgrid'; host.id=hostId;
       keys.forEach(function(k){
         var c=db[k]; if(!c) return;
         var ic=c.p?'<span class="tt-ic" style="background-position:-'+(c.p[0]*64)+'px -'+(c.p[1]*64)+'px"></span>':'<span class="tt-ic"></span>';
@@ -10525,7 +10527,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         var a=document.createElement('a'); a.className='rd-link'; a.href=(window.__itemUrl?window.__itemUrl(k):'#item/'+encodeURIComponent(k)); a.appendChild(d); a.addEventListener('click',function(ev){ if(ev.ctrlKey||ev.metaKey||ev.shiftKey||ev.altKey||ev.button||!window.__gotoItem) return; ev.preventDefault(); window.__gotoItem(k); });
         host.appendChild(a);
       });
-      var old=document.getElementById('emberCards'); if(old) old.remove();
+      var old=document.getElementById(hostId); if(old) old.remove();
       var cat=head.nextElementSibling; while(cat&&!cat.classList.contains('m-cat')) cat=cat.nextElementSibling;
       (cat||head).insertAdjacentElement('afterend',host);
       var cards=[].slice.call(host.children), cols=0;
@@ -10540,6 +10542,11 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     }).catch(function(){});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+  }
+  buildMasonry('pool-embers','emberCards');
+  buildMasonry('pool-rings','ringCards');
+  buildMasonry('pool-quivers','quiverCards');
+  buildMasonry('pool-throwable-items','throwCards');
 })();
 </script>
 <script>
