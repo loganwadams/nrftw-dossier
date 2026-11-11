@@ -4324,7 +4324,7 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
     <div class="sect-head"><h2>Interactive Map</h2></div>
     <p class="hero-notice"><span class="hero-notice-tag">Coming Soon</span> Signed-in users will be able to save the map with their own pin placements.</p>
     <div class="wm-tabs" id="wmTabs" role="tablist"><button type="button" role="tab" data-m="isola" aria-selected="true">Isola Sacra</button><button type="button" role="tab" data-m="trench" aria-selected="false">Black Trench</button></div>
-    <div class="wm-stage" id="wmStage" aria-label="Interactive map"><div class="wm-world" id="wmWorld"><img class="wm-base" id="wmBase" alt="" draggable="false"><div class="wm-tl" id="wmTl"></div><div class="wm-pins" id="wmPins"></div></div><div class="wm-tip" id="wmTip" hidden></div><div class="wm-zoom"><button type="button" id="wmIn" aria-label="Zoom in">+</button><button type="button" id="wmOut" aria-label="Zoom out">&minus;</button></div></div>
+    <div class="wm-stage" id="wmStage" aria-label="Interactive map"><div class="wm-world" id="wmWorld"><img class="wm-base" id="wmBase" alt="" draggable="false"><div class="wm-tl" id="wmTl"></div><div class="wm-pins" id="wmPins"></div></div><div class="wm-tip" id="wmTip" hidden></div><div class="wm-zoom"><button type="button" id="wmIn" aria-label="Zoom in">+</button><button type="button" id="wmOut" aria-label="Zoom out">&minus;</button><button type="button" id="wmReset" aria-label="Reset view"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button></div></div>
   </section>
   <section id="archive">
     <div class="sect-head"><h2>Archive</h2></div>
@@ -10930,6 +10930,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   function stopGlide(){ if(raf){cancelAnimationFrame(raf); raf=0} tk=k }
   function zb(f){var r=rect();zoomAt(r.width/2,r.height/2,k*f)}
   document.getElementById('wmIn').addEventListener('click',function(){zb(1.5)}); document.getElementById('wmOut').addEventListener('click',function(){zb(1/1.5)});
+  document.getElementById('wmReset').addEventListener('click',function(){stopGlide(); fit(); tk=k});
   st.addEventListener('pointerdown',function(e){ if(e.target.closest('.wm-zoom')) e.stopImmediatePropagation() },true);
   st.addEventListener('wheel',function(e){ e.preventDefault(); var r=rect(); var dy=e.deltaY*(e.deltaMode===1?33:e.deltaMode===2?400:1); var notch=Math.abs(dy)>=40; dy=Math.max(-120,Math.min(120,dy)); zoomTo(e.clientX-r.left,e.clientY-r.top,Math.exp(-dy*(notch?0.00095:0.005))) },{passive:false});
   var started=false;
