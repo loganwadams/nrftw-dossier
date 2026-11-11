@@ -1486,9 +1486,10 @@ html body .rd-page.merchant:has(>.m-body>.vd-side)>.m-top,html body .rd-page.mer
 #map .wm-world{position:absolute;left:0;top:0;transform-origin:0 0}
 #map .wm-base{display:block;width:100%;height:100%;-webkit-user-drag:none}
 #map .wm-tl{position:absolute;left:0;top:0;pointer-events:none}#map .wm-tl img{position:absolute;display:block;max-width:none;height:auto;opacity:0;transition:opacity .18s}#map .wm-tl img.on{opacity:1}
-#map .wm-pin{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;border:2px solid #000;padding:0;cursor:pointer;transform:scale(calc(1 / var(--k,1)))}
-#map .wm-pin:hover,#map .wm-pin:focus-visible{background:#8ecbe8;outline:none}
-#map .wm-tip{position:absolute;pointer-events:none;padding:4px 9px;background:rgba(8,8,10,.92);color:#fff;font-size:13px;white-space:nowrap;transform:translate(-50%,-140%)}
+#map .wm-pin{position:absolute;width:var(--pd,24px);height:var(--pd,24px);margin:calc(var(--pd,24px)/-2) 0 0 calc(var(--pd,24px)/-2);border-radius:50%;padding:0;cursor:pointer;background:#0b0b0d;box-shadow:0 0 0 2px #000,0 2px 8px rgba(0,0,0,.6);overflow:hidden}
+#map .wm-pin img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+#map .wm-pin:hover,#map .wm-pin:focus-visible{box-shadow:0 0 0 3px #fff,0 2px 8px rgba(0,0,0,.6);outline:none;z-index:2}
+#map .wm-tip{position:absolute;pointer-events:none;padding:4px 9px;background:rgba(8,8,10,.92);color:#fff;font-size:13px;white-space:nowrap;transform:translate(-50%,-125%)}
 #map .wm-zoom{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}#map .wm-zoom button{all:unset;box-sizing:border-box;width:40px;height:40px;display:grid;place-items:center;background:rgba(8,8,10,.85);color:#fff;font-size:24px;line-height:1;cursor:pointer}#map .wm-zoom button:hover,#map .wm-zoom button:focus-visible{background:#fff;color:#000}
 #map .wm-help{margin:10px 0 0;opacity:.7;font-size:.9rem}
 #map .wm-side{position:absolute;left:0;top:0;bottom:0;width:250px;z-index:5;background:rgba(8,8,10,.9);color:#fff;transition:transform .22s ease;cursor:default;display:flex;flex-direction:column}
@@ -10915,7 +10916,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var cm='isola',kmin=.15,W=2200,H=2000,k=1,tx=0,ty=0,MAN=null,MANS={},curL=-1,tm=0;
   function rect(){return st.getBoundingClientRect()}
   function fit(){var r=rect(); if(!r.width) return; k=Math.min(r.width/W,r.height/H); kmin=k; tx=(r.width-W*k)/2; ty=(r.height-H*k)/2; ap()}
-  function ap(){wd.style.setProperty('--k',k); wd.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')'; if(!tm) tm=setTimeout(function(){tm=0; tiles()},40)}
+  function ap(){wd.style.setProperty('--k',k); wd.style.setProperty('--pd',(Math.min(84,Math.max(20,48*k))/k).toFixed(2)+'px'); wd.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')'; if(!tm) tm=setTimeout(function(){tm=0; tiles()},40)}
   function tiles(){ if(!MAN) return; var r=rect(); if(!r.width) return; var dpr=window.devicePixelRatio||1, L=Math.min(MP[cm].max,Math.max(1,Math.ceil(Math.log2(k*dpr))));
     var ts=MAN.ts, sz=ts/Math.pow(2,L), pad=sz*0.5, x0=Math.max(0,Math.floor(((-tx/k)-pad)/sz)), x1=Math.floor((((r.width-tx)/k)+pad)/sz), y0=Math.max(0,Math.floor(((-ty/k)-pad)/sz)), y1=Math.floor((((r.height-ty)/k)+pad)/sz), have={}, idx={}, want=0, ready=0;
     MAN[L].tiles.forEach(function(n){idx[n]=1}); Array.prototype.forEach.call(TL.children,function(e){have[e.dataset.n]=e});
@@ -10926,10 +10927,10 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     curL=L;
   }
   function loadMan(){ var d=MP[cm].dir; if(MANS[d]){MAN=MANS[d]; tiles(); return} fetch(d+'/tiles.json').then(function(r){return r.json()}).then(function(m){MANS[d]=m; if(MP[cm].dir===d){MAN=m; tiles()}}).catch(function(){}); }
-  function drawPins(){ pins.innerHTML=''; (PINS[cm]||[]).forEach(function(p){ if(vis[p[0]]===false) return; var b=document.createElement('button'); b.type='button'; b.className='wm-pin'; b.setAttribute('aria-label',p[0]); b.dataset.n=p[0]; b.style.left=p[1]/100*W+'px'; b.style.top=p[2]/100*H+'px'; pins.appendChild(b); }); }
+  function drawPins(){ pins.innerHTML=''; (PINS[cm]||[]).forEach(function(p){ if(vis[p[0]]===false) return; var b=document.createElement('button'); b.type='button'; b.className='wm-pin'; b.setAttribute('aria-label',p[0]); var im=new Image(); im.alt=''; im.draggable=false; im.src='img/map/pins/'+p[0].toLowerCase().replace(/^the /,'').replace(/[^a-z0-9]+/g,'-')+'.webp'; b.appendChild(im); b.dataset.n=p[0]; b.style.left=p[1]/100*W+'px'; b.style.top=p[2]/100*H+'px'; pins.appendChild(b); }); }
   function setMap(m){ stopGlide(); cm=m; W=MP[m].W; H=MP[m].H; wd.style.width=W+'px'; wd.style.height=H+'px'; base.src=MP[m].img; TL.innerHTML=''; curL=-1; MAN=null; tip.hidden=true; drawPins(); Array.prototype.forEach.call(document.querySelectorAll('#wmTabs button'),function(b){b.setAttribute('aria-selected',b.dataset.m===m?'true':'false')}); loadMan(); fit(); }
   document.getElementById('wmTabs').addEventListener('click',function(e){var b=e.target.closest('button[data-m]'); if(b&&b.dataset.m!==cm) setMap(b.dataset.m)});
-  function showTip(b){ tip.textContent=b.dataset.n; var r=rect(), br=b.getBoundingClientRect(); tip.style.left=(br.left-r.left+br.width/2)+'px'; tip.style.top=(br.top-r.top+br.height/2)+'px'; tip.hidden=false }
+  function showTip(b){ tip.textContent=b.dataset.n; var r=rect(), br=b.getBoundingClientRect(); tip.style.left=(br.left-r.left+br.width/2)+'px'; tip.style.top=(br.top-r.top)+'px'; tip.hidden=false }
   pins.addEventListener('mouseover',function(e){var b=e.target.closest('.wm-pin'); if(b) showTip(b)});
   pins.addEventListener('mouseout',function(){tip.hidden=true});
   pins.addEventListener('focusin',function(e){var b=e.target.closest('.wm-pin'); if(b) showTip(b)});
