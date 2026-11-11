@@ -24,7 +24,7 @@ PAGES = {
                 'Every vendor in No Rest for the Wicked, what they sell, their prices and where to find them in Sacrament and Marin Village.'),
     'bosses': ('Bosses \u2014 No Rest for the Wicked Boss Drops | Wicked Dossier',
                'Every boss in No Rest for the Wicked with its variants and the drops decoded from the game files.'),
-    'map': ('Map \u2014 No Rest for the Wicked Isola Sacra & Black Trench | Wicked Dossier',
+    'map': ('Interactive Map \u2014 No Rest for the Wicked Isola Sacra & Black Trench | Wicked Dossier',
             'The in-game map of Isola Sacra and the Black Trench from No Rest for the Wicked, at full resolution, with vendor locations.'),
     'bounties': ('Bounties \u2014 No Rest for the Wicked Captain Randolph | Wicked Dossier',
                  'Every bounty Captain Randolph offers in No Rest for the Wicked, with the game\'s own briefing for each.'),
