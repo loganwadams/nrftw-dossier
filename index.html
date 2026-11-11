@@ -1484,7 +1484,7 @@ html body .rd-page.merchant:has(>.m-body>.vd-side)>.m-top,html body .rd-page.mer
 #map .wm-stage.drag{cursor:grabbing}
 #map .wm-world{position:absolute;left:0;top:0;transform-origin:0 0}
 #map .wm-base{display:block;width:100%;height:100%;-webkit-user-drag:none}
-#map .wm-tl{position:absolute;left:0;top:0;pointer-events:none}#map .wm-tl img{position:absolute;display:block;max-width:none;height:auto}
+#map .wm-tl{position:absolute;left:0;top:0;pointer-events:none}#map .wm-tl img{position:absolute;display:block;max-width:none;height:auto;opacity:0;transition:opacity .18s}#map .wm-tl img.on{opacity:1}
 #map .wm-pin{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;border:2px solid #000;padding:0;cursor:pointer;transform:scale(calc(1 / var(--k,1)))}
 #map .wm-pin:hover,#map .wm-pin:focus-visible{background:#8ecbe8;outline:none}
 #map .wm-tip{position:absolute;pointer-events:none;padding:4px 9px;background:rgba(8,8,10,.92);color:#fff;font-size:13px;white-space:nowrap;transform:translate(-50%,-140%)}
@@ -10895,12 +10895,15 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var cm='isola',W=2200,H=2000,k=1,tx=0,ty=0,MAN=null,MANS={},curL=-1,tm=0;
   function rect(){return st.getBoundingClientRect()}
   function fit(){var r=rect(); if(!r.width) return; k=Math.min(r.width/W,r.height/H); tx=(r.width-W*k)/2; ty=(r.height-H*k)/2; ap()}
-  function ap(){wd.style.setProperty('--k',k); wd.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')'; clearTimeout(tm); tm=setTimeout(tiles,60)}
+  function ap(){wd.style.setProperty('--k',k); wd.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')'; if(!tm) tm=setTimeout(function(){tm=0; tiles()},40)}
   function tiles(){ if(!MAN) return; var r=rect(); if(!r.width) return; var dpr=window.devicePixelRatio||1, L=Math.min(MP[cm].max,Math.max(1,Math.ceil(Math.log2(k*dpr))));
-    if(L!==curL){TL.innerHTML=''; curL=L}
-    var ts=MAN.ts, sz=ts/Math.pow(2,L), x0=Math.max(0,Math.floor((-tx/k)/sz)), x1=Math.floor(((r.width-tx)/k)/sz), y0=Math.max(0,Math.floor((-ty/k)/sz)), y1=Math.floor(((r.height-ty)/k)/sz), have={}, idx={};
-    MAN[L].tiles.forEach(function(n){idx[n]=1}); Array.prototype.forEach.call(TL.children,function(e){have[e.dataset.n]=1});
-    for(var j=y0;j<=y1;j++) for(var i=x0;i<=x1;i++){ var n=i+'_'+j; if(!idx[n]||have[n]) continue; var im=new Image(); im.dataset.n=n; im.alt=''; im.draggable=false; im.style.left=i*sz+'px'; im.style.top=j*sz+'px'; im.style.width=(Math.min(MAN[L].w-i*ts,ts)/Math.pow(2,L)+1/k)+'px'; im.src=MP[cm].dir+'/'+L+'/'+n+'.webp'; TL.appendChild(im); }
+    var ts=MAN.ts, sz=ts/Math.pow(2,L), pad=sz*0.5, x0=Math.max(0,Math.floor(((-tx/k)-pad)/sz)), x1=Math.floor((((r.width-tx)/k)+pad)/sz), y0=Math.max(0,Math.floor(((-ty/k)-pad)/sz)), y1=Math.floor((((r.height-ty)/k)+pad)/sz), have={}, idx={}, want=0, ready=0;
+    MAN[L].tiles.forEach(function(n){idx[n]=1}); Array.prototype.forEach.call(TL.children,function(e){have[e.dataset.n]=e});
+    for(var j=y0;j<=y1;j++) for(var i=x0;i<=x1;i++){ var n=i+'_'+j; if(!idx[n]) continue; want++; var key=L+':'+n, ex=have[key]; if(ex){ if(ex.classList.contains('on')) ready++; continue }
+      var im=new Image(); im.dataset.n=key; im.dataset.l=L; im.alt=''; im.draggable=false; im.style.left=i*sz+'px'; im.style.top=j*sz+'px'; im.style.zIndex=L; im.style.width=(Math.min(MAN[L].w-i*ts,ts)/Math.pow(2,L)+1/k)+'px';
+      im.onload=function(){ this.classList.add('on'); if(!tm) tm=setTimeout(function(){tm=0; tiles()},40) }; im.src=MP[cm].dir+'/'+L+'/'+n+'.webp'; TL.appendChild(im); }
+    if(want===ready){ Array.prototype.slice.call(TL.children).forEach(function(e){ if(+e.dataset.l>L) TL.removeChild(e) }) }
+    curL=L;
   }
   function loadMan(){ var d=MP[cm].dir; if(MANS[d]){MAN=MANS[d]; tiles(); return} fetch(d+'/tiles.json').then(function(r){return r.json()}).then(function(m){MANS[d]=m; if(MP[cm].dir===d){MAN=m; tiles()}}).catch(function(){}); }
   function drawPins(){ pins.innerHTML=''; (PINS[cm]||[]).forEach(function(p){ var b=document.createElement('button'); b.type='button'; b.className='wm-pin'; b.setAttribute('aria-label',p[0]); b.dataset.n=p[0]; b.style.left=p[1]/100*W+'px'; b.style.top=p[2]/100*H+'px'; pins.appendChild(b); }); }
