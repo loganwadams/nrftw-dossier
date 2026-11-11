@@ -1488,6 +1488,7 @@ html body .rd-page.merchant:has(>.m-body>.vd-side)>.m-top,html body .rd-page.mer
 #map .wm-pin{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;border:2px solid #000;padding:0;cursor:pointer;transform:scale(calc(1 / var(--k,1)))}
 #map .wm-pin:hover,#map .wm-pin:focus-visible{background:#8ecbe8;outline:none}
 #map .wm-tip{position:absolute;pointer-events:none;padding:4px 9px;background:rgba(8,8,10,.92);color:#fff;font-size:13px;white-space:nowrap;transform:translate(-50%,-140%)}
+#map .wm-zoom{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}#map .wm-zoom button{all:unset;box-sizing:border-box;width:40px;height:40px;display:grid;place-items:center;background:rgba(8,8,10,.85);color:#fff;font-size:24px;line-height:1;cursor:pointer}#map .wm-zoom button:hover,#map .wm-zoom button:focus-visible{background:#fff;color:#000}
 #map .wm-help{margin:10px 0 0;opacity:.7;font-size:.9rem}
 .rd-page .rd-note{margin:12px 4px 4px;line-height:1.55;opacity:.85;font-size:14px}
 /* vendor pages: map always open, in the left column under the description */
@@ -4321,7 +4322,7 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
   <section id="map">
     <div class="sect-head"><h2>Map</h2></div>
     <div class="wm-tabs" id="wmTabs" role="tablist"><button type="button" role="tab" data-m="isola" aria-selected="true">Isola Sacra</button><button type="button" role="tab" data-m="trench" aria-selected="false">Black Trench</button></div>
-    <div class="wm-stage" id="wmStage" aria-label="Interactive map"><div class="wm-world" id="wmWorld"><img class="wm-base" id="wmBase" alt="" draggable="false"><div class="wm-tl" id="wmTl"></div><div class="wm-pins" id="wmPins"></div></div><div class="wm-tip" id="wmTip" hidden></div></div>
+    <div class="wm-stage" id="wmStage" aria-label="Interactive map"><div class="wm-world" id="wmWorld"><img class="wm-base" id="wmBase" alt="" draggable="false"><div class="wm-tl" id="wmTl"></div><div class="wm-pins" id="wmPins"></div></div><div class="wm-tip" id="wmTip" hidden></div><div class="wm-zoom"><button type="button" id="wmIn" aria-label="Zoom in">+</button><button type="button" id="wmOut" aria-label="Zoom out">&minus;</button></div></div>
     <p class="wm-help">Scroll or pinch to zoom, drag to pan. The map is the in-game map at full resolution.</p>
   </section>
   <section id="archive">
@@ -10919,6 +10920,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     else if(n===2){ p.x=e.clientX; p.y=e.clientY; var a=Object.keys(P).map(function(i){return P[i]}), d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), r=rect(); if(d0>0) zoomAt((a[0].x+a[1].x)/2-r.left,(a[0].y+a[1].y)/2-r.top,k0*d/d0) } });
   function up(e){ delete P[e.pointerId]; if(!Object.keys(P).length) st.classList.remove('drag') }
   st.addEventListener('pointerup',up); st.addEventListener('pointercancel',up);
+  function zb(f){var r=rect();zoomAt(r.width/2,r.height/2,k*f)}
+  document.getElementById('wmIn').addEventListener('click',function(){zb(1.5)}); document.getElementById('wmOut').addEventListener('click',function(){zb(1/1.5)});
+  st.addEventListener('pointerdown',function(e){ if(e.target.closest('.wm-zoom')) e.stopImmediatePropagation() },true);
   st.addEventListener('wheel',function(e){ e.preventDefault(); var r=rect(); var dy=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?400:1); dy=Math.max(-60,Math.min(60,dy)); zoomAt(e.clientX-r.left,e.clientY-r.top,k*Math.exp(-dy*0.0016)) },{passive:false});
   var started=false;
   function init(){ if(started||!rect().width) return; started=true; setMap('isola') }
