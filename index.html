@@ -10893,9 +10893,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var wd=document.getElementById('wmWorld'),base=document.getElementById('wmBase'),TL=document.getElementById('wmTl'),pins=document.getElementById('wmPins'),tip=document.getElementById('wmTip');
   var MP={isola:{W:2200,H:2000,dir:'img/map/isola',max:3,img:'img/map/isola/0/0_0.webp'},trench:{W:2048,H:2048,dir:'img/map/trench',max:2,img:'img/map/trench/0/0_0.webp'}};
   var PINS={isola:[],trench:[]};
-  var cm='isola',W=2200,H=2000,k=1,tx=0,ty=0,MAN=null,MANS={},curL=-1,tm=0;
+  var cm='isola',kmin=.15,W=2200,H=2000,k=1,tx=0,ty=0,MAN=null,MANS={},curL=-1,tm=0;
   function rect(){return st.getBoundingClientRect()}
-  function fit(){var r=rect(); if(!r.width) return; k=Math.min(r.width/W,r.height/H); tx=(r.width-W*k)/2; ty=(r.height-H*k)/2; ap()}
+  function fit(){var r=rect(); if(!r.width) return; k=Math.min(r.width/W,r.height/H); kmin=k; tx=(r.width-W*k)/2; ty=(r.height-H*k)/2; ap()}
   function ap(){wd.style.setProperty('--k',k); wd.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')'; if(!tm) tm=setTimeout(function(){tm=0; tiles()},40)}
   function tiles(){ if(!MAN) return; var r=rect(); if(!r.width) return; var dpr=window.devicePixelRatio||1, L=Math.min(MP[cm].max,Math.max(1,Math.ceil(Math.log2(k*dpr))));
     var ts=MAN.ts, sz=ts/Math.pow(2,L), pad=sz*0.5, x0=Math.max(0,Math.floor(((-tx/k)-pad)/sz)), x1=Math.floor((((r.width-tx)/k)+pad)/sz), y0=Math.max(0,Math.floor(((-ty/k)-pad)/sz)), y1=Math.floor((((r.height-ty)/k)+pad)/sz), have={}, idx={}, want=0, ready=0;
@@ -10917,7 +10917,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   pins.addEventListener('focusout',function(){tip.hidden=true});
   pins.addEventListener('click',function(e){var b=e.target.closest('.wm-pin'); if(b) showTip(b)});
   var P={},pc=0,d0=0,k0=1;
-  function zoomAt(mx,my,nk){ nk=Math.min(8,Math.max(.15,nk)); tx=mx-(mx-tx)*(nk/k); ty=my-(my-ty)*(nk/k); k=nk; ap() }
+  function zoomAt(mx,my,nk){ nk=Math.min(8,Math.max(kmin,nk)); tx=mx-(mx-tx)*(nk/k); ty=my-(my-ty)*(nk/k); k=nk; ap() }
   st.addEventListener('pointerdown',function(e){ if(e.target.closest('.wm-pin')) return; stopGlide(); P[e.pointerId]={x:e.clientX,y:e.clientY}; pc=Object.keys(P).length; st.setPointerCapture(e.pointerId); st.classList.add('drag'); if(pc===2){var a=Object.keys(P).map(function(i){return P[i]}); d0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); k0=k} });
   st.addEventListener('pointermove',function(e){ var p=P[e.pointerId]; if(!p) return; var n=Object.keys(P).length;
     if(n===1){ tx+=e.clientX-p.x; ty+=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY; tip.hidden=true; ap() }
@@ -10926,7 +10926,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   st.addEventListener('pointerup',up); st.addEventListener('pointercancel',up);
   var tk=1,ax=0,ay=0,wx=0,wy=0,raf=0,lt=0;
   function glide(now){ var dt=Math.min(64,now-lt); lt=now; var a=1-Math.exp(-dt/95); k+=(tk-k)*a; if(Math.abs(tk-k)<tk*0.0008){k=tk} tx=ax-wx*k; ty=ay-wy*k; ap(); raf=(k===tk)?0:requestAnimationFrame(glide) }
-  function zoomTo(mx,my,f){ if(!raf) tk=k; tk=Math.min(8,Math.max(.15,tk*f)); ax=mx; ay=my; wx=(mx-tx)/k; wy=(my-ty)/k; if(!raf){ lt=performance.now(); raf=requestAnimationFrame(glide) } }
+  function zoomTo(mx,my,f){ if(!raf) tk=k; tk=Math.min(8,Math.max(kmin,tk*f)); ax=mx; ay=my; wx=(mx-tx)/k; wy=(my-ty)/k; if(!raf){ lt=performance.now(); raf=requestAnimationFrame(glide) } }
   function stopGlide(){ if(raf){cancelAnimationFrame(raf); raf=0} tk=k }
   function zb(f){var r=rect();zoomAt(r.width/2,r.height/2,k*f)}
   document.getElementById('wmIn').addEventListener('click',function(){zb(1.5)}); document.getElementById('wmOut').addEventListener('click',function(){zb(1/1.5)});
