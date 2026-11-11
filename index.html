@@ -10891,7 +10891,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var st=document.getElementById('wmStage'); if(!st) return;
   var wd=document.getElementById('wmWorld'),base=document.getElementById('wmBase'),TL=document.getElementById('wmTl'),pins=document.getElementById('wmPins'),tip=document.getElementById('wmTip');
   var MP={isola:{W:2200,H:2000,dir:'img/map/isola',max:3,img:'img/map/isola/0/0_0.webp'},trench:{W:2048,H:2048,dir:'img/map/trench',max:2,img:'img/map/trench/0/0_0.webp'}};
-  var PINS={isola:[["Caroline",51.7,56.7],["Eleanor",51.61,49.23],["Fillmore",52.14,51.41],["Finley",60.07,47.35],["Gordon",49.07,54.17],["Grinnich",52.57,53.51],["Ilaria",47.79,51.71],["Maker Danos",57.25,49.21],["Markos",53.6,52.92],["Mira and Meri",54.04,52.38],["Watcher",58.91,51.98],["Whittacker",49.36,49.07],["Cyriel",59.91,11.17],["Dolan",61.17,8.59],["Irmgard",60.67,7.62],["Trelo",58.56,11.99],["Seneschal",50.52,38.35]],trench:[]};
+  var PINS={isola:[],trench:[]};
   var cm='isola',W=2200,H=2000,k=1,tx=0,ty=0,MAN=null,MANS={},curL=-1,tm=0;
   function rect(){return st.getBoundingClientRect()}
   function fit(){var r=rect(); if(!r.width) return; k=Math.min(r.width/W,r.height/H); tx=(r.width-W*k)/2; ty=(r.height-H*k)/2; ap()}
