@@ -267,6 +267,7 @@ body.paged .contents{display:none}
 [id]{scroll-margin-top:96px}
 @media (max-width:600px){.pgbar button{padding:8px 10px;font-size:10.5px;letter-spacing:.1em}}
 /* mobile: a floating burger replaces the tab row, opening a dropdown panel with the chapters (and the search box) */
+.pgbar-navtg{display:none}
 .pgbar-burger{display:none;align-items:center;gap:8px;appearance:none;background:none;border:1px solid var(--edge);color:var(--gold-dim);padding:9px 14px;margin:0 0 0 auto;cursor:pointer;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;transition:color .15s,border-color .15s}
 .pgbar-burger:hover,.pgbar-burger:focus-visible{color:var(--gold);border-color:var(--gold-dim)}
 .pgbar-burger .bg-ic{width:16px;height:16px;display:block;flex:none}
@@ -3394,6 +3395,13 @@ body.vend-view #vendors article.merchant.vd-on{display:block}
   body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{margin-left:calc(-1*(clamp(0px,calc((100vw - 1180px)/2),60px) + min(1640px,calc(100vw - 250px))/2))}
   body.on-archive:not(.ar-preview) .footer-bg{margin-left:-50vw}
   body:not(.on-home) .wrap{max-width:min(1640px,calc(100vw - 250px));margin-left:clamp(0px,calc((100vw - 1180px)/2),60px);margin-right:auto}
+  body.on-map.nav-min:not(.on-home) .wrap{max-width:calc(100vw - clamp(0px,calc((100vw - 1180px)/2),60px) - 52px)}
+  body.on-map.nav-min:not(.on-home) .header-bg,body.on-map.nav-min:not(.on-home) .footer-bg{margin-left:calc(-1*((100vw + clamp(0px,calc((100vw - 1180px)/2),60px) - 52px)/2))}
+  body.on-map.nav-min .pgbar .pgbar-item,body.on-map.nav-min .pgbar .hm-rail,body.on-map.nav-min .pgbar .hm-dot{display:none!important}
+  body.on-map .pgbar .pgbar-navtg{display:grid;position:absolute;right:14px;bottom:22px;width:36px;height:36px;place-items:center;appearance:none;border:0;padding:0;background:rgba(8,8,10,.85);color:#fff;cursor:pointer;transform:none!important;text-shadow:none}
+  body.on-map .pgbar .pgbar-navtg:hover,body.on-map .pgbar .pgbar-navtg:focus-visible{background:#fff;color:#000;outline:none}
+  body.on-map .pgbar .pgbar-navtg svg{transition:transform .2s ease}
+  body.on-map.nav-min .pgbar .pgbar-navtg svg{transform:rotate(180deg)}
   body .pgbar{position:fixed;top:0;right:0;height:100vh;height:100svh;justify-content:center;flex-direction:column;flex-wrap:nowrap;align-items:flex-end;gap:2px;margin:0;padding:12px 26px 12px 40px;z-index:70;background:none;pointer-events:none}
   body .pgbar>*{pointer-events:auto}
   body .pgbar::before{display:none}
@@ -9204,8 +9212,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // dropdown link or a direct #hash should still light up the Gear tab as the active button.
   CHAP_TITLE['gear']='Archive';
   var CHAP_NAV_ALIAS={infusions:'gear',enchantments:'gear',catalog:'gear',recipes:'gear',armory:'gear','item-page':'gear',systems:'factions'};
+  function syncNavTg(){ if(!navTg) return; var m=document.body.classList.contains('nav-min'); navTg.setAttribute('aria-label',m?'Show menu':'Hide menu'); navTg.setAttribute('aria-expanded',m?'false':'true'); }
   function show(group,chap){ current=group; currentChap=chap;
-    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'||group==='builds'); document.body.classList.toggle('on-builds',group==='builds'); document.body.classList.toggle('on-armory',group==='armory'); document.body.classList.toggle('on-vend',group==='vend'); document.body.classList.toggle('on-arch',['archive','vend','gear','enchant','cat','recipes','armory','itempage'].indexOf(group)>-1); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
+    document.querySelectorAll('[data-page]').forEach(function(el){ el.classList.toggle('pg-on', el.getAttribute('data-page')===group); }); var wasMap=document.body.classList.contains('on-map'), isMap=group==='map'; if(isMap&&!wasMap) document.body.classList.add('nav-min'); if(!isMap) document.body.classList.remove('nav-min'); document.body.classList.toggle('on-map',isMap); syncNavTg(); document.body.classList.toggle('on-home',group==='home'); document.body.classList.toggle('on-archive',group==='archive'); document.body.classList.toggle('on-media',group==='vid'); document.body.classList.toggle('on-cerim',group==='cerim'||group==='builds'); document.body.classList.toggle('on-builds',group==='builds'); document.body.classList.toggle('on-armory',group==='armory'); document.body.classList.toggle('on-vend',group==='vend'); document.body.classList.toggle('on-arch',['archive','vend','gear','enchant','cat','recipes','armory','itempage'].indexOf(group)>-1); if(group==='archive'&&!document.body.classList.contains('ar-preview')) window.scrollTo(0,0);
     var navId=CHAP_NAV_ALIAS[chap]||chap;
     bar.querySelectorAll('button[data-chap]').forEach(function(b){ if(b.dataset.chap===navId) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var label=CHAP_TITLE[chap];
@@ -9388,6 +9397,10 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var burger=document.createElement('button'); burger.type='button'; burger.className='pgbar-burger'; burger.setAttribute('aria-label','Menu'); burger.setAttribute('aria-expanded','false'); burger.setAttribute('aria-haspopup','true');
   burger.innerHTML='<svg class="bg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg><span>Menu</span>';
   bar.appendChild(burger); bar.appendChild(panel);
+  var navTg=document.createElement('button'); navTg.type='button'; navTg.className='pgbar-navtg';
+  navTg.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+  navTg.addEventListener('click',function(e){ e.stopPropagation(); document.body.classList.toggle('nav-min'); syncNavTg(); });
+  bar.appendChild(navTg); syncNavTg();
   function closeMenu(){ bar.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false');
     panel.querySelectorAll('.pgbar-item.open').forEach(function(w){ w.classList.remove('open'); var t=w.querySelector('.pgbar-plus'); if(t){ t.textContent='+'; t.setAttribute('aria-expanded','false'); } }); }
   // Mobile only: a small mark of the logo, far left of the bar, that goes to the homepage.
