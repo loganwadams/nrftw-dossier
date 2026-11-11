@@ -9267,6 +9267,9 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // Shared with the search module (separate closure) so a cross-page search-result jump into
   // Vendors/Catalog/Media lands on the clean path instead of a bare "#id" that would leave the
   // address bar showing a mismatched pathname.
+  // The Home tab is hidden from the nav bar, so there's no data-chap="home" button to click
+  // anymore - the logo needs its own way back to the homepage.
+  window.__pgGotoHome=function(){ var h=CHAPS.filter(function(c){ return c.id==='home'; })[0]; if(!h) return false; activate(h); return true; };
   window.__pgGoto=function(id){
     var el=document.getElementById(id); if(!el) return false;
     var group=pageOf(el); if(!group) return false;
@@ -9391,7 +9394,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   // Mobile only: a small mark of the logo, far left of the bar, that goes to the homepage.
   var navLogo=document.createElement('a'); navLogo.href='#'; navLogo.className='pgbar-logo'; navLogo.setAttribute('aria-label','Wicked Dossier - go to the homepage');
   navLogo.innerHTML='<img src="img/logo.webp" alt="" draggable="false">';
-  navLogo.addEventListener('click',function(e){ e.preventDefault(); closeMenu(); var hb=bar.querySelector('button[data-chap="home"], a[data-chap="home"]'); if(hb){ hb.click(); } else if(window.__pgGoto&&window.__pgGoto('top')){} else window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ window.scrollTo({top:0,behavior:'smooth'}); },80); });
+  navLogo.addEventListener('click',function(e){ e.preventDefault(); closeMenu(); var hb=bar.querySelector('button[data-chap="home"], a[data-chap="home"]'); if(hb){ hb.click(); } else if(window.__pgGotoHome&&window.__pgGotoHome()){} else if(window.__pgGoto&&window.__pgGoto('top')){} else window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ window.scrollTo({top:0,behavior:'smooth'}); },80); });
   bar.insertBefore(navLogo, bar.firstChild);
   function toggleMenu(){ var open=bar.classList.toggle('menu-open'); burger.setAttribute('aria-expanded',open?'true':'false'); }
   burger.addEventListener('click',function(e){ e.stopPropagation(); toggleMenu(); });
@@ -9746,7 +9749,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var kicker=head.querySelector('.kicker');
   // clicking the logo goes Home
   if(logo){ logo.setAttribute('role','link'); logo.setAttribute('tabindex','0'); logo.setAttribute('aria-label','Wicked Dossier - go to the homepage'); logo.style.cursor='pointer';
-    var goHome=function(e){ if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return; e.preventDefault(); var hb=document.querySelector('.pgbar button[data-chap="home"]'); if(hb) hb.click(); else window.scrollTo({top:0,behavior:'smooth'}); };
+    var goHome=function(e){ if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return; e.preventDefault(); var hb=document.querySelector('.pgbar button[data-chap="home"]'); if(hb) hb.click(); else if(window.__pgGotoHome&&window.__pgGotoHome()){} else window.scrollTo({top:0,behavior:'smooth'}); };
     logo.addEventListener('click',goHome); logo.addEventListener('keydown',goHome); }
   function align(){ if(!logo||innerWidth<=760){ form.style.top=''; return; }
     // center the search box on the full logo image (WICKED + DOSSIER together), not the masthead's padded box
