@@ -3397,8 +3397,11 @@ body.vend-view #vendors article.merchant.vd-on{display:block}
   body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{margin-left:calc(-1*(clamp(0px,calc((100vw - 1180px)/2),60px) + min(1640px,calc(100vw - 250px))/2))}
   body.on-archive:not(.ar-preview) .footer-bg{margin-left:-50vw}
   body:not(.on-home) .wrap{max-width:min(1640px,calc(100vw - 250px));margin-left:clamp(0px,calc((100vw - 1180px)/2),60px);margin-right:auto}
-  body.on-map.nav-min:not(.on-home) .wrap{max-width:calc(100vw - clamp(0px,calc((100vw - 1180px)/2),60px) - 36px)}
-  body.on-map.nav-min:not(.on-home) .header-bg,body.on-map.nav-min:not(.on-home) .footer-bg{margin-left:calc(-1*((100vw + clamp(0px,calc((100vw - 1180px)/2),60px) - 36px)/2))}
+  body.on-map:not(.on-home) .wrap{margin-left:0}
+  body.on-map:not(.on-home) #map{margin-left:-20px;width:calc(100% + 20px)}
+  body.on-map:not(.on-home) .header-bg,body.on-map:not(.on-home) .footer-bg{margin-left:calc(-1*min(1640px,calc(100vw - 250px))/2)}
+  body.on-map.nav-min:not(.on-home) .wrap{max-width:calc(100vw - 36px)}
+  body.on-map.nav-min:not(.on-home) .header-bg,body.on-map.nav-min:not(.on-home) .footer-bg{margin-left:calc(-1*(100vw - 36px)/2)}
   body.on-map.nav-min .pgbar .pgbar-item,body.on-map.nav-min .pgbar .hm-rail,body.on-map.nav-min .pgbar .hm-dot{display:none!important}
   body.on-map .pgbar .pgbar-navtg{display:grid;position:absolute;right:14px;bottom:22px;width:36px;height:36px;place-items:center;appearance:none;border:0;padding:0;background:rgba(8,8,10,.85);color:#fff;cursor:pointer;transform:none!important;text-shadow:none}
   body.on-map .pgbar .pgbar-navtg:hover,body.on-map .pgbar .pgbar-navtg:focus-visible{background:#fff;color:#000;outline:none}
