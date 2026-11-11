@@ -10919,7 +10919,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     else if(n===2){ p.x=e.clientX; p.y=e.clientY; var a=Object.keys(P).map(function(i){return P[i]}), d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), r=rect(); if(d0>0) zoomAt((a[0].x+a[1].x)/2-r.left,(a[0].y+a[1].y)/2-r.top,k0*d/d0) } });
   function up(e){ delete P[e.pointerId]; if(!Object.keys(P).length) st.classList.remove('drag') }
   st.addEventListener('pointerup',up); st.addEventListener('pointercancel',up);
-  st.addEventListener('wheel',function(e){ e.preventDefault(); var r=rect(); zoomAt(e.clientX-r.left,e.clientY-r.top,k*(e.deltaY<0?1.18:1/1.18)) },{passive:false});
+  st.addEventListener('wheel',function(e){ e.preventDefault(); var r=rect(); var dy=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?400:1); dy=Math.max(-60,Math.min(60,dy)); zoomAt(e.clientX-r.left,e.clientY-r.top,k*Math.exp(-dy*0.0016)) },{passive:false});
   var started=false;
   function init(){ if(started||!rect().width) return; started=true; setMap('isola') }
   if(window.ResizeObserver) new ResizeObserver(function(){ if(!started) init(); else fit() }).observe(st); else window.addEventListener('resize',function(){ if(!started) init(); else fit() });
