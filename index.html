@@ -1491,6 +1491,22 @@ html body .rd-page.merchant:has(>.m-body>.vd-side)>.m-top,html body .rd-page.mer
 #map .wm-tip{position:absolute;pointer-events:none;padding:4px 9px;background:rgba(8,8,10,.92);color:#fff;font-size:13px;white-space:nowrap;transform:translate(-50%,-140%)}
 #map .wm-zoom{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}#map .wm-zoom button{all:unset;box-sizing:border-box;width:40px;height:40px;display:grid;place-items:center;background:rgba(8,8,10,.85);color:#fff;font-size:24px;line-height:1;cursor:pointer}#map .wm-zoom button:hover,#map .wm-zoom button:focus-visible{background:#fff;color:#000}
 #map .wm-help{margin:10px 0 0;opacity:.7;font-size:.9rem}
+#map .wm-side{position:absolute;left:0;top:0;bottom:0;width:250px;z-index:5;background:rgba(8,8,10,.9);color:#fff;transition:transform .22s ease;cursor:default;display:flex;flex-direction:column}
+#map .wm-side.closed{transform:translateX(-100%)}
+#map .wm-side-tg{all:unset;box-sizing:border-box;position:absolute;left:100%;top:14px;width:34px;height:44px;display:grid;place-items:center;background:rgba(8,8,10,.9);color:#fff;cursor:pointer}
+#map .wm-side-tg:hover,#map .wm-side-tg:focus-visible{background:#8ecbe8;color:#000}
+#map .wm-side-tg svg{transition:transform .22s ease}#map .wm-side.closed .wm-side-tg svg{transform:rotate(180deg)}
+#map .wm-side-list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:12px 6px 16px 16px}
+#map .wm-side h3{margin:16px 0 4px;font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.08em;text-transform:uppercase}
+#map .wm-side h3:first-child{margin-top:2px}
+#map .wm-side h3 span{opacity:.6;font-size:13px;letter-spacing:0;margin-left:6px}
+#map .wm-side ul{list-style:none;margin:0;padding:0}
+#map .wm-side li button{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;gap:8px;width:100%;padding:5px 8px 5px 0;font-size:14px;line-height:1.3;cursor:pointer}
+#map .wm-side li button:hover,#map .wm-side li button:focus-visible{text-decoration:underline}
+#map .wm-side li button.off{opacity:.5;cursor:default;text-decoration:none}
+#map .wm-side li button.on{font-weight:700}
+#map .wm-side li em{font-style:normal;opacity:.7;font-size:12px;white-space:nowrap}
+@media(max-width:700px){#map .wm-side{width:210px}}
 .rd-page .rd-note{margin:12px 4px 4px;line-height:1.55;opacity:.85;font-size:14px}
 /* vendor pages: map always open, in the left column under the description */
 @media (min-width:761px){
@@ -4324,7 +4340,7 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
     <div class="sect-head"><h2>Interactive Map</h2></div>
     <p class="hero-notice"><span class="hero-notice-tag">Coming Soon</span> Signed-in users will be able to save the map with their own pin placements.</p>
     <div class="wm-tabs" id="wmTabs" role="tablist"><button type="button" role="tab" data-m="isola" aria-selected="true">Isola Sacra</button><button type="button" role="tab" data-m="trench" aria-selected="false">Black Trench</button></div>
-    <div class="wm-stage" id="wmStage" aria-label="Interactive map"><div class="wm-world" id="wmWorld"><img class="wm-base" id="wmBase" alt="" draggable="false"><div class="wm-tl" id="wmTl"></div><div class="wm-pins" id="wmPins"></div></div><div class="wm-tip" id="wmTip" hidden></div><div class="wm-zoom"><button type="button" id="wmIn" aria-label="Zoom in">+</button><button type="button" id="wmOut" aria-label="Zoom out">&minus;</button><button type="button" id="wmReset" aria-label="Reset view"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button></div></div>
+    <div class="wm-stage" id="wmStage" aria-label="Interactive map"><div class="wm-world" id="wmWorld"><img class="wm-base" id="wmBase" alt="" draggable="false"><div class="wm-tl" id="wmTl"></div><div class="wm-pins" id="wmPins"></div></div><aside class="wm-side" id="wmSide" aria-label="Map list"><button type="button" class="wm-side-tg" id="wmSideTg" aria-expanded="true" aria-controls="wmSideList" aria-label="Collapse map list"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="wm-side-list" id="wmSideList"></div></aside><div class="wm-tip" id="wmTip" hidden></div><div class="wm-zoom"><button type="button" id="wmIn" aria-label="Zoom in">+</button><button type="button" id="wmOut" aria-label="Zoom out">&minus;</button><button type="button" id="wmReset" aria-label="Reset view"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button></div></div>
   </section>
   <section id="archive">
     <div class="sect-head"><h2>Archive</h2></div>
@@ -10933,6 +10949,21 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   document.getElementById('wmReset').addEventListener('click',function(){stopGlide(); fit(); tk=k});
   st.addEventListener('pointerdown',function(e){ if(e.target.closest('.wm-zoom')) e.stopImmediatePropagation() },true);
   st.addEventListener('wheel',function(e){ e.preventDefault(); var r=rect(); var dy=e.deltaY*(e.deltaMode===1?33:e.deltaMode===2?400:1); var notch=Math.abs(dy)>=40; dy=Math.max(-120,Math.min(120,dy)); zoomTo(e.clientX-r.left,e.clientY-r.top,Math.exp(-dy*(notch?0.00095:0.005))) },{passive:false});
+  var GROUPS=[
+    {n:'Regions',m:{'Black Trench':'trench'},i:["Coast","Fortress","Outskirts","Wills Farm","Sacrament","Hills","Sewers","Marin Woods","River Pass","Mountain Pass","Shanty Town","Orban Glades","Ship Graveyard","Frozen Peaks","Mines","Mountains","Fortress Tunnel","Forest","Steppes","Settlement","Caylen","Fort Caylen","Grotto","Lion's Mound","Cerim Crypts","Black Trench"]},
+    {n:'Vendors',i:["Caroline","Cyriel","Dolan","Eleanor","Fillmore","Finley","Gordon","Grinnich","Ilaria","Irmgard","Maker Danos","Markos","Mira and Meri","The Seneschal","Trelo","The Watcher","Whittacker"]}
+  ];
+  var side=document.getElementById('wmSide'),sideList=document.getElementById('wmSideList'),sideTg=document.getElementById('wmSideTg'),activeName='';
+  function findPin(name){ for(var m in PINS){ var a=PINS[m]; for(var q=0;q<a.length;q++) if(a[q][0]===name) return {m:m,p:a[q]} } return null }
+  function drawSide(){ sideList.innerHTML=''; GROUPS.forEach(function(g){ var h=document.createElement('h3'); h.textContent=g.n; var placed=0; g.i.forEach(function(n){ if(findPin(n)) placed++ }); var c=document.createElement('span'); c.textContent=placed+'/'+g.i.length; h.appendChild(c); sideList.appendChild(h);
+      var ul=document.createElement('ul'); g.i.forEach(function(n){ var f=findPin(n), li=document.createElement('li'), b=document.createElement('button'); b.type='button'; b.dataset.n=n; b.className=(f?'':'off')+(n===activeName?' on':''); var t=document.createElement('span'); t.textContent=n; b.appendChild(t); if(!f){ var e=document.createElement('em'); e.textContent='not placed yet'; b.appendChild(e); b.setAttribute('aria-disabled','true') } li.appendChild(b); ul.appendChild(li) }); sideList.appendChild(ul) }) }
+  function focusPin(name){ var f=findPin(name); if(!f) return; activeName=name; if(f.m!==cm) setMap(f.m); stopGlide(); var r=rect(), off=side.classList.contains('closed')?0:side.offsetWidth; k=Math.min(8,Math.max(k,kmin*3)); tx=off+(r.width-off)/2-f.p[1]/100*W*k; ty=r.height/2-f.p[2]/100*H*k; tk=k; ap(); var b=pins.querySelector('.wm-pin[data-n="'+name.replace(/"/g,'\\"')+'"]'); if(b){ setTimeout(function(){ showTip(b) },60) } drawSide() }
+  sideList.addEventListener('click',function(e){ var b=e.target.closest('button[data-n]'); if(b&&!b.classList.contains('off')) focusPin(b.dataset.n) });
+  sideTg.addEventListener('click',function(){ var c=side.classList.toggle('closed'); sideTg.setAttribute('aria-expanded',c?'false':'true'); sideTg.setAttribute('aria-label',c?'Open map list':'Collapse map list') });
+  ['pointerdown','dblclick'].forEach(function(t){ side.addEventListener(t,function(e){ e.stopPropagation() }) });
+  side.addEventListener('wheel',function(e){ e.stopPropagation() },{passive:true});
+  if(window.innerWidth<=700){ side.classList.add('closed'); sideTg.setAttribute('aria-expanded','false'); sideTg.setAttribute('aria-label','Open map list') }
+  drawSide();
   var started=false;
   function init(){ if(started||!rect().width) return; started=true; setMap('isola') }
   if(window.ResizeObserver) new ResizeObserver(function(){ if(!started) init(); else fit() }).observe(st); else window.addEventListener('resize',function(){ if(!started) init(); else fit() });
