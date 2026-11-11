@@ -10950,7 +10950,6 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   st.addEventListener('pointerdown',function(e){ if(e.target.closest('.wm-zoom')) e.stopImmediatePropagation() },true);
   st.addEventListener('wheel',function(e){ e.preventDefault(); var r=rect(); var dy=e.deltaY*(e.deltaMode===1?33:e.deltaMode===2?400:1); var notch=Math.abs(dy)>=40; dy=Math.max(-120,Math.min(120,dy)); zoomTo(e.clientX-r.left,e.clientY-r.top,Math.exp(-dy*(notch?0.00095:0.005))) },{passive:false});
   var GROUPS=[
-    {n:'Regions',m:{'Black Trench':'trench'},i:["Coast","Fortress","Outskirts","Wills Farm","Sacrament","Hills","Sewers","Marin Woods","River Pass","Mountain Pass","Shanty Town","Orban Glades","Ship Graveyard","Frozen Peaks","Mines","Mountains","Fortress Tunnel","Forest","Steppes","Settlement","Caylen","Fort Caylen","Grotto","Lion's Mound","Cerim Crypts","Black Trench"]},
     {n:'Vendors',i:["Caroline","Cyriel","Dolan","Eleanor","Fillmore","Finley","Gordon","Grinnich","Ilaria","Irmgard","Maker Danos","Markos","Mira and Meri","The Seneschal","Trelo","The Watcher","Whittacker"]}
   ];
   var side=document.getElementById('wmSide'),sideList=document.getElementById('wmSideList'),sideTg=document.getElementById('wmSideTg'),activeName='';
