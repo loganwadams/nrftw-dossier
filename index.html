@@ -1496,6 +1496,7 @@ html body .rd-page.merchant:has(>.m-body>.vd-side)>.m-top,html body .rd-page.mer
 #map .wm-zoom{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}#map .wm-zoom button{all:unset;box-sizing:border-box;width:40px;height:40px;display:grid;place-items:center;background:rgba(8,8,10,.85);color:#fff;font-size:24px;line-height:1;cursor:pointer}#map .wm-zoom button:hover,#map .wm-zoom button:focus-visible{background:#fff;color:#000}
 #map .wm-help{margin:10px 0 0;opacity:.7;font-size:.9rem}
 @media(min-height:560px){html:has(body.on-map),body.on-map{overflow:hidden}}
+@media(max-width:700px){html:has(body.on-map),body.on-map{overflow:auto}}
 body.on-map footer{display:none}
 #map .wm-side{position:absolute;left:0;top:0;bottom:0;width:250px;z-index:5;background:rgba(8,8,10,.9);color:#fff;transition:transform .22s ease;cursor:default;display:flex;flex-direction:column}
 #map .wm-side.closed{transform:translateX(-100%)}
