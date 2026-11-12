@@ -3986,7 +3986,7 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
 <!-- HERO -->
   <section id="hero" class="hero" aria-label="Isola Sacra">
     <div class="hero-art">
-      <span class="hero-slide on"><video muted playsinline preload="auto" poster="img/hero-01.webp"><source src="video/clip2-shot040.mp4" type="video/mp4"></video></span>
+      <span class="hero-slide on"><video muted playsinline preload="none" poster="img/hero-01.webp"><source src="video/clip2-shot040.mp4" type="video/mp4"></video></span>
       <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip5-shot220.mp4" type="video/mp4"></video></span>
       <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip6-shot020.mp4" type="video/mp4"></video></span>
       <span class="hero-slide"><video muted playsinline preload="none"><source src="video/clip7-shot080.mp4" type="video/mp4"></video></span>
@@ -4042,11 +4042,13 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
       // Respect reduced-motion: show the first frame, no autoplay/rotation.
       loadNext(0);
     }else{
-      setTimeout(function(){ loadNext(1); }, 6000);
-      playCurrent();
+      var started=false, hero=document.getElementById('hero');
+      function shown(){ return hero && hero.getClientRects().length>0 }
+      function begin(){ started=true; if(vids[0]) vids[0].preload='auto'; setTimeout(function(){ loadNext(1); }, 6000); playCurrent(); }
+      if(shown()) begin();
       document.addEventListener('visibilitychange',function(){
         paused = document.hidden;
-        var v=vids[i]; if(!v) return;
+        var v=vids[i]; if(!v||!started) return;
         if(paused){ v.pause(); } else { playCurrent(); }
       });
       // Called whenever the page router lands on Home, since the one-time play() above can
@@ -4057,6 +4059,7 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
       // at 0 until something re-kicks it now that the element is visible again.
       window.__heroResume=function(){
         if(paused) return;
+        if(!started){ begin(); return }
         playCurrent();
       };
     }
