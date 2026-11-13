@@ -1504,6 +1504,12 @@ body.on-map footer{display:none}
 #map .wm-side-tg:hover,#map .wm-side-tg:focus-visible{background:#fff;color:#000}
 #map .wm-side-tg svg{transition:transform .22s ease}#map .wm-side.closed .wm-side-tg svg{transform:rotate(180deg)}
 #map .wm-side-list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:12px 6px 16px 16px}
+#map .wm-side-list::-webkit-scrollbar{width:12px}
+#map .wm-side-list::-webkit-scrollbar-track{background:#08080a;box-shadow:inset 1px 0 0 rgba(200,160,74,.35)}
+#map .wm-side-list::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#8a6a2a,#e6c36a 50%,#8a6a2a);border:3px solid #08080a;border-radius:0;min-height:48px}
+#map .wm-side-list::-webkit-scrollbar-thumb:hover{background:linear-gradient(90deg,#b8923c,#fff0b8 50%,#b8923c)}
+#map .wm-side-list::-webkit-scrollbar-button{display:none;width:0;height:0}
+@supports (-moz-appearance:none){#map .wm-side-list{scrollbar-width:thin;scrollbar-color:#e6c36a #08080a}}
 #map .wm-side h3{margin:16px 0 4px;font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.08em;text-transform:uppercase}
 #map .wm-side h3:first-child{margin-top:2px}
 #map .wm-side .wm-sec{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;cursor:pointer}#map .wm-side .wm-sec:focus-visible,#map .wm-side li button:focus-visible{outline:2px solid #fff;outline-offset:2px}#map .wm-side .wm-sec svg{flex:none;transition:transform .18s ease}#map .wm-side .wm-sec[aria-expanded=false] svg{transform:rotate(-90deg)}#map .wm-side .wm-sec em{font-style:normal;opacity:.6;font-size:13px;letter-spacing:0;margin-left:auto;padding-right:8px}#map .wm-side ul[hidden]{display:none}
