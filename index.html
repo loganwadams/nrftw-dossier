@@ -3167,9 +3167,6 @@ body.on-home .pgbar-search,body.on-home .pgbar-search *,body.on-home .nav-connec
 body.on-home .pgbar-right,body.on-home .pgbar-right *{color:#fff!important}
 /* home: the page links are centered on the bar, with the logo pinned to the far left
    and search/account pinned to the far right. */
-body.on-home .pgbar{justify-content:center;width:100vw;margin:0 calc(50% - 50vw)}
-body.on-home .pgbar-logo{position:absolute;left:clamp(40px,8vw,140px);top:50%;transform:translateY(-50%);margin:0}
-body.on-home .pgbar-right{position:absolute;right:clamp(40px,8vw,140px);top:50%;transform:translateY(-50%);margin:0}
 body.on-home footer .legal-short{color:rgba(255,255,255,.45)!important}
 body.on-home footer .legal-short a{color:var(--gold)!important}
 .hero-kicker{margin:0 0 12px;font-family:var(--data);font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-shadow:0 1px 2px rgba(0,0,0,.6)}
@@ -3432,6 +3429,16 @@ body.vend-view #vendors article.merchant.vd-on{display:block}
   body .pgbar .hm-dot.on{opacity:1}
   body .pgbar-right{margin-left:auto}
   body.on-home .hero-art::after{background:linear-gradient(90deg,rgba(10,8,7,.8) 0%,rgba(10,8,7,.62) 34%,rgba(10,8,7,.08) 62%,rgba(10,8,7,.35) 100%),linear-gradient(270deg,rgba(10,8,7,.55) 0%,rgba(10,8,7,0) 22%),linear-gradient(180deg,rgba(10,8,7,.45) 0%,rgba(10,8,7,0) 22%,rgba(10,8,7,0) 42%,rgba(10,8,7,.7) 76%,#0a0807 91%)}
+}
+/* wide desktop: enough room to center the page links in the bar, with the logo and
+   search/account pinned in from the edges. Narrower desktop widths keep the simpler
+   left-to-right layout above so the centered group doesn't collide with either side. */
+@media (min-width:1150px){
+  body .pgbar{justify-content:center}
+  body.on-home .pgbar{width:100vw;margin:0 calc(50% - 50vw)}
+  body:not(.on-home) .pgbar{width:100vw;margin-left:calc(-20px - clamp(0px,calc((100vw - 1180px)/2),60px))}
+  body .pgbar-logo{position:absolute;left:clamp(40px,8vw,140px);top:50%;transform:translateY(-50%);margin:0}
+  body .pgbar-right{position:absolute;right:clamp(40px,8vw,140px);top:50%;transform:translateY(-50%);margin:0}
 }
 .contents{margin:22px 0 6px;padding:12px 18px 12px;border:1px solid var(--edge);border-left:2px solid var(--gold-dim);background:linear-gradient(180deg,var(--panel-2),var(--panel));display:grid;grid-template-columns:1fr;gap:6px}
 .contents h3{margin:0 0 2px;font-size:9.5px;font-family:var(--data);letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
@@ -10310,8 +10317,8 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   }
   function go(el){ if(!mq.matches) return; dot.style.transform='translateX('+x(el)+'px)'; dot.classList.add('on'); }
   bar.querySelectorAll('.toc-has-drop').forEach(function(li){ li.addEventListener('mouseenter',function(){ var r=li.getBoundingClientRect(); li.style.setProperty('--dy',(r.top+r.height/2-innerHeight/2)+'px'); }); li.addEventListener('focusin',function(){ var r=li.getBoundingClientRect(); li.style.setProperty('--dy',(r.top+r.height/2-innerHeight/2)+'px'); }); });
-  bar.addEventListener('mouseover',function(e){ var t=e.target.closest&&e.target.closest('button,a'); if(t&&bar.contains(t)&&!t.closest('.toc-drop')&&!t.closest('.pgbar-right')) go(t); });
-  bar.addEventListener('focusin',function(e){ var t=e.target.closest&&e.target.closest('button,a'); if(t&&!t.closest('.toc-drop')&&!t.closest('.pgbar-right')) go(t); });
+  bar.addEventListener('mouseover',function(e){ var t=e.target.closest&&e.target.closest('button,a'); if(t&&bar.contains(t)&&!t.closest('.toc-drop')&&!t.closest('.pgbar-right')&&!t.closest('.pgbar-logo')) go(t); });
+  bar.addEventListener('focusin',function(e){ var t=e.target.closest&&e.target.closest('button,a'); if(t&&!t.closest('.toc-drop')&&!t.closest('.pgbar-right')&&!t.closest('.pgbar-logo')) go(t); });
   bar.addEventListener('mouseleave',rest); bar.addEventListener('focusout',function(){ setTimeout(function(){ if(!bar.contains(document.activeElement)) rest(); },0); });
   new MutationObserver(rest).observe(document.body,{attributes:true,attributeFilter:['class']});
   window.addEventListener('resize',rest); setTimeout(rest,300); setTimeout(rest,1200);
