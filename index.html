@@ -1351,7 +1351,6 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #my-builds .mb-card .cb-bl-act .danger,#my-builds .mb-card .cb-bl-act .danger .mb-lab{color:#9a9a9c}
 #my-builds .mb-card .cb-bl-act .danger:hover,#my-builds .mb-card .cb-bl-act .danger:hover .mb-lab{color:#fff}
 @media (hover:none){#my-builds .mb-card .cb-bl-act{opacity:1;background:linear-gradient(transparent 55%,rgba(0,0,0,.9))}}
-#cmPfList .mb-card{position:relative}
 #cmPfList .mb-card .cm-card{cursor:pointer}
 #cmPfList .mb-state{margin:12px 0 0;min-height:14px}
 #cmPfList .mb-toggle{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:4px 0;cursor:default;color:#9a9a9c;font-family:var(--data);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase}
@@ -1361,13 +1360,11 @@ body:not(.cb-shared) #cerim-builder .cb-gmstats section,body:not(.cb-shared) #ce
 #cmPfList .mb-toggle.on .mb-sw{border-color:#c8a04a;background:rgba(200,160,74,.22)}
 #cmPfList .mb-toggle.on .mb-sw i{transform:translateX(18px);background:#c8a04a}
 #cmPfList .mb-toggle.on:hover .mb-sw{border-color:#fff}
-#cmPfList .mb-card .cb-bl-act{position:absolute!important;inset:0;margin:0!important;z-index:5;pointer-events:none;opacity:0;transition:opacity .18s;background:rgba(0,0,0,.62);display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:34px}
-#cmPfList .mb-card:hover .cb-bl-act,#cmPfList .mb-card:focus-within .cb-bl-act{opacity:1}
-#cmPfList .mb-card .cb-bl-act button{pointer-events:auto;display:flex!important;flex-direction:column;align-items:center;gap:8px;line-height:1!important;padding:8px!important;color:#fff;border:0;background:none;cursor:pointer}
-#cmPfList .mb-card .cb-bl-act button svg{width:30px;height:30px}
+#cmPfList .mb-card .cb-bl-act{display:flex;flex-wrap:nowrap;align-items:center;gap:4px;margin-top:12px}
+#cmPfList .mb-card .cb-bl-act button{display:inline-flex!important;align-items:center;gap:8px;line-height:1!important;padding:8px 10px!important;margin:0!important;color:#d8d8d8;border:0;background:none;cursor:pointer;font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+#cmPfList .mb-card .cb-bl-act button svg{width:20px;height:20px}
 #cmPfList .mb-card .cb-bl-act .mb-lab{font-family:var(--data);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#d8d8d8}
 #cmPfList .mb-card .cb-bl-act button:hover,#cmPfList .mb-card .cb-bl-act button:hover .mb-lab{color:#c8a04a}
-@media (hover:none){#cmPfList .mb-card .cb-bl-act{opacity:1;background:linear-gradient(transparent 55%,rgba(0,0,0,.9))}}
 .mb-confirm{z-index:9500;align-items:center!important}
 .mb-confirm .cb-modal-card{max-width:440px}
 .mb-confirm h3{font-family:var(--display);font-size:22px;color:#fff;margin:0 0 12px}
