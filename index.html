@@ -10245,7 +10245,6 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   var main=document.createElement('button'); main.type='button';
   var menu=document.createElement('span'); menu.className='nav-acct-menu';
   function item(t,f){ var b=document.createElement('button'); b.type='button'; b.textContent=t; b.addEventListener('click',function(){ box.classList.remove('open'); f(); }); menu.appendChild(b); }
-  item('My Builds',function(){ window.__cbAcct.openList(); });
   item('My Profile',function(){ window.__cbAcct.openProfile(); });
   item('Sign Out',function(){ window.__cbAcct.signOut(); });
   box.appendChild(main); box.appendChild(menu);
