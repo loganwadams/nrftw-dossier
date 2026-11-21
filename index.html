@@ -240,7 +240,7 @@ html.auth-popup .wrap,html.auth-popup .pgbar,html.auth-popup #cbModal{visibility
 html.auth-popup body{overflow:hidden}
 html.auth-popup .auth-popup-note{position:fixed;inset:0;display:grid;place-items:center;text-align:center;color:var(--gold);font-family:var(--serif,Georgia,serif);font-size:1.15rem;letter-spacing:.04em;z-index:99}
 /* the artifact reads as a small site: one chapter group at a time, switched by the tab bar */
-.pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 -20px 8px;padding:8px 20px;box-sizing:border-box;width:calc(100% + 40px)}
+.pgbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px;margin:0 -20px;padding:8px 20px;box-sizing:border-box;width:calc(100% + 40px)}
 /* the bar's dark glass background/border run edge-to-edge on both desktop and mobile, breaking
    out of .wrap's max-width (and its mobile padding), while the nav itself (and its buttons,
    and the burger-panel dropdown below it) stay where they were - only the backdrop is
@@ -3417,7 +3417,7 @@ body.vend-view #vendors article.merchant.vd-on{display:block}
   body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{margin-left:calc(-1*(clamp(0px,calc((100vw - 1180px)/2),60px) + min(1640px,calc(100vw - 250px))/2))}
   body.on-archive:not(.ar-preview) .footer-bg{margin-left:-50vw}
   body:not(.on-home) .wrap{max-width:min(1640px,calc(100vw - 250px));margin-left:clamp(0px,calc((100vw - 1180px)/2),60px);margin-right:auto}
-  body.on-map:not(.on-home) #map{margin-left:-20px;width:calc(100% + 20px)}
+  body.on-map:not(.on-home) #map{width:100vw;margin-left:calc(-20px - clamp(0px,calc((100vw - 1180px)/2),60px))}
   body .pgbar-item>button,body .pgbar-row>button{font:400 15px/1.2 var(--display);letter-spacing:.05em;text-transform:none;padding:8px 12px}
   body .pgbar .pg-num{display:none}
   body .pgbar-right .nav-acct>button,body .pgbar-right .nav-provs>button.nav-connect{font:400 15px/1.2 var(--display);letter-spacing:.05em;text-transform:none;padding:8px 12px}
