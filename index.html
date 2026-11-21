@@ -10310,11 +10310,7 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
   orbImg.src=window.matchMedia('(prefers-reduced-motion:reduce)').matches?'img/loot-orb-still.png':'img/loot-orb.webp'; dot.appendChild(orbImg);
   var mq=window.matchMedia('(min-width:761px)');
   function x(el){ var r=el.getBoundingClientRect(), b=rail.getBoundingClientRect(); return r.left-b.left+r.width/2-3.5; }
-  function rest(){
-    if(!mq.matches){ dot.classList.remove('on'); return; }
-    var cur=bar.querySelector('button[aria-current="page"]');
-    if(cur){ dot.style.transform='translateX('+x(cur)+'px)'; dot.classList.add('on'); } else dot.classList.remove('on');
-  }
+  function rest(){ dot.classList.remove('on'); }
   function go(el){ if(!mq.matches) return; dot.style.transform='translateX('+x(el)+'px)'; dot.classList.add('on'); }
   bar.querySelectorAll('.toc-has-drop').forEach(function(li){ li.addEventListener('mouseenter',function(){ var r=li.getBoundingClientRect(); li.style.setProperty('--dy',(r.top+r.height/2-innerHeight/2)+'px'); }); li.addEventListener('focusin',function(){ var r=li.getBoundingClientRect(); li.style.setProperty('--dy',(r.top+r.height/2-innerHeight/2)+'px'); }); });
   bar.addEventListener('mouseover',function(e){ var t=e.target.closest&&e.target.closest('button,a'); if(t&&bar.contains(t)&&!t.closest('.toc-drop')&&!t.closest('.pgbar-right')&&!t.closest('.pgbar-logo')) go(t); });
