@@ -8057,15 +8057,16 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
         // ---- author profile page (hash u/<user id> on /builds): name + bio from profiles (if the
         // author made one) and every build of theirs that's public. Private profiles never reach
         // here - the view blanks user_id for them, so their name is plain text, not a link.
-        var curProfile=null, pfCache={};
+        var curProfile=null, pfCache={}, pfLocalPub={};
         function renderProfileList(){
           var key=(curProfile||'').toLowerCase();
           var mine=(rows||[]).filter(function(r){ return r.user_id&&(curUid?r.user_id===curUid:(r.author_name||'').toLowerCase()===key); });
           pfCount.innerHTML=mine.length?('<b>'+mine.length+'</b> public build'+(mine.length===1?'':'s')):'No public builds yet';
           var isOwner=!!(user&&user.id&&curUid&&user.id===curUid);
           pfList.innerHTML=mine.length?mine.map(isOwner?function(r){
+            var pub=pfLocalPub.hasOwnProperty(r.id)?pfLocalPub[r.id]:true;
             return '<div class="mb-card">'+cardHtml(r)+'<div class="cb-bl-act">'+mbBtn('ren',null,r.id)+mbBtn('link',null,r.id)+'</div></div>'+
-              '<div class="mb-state"><button type="button" role="switch" aria-checked="true" data-a="unpub" data-pid="'+escH(String(r.id))+'" class="mb-toggle on" title="Listed on Community Builds - click to unpublish"><span class="mb-sw"><i></i></span><span class="mb-sw-l">Public</span></button></div>';
+              '<div class="mb-state"><button type="button" role="switch" aria-checked="'+(pub?'true':'false')+'" data-a="'+(pub?'unpub':'pub')+'" data-pid="'+escH(String(r.id))+'" class="mb-toggle'+(pub?' on':'')+'" title="'+(pub?'Listed on Community Builds - click to unpublish':'Not listed - click to publish to Community Builds')+'"><span class="mb-sw"><i></i></span><span class="mb-sw-l">Public</span></button></div>';
           }:cardHtml).join(''):'';
           if(!pfName.dataset.set){ var n=mine.length&&mine[0].author_name; if(n) pfName.textContent=n; }
           setHeading(pfName.textContent==='\u2026'?'Profile':pfName.textContent);
@@ -8143,10 +8144,11 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
             } else if(pb.dataset.a==='link'){
               var url=location.origin+'/builds/'+encodeURIComponent(pr.id);
               try{ if(navigator.clipboard) navigator.clipboard.writeText(url); }catch(x){}
-            } else if(pb.dataset.a==='unpub'){
-              client().then(function(c){ return c.from('builds').update({is_public:false}).eq('id',pr.id); })
-                .then(function(x){ if(x.error) throw x.error; if(window.__cmRefresh) window.__cmRefresh(); else renderProfileList(); })
-                .catch(function(err){ openModal('Unpublish',"<p>Couldn&rsquo;t save that. "+escH(cleanErr(err))+'</p>'); });
+            } else if(pb.dataset.a==='unpub'||pb.dataset.a==='pub'){
+              var toPub=pb.dataset.a==='pub';
+              client().then(function(c){ return c.from('builds').update({is_public:toPub}).eq('id',pr.id); })
+                .then(function(x){ if(x.error) throw x.error; pfLocalPub[pr.id]=toPub; renderProfileList(); })
+                .catch(function(err){ openModal(toPub?'Publish':'Unpublish',"<p>Couldn&rsquo;t save that. "+escH(cleanErr(err))+'</p>'); });
             }
             return;
           }
