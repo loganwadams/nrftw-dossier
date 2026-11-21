@@ -7695,6 +7695,14 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
           .then(function(r){ if(r.error) throw r.error; var d=r.data||[]; if(mbPage&&window.__cmCardsReady){ return Promise.resolve(window.__cmCardsReady()).catch(function(){}).then(function(){ paint(d); }); } paint(d); })
           .catch(function(e){ (mbPage||mB).innerHTML='<p>'+escH(cleanErr(e))+'</p>'; });
       }
+      // The My Builds page used to be loaded only when its old dropdown item was clicked
+      // (window.__cbAcct.openList -> listBuilds). Now that it's reached by nav/URL alone, load
+      // it whenever the router shows that section, same as the Community Builds page does.
+      (function(){
+        var mbSec=$('my-builds'); if(!mbSec) return;
+        new MutationObserver(function(){ if(mbSec.classList.contains('pg-on')) listBuilds(); }).observe(mbSec,{attributes:true,attributeFilter:['class']});
+        if(mbSec.classList.contains('pg-on')) listBuilds();
+      })();
       function paint(rows){
         var h='';
         if(!rows.length) h+='<p>No saved builds yet. Head to the <a href="/cerim-builder" class="cb-empty-link">Cerim Builder</a> to put a build together, then use <strong>Save Build</strong>.</p>';
