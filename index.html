@@ -3466,7 +3466,8 @@ body.on-vend:not(.vend-view) #vendors>.sect-head,body.on-vend:not(.vend-view) fo
   body.on-home .masthead{height:0;padding-block:0;z-index:60}
   body.on-home .masthead .logo{margin-top:26px;margin-left:calc(-1*max(0px,(100vw - 1180px)/2 - clamp(0px,calc((100vw - 1180px)/2),60px)))}
   body.on-home .header-bg,body.on-home .footer-bg,body.on-home .masthead .keybar{display:none!important}
-  body.on-home .hero{margin-top:0;min-height:100vh;min-height:100svh}
+  body.on-home .hero{margin-top:0;min-height:calc(100vh - 52px);min-height:calc(100svh - 52px)}
+  html:has(body.on-home){overflow:hidden}
   body:not(.on-home) .header-bg,body:not(.on-home) .footer-bg{margin-left:calc(-1*(clamp(0px,calc((100vw - 1180px)/2),60px) + min(1640px,calc(100vw - 250px))/2))}
   body.on-archive:not(.ar-preview) .footer-bg{margin-left:-50vw}
   body:not(.on-home) .wrap{max-width:min(1640px,calc(100vw - 250px));margin-left:clamp(0px,calc((100vw - 1180px)/2),60px);margin-right:auto}
