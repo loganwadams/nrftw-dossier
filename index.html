@@ -3424,9 +3424,10 @@ body.on-vend:not(.vend-view) #vendors>.sect-head,body.on-vend:not(.vend-view) fo
 #vendors .vm-pin.vm-dim{opacity:.15;pointer-events:none}
 #vendors .vm-pin.vm-dim::before{animation:none;opacity:0}
 #vendors .vm-tabs{position:absolute;left:max(40px,calc(50% - var(--vw)/2 + 40px));top:28px;z-index:7;display:flex;gap:8px}
-#vendors .vm-tabs button{padding:13px 20px;border:1px solid #3a3a3e;background:rgba(11,11,13,.82);color:#c9c8c2;font:400 11px var(--data);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s}
-#vendors .vm-tabs button:hover{color:#fff}
-#vendors .vm-tabs button[aria-pressed="true"]{border-color:var(--gold);color:#fff}
+#vendors .vm-tabs{gap:10px}
+#vendors .vm-tabs button{all:unset;box-sizing:border-box;cursor:pointer;padding:7px 16px;font-family:inherit;font-weight:400;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#a9a9a9;background:#0a0a0c;border:1px solid rgba(255,255,255,.35);transition:color .2s}
+#vendors .vm-tabs button[aria-pressed="true"]{color:#fff;border-color:rgba(255,255,255,.9)}
+#vendors .vm-tabs button:hover,#vendors .vm-tabs button:focus-visible{background:#c8a04a;color:#333;border-color:#c8a04a;outline:none}
 #vendors .vm-cap{position:absolute;left:max(40px,calc(50% - var(--vw)/2 + 40px));bottom:26px;z-index:7;margin:0;font:400 11px var(--data);letter-spacing:.2em;text-transform:uppercase;color:#c9c8c2}
 }
 @media (min-width:900px) and (min-height:560px){html:has(body.on-vend:not(.vend-view)),body.on-vend:not(.vend-view){overflow:hidden}}
