@@ -3419,6 +3419,8 @@ body.on-vend:not(.vend-view) #vendors>.sect-head,body.on-vend:not(.vend-view) fo
 #vendors .vm-pin:hover,#vendors .vm-pin:focus-visible{z-index:6}
 #vendors .vm-pin:hover .vm-face,#vendors .vm-pin:focus-visible .vm-face{transform:scale(1.75)}
 #vendors .vm-pin:hover .vm-tag,#vendors .vm-pin:focus-visible .vm-tag{opacity:1;transform:translate(-50%,0)}
+#vendors .vm-pin.vm-tag-up .vm-tag{top:auto;bottom:calc(100% + 26px);transform:translate(-50%,6px)}
+#vendors .vm-pin.vm-tag-up:hover .vm-tag,#vendors .vm-pin.vm-tag-up:focus-visible .vm-tag{transform:translate(-50%,0)}
 #vendors .vm-pin.vm-dim{opacity:.15;pointer-events:none}
 #vendors .vm-pin.vm-dim::before{animation:none;opacity:0}
 #vendors .vm-tabs{position:absolute;left:max(40px,calc(50% - var(--vw)/2 + 40px));top:28px;z-index:7;display:flex;gap:8px}
@@ -3600,10 +3602,8 @@ article.merchant .m-role{display:none!important}
 .m-top{margin-bottom:14px}
 .m-top .m-blurb{max-width:90ch}
 .m-body-wide{grid-template-columns:minmax(0,1fr)}
-.m-wares.m-wide{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:4px 34px;align-items:start}
-.m-wares.m-wide .m-sb+.m-sb{margin-top:0}
-#vendor-seneschal .m-wares.m-wide{grid-template-columns:minmax(0,1fr)}
-#vendor-seneschal .m-wares.m-wide .m-sb+.m-sb{margin-top:28px}
+.m-wares.m-wide{display:grid;grid-template-columns:minmax(0,1fr);gap:4px 34px;align-items:start}
+.m-wares.m-wide .m-sb+.m-sb{margin-top:28px}
 .m-stack{margin-bottom:18px;padding-bottom:14px;position:relative}
 .m-stack .m-table{max-width:760px}
 .m-stack h4{margin:4px 0 8px;font-family:var(--data);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;justify-content:space-between;align-items:baseline;max-width:760px}
@@ -3617,6 +3617,7 @@ article.merchant .m-role{display:none!important}
 .m-list li{position:relative;padding-left:14px;font-size:14.2px;line-height:1.5;color:#bdac8b}
 .m-list li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;transform:rotate(45deg);background:var(--gold-dim)}
 .m-table{font-size:13.4px;min-width:0}
+.merchant .m-table{font-size:14.9px}
 .m-table th,.m-table td{padding:6px 8px 5px;vertical-align:middle}
 .m-table thead th{font-size:10.5px;color:var(--gold)}
 .m-table td{color:#c2b18f}
@@ -3780,7 +3781,6 @@ table.m-recipes thead th{padding-top:18px}table.m-recipes tbody tr:last-child td
 /* phones: nothing may be wider than the screen */
 html{overflow-x:hidden;max-width:100%}
 body{max-width:100%}
-.m-wares.m-wide{grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr))}
 @media (max-width:600px){
   table{min-width:0}
   tbody th{white-space:normal;width:34%}
@@ -4357,7 +4357,6 @@ body.cb-shared #cbSharedList .cb-sh-head{padding-top:6px}
 <a class="vm-pin" href="#vendor-seneschal" style="left:50.99%;top:58.66%;--d:1.2s"><span class="vm-face"><img src="img/merch-icon/seneschal.png" style="--fx:0.5;--fy:0.36;--z:1.5" alt="" loading="lazy" decoding="async"></span><span class="vm-tag"><b>The Seneschal</b><i>Crucible keeper</i></span></a>
 </div>
       <div class="vm-tabs" role="group" aria-label="Regions"><button type="button" data-vr="sac" data-n="12 merchants in Sacrament" aria-pressed="true">Sacrament</button><button type="button" data-vr="mar" data-n="4 merchants in Marin Village" aria-pressed="false">Marin Village</button><button type="button" data-vr="cru" data-n="1 merchant in Crucible Atrium" aria-pressed="false">Crucible Atrium</button></div>
-      <p class="vm-cap" id="vmCap">12 merchants in Sacrament</p>
     </div>
     <div class="ar-grid vd-grid">
       <a class="ar-card vd-card" href="#vendor-caroline" style="--fx:0.3817;--fy:0.8447;--ar:0.8500;--mp:url(img/map/region-sac.webp)"><img class="vd-pt" src="img/merch-icon/caroline.png" alt="" loading="lazy"><h3>Caroline</h3><span class="ar-k">Innkeeper</span><span class="vd-loc">Sacrament</span></a>
@@ -10219,7 +10218,10 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
     var mq=window.matchMedia('(min-width:900px)');
     function fit(){ var c=document.body.classList; if(!mq.matches||!c.contains('on-vend')||c.contains('vend-view')||!m.offsetParent) return; if(window.scrollY) window.scrollTo(0,0); m.style.setProperty('--vmtop',Math.round(m.getBoundingClientRect().top+window.scrollY)+'px'); }
     new MutationObserver(function(){ requestAnimationFrame(fit); }).observe(document.body,{attributes:true,attributeFilter:['class']});
-    window.addEventListener('resize',fit); fit(); })();
+    window.addEventListener('resize',fit); fit();
+    function checkFlip(p){ var tag=p.querySelector('.vm-tag'); if(!tag) return; p.classList.remove('vm-tag-up'); var mr=m.getBoundingClientRect(), tr=tag.getBoundingClientRect(); var h=tr.height||tag.offsetHeight; if(mr.bottom-tr.top<h+10) p.classList.add('vm-tag-up'); }
+    m.addEventListener('pointerenter',function(e){ var p=e.target.closest&&e.target.closest('.vm-pin'); if(p) checkFlip(p); },true);
+    m.addEventListener('focusin',function(e){ var p=e.target.closest&&e.target.closest('.vm-pin'); if(p) checkFlip(p); }); })();
   // Crafting Recipes
   (function(){ var sec=document.getElementById('recipes'); if(!sec) return;
     // collapsible sections, same pattern as the Trove: every type starts collapsed, each sub-group too
@@ -10974,13 +10976,12 @@ var MB_LB={ren:'Edit',link:'Share',del:'Delete'};
 })();
 </script>
 <script>
-/* vendor stock headers: show the area name instead of "Random stock" */
+/* vendor stock headers: drop the location from "Guaranteed stock"/"Random stock" headers, keep the label */
 (function(){
   function go(){
     [].forEach.call(document.querySelectorAll('.merchant .m-sb>h4'),function(h){
-      var sp=h.querySelector('span'); if(!sp||!/^random stock/i.test(h.textContent)) return;
-      var n=sp.textContent.split('\u00b7')[0].trim(); if(!n) return;
-      h.textContent=n; h.className='m-area';
+      var sp=h.querySelector('span'); if(!sp||!/^(guaranteed|random) stock/i.test(h.textContent)) return;
+      sp.remove();
     });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
